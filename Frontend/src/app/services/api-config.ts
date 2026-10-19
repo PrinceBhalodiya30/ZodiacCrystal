@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://localhost:7230/api';
+export const API_BASE_URL = 'http://localhost:5275/api';
 
 // Public storefront address (no trailing slash), used for canonical links,
 // Open Graph URLs and structured data. Set to the live domain before deploying.

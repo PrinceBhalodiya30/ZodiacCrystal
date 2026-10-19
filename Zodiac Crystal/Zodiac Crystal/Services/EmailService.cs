@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Net;
 using System.Text;
 using MailKit.Net.Smtp;
@@ -48,8 +48,12 @@ namespace Zodiac_Crystal.Services
         {
             if (string.IsNullOrWhiteSpace(_settings.Username) || string.IsNullOrWhiteSpace(_settings.Password))
             {
-                throw new InvalidOperationException(
-                    "SMTP credentials are not configured. Set EmailSettings:Username and EmailSettings:Password via User Secrets.");
+                _logger.LogWarning("==========================================================================");
+                _logger.LogWarning("[DEV MODE - EMAIL NOT SENT: Brevo SMTP credentials not configured]");
+                _logger.LogWarning("To: {ToEmail} ({ToName}) | Subject: {Subject}", toEmail, toName, subject);
+                _logger.LogWarning("Email Body:\n{HtmlBody}", htmlBody);
+                _logger.LogWarning("==========================================================================");
+                return;
             }
 
             var message = new MimeMessage();
@@ -58,14 +62,26 @@ namespace Zodiac_Crystal.Services
             message.Subject = subject;
             message.Body = new BodyBuilder { HtmlBody = htmlBody }.ToMessageBody();
 
-            using var client = new SmtpClient { Timeout = 15000 };
+            try
+            {
+                using var client = new SmtpClient { Timeout = 15000 };
 
-            await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_settings.Username, _settings.Password);
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
+                await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(_settings.Username, _settings.Password);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
 
-            _logger.LogInformation("Email \"{Subject}\" sent", subject);
+                _logger.LogInformation("Email \"{Subject}\" sent successfully via Brevo SMTP", subject);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send email via Brevo SMTP to {ToEmail}", toEmail);
+                _logger.LogWarning("==========================================================================");
+                _logger.LogWarning("[DEV MODE - EMAIL FALLBACK]");
+                _logger.LogWarning("To: {ToEmail} ({ToName}) | Subject: {Subject}", toEmail, toName, subject);
+                _logger.LogWarning("Email Body:\n{HtmlBody}", htmlBody);
+                _logger.LogWarning("==========================================================================");
+            }
         }
 
         public async Task SendOrderConfirmationAsync(Order order)
