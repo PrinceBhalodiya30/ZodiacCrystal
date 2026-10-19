@@ -1,0 +1,134 @@
+.admin-orders-page {
+  padding: 2rem 1.5rem 3rem;
+}
+
+.admin-orders-page h1 {
+  margin-bottom: 1.5rem;
+  color: var(--color-ink);
+}
+
+.admin-orders-page .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.admin-orders-page .status-filter {
+  padding: 0.65rem 0.95rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #fff;
+  color: #413d35;
+  box-sizing: border-box;
+}
+
+.admin-orders-page .status-filter:focus,
+.admin-orders-page .status-filter:focus-visible {
+  outline: none;
+  border-color: #cfc6b3;
+  box-shadow: 0 0 0 4px rgba(90, 122, 100, 0.14);
+}
+
+.customer-name {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.customer-email {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.payment-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.payment-method {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.payment-badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.payment-badge.paid { background-color: #ecf8f1; color: #2f8a57; }
+.payment-badge.pending { background-color: #fdf5e7; color: #b07a22; }
+.payment-badge.refunded { background-color: #edf3fb; color: #4b76b0; }
+.payment-badge.cancelled { background-color: #f4f2f7; color: #928e86; }
+
+/* Rows open the order drawer; status changes happen there, not in the table. */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.clickable-row:focus-visible {
+  outline: 2px solid #7c5cbf;
+  outline-offset: -2px;
+}
+
+.clickable-row:hover td,
+.clickable-row.is-open td {
+  background-color: #fbf9fe;
+}
+
+.clickable-row.is-open td:first-child {
+  box-shadow: inset 3px 0 0 #cfc6b3;
+}
+
+/* Orders that just arrived live over SignalR. */
+.row-new td {
+  animation: row-new-flash 2.5s ease-out;
+  background-color: #fbf7ef;
+}
+
+@keyframes row-new-flash {
+  0% {
+    background-color: #ede9e1;
+  }
+  100% {
+    background-color: #f8f4ec;
+  }
+}
+
+.new-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  background-color: #f0ece4;
+  color: var(--color-brand);
+  font-size: 0.7rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row-new td {
+    animation: none;
+  }
+}
+
+@media (max-width: 899.98px) {
+  .admin-orders-page {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .status-filter {
+    min-height: 44px;
+    font-size: 16px;
+  }
+}

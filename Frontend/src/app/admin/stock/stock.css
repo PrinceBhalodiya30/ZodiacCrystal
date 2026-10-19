@@ -1,0 +1,36 @@
+/* Page-specific tweaks only - shared table/form styles live in admin-shared.css */
+
+.stock-input {
+  width: 80px;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.status-pill.out {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.row-error {
+  color: var(--color-danger);
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.low-stock-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: #444;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.low-stock-toggle input {
+  accent-color: var(--color-brand);
+}

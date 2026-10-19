@@ -1,0 +1,282 @@
+<section class="container profile-page settings-page">
+  <header class="settings-header">
+    <h1>Settings</h1>
+    <p>Manage your name, email, password and account.</p>
+  </header>
+
+  <div class="settings-stack">
+      @if (authService.currentUser(); as user) {
+        <div class="profile-card" [class.editing]="isEditingProfile() || emailStep() !== 'closed'">
+          <div class="profile-card-header">
+            <h2>Personal Information</h2>
+            @if (!isEditingProfile() && emailStep() === 'closed') {
+              <button type="button" class="icon-btn" (click)="startEditProfile()" aria-label="Edit profile">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                </svg>
+                Edit
+              </button>
+            }
+          </div>
+
+          @if (emailStep() === 'request') {
+            <form class="reveal-in" (ngSubmit)="sendEmailCode()" #emailForm="ngForm">
+              <h3 class="email-change-title">Change Email</h3>
+              <p class="email-change-hint">
+                Currently <strong>{{ user.email }}</strong>. We'll send a code to the new address to confirm it's yours.
+            Once changed, you'll sign in with the new address, and all order emails (including for orders already
+            placed) go there. You'll be signed out on your other devices.
+              </p>
+
+              <label for="newEmail">New Email</label>
+              <input
+                id="newEmail"
+                name="newEmail"
+                type="email"
+                [(ngModel)]="newEmail"
+                required
+                email
+                autocomplete="email"
+                #newEmailField="ngModel"
+              />
+              @if (newEmailField.invalid && newEmailField.touched) {
+                <p class="form-error">Enter a valid email address.</p>
+              }
+
+              <label for="emailPassword">Current Password</label>
+              <div class="password-field">
+                <input
+                  id="emailPassword"
+                  name="emailPassword"
+                  [type]="showEmailPassword() ? 'text' : 'password'"
+                  [(ngModel)]="emailPassword"
+                  required
+                  autocomplete="current-password"
+                />
+                <button type="button" class="toggle-password" [attr.aria-label]="showEmailPassword() ? 'Hide password' : 'Show password'" (click)="showEmailPassword.set(!showEmailPassword())">
+                  @if (showEmailPassword()) {
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                        <line x1="3" y1="21" x2="21" y2="3" />
+                      </svg>
+                  }
+                </button>
+              </div>
+
+              @if (emailChangeError()) {
+                <p class="form-error" role="alert">{{ emailChangeError() }}</p>
+              }
+
+              <div class="profile-actions">
+                <button type="button" class="btn btn-outline" (click)="cancelEmailChange()">Cancel</button>
+                <button type="submit" class="btn" [disabled]="emailForm.invalid || isSendingEmailCode()">
+                  {{ isSendingEmailCode() ? 'Sending code...' : 'Send Code' }}
+                </button>
+              </div>
+            </form>
+          } @else if (emailStep() === 'verify') {
+            <form class="reveal-in" (ngSubmit)="verifyEmailChange()" #emailOtpForm="ngForm">
+              <h3 class="email-change-title">Check Your New Inbox</h3>
+              <p class="email-change-hint">
+                We sent a 6-digit code to <strong>{{ emailCodeSentTo() }}</strong>. Your email changes once you enter it.
+              </p>
+
+              <label for="emailOtp">Verification Code</label>
+              <input
+                id="emailOtp"
+                name="emailOtp"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                [(ngModel)]="emailOtp"
+                required
+                placeholder="6-digit code"
+                class="otp-input"
+                #emailOtpField="ngModel"
+              />
+              @if (emailOtpField.invalid && emailOtpField.touched) {
+                <p class="form-error">Enter the 6-digit code from your email.</p>
+              }
+
+              @if (emailChangeError()) {
+                <p class="form-error" role="alert">{{ emailChangeError() }}</p>
+              }
+
+              <div class="profile-actions">
+                <button type="button" class="btn btn-outline" (click)="cancelEmailChange()">Cancel</button>
+                <button type="submit" class="btn" [disabled]="emailOtpForm.invalid || isVerifyingEmail()">
+                  {{ isVerifyingEmail() ? 'Verifying...' : 'Confirm New Email' }}
+                </button>
+              </div>
+
+              <p class="email-change-links">
+                Didn't get it?
+                <button type="button" class="text-btn" [disabled]="emailResendIn() > 0 || isSendingEmailCode()" (click)="sendEmailCode()">
+                  {{ emailResendIn() > 0 ? 'Resend code in ' + emailResendIn() + 's' : 'Resend code' }}
+                </button>
+                ·
+                <button type="button" class="text-btn" (click)="useDifferentEmail()">Use a different email</button>
+              </p>
+            </form>
+          } @else if (!isEditingProfile()) {
+            <div class="profile-row">
+              <span class="profile-label">Name</span>
+              <span class="profile-value">{{ user.name }}</span>
+            </div>
+            <div class="profile-row">
+              <span class="profile-label">Email</span>
+              <span class="profile-value">
+                {{ user.email }}
+                <button type="button" class="text-btn" (click)="startEmailChange()">Change</button>
+              </span>
+            </div>
+          } @else {
+            <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" [(ngModel)]="formName" required />
+
+              @if (profileError()) {
+                <p class="form-error">{{ profileError() }}</p>
+              }
+
+              <div class="profile-actions">
+                <button type="button" class="btn btn-outline" (click)="cancelEditProfile()">Cancel</button>
+                <button type="submit" class="btn" [disabled]="profileForm.invalid || isSavingProfile()">
+                  {{ isSavingProfile() ? 'Saving...' : 'Save Changes' }}
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      }
+
+      @if (authService.currentUser()) {
+        <div class="profile-card" [class.editing]="isChangingPassword()">
+          <div class="profile-card-header">
+            <h2>Password</h2>
+          </div>
+
+          @if (!isChangingPassword()) {
+            <div class="quick-link-list">
+              <button type="button" class="quick-link" (click)="startChangePassword()">
+                <span class="quick-link-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="10.5" width="16" height="10" rx="2"/>
+                    <path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/>
+                  </svg>
+                </span>
+                <span class="quick-link-label">Change Password</span>
+                <svg class="quick-link-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"/>
+                </svg>
+              </button>
+            </div>
+          } @else {
+            <form (ngSubmit)="savePassword()" #passwordForm="ngForm">
+              <label for="currentPassword">Current Password</label>
+              <div class="password-field">
+                <input
+                  id="currentPassword"
+                  name="currentPassword"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  [(ngModel)]="currentPassword"
+                  required
+                  autocomplete="current-password"
+                />
+                <button type="button" class="toggle-password" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'" (click)="togglePassword()">
+                  @if (showPassword()) {
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                      <line x1="3" y1="21" x2="21" y2="3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+
+              <label for="newPassword">New Password</label>
+              <div class="password-field">
+                <input
+                  id="newPassword"
+                  name="newPassword"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  [(ngModel)]="newPassword"
+                  required
+                  minlength="8"
+                  autocomplete="new-password"
+                />
+                <button type="button" class="toggle-password" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'" (click)="togglePassword()">
+                  @if (showPassword()) {
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                      <line x1="3" y1="21" x2="21" y2="3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+              @if (newPasswordStrength) {
+                <div class="password-strength" [class]="newPasswordStrength">
+                  <span class="password-strength-bar"></span>
+                  <span class="password-strength-bar"></span>
+                  <span class="password-strength-bar"></span>
+                  <span class="password-strength-label">{{ newPasswordStrength }}</span>
+                </div>
+              }
+
+              <label for="confirmNewPassword">Confirm New Password</label>
+              <input
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                [type]="showPassword() ? 'text' : 'password'"
+                [(ngModel)]="confirmNewPassword"
+                required
+                autocomplete="new-password"
+              />
+              @if (newPasswordsMismatch) {
+                <p class="field-hint error">Passwords don't match.</p>
+              }
+
+              @if (passwordError()) {
+                <p class="form-error">{{ passwordError() }}</p>
+              }
+
+              <div class="profile-actions">
+                <button type="button" class="btn btn-outline" (click)="cancelChangePassword()">Cancel</button>
+                <button
+                  type="submit"
+                  class="btn"
+                  [disabled]="passwordForm.invalid || newPasswordsMismatch || isSavingPassword()"
+                >
+                  {{ isSavingPassword() ? 'Saving...' : 'Update Password' }}
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+
+        @if (!authService.isAdmin()) {
+          <app-delete-account-card />
+        }
+      }
+  </div>
+</section>

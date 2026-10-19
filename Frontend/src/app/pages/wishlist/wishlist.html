@@ -1,0 +1,29 @@
+<section class="container wishlist-page">
+  <h1>Your Wishlist</h1>
+
+  @if (wishlistService.isLoading()) {
+    <span class="visually-hidden" role="status">Loading wishlist...</span>
+    <div class="wishlist-grid">
+      @for (n of [1, 2, 3, 4]; track n) {
+        <app-product-card-skeleton></app-product-card-skeleton>
+      }
+    </div>
+  } @else if (wishlistService.errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ wishlistService.errorMessage() }}</p>
+      <button type="button" class="btn" (click)="wishlistService.loadWishlist()">Retry</button>
+    </div>
+  } @else if (wishlistService.items().length === 0) {
+    <div class="state-message state-message--empty">
+      <h2>Your Wishlist is Empty</h2>
+      <p>Explore crystals and save your favorites for later.</p>
+      <a routerLink="/products" class="btn">Shop Crystals</a>
+    </div>
+  } @else {
+    <div class="wishlist-grid">
+      @for (item of wishlistService.items(); track item.productId) {
+        <app-product-card [product]="toProduct(item)" variant="wishlist"></app-product-card>
+      }
+    </div>
+  }
+</section>

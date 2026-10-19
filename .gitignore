@@ -1,0 +1,36 @@
+# Visual Studio workspace files
+.vs/
+**/.vs/
+*.user
+*.suo
+
+# .NET build output
+**/[Bb]in/
+**/[Oo]bj/
+TestResults/
+
+# Angular and Node.js generated files
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.angular/
+Frontend/coverage/
+Frontend/playwright-report/
+Frontend/test-results/
+Frontend/.claude/
+
+# Local environment configuration and secrets
+**/.env
+**/.env.*
+!**/.env.example
+Zodiac Crystal/Zodiac Crystal/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+
+# Local database backups and logs
+*.bak
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

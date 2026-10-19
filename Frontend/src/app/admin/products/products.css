@@ -1,0 +1,72 @@
+/* Page-specific tweaks only - shared table/form styles live in admin-shared.css */
+
+/* Bulk actions */
+.cell-select { width: 2.25rem; }
+.cell-select input { width: 1rem; height: 1rem; cursor: pointer; }
+tr.row-selected td { background: #faf6ec; }
+
+.bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e8dfcc;
+  border-radius: 12px;
+  background: #fdfaf3;
+}
+.bulk-bar-info, .bulk-bar-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.bulk-bar .form-error { flex-basis: 100%; margin: 0; }
+.bulk-value { width: 7.5rem; }
+
+/* Same look as the filter bar's controls. */
+.bulk-bar select,
+.bulk-bar input[type="number"] {
+  padding: 0.65rem 0.95rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background-color: #ffffff;
+  color: var(--color-ink);
+}
+.bulk-bar input[type="number"] { width: 100%; box-sizing: border-box; min-width: 0; }
+.bulk-bar select:focus-visible,
+.bulk-bar input[type="number"]:focus-visible {
+  outline: none;
+  border-color: #cfc6b3;
+  box-shadow: 0 0 0 4px rgba(90, 122, 100, 0.14);
+}
+.bulk-bar .clear-filters {
+  background: none;
+  border: none;
+  padding: 0.6rem 0.25rem;
+  color: var(--color-brand);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.bulk-bar .clear-filters:hover { text-decoration: underline; }
+
+.bulk-preview {
+  margin: auto;
+  width: 100%;
+  max-width: 820px;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 14px;
+  animation: modal-pop 0.18s ease;
+}
+.bulk-summary { margin: 0.25rem 0 1rem; }
+.bulk-preview-table { max-height: 55vh; overflow-y: auto; }
+.bulk-row-muted td { opacity: 0.55; }
+.bulk-skip { color: #b4532a; }
+
+@media (max-width: 640px) {
+  .bulk-bar-controls { width: 100%; }
+  .bulk-bar-controls > * { flex: 1 1 100%; }
+  .bulk-value { width: 100%; }
+}

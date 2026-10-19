@@ -1,0 +1,34 @@
+<div class="danger-card">
+  <h2>Delete Account</h2>
+  <p class="danger-text">
+    Permanently delete your account. Your saved addresses, wishlist and notifications are removed.
+    Past order records are kept for accounting only.
+  </p>
+
+  @if (!isOpen()) {
+    <button type="button" class="btn btn-cancel" (click)="open()">Delete my account</button>
+  } @else {
+    <form (ngSubmit)="deleteAccount()" #deleteForm="ngForm">
+      <label for="deletePassword">Enter your password to confirm</label>
+      <input
+        id="deletePassword"
+        name="deletePassword"
+        type="password"
+        [(ngModel)]="password"
+        required
+        autocomplete="current-password"
+      />
+
+      @if (errorMessage()) {
+        <p class="form-error">{{ errorMessage() }}</p>
+      }
+
+      <div class="danger-actions">
+        <button type="button" class="btn btn-outline" (click)="cancel()" [disabled]="isDeleting()">Cancel</button>
+        <button type="submit" class="btn btn-danger" [disabled]="deleteForm.invalid || isDeleting()">
+          {{ isDeleting() ? 'Deleting...' : 'Delete Permanently' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

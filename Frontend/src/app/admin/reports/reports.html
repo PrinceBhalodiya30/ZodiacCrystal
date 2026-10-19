@@ -1,0 +1,284 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-reports-page">
+  <div class="page-header">
+    <h1>Sales Reports</h1>
+    <button type="button" class="btn btn-outline" [disabled]="isExporting()" [title]="'Exports the report for ' + exportPeriodLabel()" (click)="exportCsv()">
+      {{ isExporting() ? 'Exporting...' : 'Export (' + exportPeriodLabel() + ')' }}
+    </button>
+  </div>
+
+  <div class="filter-bar report-filter-bar">
+    <div class="preset-buttons">
+      <button type="button" class="btn-outline" [class.active]="preset() === 'today'" (click)="onPresetChange('today')">Today</button>
+      <button type="button" class="btn-outline" [class.active]="preset() === 'last7'" (click)="onPresetChange('last7')">Last 7 Days</button>
+      <button type="button" class="btn-outline" [class.active]="preset() === 'last30'" (click)="onPresetChange('last30')">Last 30 Days</button>
+      <button type="button" class="btn-outline" [class.active]="preset() === 'thisMonth'" (click)="onPresetChange('thisMonth')">This Month</button>
+      <button type="button" class="btn-outline" [class.active]="preset() === 'lastMonth'" (click)="onPresetChange('lastMonth')">Last Month</button>
+      <button type="button" class="btn-outline" [class.active]="preset() === 'thisYear'" (click)="onPresetChange('thisYear')">This Year</button>
+      <button type="button" class="btn-outline" [class.active]="preset() === 'custom'" (click)="onPresetChange('custom')">Custom</button>
+    </div>
+
+    @if (preset() === 'custom') {
+      <div class="custom-range">
+        <input type="date" [(ngModel)]="customFrom" name="customFrom" [max]="todayKey" aria-label="From date" />
+        <span>to</span>
+        <input type="date" [(ngModel)]="customTo" name="customTo" [min]="customFrom" [max]="todayKey" aria-label="To date" />
+        <button type="button" class="btn" [disabled]="!customFrom || !customTo || customRangeInvalid" (click)="applyCustomRange()">Apply</button>
+        @if (customRangeInvalid) {
+          <span class="range-error" role="alert">The start date must be on or before the end date.</span>
+        }
+      </div>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <app-spinner label="Loading reports..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadReports()">Retry</button>
+    </div>
+  } @else {
+    @if (summary(); as s) {
+      <app-report-kpis [summary]="s" [previousSummary]="previousSummary()" [previousLabel]="previousPeriodLabel()"></app-report-kpis>
+    }
+
+    <div class="dashboard-panel sales-panel">
+      <div class="sales-panel-head">
+        <div>
+          <h2>Sales Over Time</h2>
+          <p class="sales-panel-sub">Net sales {{ granularityLabel() }} · compared with {{ previousPeriodLabel() }}</p>
+        </div>
+      </div>
+
+      <app-area-chart
+        [data]="salesChartData()"
+        [previous]="previousChartValues()"
+        [previousLabel]="'Previous period'"
+        valuePrefix="₹"
+        emptyMessage="No sales in this date range."
+      ></app-area-chart>
+
+      <p class="sales-footnote">
+        Net sales = order totals after discounts, including shipping, excluding cancelled and refunded orders.
+      </p>
+    </div>
+
+    <div class="rank-head">
+      <h2 class="stat-group-title">Best Sellers</h2>
+      <div class="segmented" role="group" aria-label="Rank by">
+        <button type="button" [class.active]="rankMetric() === 'revenue'" [attr.aria-pressed]="rankMetric() === 'revenue'" (click)="setRankMetric('revenue')">Revenue</button>
+        <button type="button" [class.active]="rankMetric() === 'units'" [attr.aria-pressed]="rankMetric() === 'units'" (click)="setRankMetric('units')">Units</button>
+      </div>
+    </div>
+
+    <div class="best-sellers-grid">
+      <div class="dashboard-panel">
+        <h2>Top-Selling Products</h2>
+        <p class="panel-sub">
+          By {{ rankMetric() === 'revenue' ? 'revenue' : 'units sold' }}@if (hasPreviousPeriod()) {, compared with {{ previousPeriodLabel() }}}
+        </p>
+
+        @if (leaderboard().length === 0) {
+          <p class="panel-empty">No product sales in this date range.</p>
+        } @else {
+          <ol class="leaderboard">
+            @for (row of leaderboard(); track row.productId) {
+              <li class="leaderboard-row" [class.is-top]="row.rank <= 3">
+                <span class="lb-rank">{{ row.rank }}</span>
+                <span class="lb-name" [title]="row.name">{{ row.name }}</span>
+                <span class="lb-units">{{ row.units | number }} sold</span>
+                <span class="lb-revenue">{{ row.revenue | inr:0 }}</span>
+                @if (row.movement; as m) {
+                  @switch (m.kind) {
+                    @case ('up') { <span class="lb-move up" [attr.aria-label]="'Up ' + $any(m).places + ' places'">▲ {{ $any(m).places }}</span> }
+                    @case ('down') { <span class="lb-move down" [attr.aria-label]="'Down ' + $any(m).places + ' places'">▼ {{ $any(m).places }}</span> }
+                    @case ('new') { <span class="lb-move new" [title]="'No sales in ' + previousPeriodLabel()">New</span> }
+                    @default { <span class="lb-move same" aria-label="No change">–</span> }
+                  }
+                }
+              </li>
+            }
+          </ol>
+        }
+      </div>
+
+      <div class="dashboard-panel">
+        <h2>Sales by Category</h2>
+        <p class="panel-sub">Share of {{ rankMetric() === 'revenue' ? 'revenue' : 'units sold' }}</p>
+
+        @if (donutSlices().length === 0) {
+          <p class="panel-empty">No category sales in this date range.</p>
+        } @else {
+          <div class="donut-wrap">
+            <svg class="donut" viewBox="0 0 42 42" role="img" aria-label="Sales by category">
+              <circle class="donut-track" cx="21" cy="21" r="15.915" />
+              @for (slice of donutSlices(); track slice.label) {
+                <circle
+                  class="donut-slice"
+                  cx="21" cy="21" r="15.915"
+                  [attr.stroke]="slice.color"
+                  [attr.stroke-dasharray]="slice.dash"
+                  [attr.stroke-dashoffset]="slice.offset"
+                >
+                  <title>{{ slice.label }}: {{ slice.valueText }} ({{ slice.percent | number:'1.0-0' }}%)</title>
+                </circle>
+              }
+              <text class="donut-total" x="21" y="21">{{ donutTotalText() }}</text>
+              <text class="donut-caption" x="21" y="26">{{ rankMetric() === 'revenue' ? 'total' : 'units' }}</text>
+            </svg>
+
+            <ul class="donut-legend">
+              @for (slice of donutSlices(); track slice.label) {
+                <li>
+                  <span class="legend-dot" [style.background-color]="slice.color"></span>
+                  <span class="legend-name" [title]="slice.label">{{ slice.label }}</span>
+                  <span class="legend-pct">{{ slice.percent | number:'1.0-0' }}%</span>
+                  <span class="legend-value">{{ slice.valueText }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+
+    <p class="sales-footnote">
+      Product and category revenue is the item price × quantity, before order-level coupon discounts and shipping,
+      so it can be a little higher than Net sales above.
+    </p>
+
+    <div class="rank-head">
+      <h2 class="stat-group-title">More insights</h2>
+    </div>
+
+    <div class="insights-grid">
+      <div class="dashboard-panel">
+        <h2>Sales by Zodiac Sign</h2>
+        <p class="panel-sub">By {{ rankMetric() === 'revenue' ? 'revenue' : 'units sold' }} · a product linked to several signs counts for each</p>
+
+        @if (insightsLoading()) {
+          <p class="panel-empty">Loading…</p>
+        } @else if (zodiacRows() === null) {
+          <p class="panel-empty panel-error">Couldn't load zodiac sales.</p>
+        } @else if (!zodiacHasSales()) {
+          <p class="panel-empty">No zodiac product sales in this date range.</p>
+        } @else {
+          <ul class="zodiac-list">
+            @for (z of zodiacRows(); track z.zodiacId) {
+              <li [class.is-zero]="z.quantitySold === 0">
+                <span class="zodiac-symbol" aria-hidden="true">{{ z.symbol || '·' }}</span>
+                <span class="zodiac-name">{{ z.zodiacName }}</span>
+                <span class="zodiac-bar"><span [style.width.%]="z.width"></span></span>
+                <span class="zodiac-value">
+                  {{ rankMetric() === 'revenue' ? (z.revenue | inr:0) : (z.quantitySold | number) + ' sold' }}
+                </span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div class="dashboard-panel">
+        <h2>Coupon Performance</h2>
+        <p class="panel-sub">Orders that used each coupon (cancelled and refunded orders excluded)</p>
+
+        @if (insightsLoading()) {
+          <p class="panel-empty">Loading…</p>
+        } @else if (couponPerformance() === null) {
+          <p class="panel-empty panel-error">Couldn't load coupon performance.</p>
+        } @else if (couponPerformance()!.length === 0) {
+          <p class="panel-empty">No coupons were used in this date range.</p>
+        } @else {
+          <div class="table-wrap">
+            <table class="num-table">
+              <thead>
+                <tr>
+                  <th>Coupon</th>
+                  <th class="num">Orders</th>
+                  <th class="num">Discount given</th>
+                  <th class="num">Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of couponPerformance(); track c.code) {
+                  <tr>
+                    <td>
+                      <span class="coupon-code">{{ c.code }}</span>
+                      @if (!c.isActive) {
+                        <span class="coupon-inactive">inactive</span>
+                      }
+                    </td>
+                    <td class="num">{{ c.orderCount | number }}</td>
+                    <td class="num">{{ c.discountGiven | inr }}</td>
+                    <td class="num">{{ c.sales | inr }}</td>
+                  </tr>
+                }
+              </tbody>
+              @if (couponPerformance()!.length > 1) {
+                <tfoot>
+                  <tr>
+                    <td>Total</td>
+                    <td class="num">{{ couponTotals().orders | number }}</td>
+                    <td class="num">{{ couponTotals().discount | inr }}</td>
+                    <td class="num">{{ couponTotals().sales | inr }}</td>
+                  </tr>
+                </tfoot>
+              }
+            </table>
+          </div>
+        }
+      </div>
+
+      <div class="dashboard-panel insights-wide">
+        <h2>Products Not Selling</h2>
+        <p class="panel-sub">
+          Active products with no sales in this date range, most stock first
+          @if (unsoldProducts(); as u) {
+            @if (u.totalCount > u.items.length) { · showing {{ u.items.length }} of {{ u.totalCount }} }
+          }
+        </p>
+
+        @if (insightsLoading()) {
+          <p class="panel-empty">Loading…</p>
+        } @else if (unsoldProducts() === null) {
+          <p class="panel-empty panel-error">Couldn't load unsold products.</p>
+        } @else if (unsoldProducts()!.items.length === 0) {
+          <p class="panel-empty">Every active product sold at least once in this date range.</p>
+        } @else {
+          <div class="table-wrap">
+            <table class="num-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>SKU</th>
+                  <th>Category</th>
+                  <th class="num">Price</th>
+                  <th class="num">In stock</th>
+                  <th class="num">Stock value</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of unsoldProducts()!.items; track p.productId) {
+                  <tr>
+                    <td class="cell-name" [title]="p.productName">{{ p.productName }}</td>
+                    <td class="cell-muted">{{ p.sku }}</td>
+                    <td class="cell-muted">{{ p.categoryName }}</td>
+                    <td class="num">{{ p.price | inr }}</td>
+                    <td class="num">{{ p.stockQuantity | number }}</td>
+                    <td class="num">{{ p.price * p.stockQuantity | inr }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (loadedRange(); as range) {
+      <app-report-operations [from]="range.from" [to]="range.to" [refresh]="refreshTick()"></app-report-operations>
+    }
+  }
+</section>

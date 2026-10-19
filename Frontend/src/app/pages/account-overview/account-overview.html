@@ -1,0 +1,126 @@
+<section class="account-overview">
+  <header class="overview-header">
+    <h1>{{ greeting() }}{{ firstName() ? ', ' + firstName() : '' }}</h1>
+    <p>Here's what's happening with your account.</p>
+  </header>
+
+  @if (authService.isAdmin()) {
+    <div class="overview-card admin-note">
+      <p>You're signed in as an admin. Orders, addresses and wishlist are for customer accounts.</p>
+      <div class="admin-note-actions">
+        <a class="btn" routerLink="/admin">Go to Admin Panel</a>
+        <a class="btn btn-outline" routerLink="/profile/settings">Account Settings</a>
+      </div>
+    </div>
+  } @else {
+    <!-- Quick stats -->
+    <div class="stat-tiles">
+      <a class="stat-tile" routerLink="/orders">
+        <span class="stat-tile-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        </span>
+        <span class="stat-tile-value">{{ isLoadingOrders() ? '—' : orders().length }}</span>
+        <span class="stat-tile-label">Orders placed</span>
+      </a>
+      <a class="stat-tile" routerLink="/orders">
+        <span class="stat-tile-icon stat-tile-icon--gold" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 8h6M9 11.5h6M13.5 8c1.5 0 2.5 1.2 2.5 2.5s-1 2.5-2.5 2.5H9l5 4"/></svg>
+        </span>
+        <span class="stat-tile-value">{{ isLoadingOrders() ? '—' : (totalSpent() | inr:0) }}</span>
+        <span class="stat-tile-label">Total spent</span>
+      </a>
+      <a class="stat-tile" routerLink="/wishlist">
+        <span class="stat-tile-icon stat-tile-icon--rose" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
+        </span>
+        <span class="stat-tile-value">{{ wishlistService.count() }}</span>
+        <span class="stat-tile-label">In your wishlist</span>
+      </a>
+      <a class="stat-tile" routerLink="/profile/addresses">
+        <span class="stat-tile-icon stat-tile-icon--teal" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5.5-8 12-8 12s-8-6.5-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <span class="stat-tile-value">{{ addressCount() ?? '—' }}</span>
+        <span class="stat-tile-label">Saved addresses</span>
+      </a>
+    </div>
+
+    <!-- Latest order -->
+    @if (isLoadingOrders()) {
+      <span class="visually-hidden" role="status">Loading your orders...</span>
+      <div class="overview-card" aria-hidden="true">
+        <span class="skeleton skeleton-line" style="width: 40%"></span>
+        <span class="skeleton" style="height: 3.5rem; margin-top: 1rem"></span>
+      </div>
+    } @else if (ordersError()) {
+      <div class="state-message state-message--error">
+        <p>We couldn't load your orders.</p>
+        <button type="button" class="btn" (click)="loadOrders()">Retry</button>
+      </div>
+    } @else if (latestOrder(); as order) {
+      <div class="overview-card latest-order">
+        <div class="latest-order-head">
+          <div>
+            <p class="overview-eyebrow">Latest order</p>
+            <h2>{{ orderTitle(order) }}</h2>
+            <p class="latest-order-meta">
+              {{ order.orderDate | date:'dd MMM yyyy' }} · {{ order.totalAmount | inr }}
+              · {{ order.paymentMethod === 'Card' ? 'Card' : 'Cash on Delivery' }}
+            </p>
+          </div>
+          <span class="order-status" [class]="'order-status ' + order.status.toLowerCase()">{{ order.status }}</span>
+        </div>
+
+        @if (order.status !== 'Cancelled') {
+          <ol class="progress" aria-label="Order progress">
+            @for (step of progressFor(order); track step.label) {
+              <li [class]="'progress-step ' + step.state" [attr.aria-current]="step.state === 'current' ? 'step' : null">
+                <span class="progress-dot" aria-hidden="true">
+                  @if (step.state === 'done') {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 12.5 4 4L18 8"/></svg>
+                  }
+                </span>
+                <span class="progress-label">{{ step.label }}</span>
+              </li>
+            }
+          </ol>
+        }
+
+        <p class="latest-order-message">{{ statusMessage(order) }}</p>
+
+        <a class="btn" [routerLink]="['/orders', order.orderId]">View Order Details</a>
+      </div>
+
+      <!-- The few before it -->
+      @if (recentOrders().length > 0) {
+        <div class="overview-card">
+          <div class="overview-card-head">
+            <h2>Earlier orders</h2>
+            <a class="text-link" routerLink="/orders">View all →</a>
+          </div>
+          <ul class="recent-list">
+            @for (o of recentOrders(); track o.orderId) {
+              <li>
+                <a class="recent-row" [routerLink]="['/orders', o.orderId]">
+                  <span class="recent-id">{{ orderTitle(o) }}</span>
+                  <span class="recent-date">{{ o.orderDate | date:'dd MMM yyyy' }}</span>
+                  <span class="order-status" [class]="'order-status ' + o.status.toLowerCase()">{{ o.status }}</span>
+                  <span class="recent-amount">{{ o.totalAmount | inr }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    } @else {
+      <div class="overview-card empty-orders">
+        <h2>No orders yet</h2>
+        <p>Find the crystal that matches your zodiac sign, or browse the full collection.</p>
+        <div class="empty-orders-actions">
+          <a class="btn" routerLink="/zodiac">Shop by Zodiac</a>
+          <a class="btn btn-outline" routerLink="/products">Browse All</a>
+        </div>
+      </div>
+    }
+  }
+</section>

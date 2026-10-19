@@ -1,0 +1,116 @@
+<section class="container products-page">
+  <h1>Our Crystals</h1>
+
+  <div class="filter-bar">
+    <div class="search-box">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search crystals..."
+        autocomplete="off"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+        (focus)="onSearchFocus()"
+        (blur)="onSearchBlur()"
+        name="searchTerm"
+      />
+      @if (showSuggestions() && suggestions().length > 0) {
+        <ul class="search-suggestions">
+          @for (product of suggestions(); track product.productId) {
+            <li>
+              <button type="button" class="search-suggestion" (mousedown)="selectSuggestion(product)">
+                <span class="search-suggestion-name">{{ product.name }}</span>
+                <span class="search-suggestion-price">{{ product.price | inr }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+    <select [ngModel]="selectedCategoryId()" (ngModelChange)="onCategoryChange($event)" name="categoryFilter">
+      <option [ngValue]="null">All Categories</option>
+      @for (category of categories(); track category.categoryId) {
+        <option [ngValue]="category.categoryId">{{ category.name }}</option>
+      }
+    </select>
+    <select [ngModel]="selectedZodiacId()" (ngModelChange)="onZodiacChange($event)" name="zodiacFilter">
+      <option [ngValue]="null">All Zodiac Signs</option>
+      @for (zodiac of zodiacs(); track zodiac.zodiacId) {
+        <option [ngValue]="zodiac.zodiacId">{{ zodiac.name }}</option>
+      }
+    </select>
+    <select [ngModel]="minPrice() === null && maxPrice() === null ? '' : minPrice() + '-' + (maxPrice() ?? '')" (ngModelChange)="onPriceRangeChange($event)" name="priceRangeFilter">
+      <option value="">Any Price</option>
+      <option value="0-500">Under &#8377;500</option>
+      <option value="500-1000">&#8377;500 - &#8377;1000</option>
+      <option value="1000-2000">&#8377;1000 - &#8377;2000</option>
+      <option value="2000-">Above &#8377;2000</option>
+    </select>
+    <label class="checkbox-filter">
+      <input
+        type="checkbox"
+        [ngModel]="inStockOnly()"
+        (ngModelChange)="onInStockOnlyChange($event)"
+        name="inStockOnly"
+      />
+      In stock only
+    </label>
+    <select [ngModel]="sortBy()" (ngModelChange)="onSortChange($event)" name="sortBy" class="sort-select">
+      <option value="">Sort: Featured</option>
+      <option value="newest">Newest</option>
+      <option value="price_asc">Price: Low to High</option>
+      <option value="price_desc">Price: High to Low</option>
+      <option value="rating">Avg. Customer Rating</option>
+    </select>
+    @if (hasActiveFilters()) {
+      <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (subcategoryChips(); as chips) {
+    <nav class="subcategory-chips" aria-label="Sub-categories">
+      <button
+        type="button"
+        class="subcategory-chip"
+        [class.active]="selectedCategoryId() === chips.parent.categoryId"
+        (click)="onCategoryChange(chips.parent.categoryId)"
+      >All {{ chips.parent.name }}</button>
+      @for (child of chips.children; track child.categoryId) {
+        <button
+          type="button"
+          class="subcategory-chip"
+          [class.active]="selectedCategoryId() === child.categoryId"
+          (click)="onCategoryChange(child.categoryId)"
+        >{{ child.name }}</button>
+      }
+    </nav>
+  }
+
+  @if (isLoading()) {
+    <div class="product-grid">
+      @for (row of skeletonRows; track $index) {
+        <app-product-card-skeleton></app-product-card-skeleton>
+      }
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadProducts()">Retry</button>
+    </div>
+  } @else if (products().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>No products match your search.</p>
+      @if (hasActiveFilters()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="product-grid">
+      @for (product of products(); track product.productId) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+</section>

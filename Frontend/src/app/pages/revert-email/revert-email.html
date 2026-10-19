@@ -1,0 +1,52 @@
+<div class="auth-page-wrap">
+<div class="auth-page">
+  <div class="auth-brand-panel">
+    <div class="brand-content">
+      <a routerLink="/" class="brand-logo">
+        <img src="logo-white.svg?v=2" alt="" class="brand-logo-icon" aria-hidden="true" />
+        Zodiac Crystals
+      </a>
+      <h2>Let's Secure Your Account.</h2>
+      <p>Put your email back and sign out everyone who has access.</p>
+
+      <div class="brand-photo-wrap">
+        <div class="brand-photo">
+          <img [src]="heroImageUrl" alt="" imgFallback />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-form-panel">
+    <div class="auth-form-wrap">
+      <a routerLink="/" class="mobile-brand">
+        <img src="logo.svg?v=2" alt="" class="mobile-brand-icon" aria-hidden="true" />
+        Zodiac Crystals
+      </a>
+
+      @if (state() === 'confirm') {
+        <h1>Didn't change your email?</h1>
+        <p class="auth-subtitle">
+          We'll put your previous email back on your account and sign out every device.
+          You'll then set a new password, since whoever made the change may know your current one.
+        </p>
+
+        @if (errorMessage()) {
+          <p class="form-error" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <button type="button" class="btn" [disabled]="!hasToken || isSubmitting()" (click)="restore()">
+          {{ isSubmitting() ? 'Restoring...' : 'Restore My Email' }}
+        </button>
+      } @else {
+        <h1>Your email is restored</h1>
+        <p class="auth-subtitle">{{ message() }}</p>
+
+        <a class="btn" routerLink="/forgot-password" [queryParams]="{ email: restoredEmail() }">Set a New Password</a>
+      }
+
+      <p class="auth-switch">Need help? Email <a href="mailto:support@zodiaccrystals.com">support&#64;zodiaccrystals.com</a></p>
+    </div>
+  </div>
+</div>
+</div>

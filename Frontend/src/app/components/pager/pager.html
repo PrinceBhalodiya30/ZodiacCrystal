@@ -1,0 +1,37 @@
+@if (totalCount || totalPages > 1) {
+  <nav class="pager" aria-label="Pagination">
+    @if (totalCount) {
+      <span class="pager-range">Showing <strong>{{ rangeStart }}–{{ rangeEnd }}</strong> of <strong>{{ totalCount }}</strong></span>
+    }
+    @if (totalPages > 1) {
+      <ul class="pager-pages">
+        <li>
+          <button type="button" class="pager-btn pager-arrow" [disabled]="page === 1" (click)="goTo(page - 1)" aria-label="Previous page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+          </button>
+        </li>
+        @for (item of pageItems; track $index) {
+          <li>
+            @if (item === 'gap') {
+              <span class="pager-gap" aria-hidden="true">…</span>
+            } @else {
+              <button
+                type="button"
+                class="pager-btn"
+                [class.active]="item === page"
+                [attr.aria-current]="item === page ? 'page' : null"
+                [attr.aria-label]="'Page ' + item"
+                (click)="goTo(item)"
+              >{{ item }}</button>
+            }
+          </li>
+        }
+        <li>
+          <button type="button" class="pager-btn pager-arrow" [disabled]="page === totalPages" (click)="goTo(page + 1)" aria-label="Next page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+        </li>
+      </ul>
+    }
+  </nav>
+}

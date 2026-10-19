@@ -1,0 +1,260 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-reviews-page">
+  <div class="page-header">
+    <h1>Manage Reviews</h1>
+    <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
+    [title]="'Exports the ' + totalCount() + ' review(s) matching the current filters'"
+    (click)="exportCsv()">
+      {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
+    </button>
+  </div>
+
+  <div class="filter-bar reviews-filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by product, reviewer, or comment..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="reviewSearch"
+    />
+
+    <select
+      class="rating-filter"
+      [ngModel]="minRating() ?? ''"
+      (ngModelChange)="onMinRatingChange($event)"
+      name="minRating"
+    >
+      <option value="">All ratings</option>
+      <option value="5">5 stars &amp; up</option>
+      <option value="4">4 stars &amp; up</option>
+      <option value="3">3 stars &amp; up</option>
+      <option value="2">2 stars &amp; up</option>
+      <option value="1">1 star &amp; up</option>
+    </select>
+
+    <select
+      class="rating-filter"
+      [ngModel]="statusFilter() ?? ''"
+      (ngModelChange)="onStatusFilterChange($event)"
+      name="statusFilter"
+    >
+      <option value="">All statuses</option>
+      @for (status of statuses; track status) {
+        <option [value]="status">{{ status }}</option>
+      }
+    </select>
+
+    <select
+      class="rating-filter"
+      [ngModel]="photoFilter()"
+      (ngModelChange)="onPhotoFilterChange($event)"
+      name="photoFilter"
+    >
+      <option value="">All reviews</option>
+      <option value="any">With photos</option>
+      <option value="pending">Photos awaiting approval</option>
+    </select>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (selectedIds().size > 0) {
+    <div class="bulk-action-bar">
+      <span>{{ selectedIds().size }} selected</span>
+
+      <select class="rating-filter" [ngModel]="bulkStatus()" (ngModelChange)="bulkStatus.set($event)" name="bulkStatus">
+        <option value="">Set status to...</option>
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+
+      <button type="button" class="btn" [disabled]="!bulkStatus() || isBulkUpdating()" (click)="applyBulkStatus()">
+        Apply
+      </button>
+    </div>
+  }
+
+  @if (isLoading() && reviews().length === 0) {
+    <app-spinner label="Loading reviews..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadReviews()">Retry</button>
+    </div>
+  } @else if (reviews().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>No reviews found.</p>
+      @if (hasFilters()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap" [class.is-refreshing]="isLoading()">
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" [checked]="isAllSelected()" (change)="toggleSelectAll()" aria-label="Select all reviews" />
+            </th>
+            <th>Product</th>
+            <th>Reviewer</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (review of reviews(); track review.reviewId) {
+            <tr [class.has-photos]="review.images.length > 0">
+              <td class="cell-media">
+                <input
+                  type="checkbox"
+                  [checked]="isSelected(review)"
+                  (change)="toggleSelected(review)"
+                  [attr.aria-label]="'Select review by ' + review.userName"
+                />
+              </td>
+              <td data-label="Product">{{ review.productName }}</td>
+              <td data-label="Reviewer">{{ review.userName }}</td>
+              <td data-label="Rating">
+                <span class="stars" [attr.aria-label]="review.rating + ' out of 5 stars'">{{ getStars(review.rating) }}</span>
+              </td>
+              <td data-label="Comment">
+                <span class="comment-cell">{{ review.comment || '—' }}</span>
+                @if (review.images.length) {
+                  <span class="photo-count-hint">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+                    {{ review.images.length }} photo{{ review.images.length === 1 ? '' : 's' }}
+                  </span>
+                }
+                @if (review.adminReply) {
+                  <div class="admin-reply-preview">
+                    <strong>Reply:</strong> {{ review.adminReply }}
+                  </div>
+                }
+              </td>
+              <td data-label="Date">{{ review.createdAt | date:'dd MMM yyyy' }}</td>
+              <td data-label="Status">
+                <select
+                  #statusSelect
+                  class="status-select"
+                  [ngModel]="review.status"
+                  [class]="review.status.toLowerCase()"
+                  [disabled]="updatingStatusId() === review.reviewId"
+                  (ngModelChange)="updateStatus(review, $event, statusSelect)"
+                >
+                  @for (status of statuses; track status) {
+                    <option [value]="status">{{ status }}</option>
+                  }
+                </select>
+              </td>
+              <td class="cell-actions">
+                <div class="row-actions">
+                  <button type="button" class="chip-btn" (click)="startReply(review)">
+                    Reply
+                  </button>
+                  <button
+                    type="button"
+                    class="chip-btn danger"
+                    [disabled]="deletingReviewId() === review.reviewId"
+                    (click)="deleteReview(review)"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+            @if (review.images.length) {
+              <tr class="photo-row">
+                <td colspan="8">
+                  <div class="review-photos-admin">
+                    <div class="photo-pending-bar">
+                      <span class="photo-row-title">Customer photos · {{ review.userName }}</span>
+                      @if (pendingPhotoCount(review) > 0) {
+                        <span class="photo-pending-note">{{ pendingPhotoCount(review) }} awaiting approval</span>
+                        @if (pendingPhotoCount(review) > 1) {
+                          <button type="button" class="photo-approve-all" [disabled]="updatingPhotoId() !== null" (click)="approveAllPhotos(review)">Approve all</button>
+                        }
+                      }
+                    </div>
+                    <div class="review-photo-grid">
+                      @for (photo of review.images; track photo.reviewImageId; let i = $index) {
+                        <div [class]="'review-photo-card ' + photo.status.toLowerCase()" [class.is-busy]="updatingPhotoId() === photo.reviewImageId">
+                          <button type="button" class="review-photo-open" [attr.aria-label]="'View photo ' + (i + 1) + ' full size'" (click)="openPhotos(review, i)">
+                            <img [src]="photo.imageUrl" [alt]="'Photo ' + (i + 1) + ' by ' + review.userName" loading="lazy" />
+                            <span class="review-photo-zoom" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2M11 8.5v5M8.5 11h5"/></svg>
+                            </span>
+                          </button>
+
+                          <div class="review-photo-side">
+                            <span class="review-photo-badge">{{ photo.status }}</span>
+                            @if (photo.status === 'Pending') {
+                              <button type="button" class="photo-action approve" [disabled]="updatingPhotoId() !== null" (click)="setPhotoStatus(review, photo, 'Approved')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+                                Approve
+                              </button>
+                              <button type="button" class="photo-action reject" [disabled]="updatingPhotoId() !== null" (click)="setPhotoStatus(review, photo, 'Rejected')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
+                                Reject
+                              </button>
+                            } @else {
+                              <span class="review-photo-note">{{ photo.status === 'Approved' ? 'Visible on the product page' : 'Hidden from customers' }}</span>
+                              <button
+                                type="button"
+                                class="photo-action-undo"
+                                [disabled]="updatingPhotoId() !== null"
+                                (click)="setPhotoStatus(review, photo, photo.status === 'Approved' ? 'Rejected' : 'Approved')"
+                              >{{ photo.status === 'Approved' ? 'Reject instead' : 'Approve instead' }}</button>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+            @if (replyingReviewId() === review.reviewId) {
+              <tr class="reply-row">
+                <td colspan="8">
+                  <div class="reply-editor">
+                    <textarea
+                      rows="2"
+                      placeholder="Write a public reply to this review..."
+                      [ngModel]="replyDraft()"
+                      (ngModelChange)="replyDraft.set($event)"
+                      name="replyDraft"
+                    ></textarea>
+                    <div class="reply-editor-actions">
+                      <button type="button" class="btn btn-outline" (click)="cancelReply()">Cancel</button>
+                      <button type="button" class="btn" [disabled]="isSavingReply()" (click)="saveReply(review)">Save reply</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+
+  @if (photoViewer(); as viewer) {
+    <app-photo-lightbox
+      [photos]="viewer.urls"
+      [index]="viewer.index"
+      [caption]="viewer.caption"
+      (closed)="photoViewer.set(null)"
+    ></app-photo-lightbox>
+  }
+</section>

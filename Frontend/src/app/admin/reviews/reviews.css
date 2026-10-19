@@ -1,0 +1,363 @@
+.reviews-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rating-filter {
+  padding: 0.65rem 0.95rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+}
+
+.rating-filter:focus,
+.rating-filter:focus-visible {
+  outline: none;
+  border-color: #cfc6b3;
+  box-shadow: 0 0 0 4px rgba(90, 122, 100, 0.14);
+}
+
+.stars {
+  color: #e0a72c;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.comment-cell {
+  max-width: 320px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-reply-preview {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--color-brand);
+  max-width: 320px;
+}
+
+.bulk-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  background-color: #fbf7ef;
+  border: 1px solid #ebe7df;
+  border-radius: 6px;
+}
+
+.status-select {
+  padding: 0.4rem 0.7rem;
+  border-radius: 4px;
+  border: 1px solid #e8e2d6;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-select.approved {
+  background-color: #ecf8f1;
+  border-color: #d3eedf;
+  color: #2f8a57;
+}
+
+.status-select.rejected {
+  background-color: var(--color-danger-bg);
+  border-color: #f6dcda;
+  color: var(--color-danger);
+}
+
+.reply-row td {
+  background-color: #fbf9fe;
+  padding: 0.75rem 1rem;
+}
+
+.reply-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reply-editor textarea {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.reply-editor-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Customer review photos: a full-width strip under the review they belong to,
+   so the review row itself keeps its normal height. */
+.photo-count-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 0.5rem;
+  color: var(--color-subtle);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.photo-count-hint svg {
+  width: 14px;
+  height: 14px;
+}
+
+tr.has-photos > td {
+  border-bottom: none;
+}
+
+.photo-row td {
+  padding: 0 1.1rem 1rem 3.4rem;
+}
+
+.review-photos-admin {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  background-color: var(--color-cream-light);
+}
+
+.photo-pending-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.photo-row-title {
+  margin-right: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.photo-pending-note,
+.photo-approve-all,
+.review-photo-badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.photo-pending-note {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.photo-approve-all {
+  border: 1px solid var(--color-success-border);
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  cursor: pointer;
+}
+
+.photo-approve-all:hover:not(:disabled) {
+  background-color: var(--color-success);
+  color: #fff;
+}
+
+.review-photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.review-photo-card {
+  display: flex;
+  gap: 0.75rem;
+  width: 280px;
+  padding: 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background-color: var(--color-surface);
+  transition: opacity 0.15s ease;
+}
+
+.review-photo-card.pending {
+  border-color: var(--color-warning-border);
+}
+
+.review-photo-card.is-busy {
+  opacity: 0.6;
+}
+
+.review-photo-open {
+  position: relative;
+  flex-shrink: 0;
+  width: 104px;
+  height: 104px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-cream);
+  cursor: zoom-in;
+}
+
+.review-photo-open img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.review-photo-open:hover img {
+  transform: scale(1.06);
+}
+
+.review-photo-card.rejected .review-photo-open img {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.review-photo-zoom {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background-color: rgba(20, 18, 15, 0.6);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.review-photo-zoom svg {
+  width: 15px;
+  height: 15px;
+}
+
+.review-photo-open:hover .review-photo-zoom,
+.review-photo-open:focus-visible .review-photo-zoom {
+  opacity: 1;
+}
+
+.review-photo-side {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.review-photo-badge {
+  align-self: flex-start;
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.review-photo-card.approved .review-photo-badge {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.review-photo-card.rejected .review-photo-badge {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.review-photo-note {
+  color: var(--color-subtle);
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.photo-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.photo-action svg {
+  width: 14px;
+  height: 14px;
+}
+
+.photo-action.approve {
+  border-color: var(--color-success-border);
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.photo-action.approve:hover:not(:disabled) {
+  background-color: var(--color-success);
+  color: #fff;
+}
+
+.photo-action.reject {
+  border-color: var(--color-danger-border);
+  background-color: var(--color-surface);
+  color: var(--color-danger);
+}
+
+.photo-action.reject:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  color: #fff;
+}
+
+.photo-action-undo {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-subtle);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.photo-action-undo:hover:not(:disabled) {
+  color: var(--color-ink);
+}
+
+.photo-action:disabled,
+.photo-action-undo:disabled,
+.photo-approve-all:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Phone layout: the shared stack-table centres single-cell rows. */
+@media (max-width: 900px) {
+  .stack-table .photo-row td[colspan] {
+    display: block;
+    padding: 0 0.75rem 0.75rem;
+    text-align: left;
+  }
+
+  .review-photo-card {
+    width: 100%;
+  }
+}
+

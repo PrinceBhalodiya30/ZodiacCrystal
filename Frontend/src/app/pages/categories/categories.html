@@ -1,0 +1,49 @@
+<section class="container categories-page">
+  <h1>Shop by Category</h1>
+  <p class="page-subtitle">Explore our crystal collections, curated by category.</p>
+
+  @if (isLoading()) {
+    <app-spinner label="Loading categories..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadCategories()">Retry</button>
+    </div>
+  } @else if (categoryTiles().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>No categories found.</p>
+      <a routerLink="/products" class="btn">Browse Products</a>
+    </div>
+  } @else {
+    <!-- Every card has the same parts in the same place: image, name, a
+         two-line description, then the product count pinned to the bottom.
+         Sub-categories are shown on the products page, after clicking. -->
+    <div class="category-grid">
+      @for (tile of categoryTiles(); track tile.categoryId) {
+        <a
+          class="category-card"
+          [routerLink]="['/products']"
+          [queryParams]="{ category: tile.categoryId }"
+        >
+          <span class="category-image">
+            @if (tile.imageUrl) {
+              <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="tile.name" loading="lazy" decoding="async" imgFallback />
+            } @else {
+              <span class="category-image-placeholder">{{ tile.name.charAt(0) }}</span>
+            }
+          </span>
+
+          <span class="category-card-body">
+            <span class="category-name">{{ tile.name }}</span>
+            <span class="category-description">{{ tile.description || 'Browse our ' + tile.name.toLowerCase() + ' collection.' }}</span>
+
+            <span class="category-footer">
+              <span class="category-count">{{ tile.productCount }} product{{ tile.productCount === 1 ? '' : 's' }}</span>
+              <span class="category-shop" aria-hidden="true">Shop →</span>
+            </span>
+          </span>
+        </a>
+      }
+    </div>
+  }
+</section>

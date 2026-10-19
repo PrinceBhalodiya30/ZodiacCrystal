@@ -1,0 +1,118 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-stock-page">
+  <div class="page-header">
+    <h1>Manage Stock</h1>
+    <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
+    [title]="'Exports the ' + totalCount() + ' row(s) matching the current filters'"
+    (click)="exportCsv()">
+      {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by name or SKU..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="stockSearch"
+    />
+    <label class="low-stock-toggle">
+      <input
+        type="checkbox"
+        name="lowStockOnly"
+        [ngModel]="lowStockOnly()"
+        (ngModelChange)="onLowStockToggle($event)"
+      />
+      Low stock only (≤ 5)
+    </label>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (isLoading() && products().length === 0) {
+    <app-spinner label="Loading products..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadProducts()">Retry</button>
+    </div>
+  } @else if (products().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>{{ lowStockOnly() && !searchTerm() ? 'No products are low on stock right now.' : 'No products found.' }}</p>
+      @if (hasFilters()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap" [class.is-refreshing]="isLoading()">
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.productId) {
+            <tr>
+              <td data-label="SKU">{{ product.sku }}</td>
+              <td data-label="Name">{{ product.name }}</td>
+              <td data-label="Category">{{ product.categoryName || 'Uncategorized' }}</td>
+              <td data-label="Stock">
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  class="stock-input"
+                  [(ngModel)]="stockEdits[product.productId]"
+                  [name]="'stock-' + product.productId"
+                />
+              </td>
+              <td data-label="Status">
+                <span
+                  class="status-pill"
+                  [class.inactive]="status(product) !== 'in-stock'"
+                  [class.out]="status(product) === 'out-of-stock'"
+                >
+                  {{ label(product) }}
+                </span>
+              </td>
+              <td class="cell-actions">
+                <div class="row-actions">
+                  @if (hasChanged(product)) {
+                    <button
+                      type="button"
+                      class="chip-btn"
+                      [disabled]="savingProductId() === product.productId"
+                      (click)="saveStock(product)"
+                    >
+                      @if (savingProductId() === product.productId) {
+                        <span class="btn-spinner" aria-hidden="true"></span>
+                      } @else {
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+                      }
+                      {{ savingProductId() === product.productId ? 'Saving...' : 'Save' }}
+                    </button>
+                  }
+                  @if (rowErrors[product.productId]) {
+                    <span class="row-error">{{ rowErrors[product.productId] }}</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+</section>

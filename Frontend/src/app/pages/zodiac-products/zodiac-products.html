@@ -1,0 +1,45 @@
+<section class="container zodiac-products-page">
+  <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Shop by Zodiac', link: '/zodiac' }, { label: zodiac()?.name ?? 'Zodiac Sign' }]"></app-breadcrumbs>
+
+  @if (isLoading()) {
+    <span class="visually-hidden" role="status">Loading crystals...</span>
+    <div class="product-grid">
+      @for (n of [1, 2, 3, 4, 5, 6, 7, 8]; track n) {
+        <app-product-card-skeleton></app-product-card-skeleton>
+      }
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadZodiac()">Retry</button>
+    </div>
+  } @else if (zodiac(); as z) {
+    <div class="zodiac-header">
+      <div class="zodiac-image">
+        @if (z.imageUrl) {
+          <img [src]="z.imageUrl" [alt]="z.name" loading="lazy" decoding="async" imgFallback />
+        } @else {
+          <app-zodiac-icon class="image-placeholder" [sign]="z.name"></app-zodiac-icon>
+        }
+      </div>
+      <div>
+        <h1>{{ z.name }}</h1>
+        @if (z.description) {
+          <p class="zodiac-description">{{ z.description }}</p>
+        }
+      </div>
+    </div>
+
+    <h2>Crystals for {{ z.name }}</h2>
+
+    @if (products().length === 0) {
+      <div class="state-message state-message--empty"><p>No products found for this zodiac sign.</p></div>
+    } @else {
+      <div class="product-grid">
+        @for (product of products(); track product.productId) {
+          <app-product-card [product]="product"></app-product-card>
+        }
+      </div>
+    }
+  }
+</section>

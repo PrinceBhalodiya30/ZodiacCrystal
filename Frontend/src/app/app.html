@@ -1,0 +1,14 @@
+@if (!isAdminRoute()) {
+  <app-navbar></app-navbar>
+}
+
+<main [class.admin-main]="isAdminRoute()">
+  <router-outlet />
+</main>
+
+@if (!isAdminRoute()) {
+  <app-footer></app-footer>
+}
+
+<app-confirm-dialog></app-confirm-dialog>
+<app-toast-container></app-toast-container>

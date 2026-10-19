@@ -1,0 +1,24 @@
+<label for="phone">Phone *</label>
+<div class="phone-row">
+  <span class="phone-code" aria-hidden="true">{{ code }}</span>
+  <input
+    id="phone"
+    name="phone"
+    type="tel"
+    inputmode="numeric"
+    autocomplete="tel-national"
+    aria-label="Mobile number (India, +91)"
+    [attr.maxlength]="length"
+    [placeholder]="placeholder"
+    [ngModel]="number()"
+    (ngModelChange)="onNumberChange($event)"
+    required
+    [pattern]="pattern"
+    #phoneField="ngModel"
+  />
+</div>
+@if (phoneField.invalid && phoneField.touched) {
+  <p class="field-hint error">
+    {{ phoneField.errors?.['required'] ? 'Phone number is required.' : 'Enter a valid 10-digit Indian mobile number.' }}
+  </p>
+}

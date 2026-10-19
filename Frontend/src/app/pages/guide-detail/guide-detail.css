@@ -1,0 +1,68 @@
+.guide-detail-page {
+  padding: 2rem 1.5rem 3rem;
+  max-width: 800px;
+}
+
+.guide-article {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 2rem;
+}
+
+.guide-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.guide-article h1 {
+  margin: 0 0 0.5rem;
+  color: var(--color-ink);
+}
+
+.guide-intro {
+  color: var(--color-muted);
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.guide-section {
+  margin-bottom: 1.5rem;
+}
+
+.guide-section h2 {
+  color: var(--color-brand);
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+}
+
+.guide-section p {
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0 0 0.9rem;
+}
+
+.guide-links {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.guide-links h3 {
+  margin: 0 0 0.9rem;
+  font-size: 1rem;
+  color: var(--color-ink);
+}
+
+.guide-links-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .guide-article {
+    padding: 1.25rem;
+  }
+}

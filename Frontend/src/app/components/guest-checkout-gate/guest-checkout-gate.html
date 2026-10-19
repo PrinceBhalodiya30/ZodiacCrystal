@@ -1,0 +1,56 @@
+<div class="gate">
+  @switch (step()) {
+    @case ('choose') {
+      <div class="gate-options">
+        <div class="gate-option">
+          <h2>Returning customer</h2>
+          <p>Log in to use your saved addresses, Cash on Delivery and order history.</p>
+          <a class="btn" routerLink="/login" [queryParams]="{ returnUrl: '/checkout' }">Log in</a>
+          <a class="gate-link" routerLink="/register" [queryParams]="{ returnUrl: '/checkout' }">Create an account</a>
+        </div>
+        <div class="gate-option">
+          <h2>Checkout as guest</h2>
+          <p>No account needed. We'll email you a code to confirm your email address.</p>
+          <button type="button" class="btn btn-outline" (click)="step.set('email')">Continue as guest</button>
+        </div>
+      </div>
+    }
+
+    @case ('email') {
+      <form class="gate-form" (ngSubmit)="sendCode()">
+        <button type="button" class="gate-back" (click)="step.set('choose')">← Back</button>
+        <h2>Checkout as guest</h2>
+        <label for="guestName">Full name</label>
+        <input id="guestName" name="guestName" type="text" autocomplete="name" maxlength="100" [(ngModel)]="name" required />
+        <label for="guestEmail">Email</label>
+        <input id="guestEmail" name="guestEmail" type="email" autocomplete="email" maxlength="256" [(ngModel)]="email" required />
+        <p class="gate-hint">Your order confirmation and tracking link will be sent here.</p>
+        @if (errorMessage()) {
+          <p class="gate-error">{{ errorMessage() }}</p>
+        }
+        <button type="submit" class="btn" [disabled]="isBusy()">{{ isBusy() ? 'Sending...' : 'Send code' }}</button>
+      </form>
+    }
+
+    @case ('code') {
+      <form class="gate-form" (ngSubmit)="verify()">
+        <h2>Check your email</h2>
+        <p class="gate-hint">We sent a 6-digit code to <strong>{{ email }}</strong>. <button type="button" class="gate-link-btn" (click)="changeEmail()">Change</button></p>
+        <label for="guestCode">Verification code</label>
+        <input id="guestCode" name="guestCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" [(ngModel)]="code" required />
+        @if (errorMessage()) {
+          <p class="gate-error">{{ errorMessage() }}</p>
+          @if (accountExists()) {
+            <a class="btn btn-sm" routerLink="/login" [queryParams]="{ returnUrl: '/checkout' }">Log in</a>
+          }
+        }
+        <div class="gate-actions">
+          <button type="submit" class="btn" [disabled]="isBusy()">{{ isBusy() ? 'Checking...' : 'Verify & continue' }}</button>
+          <button type="button" class="gate-link-btn" [disabled]="resendIn() > 0 || isBusy()" (click)="sendCode()">
+            {{ resendIn() > 0 ? 'Resend in ' + resendIn() + 's' : 'Resend code' }}
+          </button>
+        </div>
+      </form>
+    }
+  }
+</div>

@@ -1,0 +1,145 @@
+/* Same page spacing / sidebar offset the other admin pages get from admin-shared.css. */
+.admin-returns-page {
+  padding: 2rem 1.5rem 3rem;
+}
+
+@media (min-width: 900px) {
+  .admin-returns-page {
+    margin-left: 220px;
+  }
+}
+
+.status-filter {
+  padding: 0.65rem 0.95rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 6px;
+  font: inherit;
+  background-color: #ffffff;
+}
+
+.status-filter:focus,
+.status-filter:focus-visible {
+  outline: none;
+  border-color: #cfc6b3;
+  box-shadow: 0 0 0 4px rgba(90, 122, 100, 0.14);
+}
+
+.customer-name {
+  font-weight: 600;
+}
+
+.customer-email,
+.return-details {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.return-note {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.return-status {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.return-status.requested { background-color: #fdf5e7; color: #b07a22; }
+.return-status.approved { background-color: #edf3fb; color: #4b76b0; }
+.return-status.refunded { background-color: #ecf8f1; color: #2f8a57; }
+.return-status.rejected { background-color: var(--color-danger-bg); color: var(--color-danger); }
+
+.action-panel {
+  background-color: #ffffff;
+  border: 1px solid #eae6de;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.25rem;
+  scroll-margin-top: 1rem;
+  animation: form-in 0.2s ease;
+}
+
+/* The row the action panel is currently acting on. */
+tbody tr.is-active td {
+  background-color: #fbf7ef;
+  transition: background-color 0.15s ease;
+}
+
+tbody tr.is-active td:first-child {
+  box-shadow: inset 3px 0 0 #cfc6b3;
+}
+
+/* Closing (animate.leave): the entrance played backwards. */
+.action-panel.reveal-out {
+  animation: form-in 0.14s ease reverse forwards;
+}
+
+.action-panel.danger {
+  border-color: #f6dcda;
+}
+
+.action-panel h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.action-hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.restock-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.restock-option input {
+  accent-color: var(--color-brand);
+}
+
+.action-panel label[for='adminNote'] {
+  display: block;
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 0.3rem;
+}
+
+.action-panel textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #e8e2d6;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 899.98px) {
+  .admin-returns-page {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .status-filter {
+    min-height: 44px;
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,313 @@
+.profile-page {
+  padding: 2rem 1.5rem 3rem;
+  max-width: 640px;
+}
+
+.settings-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: var(--color-ink);
+}
+
+.settings-header p {
+  margin: 0.3rem 0 1.25rem;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+}
+
+.settings-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Inside the My Account layout the shell provides the page padding. */
+:host-context(.account-content) .profile-page {
+  padding: 0;
+  margin: 0;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.5rem;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.profile-card.editing {
+  background-color: #f7f4ee;
+  border-color: #e2dac9;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-label {
+  color: var(--color-subtle);
+  font-size: 0.9rem;
+}
+
+.profile-value {
+  color: var(--color-ink);
+  font-weight: 500;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.profile-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--color-ink);
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-card-header h2 {
+  margin: 0 0 1rem;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  color: var(--color-brand);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.icon-btn:hover {
+  background-color: var(--color-cream);
+}
+
+.quick-link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.quick-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  background: none;
+  color: inherit;
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.quick-link:hover {
+  background-color: var(--color-cream);
+  border-color: #e2dac9;
+}
+
+.quick-link-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  color: var(--color-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-link-label {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.quick-link-chevron {
+  flex-shrink: 0;
+  color: #aaa;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-weight: 500;
+  margin-top: 0.6rem;
+}
+
+input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(47, 74, 58, 0.12);
+}
+
+input:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  padding-right: 2.75rem;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-subtle);
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.toggle-password:hover {
+  color: var(--color-brand);
+}
+
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0;
+}
+
+.password-strength-bar {
+  height: 4px;
+  width: 28px;
+  border-radius: 999px;
+  background-color: #e5e5e5;
+}
+
+.password-strength-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-left: 0.15rem;
+}
+
+.password-strength.weak .password-strength-bar:nth-child(1) {
+  background-color: var(--color-danger);
+}
+
+.password-strength.weak .password-strength-label {
+  color: var(--color-danger);
+}
+
+.password-strength.medium .password-strength-bar:nth-child(1),
+.password-strength.medium .password-strength-bar:nth-child(2) {
+  background-color: var(--color-warning);
+}
+
+.password-strength.medium .password-strength-label {
+  color: var(--color-warning);
+}
+
+.password-strength.strong .password-strength-bar {
+  background-color: var(--color-success);
+}
+
+.password-strength.strong .password-strength-label {
+  color: var(--color-success);
+}
+
+.profile-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.profile-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Email change flow */
+.email-change-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.email-change-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.otp-input {
+  letter-spacing: 0.4em;
+  font-size: 1.1rem;
+}
+
+.email-change-links {
+  margin: 0.9rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem 0.2rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-brand);
+  cursor: pointer;
+}
+
+.text-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.text-btn:disabled {
+  color: var(--color-muted);
+  cursor: not-allowed;
+}

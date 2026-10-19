@@ -1,0 +1,169 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-support-page">
+  <div class="page-header">
+    <h1>Support</h1>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by ZC-ref, order #, subject, customer name or email..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="ticketSearch"
+    />
+    <select class="status-filter" [ngModel]="statusFilter()" (ngModelChange)="onStatusFilterChange($event)" name="ticketStatus" aria-label="Filter by status">
+      <option value="">All tickets</option>
+      @for (s of statuses; track s.value) {
+        <option [value]="s.value">{{ s.label }}</option>
+      }
+    </select>
+    <select class="status-filter" [ngModel]="categoryFilter()" (ngModelChange)="onCategoryFilterChange($event)" name="ticketCategory" aria-label="Filter by topic">
+      <option value="">All topics</option>
+      @for (c of categories; track c.value) {
+        <option [value]="c.value">{{ c.label }}</option>
+      }
+    </select>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  <div class="support-layout" [class.has-panel]="selected() || isLoadingTicket()">
+    <div class="support-list">
+      @if (isLoading()) {
+        <app-spinner label="Loading tickets..."></app-spinner>
+      } @else if (errorMessage()) {
+        <div class="state-message state-message--error">
+          <p>{{ errorMessage() }}</p>
+          <button type="button" class="btn" (click)="loadTickets()">Retry</button>
+        </div>
+      } @else if (tickets().length === 0) {
+        <div class="state-message state-message--empty">
+          <p>{{ hasFilters() ? 'No tickets match these filters.' : 'All caught up - no tickets need attention.' }}</p>
+          @if (hasFilters()) {
+            <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+          }
+        </div>
+      } @else {
+        @for (t of tickets(); track t.supportTicketId) {
+          <button type="button" class="support-row" [class.active]="selected()?.supportTicketId === t.supportTicketId"
+            [class.unread]="t.unread" (click)="openTicket(t.supportTicketId)">
+            <div class="support-row-top">
+              <span class="support-ref">
+                @if (t.unread) { <span class="support-dot" aria-label="Unread"></span> }
+                {{ t.reference }}{{ t.orderId ? ' · #' + t.orderId : '' }}
+              </span>
+              <span class="support-time">{{ t.lastMessageAt | date:'dd MMM, h:mm a' }}</span>
+            </div>
+            <strong class="support-subject">{{ t.subject }}</strong>
+            <span class="support-customer">{{ t.customerName }} · {{ t.categoryLabel }}</span>
+            <div class="support-row-tags">
+              <span class="ticket-status" [class]="'ticket-status ' + t.status.toLowerCase()">{{ t.statusLabel }}</span>
+              @if (t.isOverdue) {
+                <span class="ticket-status overdue">Overdue</span>
+              }
+              @if (t.rating) {
+                <span class="support-rating">{{ t.rating }}★</span>
+              }
+            </div>
+          </button>
+        }
+        <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+      }
+    </div>
+
+    @if (isLoadingTicket() && !selected()) {
+      <div class="support-panel"><app-spinner label="Opening ticket..."></app-spinner></div>
+    } @else if (selected(); as t) {
+      <div class="support-panel">
+        <div class="panel-head">
+          <div>
+            <span class="support-ref">{{ t.reference }} · {{ t.categoryLabel }} · opened {{ t.createdAt | date:'dd MMM yyyy' }}</span>
+            <h2>{{ t.subject }}</h2>
+            <span class="support-customer">{{ t.customerName }} · <a [href]="'mailto:' + t.customerEmail">{{ t.customerEmail }}</a></span>
+          </div>
+          <button type="button" class="panel-close" (click)="closePanel()" aria-label="Close ticket">×</button>
+        </div>
+
+        <div class="panel-status">
+          <span class="ticket-status" [class]="'ticket-status ' + t.status.toLowerCase()">{{ t.statusLabel }}</span>
+          @if (t.status === 'Open' || t.status === 'AwaitingCustomer') {
+            <button type="button" class="chip-btn" (click)="setStatus('Resolved')">Mark resolved</button>
+          }
+          @if (t.status !== 'Closed') {
+            <button type="button" class="chip-btn danger" (click)="setStatus('Closed')">Close</button>
+          } @else {
+            <button type="button" class="chip-btn" (click)="setStatus('Open')">Reopen</button>
+          }
+          @if (t.rating) {
+            <span class="support-rating">Customer rating: {{ t.rating }}★{{ t.ratingComment ? ' - "' + t.ratingComment + '"' : '' }}</span>
+          }
+        </div>
+
+        @if (t.order; as o) {
+          <div class="panel-order">
+            <div>
+              <strong>Order #{{ o.orderId }}</strong> · {{ o.orderDate | date:'dd MMM yyyy' }} · {{ o.totalAmount | inr }}
+              <div class="support-customer">{{ o.productNames.join(', ') }}</div>
+              <div class="support-customer">
+                {{ o.status }} · {{ o.paymentMethod === 'Card' ? 'Card' : 'COD' }} {{ o.paymentStatus }}
+                {{ o.trackingNumber ? ' · ' + (o.courierName || 'Tracking') + ' ' + o.trackingNumber : '' }}
+                {{ o.returnStatus ? ' · Return ' + o.returnStatus : (o.canRequestReturn ? ' · Return window open' : '') }}
+              </div>
+            </div>
+            <div class="panel-order-links">
+              <a class="chip-btn" routerLink="/admin/orders" [queryParams]="{ order: o.orderId }">Order</a>
+              @if (o.returnStatus) {
+                <a class="chip-btn" routerLink="/admin/returns" [queryParams]="{ status: '' }">Returns</a>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="panel-thread">
+          <app-ticket-thread [messages]="t.messages ?? []" [forAdmin]="true" [busy]="isSending()"
+            (editMessage)="editMessage($event.messageId, $event.body)" (deleteMessage)="deleteMessage($event)" />
+        </div>
+
+        @if (t.status !== 'Closed' || isInternal) {
+          <form class="panel-reply" (ngSubmit)="send()">
+            <div class="canned">
+              @for (c of cannedReplies; track c.label) {
+                <button type="button" class="canned-btn" (click)="useCanned(c.text)">{{ c.label }}</button>
+              }
+            </div>
+            <textarea name="reply" rows="4" maxlength="2000" [(ngModel)]="reply"
+              [placeholder]="isInternal ? 'Internal note - only admins see this' : 'Reply to ' + t.customerName + '...'"
+              [class.internal]="isInternal"></textarea>
+            <div class="panel-reply-bar">
+              <label class="internal-toggle">
+                <input type="checkbox" name="isInternal" [(ngModel)]="isInternal" /> Internal note
+              </label>
+              <label class="chip-btn photo-btn">
+                Photos{{ files().length ? ' (' + files().length + ')' : '' }}
+                <input type="file" accept="image/jpeg,image/png,image/webp" multiple hidden (change)="onFilesSelected($event)" />
+              </label>
+              @for (f of files(); track $index) {
+                <span class="file-chip">{{ f.name }} <button type="button" (click)="removeFile($index)" aria-label="Remove photo">×</button></span>
+              }
+              <span class="spacer"></span>
+              @if (!isInternal) {
+                <button type="button" class="btn btn-outline btn-sm" [disabled]="isSending() || !reply.trim()" (click)="send(true)">Send &amp; resolve</button>
+              }
+              <button type="submit" class="btn btn-sm" [disabled]="isSending() || !reply.trim()">
+                {{ isSending() ? 'Sending...' : isInternal ? 'Add note' : 'Send reply' }}
+              </button>
+            </div>
+          </form>
+        } @else {
+          <p class="support-customer panel-closed">This ticket is closed. Reopen it to reply, or tick "Internal note" to add a note.
+            <label class="internal-toggle"><input type="checkbox" name="isInternalClosed" [(ngModel)]="isInternal" /> Internal note</label>
+          </p>
+        }
+      </div>
+    }
+  </div>
+</section>

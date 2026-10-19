@@ -1,0 +1,37 @@
+.recently-viewed {
+  margin-top: 2.5rem;
+}
+
+.recently-viewed-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.recently-viewed h2 {
+  color: var(--color-ink);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.clear-history {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-brand);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.clear-history:hover {
+  text-decoration: underline;
+}
+
+.recently-viewed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}

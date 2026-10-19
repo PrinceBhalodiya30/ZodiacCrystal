@@ -1,0 +1,101 @@
+.gate {
+  margin-bottom: 1.5rem;
+}
+
+.gate-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.gate-option,
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.gate-form {
+  max-width: 480px;
+  align-items: stretch;
+}
+
+.gate h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--color-ink);
+}
+
+.gate-option p,
+.gate-hint {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.gate-option .btn {
+  margin-top: auto;
+}
+
+.gate-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.gate-form input {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font: inherit;
+}
+
+#guestCode {
+  letter-spacing: 0.4em;
+  font-size: 1.2rem;
+  max-width: 200px;
+}
+
+.gate-form > .btn,
+.gate-actions {
+  margin-top: 0.4rem;
+}
+
+.gate-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.gate-link,
+.gate-link-btn,
+.gate-back {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--color-brand);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gate-link-btn:disabled {
+  color: var(--color-subtle);
+  cursor: default;
+}
+
+.gate-back {
+  align-self: flex-start;
+}
+
+.gate-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}

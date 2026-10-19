@@ -1,0 +1,63 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Images - {{ product.name }}</h2>
+      <button type="button" class="chip-btn" (click)="close()">Close</button>
+    </div>
+
+    <div class="image-list">
+      @for (image of images(); track image.productImageId) {
+        <div class="image-row">
+          <img [src]="image.imageUrl" [alt]="product.name" class="image-thumb" loading="lazy" imgFallback />
+          <span class="image-url" [title]="image.imageUrl">{{ image.imageUrl }}</span>
+          @if (image.isPrimary) {
+            <span class="status-pill">Primary</span>
+          } @else {
+            <button type="button" class="chip-btn" (click)="setPrimaryImage(image)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/></svg>
+              Set Primary
+            </button>
+          }
+          <button type="button" class="chip-btn danger" (click)="deleteImage(image)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+            Delete
+          </button>
+        </div>
+      } @empty {
+        <p class="empty-note">No images yet.</p>
+      }
+    </div>
+
+    @if (imageError()) {
+      <p class="form-error">{{ imageError() }}</p>
+    }
+
+    <div class="add-image-form">
+      <label class="add-image-label">Upload an image</label>
+      <div class="add-image-row">
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          (change)="onFileSelected($event)"
+          name="newImageFile"
+        />
+        <button type="button" class="btn" [disabled]="isUploadingImage() || !selectedFile" (click)="uploadImage()">
+          {{ isUploadingImage() ? 'Uploading...' : 'Upload Image' }}
+        </button>
+      </div>
+
+      <label class="add-image-label">Or use an image URL</label>
+      <div class="add-image-row">
+        <input
+          type="text"
+          placeholder="Image URL"
+          [(ngModel)]="newImageUrl"
+          name="newImageUrl"
+        />
+        <button type="button" class="btn btn-outline" [disabled]="isSavingImage() || !newImageUrl.trim()" (click)="addImage()">
+          {{ isSavingImage() ? 'Adding...' : 'Add Image' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

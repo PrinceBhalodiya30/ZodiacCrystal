@@ -1,0 +1,43 @@
+<section class="support-list-page">
+  <div class="support-list-header">
+    <h1>Support Requests</h1>
+    <a class="btn" routerLink="/help">Get help</a>
+  </div>
+
+  @if (isLoading()) {
+    <app-spinner label="Loading your requests..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="load()">Retry</button>
+    </div>
+  } @else if (tickets().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>You haven't contacted support yet. Our Help Center answers most questions instantly.</p>
+      <a class="btn" routerLink="/help">Visit Help Center</a>
+    </div>
+  } @else {
+    <div class="ticket-list">
+      @for (t of tickets(); track t.supportTicketId) {
+        <a class="ticket-card" [class.unread]="t.unread" [routerLink]="['/support', t.supportTicketId]">
+          <div class="ticket-card-top">
+            <span class="ticket-status" [class]="'ticket-status ' + t.status.toLowerCase()">{{ t.statusLabel }}</span>
+            <span class="ticket-ref">{{ t.reference }}</span>
+          </div>
+          <strong class="ticket-subject">
+            @if (t.unread) {
+              <span class="ticket-dot" aria-label="New reply"></span>
+            }
+            {{ t.subject }}
+          </strong>
+          @if (t.lastMessagePreview) {
+            <p class="ticket-preview">{{ t.lastMessagePreview }}</p>
+          }
+          <span class="ticket-meta">
+            {{ t.categoryLabel }}{{ t.orderId ? ' · Order #' + t.orderId : '' }} · Updated {{ t.lastMessageAt | date:'dd MMM yyyy, h:mm a' }}
+          </span>
+        </a>
+      }
+    </div>
+  }
+</section>

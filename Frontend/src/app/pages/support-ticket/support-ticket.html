@@ -1,0 +1,110 @@
+<section class="support-ticket-page">
+  <a class="page-back-link" routerLink="/support">← All support requests</a>
+
+  @if (isLoading()) {
+    <app-spinner label="Loading conversation..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <a class="btn" routerLink="/support">Back to requests</a>
+    </div>
+  } @else if (ticket(); as t) {
+    <header class="st-header">
+      <div>
+        <span class="st-ref">{{ t.reference }} · {{ t.categoryLabel }}</span>
+        <h1>{{ t.subject }}</h1>
+        <span class="st-opened">Opened {{ t.createdAt | date:'dd MMM yyyy, h:mm a' }}</span>
+      </div>
+      <span class="ticket-status" [class]="'ticket-status ' + t.status.toLowerCase()">{{ t.statusLabel }}</span>
+    </header>
+
+    @if (t.order; as o) {
+      <div class="st-order">
+        <div>
+          <strong>Order #{{ o.orderId }}</strong> · {{ o.status }} · {{ o.totalAmount | inr }}
+          <div class="st-order-items">{{ o.productNames.join(', ') }}</div>
+          @if (o.returnStatus) {
+            <div class="st-order-items">Return: {{ o.returnStatus }}</div>
+          }
+        </div>
+        <div class="st-order-actions">
+          @if (o.canRequestReturn) {
+            <a class="btn btn-sm" [routerLink]="['/orders', o.orderId]">Start a return</a>
+          }
+          <a class="btn btn-outline btn-sm" [routerLink]="['/orders', o.orderId]">View order</a>
+        </div>
+      </div>
+    }
+
+    <div class="st-conversation">
+      <div class="st-conversation-head">
+        <strong>Conversation</strong>
+        <span>{{ (t.messages ?? []).length }} {{ (t.messages ?? []).length === 1 ? 'message' : 'messages' }}</span>
+      </div>
+
+      <app-ticket-thread [messages]="t.messages ?? []" />
+
+      @if (t.status === 'Open') {
+        <div class="st-waiting">
+          <span class="st-waiting-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </span>
+          <div>
+            <strong>Zodiac Crystals Support</strong>
+            <p>We've received your message. Our team usually replies within {{ replyWithinHours }} hours (Mon - Sat, 9am - 6pm). We'll email you and notify you here.</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (t.status !== 'Closed') {
+      <form class="st-reply" (ngSubmit)="send()">
+        <label for="replyBox">{{ t.status === 'Resolved' ? 'Still need help? Reply to reopen this request' : 'Reply' }}</label>
+        <textarea id="replyBox" name="reply" rows="3" maxlength="2000" [(ngModel)]="reply" placeholder="Write a message..."></textarea>
+        <div class="st-reply-bar">
+          <label class="btn btn-outline btn-sm st-photo-btn" [class.disabled]="files().length >= maxPhotos">
+            Add photos
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple hidden
+              [disabled]="files().length >= maxPhotos" (change)="onFilesSelected($event)" />
+          </label>
+          @for (f of files(); track $index) {
+            <span class="st-file">{{ f.name }} <button type="button" (click)="removeFile($index)" aria-label="Remove photo">×</button></span>
+          }
+          <button type="submit" class="btn btn-sm st-send" [disabled]="isSending() || !reply.trim()">
+            {{ isSending() ? 'Sending...' : 'Send' }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <p class="st-hint">This request is closed. Need more help? <a routerLink="/help">Open a new request</a>.</p>
+    }
+
+    @if (isActive(t)) {
+      <div class="st-solved">
+        <span>Has your problem been solved?</span>
+        <button type="button" class="btn btn-outline btn-sm" (click)="markResolved()">Yes, mark as resolved</button>
+      </div>
+    }
+
+    @if (!isActive(t)) {
+      <div class="st-rating">
+        @if (t.rating) {
+          <span>You rated our help</span>
+          <span class="st-stars" [attr.aria-label]="t.rating + ' out of 5'">{{ '★'.repeat(t.rating) }}{{ '☆'.repeat(5 - t.rating) }}</span>
+        } @else {
+          <span>How was our help?</span>
+          <div class="st-stars-input" role="radiogroup" aria-label="Rating">
+            @for (n of [1, 2, 3, 4, 5]; track n) {
+              <button type="button" role="radio" [attr.aria-checked]="rating() === n" [attr.aria-label]="n + ' stars'"
+                [class.on]="rating() >= n" (click)="rating.set(n)">★</button>
+            }
+          </div>
+          @if (rating()) {
+            <textarea name="ratingComment" rows="2" maxlength="500" [(ngModel)]="ratingComment" placeholder="Anything we could do better? (optional)"></textarea>
+            <button type="button" class="btn btn-sm" [disabled]="isRating()" (click)="submitRating()">Submit rating</button>
+          }
+        }
+      </div>
+    }
+  }
+</section>

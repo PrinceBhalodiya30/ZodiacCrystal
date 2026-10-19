@@ -1,0 +1,66 @@
+<div class="showcase">
+  <!-- One hand-picked product photo, linking to that product. -->
+  @if (featured(); as f) {
+    <a class="feature-photo" [routerLink]="['/products', f.productId]">
+      <img [src]="f.imageUrl" [alt]="f.name" imgFallback />
+      <span class="feature-caption">
+        {{ f.name }}
+        <span aria-hidden="true">→</span>
+      </span>
+    </a>
+  } @else {
+    <div class="feature-photo">
+      <img [src]="fallbackImage" alt="" />
+    </div>
+  }
+
+  @if (mode === 'login') {
+    @if (review(); as r) {
+      <figure class="review-card">
+        <div class="review-stars" role="img" [attr.aria-label]="r.rating + ' out of 5 stars'">
+          @for (filled of stars(r.rating); track $index) {
+            <svg viewBox="0 0 24 24" [class.empty]="!filled" aria-hidden="true">
+              <path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z"/>
+            </svg>
+          }
+        </div>
+        <blockquote>"{{ r.comment }}"</blockquote>
+        <figcaption>{{ shortName(r.userName) }} · on {{ r.productName }}</figcaption>
+      </figure>
+    }
+  } @else {
+    @if (offer(); as o) {
+      <div class="offer-card">
+        <span class="offer-label">New here?</span>
+        <strong>
+          {{ o.discountType === 'Percentage' ? o.discountValue + '%' : (o.discountValue | inr:0) }} off your first order
+        </strong>
+        <span class="offer-code">
+          Use code <code>{{ o.code }}</code>
+          @if (o.minimumOrderAmount > 0) {
+            on orders over {{ o.minimumOrderAmount | inr:0 }}
+          }
+        </span>
+      </div>
+    }
+
+    <ul class="trust-list">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg>
+        Free shipping on orders over {{ freeShippingThreshold | inr:0 }}
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg>
+        7-day easy returns
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+        Cash on Delivery available
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        Secure card payments
+      </li>
+    </ul>
+  }
+</div>

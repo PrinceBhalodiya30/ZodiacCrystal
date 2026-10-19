@@ -1,0 +1,6 @@
+@Zodiac_Crystal_HostAddress = http://localhost:5275
+
+GET {{Zodiac_Crystal_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

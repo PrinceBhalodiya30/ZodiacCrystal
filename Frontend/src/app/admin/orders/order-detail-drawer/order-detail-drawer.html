@@ -1,0 +1,200 @@
+<div class="admin-drawer-overlay" animate.leave="is-leaving" (click)="close()">
+  <aside
+    class="order-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="orderDrawerTitle"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="drawer-header">
+      <div>
+        <h2 id="orderDrawerTitle">Order #{{ orderId }}</h2>
+        @if (detail(); as d) {
+          <p class="drawer-subtitle">Placed {{ d.order.orderDate | date:'dd MMM yyyy, h:mm a' }}</p>
+        }
+      </div>
+      <button type="button" class="drawer-close" aria-label="Close order details" (click)="close()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+      </button>
+    </header>
+
+    @if (isLoading()) {
+      <span class="visually-hidden" role="status">Loading order...</span>
+      <div class="drawer-body" aria-hidden="true">
+        <span class="skeleton" style="height: 5.5rem"></span>
+        <span class="skeleton" style="height: 8rem"></span>
+        <span class="skeleton" style="height: 6rem"></span>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="drawer-body">
+        <div class="state-message state-message--error">
+          <p>{{ errorMessage() }}</p>
+          <button type="button" class="btn" (click)="load()">Retry</button>
+        </div>
+      </div>
+    } @else if (detail(); as d) {
+      <div class="drawer-body">
+        <!-- Status + what can happen next -->
+        <section class="drawer-section status-section">
+          <div class="status-line">
+            <span class="order-status" [class]="'order-status ' + d.order.status.toLowerCase()">{{ d.order.status }}</span>
+            <span class="payment-badge" [class]="'payment-badge ' + d.order.paymentStatus.toLowerCase()">
+              {{ d.order.paymentMethod === 'Card' ? 'Card' : 'COD' }} · {{ d.order.paymentStatus }}
+            </span>
+          </div>
+
+          @if (d.order.cancellationReason) {
+            <p class="tracking-line">Customer's reason: <strong>{{ d.order.cancellationReason }}</strong></p>
+          }
+
+          @if (d.order.trackingNumber) {
+            <p class="tracking-line">
+              {{ d.order.courierName }} · <span class="tracking-number">{{ d.order.trackingNumber }}</span>
+            </p>
+          }
+
+          @if (isShipFormOpen()) {
+            <form class="ship-form" (ngSubmit)="changeStatus('Shipped')">
+              <label>
+                Courier
+                <select name="courier" [(ngModel)]="shipCourier" [disabled]="updatingTo() !== null">
+                  @for (courier of couriers; track courier) {
+                    <option [value]="courier">{{ courier }}</option>
+                  }
+                </select>
+              </label>
+              <label>
+                Tracking number
+                <input name="trackingNumber" [(ngModel)]="shipTrackingNumber" maxlength="50"
+                  placeholder="Leave blank to auto-generate" [disabled]="updatingTo() !== null" />
+              </label>
+              <div class="status-actions">
+                <button type="submit" class="btn" [disabled]="updatingTo() !== null">
+                  @if (updatingTo() === 'Shipped') {
+                    <span class="btn-spinner" aria-hidden="true"></span> Saving...
+                  } @else {
+                    Confirm Shipment
+                  }
+                </button>
+                <button type="button" class="btn btn-outline" [disabled]="updatingTo() !== null" (click)="isShipFormOpen.set(false)">Back</button>
+              </div>
+            </form>
+          } @else if (forwardStatuses.length > 0 || canCancel) {
+            <div class="status-actions">
+              @for (status of forwardStatuses; track status) {
+                <button type="button" class="btn" [disabled]="updatingTo() !== null" (click)="changeStatus(status)">
+                  @if (updatingTo() === status) {
+                    <span class="btn-spinner" aria-hidden="true"></span> Saving...
+                  } @else {
+                    {{ actionLabel(status) }}
+                  }
+                </button>
+              }
+              @if (canCancel) {
+                <button type="button" class="btn btn-cancel" [disabled]="updatingTo() !== null" (click)="changeStatus('Cancelled')">
+                  @if (updatingTo() === 'Cancelled') {
+                    <span class="btn-spinner" aria-hidden="true"></span> Cancelling...
+                  } @else {
+                    {{ d.order.paymentMethod === 'Card' && d.order.paymentStatus === 'Paid' ? 'Cancel & Refund' : 'Cancel Order' }}
+                  }
+                </button>
+              }
+            </div>
+          } @else {
+            <p class="muted-note">This order is {{ d.order.status.toLowerCase() }} - no further status changes.</p>
+          }
+        </section>
+
+        <!-- Items -->
+        <section class="drawer-section">
+          <h3>Items</h3>
+          <ul class="item-list">
+            @for (item of d.order.items; track item.orderItemId) {
+              <li>
+                <span class="item-name">{{ item.productName }}</span>
+                <span class="item-qty">{{ item.quantity }} × {{ item.unitPrice | inr }}</span>
+                <span class="item-subtotal">{{ item.subtotal | inr }}</span>
+              </li>
+            }
+          </ul>
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd>{{ subtotal | inr }}</dd></div>
+            @if (d.order.discountAmount) {
+              <div><dt>Discount{{ d.order.couponCode ? ' (' + d.order.couponCode + ')' : '' }}</dt><dd>−{{ d.order.discountAmount | inr }}</dd></div>
+            }
+            <div><dt>Shipping</dt><dd>{{ d.order.shippingFee ? (d.order.shippingFee | inr) : 'Free' }}</dd></div>
+            <div class="grand-total"><dt>Total</dt><dd>{{ d.order.totalAmount | inr }}</dd></div>
+          </dl>
+        </section>
+
+        <!-- Customer + shipping -->
+        <section class="drawer-section two-col">
+          <div>
+            <h3>Customer</h3>
+            <p class="strong">{{ d.customerName }}</p>
+            <p><a [href]="'mailto:' + d.customerEmail">{{ d.customerEmail }}</a></p>
+          </div>
+          <div>
+            <h3>Ship to</h3>
+            <p class="strong">{{ d.order.shippingName }}</p>
+            <p>{{ d.order.shippingAddress }}</p>
+            <p>{{ d.order.city }}, {{ d.order.state }} {{ d.order.postalCode }}</p>
+            <p><a [href]="'tel:' + d.order.phone">{{ d.order.phone }}</a></p>
+            <!-- Only orders where the customer used the checkout map have a pin. -->
+            @if (d.order.latitude != null && d.order.longitude != null) {
+              <p>
+                <button type="button" class="map-toggle" [attr.aria-expanded]="isMapOpen()" (click)="isMapOpen.set(!isMapOpen())">
+                  📍 {{ isMapOpen() ? 'Hide map' : 'View on map' }}
+                </button>
+              </p>
+              @if (isMapOpen()) {
+                <div class="drawer-map">
+                  <app-location-map [latitude]="d.order.latitude" [longitude]="d.order.longitude"></app-location-map>
+                  <a
+                    class="map-external"
+                    [href]="'https://www.google.com/maps/search/?api=1&query=' + d.order.latitude + ',' + d.order.longitude"
+                    target="_blank"
+                    rel="noopener"
+                  >Open in Google Maps ↗</a>
+                </div>
+              }
+            }
+          </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="drawer-section">
+          <h3>Timeline</h3>
+          <ol class="timeline">
+            @for (event of d.timeline; track $index) {
+              <li [class]="'timeline-item kind-' + event.kind">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div>
+                  <p class="timeline-title">{{ event.title }}</p>
+                  <p class="timeline-meta">
+                    @if (event.at) {
+                      {{ event.at | date:'dd MMM yyyy, h:mm a' }}
+                    }
+                    @if (event.at && event.detail) { · }
+                    {{ event.detail }}
+                  </p>
+                </div>
+              </li>
+            }
+          </ol>
+        </section>
+      </div>
+
+      <footer class="drawer-footer">
+        <button type="button" class="btn btn-outline" [disabled]="isDownloadingInvoice()" (click)="downloadInvoice()">
+          @if (isDownloadingInvoice()) {
+            <span class="btn-spinner" aria-hidden="true"></span> Preparing...
+          } @else {
+            Download Invoice
+          }
+        </button>
+        <button type="button" class="btn btn-outline" (click)="close()">Close</button>
+      </footer>
+    }
+  </aside>
+</div>

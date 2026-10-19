@@ -1,0 +1,158 @@
+.addresses-page {
+  padding: 2rem 1.5rem 3rem;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.addresses-page h1 {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.5rem;
+}
+
+.profile-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--color-ink);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-weight: 500;
+  margin-top: 0.6rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  cursor: pointer;
+}
+
+input:not([type='checkbox']):not([type='radio']),
+select {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  width: 100%;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+input:not([type='checkbox']):not([type='radio']):focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(47, 74, 58, 0.12);
+}
+
+.checkbox-label input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-brand);
+}
+
+.profile-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  align-self: flex-start;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.address-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.25rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.status-pill {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.address-type {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-brand);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.address-name {
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 0.2rem;
+}
+
+.address-line {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.address-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Inside the My Account layout the shell provides the page padding. */
+:host-context(.account-content) .addresses-page {
+  padding: 0;
+  margin: 0;
+}
+
+/* The account side menu already links back to the overview. */

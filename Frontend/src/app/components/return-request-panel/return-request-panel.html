@@ -1,0 +1,57 @@
+@if (order().returnStatus; as status) {
+  <div class="return-panel" [class]="'return-panel status-' + status.toLowerCase()">
+    <div class="return-panel-header">
+      <h3>Return</h3>
+      <span class="return-badge">{{ status }}</span>
+    </div>
+    <p>{{ statusText(status) }}</p>
+    @if (order().returnAdminNote) {
+      <p class="admin-note"><strong>Note from our team:</strong> {{ order().returnAdminNote }}</p>
+    }
+  </div>
+} @else if (order().canRequestReturn) {
+  <div class="return-panel">
+    @if (!isFormOpen()) {
+      <div class="return-offer">
+        <p>
+          Something wrong with your order? You can request a return until
+          <strong>{{ order().returnWindowEndsAt | date:'dd MMM yyyy' }}</strong>.
+        </p>
+        <button type="button" class="return-btn" (click)="isFormOpen.set(true)">Request a Return</button>
+      </div>
+    } @else {
+      <form class="reveal-in" (ngSubmit)="submit()" #returnForm="ngForm">
+        <h3>Request a Return</h3>
+
+        <label for="returnReason">Reason *</label>
+        <select id="returnReason" name="returnReason" [(ngModel)]="reason" required>
+          <option value="" disabled>Select a reason</option>
+          @for (r of reasons; track r.value) {
+            <option [value]="r.value">{{ r.label }}</option>
+          }
+        </select>
+
+        <label for="returnDetails">Details (optional)</label>
+        <textarea
+          id="returnDetails"
+          name="returnDetails"
+          rows="3"
+          maxlength="1000"
+          [(ngModel)]="details"
+          placeholder="Tell us what happened - e.g. which item and what's wrong with it"
+        ></textarea>
+
+        @if (errorMessage()) {
+          <p class="form-error">{{ errorMessage() }}</p>
+        }
+
+        <div class="return-actions">
+          <button type="button" class="cancel-btn" (click)="isFormOpen.set(false)" [disabled]="isSubmitting()">Cancel</button>
+          <button type="submit" class="return-btn" [disabled]="returnForm.invalid || isSubmitting()">
+            {{ isSubmitting() ? 'Submitting...' : 'Submit Request' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+}

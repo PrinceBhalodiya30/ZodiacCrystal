@@ -1,0 +1,98 @@
+<section class="container addresses-page">
+  <h1>My Addresses</h1>
+
+  @if (isLoading()) {
+    <app-spinner label="Loading addresses..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadAddresses()">Retry</button>
+    </div>
+  } @else {
+    @if (formMode() === 'closed') {
+      <button type="button" class="btn" (click)="startCreate()">+ Add Address</button>
+    }
+
+    @if (formMode() !== 'closed') {
+      <div class="profile-card">
+        <h2>{{ formMode() === 'create' ? 'Add Address' : 'Edit Address' }}</h2>
+
+        <form (ngSubmit)="submitForm()" #addressForm="ngForm">
+          <label for="fullName">Full Name *</label>
+          <input id="fullName" name="fullName" type="text" [(ngModel)]="form.fullName" required />
+
+          <app-phone-input [(phone)]="form.phone" />
+
+          <app-map-address-fields
+            [maxLength]="200"
+            [(line)]="form.addressLine1"
+            [(city)]="form.city"
+            [(state)]="form.state"
+            [(postalCode)]="form.postalCode"
+            [(latitude)]="form.latitude"
+            [(longitude)]="form.longitude"
+          />
+
+          <label for="addressLine2">Landmark (optional)</label>
+          <input id="addressLine2" name="addressLine2" type="text" maxlength="200" placeholder="e.g. Near City Mall" [(ngModel)]="form.addressLine2" />
+
+          <label for="addressType">Address Type</label>
+          <select id="addressType" name="addressType" [(ngModel)]="form.addressType">
+            <option value="Home">Home</option>
+            <option value="Work">Work</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label class="checkbox-label">
+            <input type="checkbox" name="isDefault" [(ngModel)]="form.isDefault" />
+            Set as default address
+          </label>
+
+          @if (formError()) {
+            <p class="form-error">{{ formError() }}</p>
+          }
+
+          <div class="profile-actions">
+            <button type="button" class="btn btn-outline" (click)="cancelForm()">Cancel</button>
+            <button type="submit" class="btn" [disabled]="addressForm.invalid || isSaving()">
+              {{ isSaving() ? 'Saving...' : 'Save Address' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    @if (addresses().length === 0 && formMode() === 'closed') {
+      <div class="state-message state-message--empty">
+        <p>You haven't saved any addresses yet.</p>
+      </div>
+    } @else {
+      <div class="address-grid">
+        @for (address of addresses(); track address.addressId) {
+          <div class="address-card">
+            @if (address.isDefault) {
+              <span class="status-pill">Default</span>
+            }
+            <span class="address-type">{{ address.addressType }}</span>
+            <p class="address-name">{{ address.fullName }}</p>
+            <p class="address-line">{{ address.addressLine1 }}</p>
+            @if (address.addressLine2) {
+              <p class="address-line">{{ address.addressLine2 }}</p>
+            }
+            <p class="address-line">{{ address.city }}, {{ address.state }} {{ address.postalCode }}</p>
+            <p class="address-line">{{ address.country }}</p>
+            <p class="address-line">{{ address.phone }}</p>
+
+            <div class="address-actions">
+              <button type="button" class="link-btn" (click)="startEdit(address)">Edit</button>
+              @if (!address.isDefault) {
+                <button type="button" class="link-btn" (click)="setDefault(address)">Set Default</button>
+              }
+              <button type="button" class="link-btn danger" (click)="deleteAddress(address)">Delete</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</section>

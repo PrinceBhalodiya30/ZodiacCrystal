@@ -1,0 +1,133 @@
+.toast-stack {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 1100;
+  max-width: calc(100vw - 2rem);
+}
+
+.toast {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #1f3328;
+  color: #ffffff;
+  padding: 0.75rem 1rem 0.75rem 1.1rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+  min-width: 240px;
+  max-width: 360px;
+  overflow: hidden;
+  animation: toast-in 0.25s ease;
+}
+
+.toast::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #6f8f78;
+}
+
+/* Shows how long the message will remain visible without competing with it. */
+.toast::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.72);
+  transform-origin: left;
+  animation: toast-countdown var(--toast-duration, 3500ms) linear forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.toast.toast-leaving {
+  animation: toast-out 0.2s ease forwards;
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@keyframes toast-countdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.toast.success {
+  background-color: #1a6e2e;
+}
+
+.toast.error {
+  background-color: var(--color-danger);
+}
+
+.toast-icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.toast-icon svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.toast-message {
+  flex: 1;
+}
+
+.toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.75;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.toast-close svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 500px) {
+  .toast-stack {
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .toast {
+    max-width: none;
+  }
+}

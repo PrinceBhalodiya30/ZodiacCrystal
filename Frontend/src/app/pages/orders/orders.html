@@ -1,0 +1,96 @@
+<section class="container orders-page">
+  <h1>My Orders</h1>
+
+  @if (isLoading()) {
+    <span class="visually-hidden" role="status">Loading orders...</span>
+    <div class="order-list" aria-hidden="true">
+      @for (n of [1, 2, 3]; track n) {
+        <div class="order-card order-card-skeleton">
+          <div class="order-info">
+            <span class="skeleton skeleton-line" style="width: 7rem"></span>
+            <span class="skeleton skeleton-line" style="width: 5rem"></span>
+          </div>
+          <span class="skeleton skeleton-line order-skeleton-meta"></span>
+          <span class="skeleton order-skeleton-btn"></span>
+        </div>
+      }
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadOrders()">Retry</button>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>You haven't placed any orders yet.</p>
+      <a routerLink="/products" class="btn">Browse Products</a>
+    </div>
+  } @else {
+    @if (actionError()) {
+      <p class="form-error" role="alert">{{ actionError() }}</p>
+    }
+
+    <div class="order-list">
+      @for (order of orders(); track order.orderId) {
+        <article class="order-card" [class]="'order-card ' + statusTone(order)">
+          <header class="order-head">
+            <div class="order-state">
+              <span class="state-title"><span class="state-dot" aria-hidden="true"></span>{{ statusTitle(order) }}</span>
+              <span class="state-sub">{{ statusSubtitle(order) }}</span>
+            </div>
+            <div class="order-summary">
+              <span class="summary-total">{{ order.totalAmount | inr }}</span>
+              <span class="summary-meta">Order #{{ order.orderId }} &middot; {{ order.orderDate | date:'dd MMM yyyy' }} &middot; {{ order.paymentMethod === 'Card' ? 'Card' : 'COD' }}</span>
+            </div>
+          </header>
+
+          <ul class="item-list">
+            @for (item of visibleItems(order); track item.productId) {
+              <li class="item-row">
+                <a class="item-thumb" [routerLink]="['/products', item.productId]" tabindex="-1" aria-hidden="true">
+                  <img [imgSrc]="item.imageUrl ?? null" imgSizes="72px" [alt]="item.productName" width="72" height="72" loading="lazy" decoding="async" imgFallback />
+                </a>
+                <div class="item-info">
+                  <a class="item-name" [routerLink]="['/products', item.productId]">{{ item.productName }}</a>
+                  <span class="item-qty">Qty: {{ item.quantity }}</span>
+                </div>
+                <span class="item-price">{{ item.subtotal | inr }}</span>
+              </li>
+            } @empty {
+              @if (order.productNames?.length) {
+                <li class="item-row item-row--plain">{{ order.productNames!.join(', ') }}</li>
+              }
+            }
+          </ul>
+
+          @if (hiddenCount(order) > 0) {
+            <button type="button" class="more-toggle" (click)="toggleItems(order.orderId)">
+              + {{ hiddenCount(order) }} more {{ hiddenCount(order) === 1 ? 'item' : 'items' }}
+            </button>
+          } @else if (isExpanded(order.orderId) && orderItems(order).length > maxItems) {
+            <button type="button" class="more-toggle" (click)="toggleItems(order.orderId)">Show less</button>
+          }
+
+          <footer class="order-actions">
+            <a class="btn btn-sm" [routerLink]="['/orders', order.orderId]">View Order</a>
+            <!-- Like big stores: tracking only while the parcel is on its way.
+                 After delivery the history stays reachable from the order page. -->
+            @if (order.trackingNumber && order.status === 'Shipped') {
+              <a class="btn btn-sm btn-outline" [routerLink]="['/orders', order.orderId, 'track']">Track Package</a>
+            }
+            @if (canCancel(order)) {
+              <button
+                type="button"
+                class="btn btn-sm btn-cancel"
+                [disabled]="cancellingOrderId() === order.orderId"
+                (click)="cancelOrder(order)"
+              >
+                {{ cancellingOrderId() === order.orderId ? 'Cancelling...' : 'Cancel Order' }}
+              </button>
+            }
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,20 @@
+<section class="container zodiac-page">
+  <h1>Zodiac Signs</h1>
+
+  @if (isLoading()) {
+    <app-spinner label="Loading zodiac signs..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadZodiacSigns()">Retry</button>
+    </div>
+  } @else if (zodiacSigns().length === 0) {
+    <div class="state-message state-message--empty"><p>No zodiac signs found.</p></div>
+  } @else {
+    <div class="zodiac-grid">
+      @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
+        <app-zodiac-card [zodiac]="zodiac" [showButton]="true"></app-zodiac-card>
+      }
+    </div>
+  }
+</section>

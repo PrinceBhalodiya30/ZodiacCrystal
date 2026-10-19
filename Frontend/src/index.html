@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zodiac Crystals – Healing Crystals for Every Zodiac Sign</title>
+  <meta name="description" content="Shop healing crystals matched to your zodiac sign. Rose quartz, amethyst, citrine and more, with crystal guides, mystery boxes and fast delivery across India.">
+  <meta property="og:title" content="Zodiac Crystals">
+  <meta property="og:description" content="Healing crystals matched to your zodiac sign.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/og-image.png">
+  <!-- Site-wide structured data. Page-specific data (Product, Article) is
+       added by SeoService. Replace localhost with the live domain. -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"Zodiac Crystals","url":"http://localhost:4200/","logo":"http://localhost:4200/logo.svg"}
+  </script>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="logo.svg?v=2">
+  <link rel="alternate icon" href="favicon.ico?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap">
+  <!-- Zodiac symbols (only these 13 characters are downloaded): exact standard
+       shapes in any colour, instead of device emoji/fonts. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols&family=Noto+Sans+Symbols+2&display=swap&text=%E2%99%88%E2%99%89%E2%99%8A%E2%99%8B%E2%99%8C%E2%99%8D%E2%99%8E%E2%99%8F%E2%99%90%E2%99%91%E2%99%92%E2%99%93%E2%9C%A6">
+  <!-- Splash loader: inline so it paints before any JS or CSS bundle arrives.
+       App removes it after the first page has rendered. -->
+  <style>
+    #app-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background-color: #f7f4ee;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    #app-splash.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    #app-splash svg {
+      width: 72px;
+      height: 72px;
+      animation: splash-float 1.6s ease-in-out infinite;
+    }
+    #app-splash .splash-bar {
+      width: 88px;
+      height: 3px;
+      border-radius: 3px;
+      background-color: #e6e2da;
+      overflow: hidden;
+    }
+    #app-splash .splash-bar::after {
+      content: "";
+      display: block;
+      width: 40%;
+      height: 100%;
+      border-radius: 3px;
+      background-color: #2f4a3a;
+      animation: splash-slide 1.1s ease-in-out infinite;
+    }
+    @keyframes splash-float {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-6px); opacity: 0.85; }
+    }
+    @keyframes splash-slide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #app-splash svg,
+      #app-splash .splash-bar::after {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-splash" role="status" aria-label="Loading">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="60 60 296 296" aria-hidden="true">
+      <ellipse cx="208" cy="208" rx="150" ry="58" transform="rotate(33 208 208)" fill="none" stroke="#9db89f" stroke-width="7"/>
+      <ellipse cx="208" cy="208" rx="150" ry="58" transform="rotate(-33 208 208)" fill="none" stroke="#1f3d2b" stroke-width="9"/>
+      <path d="M208,116 L222,194 L292,208 L222,222 L208,300 L194,222 L124,208 L194,194 Z" fill="#1f3d2b"/>
+      <path d="M208,140 L216,200 L268,208 L216,216 L208,276 L200,216 L148,208 L200,200 Z" fill="#e8f0e6"/>
+      <circle cx="208" cy="208" r="9" fill="#7a9070"/>
+    </svg>
+    <div class="splash-bar"></div>
+  </div>
+  <app-root></app-root>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<section class="container product-details-page">
+  @if (product(); as p) {
+    <app-breadcrumbs [items]="p.categoryName
+      ? [{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: p.categoryName, link: '/products', queryParams: { category: p.categoryId } }, { label: p.name }]
+      : [{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: p.name }]"></app-breadcrumbs>
+  } @else {
+    <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: 'Crystal' }]"></app-breadcrumbs>
+  }
+
+  @if (isLoading()) {
+    <span class="visually-hidden" role="status">Loading product...</span>
+    <div class="product-details" aria-hidden="true">
+      <span class="skeleton product-image-skeleton"></span>
+      <div class="product-info-skeleton">
+        <span class="skeleton skeleton-line" style="width: 30%"></span>
+        <span class="skeleton" style="width: 75%; height: 1.8rem"></span>
+        <span class="skeleton" style="width: 35%; height: 1.5rem"></span>
+        <span class="skeleton skeleton-line" style="width: 100%"></span>
+        <span class="skeleton skeleton-line" style="width: 92%"></span>
+        <span class="skeleton skeleton-line" style="width: 60%"></span>
+        <span class="skeleton product-actions-skeleton"></span>
+      </div>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadProduct()">Retry</button>
+    </div>
+  } @else if (product(); as p) {
+    <div class="product-details">
+      <div class="product-gallery">
+        <div class="product-image" [class.zoomable]="selectedImageUrl()" (click)="openLightbox()">
+          @if (selectedImageUrl(); as imageUrl) {
+            @for (url of [imageUrl]; track url) {
+              <img class="gallery-image" [imgSrc]="url" imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="p.name" width="800" height="800" fetchpriority="high" imgFallback />
+            }
+            <button type="button" class="zoom-btn" aria-label="Zoom product image" (click)="openLightbox(); $event.stopPropagation()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="6.5"/>
+                <path d="m20 20-4.35-4.35"/>
+              </svg>
+            </button>
+          } @else {
+            <div class="image-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 3h8l4 5-10 13L2 8Z"/>
+              </svg>
+              <span>No Image</span>
+            </div>
+          }
+        </div>
+
+        <div class="image-thumbs">
+          @if (p.images && p.images.length > 1) {
+            @for (image of p.images; track image.productImageId) {
+              <button
+                type="button"
+                class="image-thumb"
+                [class.active]="image.imageUrl === selectedImageUrl()"
+                (click)="selectImage(image.imageUrl)"
+              >
+                <img [imgSrc]="image.imageUrl" imgSizes="100px" [alt]="p.name" width="100" height="100" loading="lazy" decoding="async" imgFallback />
+              </button>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="product-info">
+        <h1>{{ p.name }}</h1>
+
+        @if (p.description) {
+          <p class="description">{{ p.description }}</p>
+        }
+
+        <p class="price">
+          {{ p.price | inr }}
+          @if (p.compareAtPrice && p.compareAtPrice > p.price) {
+            <span class="price-compare">{{ p.compareAtPrice | inr }}</span>
+            <span class="price-discount-badge">-{{ getDiscountPercent(p) }}%</span>
+          }
+        </p>
+
+        <ul class="price-notes">
+          <li>Inclusive of all taxes</li>
+          @if (couponOffer(p); as offer) {
+            <li class="price-note-coupon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg>
+              Coupon available: {{ offer }}
+            </li>
+          }
+          <li>Free delivery on orders above {{ freeShippingThreshold | inr }}, otherwise {{ flatShippingFee | inr }}</li>
+        </ul>
+
+        @if (!reviewsLoading() && reviewCount() > 0) {
+          <p class="rating-summary">
+            <span class="stars">{{ getStars(averageRating()) }}</span>
+            {{ averageRating() }} ★ ({{ reviewCount() }} review{{ reviewCount() === 1 ? '' : 's' }})
+          </p>
+        }
+
+        <ul class="meta-list">
+          <li><strong>Category:</strong> {{ p.categoryName || 'Uncategorized' }}</li>
+          <li>
+            <span class="stock-badge" [class]="stockStatus">{{ stockLabel }}</span>
+          </li>
+        </ul>
+
+        <p class="delivery-estimate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="1" y="6" width="13" height="11"/>
+            <path d="M14 9h4l4 4v4h-8V9Z"/>
+            <circle cx="6" cy="19" r="1.6"/>
+            <circle cx="17.5" cy="19" r="1.6"/>
+          </svg>
+          Estimated delivery: 3-5 business days
+        </p>
+
+        @if (p.zodiacs && p.zodiacs.length > 0) {
+          <div class="zodiac-tags">
+            @for (zodiac of p.zodiacs; track zodiac.zodiacId) {
+              <span class="zodiac-tag">
+                <app-zodiac-icon class="zodiac-tag-icon" [sign]="zodiac.name"></app-zodiac-icon>
+                {{ zodiac.name }}
+              </span>
+            }
+          </div>
+        }
+
+        @if (!isOutOfStock) {
+          <div class="quantity-selector">
+            <span class="quantity-label">Quantity</span>
+            <div class="quantity-controls">
+              <button type="button" aria-label="Decrease quantity" (click)="decreaseQuantity()" [disabled]="quantity() <= 1">−</button>
+              <span class="quantity-value">{{ quantity() }}</span>
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                (click)="increaseQuantity()"
+                [disabled]="quantity() >= p.stockQuantity"
+              >+</button>
+            </div>
+          </div>
+        }
+
+        <div class="product-actions">
+          @if (canRequestStockAlert) {
+            <button
+              type="button"
+              class="btn"
+              [class.btn-outline]="stockAlertSubscribed()"
+              [disabled]="isStockAlertBusy()"
+              [attr.aria-pressed]="stockAlertSubscribed()"
+              (click)="toggleStockAlert()"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              {{ stockAlertSubscribed() ? "We'll email you · Cancel" : 'Notify Me When Available' }}
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn"
+              [class.btn-added]="justAdded()"
+              [disabled]="isOutOfStock"
+              (click)="addToCart()"
+            >{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
+            <button
+              type="button"
+              class="btn btn-accent"
+              [disabled]="isOutOfStock"
+              (click)="buyNow()"
+            >Buy Now</button>
+          }
+          <button
+            type="button"
+            class="btn btn-outline wishlist-toggle-btn"
+            [class.active]="isWishlisted"
+            [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+            (click)="toggleWishlist()"
+          >
+            <svg viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
+            </svg>
+            {{ isWishlisted ? 'Wishlisted' : 'Wishlist' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (relatedProducts().length > 0) {
+      <section class="related-section">
+        <h2>You May Also Like</h2>
+        <div class="related-grid">
+          @for (related of relatedProducts(); track related.productId) {
+            <app-product-card [product]="related"></app-product-card>
+          }
+        </div>
+      </section>
+    }
+
+    <section class="reviews-section">
+      <h2>Reviews & Ratings</h2>
+
+      @if (reviewsLoading()) {
+        <app-spinner label="Loading reviews..."></app-spinner>
+      } @else if (reviewsError()) {
+        <div class="state-message state-message--error">
+          <p>{{ reviewsError() }}</p>
+          <button type="button" class="btn" (click)="loadReviews(p.productId)">Retry</button>
+        </div>
+      } @else {
+        @if (reviewCount() > 0) {
+          <div class="reviews-summary">
+            <span class="stars stars-lg">{{ getStars(averageRating()) }}</span>
+            <span class="reviews-summary-text">{{ averageRating() }} ★ ({{ reviewCount() }} review{{ reviewCount() === 1 ? '' : 's' }})</span>
+          </div>
+        }
+
+        @if (isLoggedIn) {
+          @if (!hasReviewed) {
+            <div class="review-form">
+              <h3>Write a Review</h3>
+              <div class="star-select" role="radiogroup" aria-label="Rating">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <button
+                    type="button"
+                    class="star-btn"
+                    [class.filled]="star <= reviewRating()"
+                    [attr.aria-pressed]="star <= reviewRating()"
+                    [attr.aria-label]="star + ' star' + (star === 1 ? '' : 's')"
+                    (click)="setReviewRating(star)"
+                  >{{ star <= reviewRating() ? '★' : '☆' }}</button>
+                }
+              </div>
+              <textarea
+                class="review-comment-input"
+                aria-label="Review comment (optional)"
+                placeholder="Share your thoughts about this product (optional)"
+                rows="3"
+                maxlength="1000"
+                [value]="reviewComment()"
+                (input)="reviewComment.set($any($event.target).value)"
+              ></textarea>
+              @if (photoEligibility()?.canUploadPhotos) {
+                <app-review-photo-picker
+                  [(photos)]="reviewPhotos"
+                  [max]="photoEligibility()!.maxPhotos"
+                  [disabled]="isSubmittingReview()"
+                ></app-review-photo-picker>
+              }
+              <button
+                type="button"
+                class="btn"
+                [disabled]="isSubmittingReview() || reviewRating() < 1"
+                (click)="submitReview()"
+              >{{ isSubmittingReview() ? 'Submitting...' : 'Submit Review' }}</button>
+            </div>
+          } @else {
+            <p class="already-reviewed">You've already reviewed this product. Thank you!</p>
+          }
+        }
+
+        @if (customerPhotos().length > 0) {
+          <app-review-photo-thumbs
+            heading="Customer photos"
+            size="md"
+            [photos]="customerPhotos()"
+            (open)="openPhotoViewer(customerPhotos(), $event, 'Customer photo')"
+          ></app-review-photo-thumbs>
+        }
+
+        @if (reviews().length > 0) {
+          <ul class="review-list">
+            @for (review of reviews(); track review.reviewId) {
+              <li class="review-item">
+                <div class="review-item-header">
+                  <span class="stars">{{ getStars(review.rating) }}</span>
+                  <span class="review-author">{{ review.userName }}</span>
+                  <span class="review-date">{{ review.createdAt | date:'dd MMM yyyy' }}</span>
+                  @if (canDeleteReview(review)) {
+                    <button type="button" class="link-btn danger review-delete-btn" (click)="deleteReview(review)">Delete</button>
+                  }
+                </div>
+                @if (review.comment) {
+                  <p class="review-comment">{{ review.comment }}</p>
+                }
+                @if (review.images.length) {
+                  <app-review-photo-thumbs
+                    [photos]="reviewThumbs(review)"
+                    (open)="openPhotoViewer(reviewThumbs(review), $event, 'Photo by ' + review.userName)"
+                  ></app-review-photo-thumbs>
+                }
+                @if (review.adminReply) {
+                  <div class="review-admin-reply">
+                    <span class="review-admin-reply-label">Response from Zodiac Crystal</span>
+                    <p>{{ review.adminReply }}</p>
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="state-message state-message--empty">
+            <p>No reviews yet. Be the first to share your experience!</p>
+          </div>
+        }
+      }
+    </section>
+
+    <app-recently-viewed [excludeProductId]="p.productId"></app-recently-viewed>
+
+    @if (!isOutOfStock) {
+      <div class="mobile-add-bar">
+        <span class="mobile-add-bar-price">{{ p.price | inr }}</span>
+        <button type="button" class="btn" [class.btn-added]="justAdded()" (click)="addToCart()">{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
+      </div>
+    }
+
+    @if (photoViewer(); as viewer) {
+      <app-photo-lightbox
+        [photos]="viewer.urls"
+        [index]="viewer.index"
+        [caption]="viewer.caption"
+        (closed)="photoViewer.set(null)"
+      ></app-photo-lightbox>
+    }
+
+    @if (isLightboxOpen() && selectedImageUrl()) {
+      <div class="lightbox-backdrop fade-in" animate.leave="fade-out" (click)="closeLightbox()">
+        <div class="lightbox-content" (click)="$event.stopPropagation()">
+          <button type="button" class="lightbox-close" aria-label="Close" (click)="closeLightbox()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M5 5l14 14M19 5 5 19"/>
+            </svg>
+          </button>
+          <img [imgSrc]="selectedImageUrl()" imgSizes="100vw" [alt]="p.name" decoding="async" imgFallback />
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="state-message state-message--empty">
+      <p>Product not found.</p>
+      <a routerLink="/products" class="btn">Browse Products</a>
+    </div>
+  }
+</section>

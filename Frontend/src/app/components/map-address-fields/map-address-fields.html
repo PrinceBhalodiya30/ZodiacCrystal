@@ -1,0 +1,53 @@
+<app-address-map [maxLength]="maxLength()" (picked)="onPicked($event)" />
+
+<label for="addressLine">Address *</label>
+<textarea
+  id="addressLine"
+  name="addressLine"
+  rows="3"
+  [attr.maxlength]="maxLength()"
+  placeholder="Flat / House no., Building, Street, Area"
+  [ngModel]="line()"
+  (ngModelChange)="line.set($event)"
+  required
+  #lineField="ngModel"
+></textarea>
+@if (lineField.invalid && lineField.touched) {
+  <p class="field-hint error">Address is required.</p>
+}
+
+<div class="form-row">
+  <app-state-city-select [state]="state()" (stateChange)="onStateChange($event)" [city]="city()" (cityChange)="onCityChange($event)" />
+</div>
+
+<label for="postalCode">PIN Code *</label>
+<input
+  id="postalCode"
+  name="postalCode"
+  type="text"
+  inputmode="numeric"
+  autocomplete="postal-code"
+  maxlength="6"
+  pattern="[1-9][0-9]{5}"
+  placeholder="6-digit PIN"
+  [ngModel]="postalCode()"
+  (ngModelChange)="onPinInput($event)"
+  required
+  #postalCodeField="ngModel"
+/>
+<!-- Invalid while the PIN is unknown or belongs to another state. -->
+<input type="hidden" name="pinCheck" [ngModel]="pinAccepted() ? 'ok' : ''" required />
+
+@if (postalCodeField.invalid && postalCodeField.touched) {
+  <p class="field-hint error">
+    {{ postalCodeField.errors?.['required'] ? 'PIN code is required.' : 'Enter a valid 6-digit PIN code.' }}
+  </p>
+} @else if (pinStatus() === 'checking') {
+  <p class="field-hint">Checking PIN code...</p>
+} @else if (pinStatus() === 'unknown' && postalCode().length === 6) {
+  <p class="field-hint error">This PIN code doesn't exist. Please check it.</p>
+} @else if (pinStatus() === 'mismatch') {
+  <p class="field-hint error">PIN code {{ postalCode() }} is not in {{ state() }}. Please check your PIN code or state.</p>
+} @else if (pinStatus() === 'city-mismatch') {
+  <p class="field-hint error">PIN code {{ postalCode() }} is not in {{ city() }}. Please check your PIN code or city.</p>
+}

@@ -1,0 +1,66 @@
+.zodiac-products-page {
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+.zodiac-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.zodiac-image {
+  width: 90px;
+  height: 90px;
+  min-width: 90px;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.zodiac-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  width: 44px;
+  height: 44px;
+  color: var(--color-brand);
+}
+
+.zodiac-header h1 {
+  margin: 0.25rem 0;
+  color: var(--color-ink);
+}
+
+.zodiac-description {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+h2 {
+  margin-bottom: 1.25rem;
+  color: var(--color-ink);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 500px) {
+  .zodiac-header {
+    flex-direction: column;
+    text-align: center;
+  }
+}

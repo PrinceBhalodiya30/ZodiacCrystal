@@ -1,0 +1,198 @@
+.products-page {
+  padding: 2rem 1.5rem 3rem;
+}
+
+.products-page h1 {
+  margin-bottom: 1.5rem;
+  color: var(--color-ink);
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.search-box {
+  position: relative;
+  flex: 1 1 240px;
+}
+
+.search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  z-index: 20;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--color-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.search-suggestion:hover {
+  background-color: var(--color-cream);
+}
+
+.search-suggestion-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-suggestion-price {
+  flex-shrink: 0;
+  color: var(--color-brand);
+  font-weight: 600;
+}
+
+.filter-bar select {
+  height: 42px;
+  min-width: 150px;
+  padding: 0 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.search-input:focus,
+.filter-bar select:focus {
+  outline: none;
+  border-color: var(--color-brand);
+}
+
+.search-input:focus-visible,
+.filter-bar select:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.checkbox-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 42px;
+  padding: 0 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.filter-bar .btn-outline {
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.checkbox-filter input[type='checkbox'] {
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .products-page {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box,
+  .filter-bar select,
+  .checkbox-filter,
+  .filter-bar .btn-outline {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* Wide screens: 4 columns so a 12-item page fills three even rows. */
+@media (min-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Sub-category chips: e.g. "All Crystals · Raw · Tumbled · Towers · Spheres". */
+.subcategory-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.5rem;
+}
+
+.subcategory-chip {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.subcategory-chip:hover {
+  border-color: var(--color-brand);
+}
+
+.subcategory-chip.active {
+  background-color: var(--color-brand);
+  border-color: var(--color-brand);
+  color: #ffffff;
+}

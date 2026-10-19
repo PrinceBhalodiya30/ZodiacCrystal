@@ -1,0 +1,15 @@
+<section class="container guides-page">
+  <a class="page-back-link" routerLink="/">← Back to home</a>
+  <h1>Crystal Guides</h1>
+  <p class="page-subtitle">Learn how to choose, care for, and understand the crystals in our collection.</p>
+
+  <div class="guide-grid">
+    @for (guide of guides; track guide.slug) {
+      <div class="guide-card">
+        <h2>{{ guide.title }}</h2>
+        <p>{{ guide.shortDescription }}</p>
+        <a class="btn btn-outline btn-sm" [routerLink]="['/guides', guide.slug]">Read Guide</a>
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,158 @@
+<section class="container mystery-box-page">
+  <h1>Mystery Crystal Box</h1>
+
+  @if (isLoadingInfo()) {
+    <app-spinner label="Loading Mystery Box..."></app-spinner>
+  } @else if (infoError()) {
+    <div class="state-message state-message--error">
+      <p>{{ infoError() }}</p>
+    </div>
+  } @else if (info(); as boxInfo) {
+    <div class="mystery-box-card">
+      <span class="mystery-box-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 14 9.3 21 12 14 14.7 12 22 10 14.7 3 12 10 9.3Z"/>
+          <path d="M19 3v2.5M19 4.25h-1.25M19 4.25H20.25" stroke-width="1.2"/>
+          <path d="M4 17v2M4 18h-1M4 18h1" stroke-width="1.2"/>
+        </svg>
+      </span>
+      <h2>Mystery Crystal Box</h2>
+
+      <ul class="mystery-box-facts">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 5-10 13L2 8Z"/></svg>
+          {{ boxInfo.itemCount }} Random Crystals
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1-3 2.2c0 3 6 1.5 6 4.5 0 1.4-1.3 2.3-3 2.3s-3-1-3-2.3"/></svg>
+          Minimum value {{ boxInfo.minimumValue | inr:0 }}
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-1.8 0-3-1-3-2.5S10 3 11.3 3C12.7 3 12 6.5 12 8Zm0 0c1.8 0 3-1 3-2.5S13 3 11.7 3C10.3 3 12 6.5 12 8Z"/></svg>
+          Pay {{ boxInfo.price | inr:0 }}
+        </li>
+      </ul>
+
+      <p class="mystery-box-note">
+        You won't know exactly which crystals you'll get until your order arrives - every box is
+        picked at random from our in-stock crystals and is worth at least {{ boxInfo.minimumValue | inr:0 }}
+        at catalog prices.
+      </p>
+
+      @if (!showShippingForm()) {
+        <button type="button" class="btn mystery-box-cta" (click)="startPurchase()">
+          Get Mystery Box
+        </button>
+      }
+    </div>
+
+    @if (showShippingForm()) {
+      <form #shippingForm class="mystery-box-form reveal-in" (ngSubmit)="onSubmit(boxForm)" #boxForm="ngForm">
+        <button type="button" class="back-link" [disabled]="isPurchasing()" (click)="cancelPurchase()">← Back to Mystery Box</button>
+        <div class="step-header">
+          <h2>1. Shipping Address</h2>
+          @if (addressConfirmed()) {
+            <button type="button" class="link-btn" (click)="editAddress()">Change</button>
+          }
+        </div>
+
+        @if (addressConfirmed()) {
+          <!-- Step 1 done: folded into one line; its values live on the component. -->
+          <p class="step-summary">
+            <strong>{{ shippingName }}</strong>,
+            {{ shippingAddress }}, {{ city }}, {{ state }} {{ postalCode }}
+            <span class="step-summary-meta">{{ phone }} · {{ shippingEmail }}</span>
+          </p>
+        } @else {
+          @if (savedAddresses().length > 0) {
+            <div class="saved-address-list">
+              @for (address of savedAddresses(); track address.addressId) {
+                <label class="saved-address-option" [class.selected]="selectedAddressId() === address.addressId">
+                  <input
+                    type="radio"
+                    name="selectedAddress"
+                    [checked]="selectedAddressId() === address.addressId"
+                    (change)="selectAddress(address)"
+                  />
+                  <span class="saved-address-details">
+                    <strong>{{ address.fullName }}</strong>
+                    @if (address.isDefault) {
+                      <span class="status-pill">Default</span>
+                    }
+                    <span>{{ addressLine1And2(address) }}</span>
+                    <span>{{ address.city }}, {{ address.state }} {{ address.postalCode }}</span>
+                    <span>{{ address.phone }}</span>
+                  </span>
+                </label>
+              }
+
+              <label class="saved-address-option" [class.selected]="selectedAddressId() === null">
+                <input
+                  type="radio"
+                  name="selectedAddress"
+                  [checked]="selectedAddressId() === null"
+                  (change)="useNewAddress()"
+                />
+                <span class="saved-address-details">
+                  <strong>Use a new address</strong>
+                </span>
+              </label>
+            </div>
+          }
+
+          <label for="shippingEmail">Email *</label>
+          <input
+            id="shippingEmail"
+            name="shippingEmail"
+            type="email"
+            [(ngModel)]="shippingEmail"
+            required
+            email
+          />
+
+          <!-- A chosen saved address already fills these; they only open for a new address. -->
+          @if (selectedAddressId() === null) {
+            <label for="shippingName">Name *</label>
+            <input id="shippingName" name="shippingName" type="text" [(ngModel)]="shippingName" required />
+
+            <app-map-address-fields
+              [(line)]="shippingAddress"
+              [(city)]="city"
+              [(state)]="state"
+              [(postalCode)]="postalCode"
+              [(latitude)]="latitude"
+              [(longitude)]="longitude"
+            />
+
+            <app-phone-input [(phone)]="phone" />
+          }
+
+          <button type="submit" class="btn place-order-btn">Continue to Payment</button>
+        }
+
+        <h2 class="step-heading" [class.step-pending]="!addressConfirmed()">2. Payment</h2>
+        @if (addressConfirmed()) {
+          <app-payment-method-select [(method)]="paymentMethod" [hideLegend]="true" />
+
+          @if (purchaseError()) {
+            <p class="form-error">{{ purchaseError() }}</p>
+          }
+
+          <button
+            type="submit"
+            class="btn place-order-btn"
+            [disabled]="boxForm.invalid || isPurchasing() || !paymentSelect()?.canSubmit()"
+          >
+            @if (isPurchasing()) {
+              {{ paymentMethod() === 'Card' ? 'Processing payment...' : 'Placing order...' }}
+            } @else if (paymentMethod() === 'Card') {
+              Pay {{ boxInfo.price | inr:0 }} &amp; Get Box
+            } @else {
+              Order Box · {{ boxInfo.price | inr:0 }} on Delivery
+            }
+          </button>
+        }
+      </form>
+    }
+  }
+</section>

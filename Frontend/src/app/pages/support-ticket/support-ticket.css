@@ -1,0 +1,224 @@
+.st-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.st-header h1 {
+  margin: 0.2rem 0;
+  font-size: 1.4rem;
+  color: var(--color-ink);
+}
+
+.st-ref,
+.st-opened {
+  font-size: 0.82rem;
+  color: var(--color-subtle);
+}
+
+.st-order {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.25rem;
+  background-color: var(--color-cream-light);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.st-order-items {
+  color: var(--color-subtle);
+  font-size: 0.82rem;
+  margin-top: 0.2rem;
+}
+
+.st-order-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.st-hint {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-subtle);
+}
+
+.st-hint a {
+  color: var(--color-brand);
+}
+
+.st-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.st-reply label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.st-reply textarea,
+.st-rating textarea {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+
+.st-reply-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.st-reply .st-photo-btn {
+  margin: 0;
+  cursor: pointer;
+}
+
+.st-photo-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.st-send {
+  margin-left: auto;
+}
+
+.st-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  background-color: var(--color-tint);
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.st-file button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.st-solved,
+.st-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-muted);
+}
+
+.st-rating textarea {
+  flex-basis: 100%;
+}
+
+.st-stars {
+  color: var(--color-accent-gold);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
+.st-stars-input button {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--color-border);
+  cursor: pointer;
+  padding: 0 0.1rem;
+}
+
+.st-stars-input button.on {
+  color: var(--color-accent-gold);
+}
+
+.ticket-status {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ticket-status.open { background-color: var(--color-info-bg); color: var(--color-info); }
+.ticket-status.awaitingcustomer { background-color: var(--color-warning-bg); color: var(--color-warning); }
+.ticket-status.resolved { background-color: var(--color-success-bg); color: var(--color-success); }
+.ticket-status.closed { background-color: var(--color-tint); color: var(--color-subtle); }
+
+/* Thread sits in its own card so short conversations don't float on the page. */
+.st-conversation {
+  padding: 1.1rem 1.25rem 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.st-conversation-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.st-conversation-head span {
+  font-size: 0.8rem;
+  color: var(--color-subtle);
+}
+
+.st-waiting {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 85%;
+  margin-top: 0.85rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-cream-light);
+  border: 1px dashed var(--color-border);
+  border-radius: 10px 10px 10px 2px;
+  font-size: 0.88rem;
+}
+
+.st-waiting-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--color-brand);
+}
+
+.st-waiting-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.st-waiting p {
+  margin: 0.2rem 0 0;
+  color: var(--color-muted);
+  line-height: 1.45;
+}
+
+.st-header .ticket-status {
+  margin-top: 0.25rem;
+}

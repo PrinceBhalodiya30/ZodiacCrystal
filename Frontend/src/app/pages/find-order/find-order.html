@@ -1,0 +1,25 @@
+<section class="container find-order-page">
+  <h1>Find my order</h1>
+
+  @if (sentMessage()) {
+    <div class="fo-card fo-sent">
+      <p>{{ sentMessage() }}</p>
+      <p class="fo-muted">The link lets you track, cancel or get help with your order. It can take a minute to arrive - check your spam folder too.</p>
+      <button type="button" class="btn btn-outline" (click)="sentMessage.set('')">Try another order</button>
+    </div>
+  } @else {
+    <form class="fo-card" (ngSubmit)="submit()">
+      <p class="fo-muted">Checked out as a guest? Enter your order number and email and we'll email you a private link to your order.</p>
+      <label for="foOrder">Order number</label>
+      <input id="foOrder" name="orderId" type="text" inputmode="numeric" placeholder="e.g. 109" [(ngModel)]="orderId" required />
+      <label for="foEmail">Email used at checkout</label>
+      <input id="foEmail" name="email" type="email" autocomplete="email" [(ngModel)]="email" required />
+      @if (errorMessage()) {
+        <p class="fo-error">{{ errorMessage() }}</p>
+      }
+      <button type="submit" class="btn" [disabled]="isSending()">{{ isSending() ? 'Sending...' : 'Email me a link' }}</button>
+    </form>
+  }
+
+  <p class="fo-muted fo-login">Have an account? <a routerLink="/login" [queryParams]="{ returnUrl: '/orders' }">Log in to see all your orders</a>.</p>
+</section>

@@ -1,0 +1,160 @@
+:host {
+  display: block;
+}
+
+.area-chart {
+  position: relative;
+  width: 100%;
+}
+
+.area-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-empty {
+  text-align: center;
+  padding: 2.75rem 1rem;
+  color: #9d9991;
+  font-size: 0.92rem;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  color: #928e86;
+}
+
+.key {
+  display: inline-block;
+  width: 14px;
+  height: 0;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+  border-top: 2.5px solid #5a7a64;
+  border-radius: 2px;
+}
+
+.key--previous {
+  border-top: 2px dashed #cfcbc3;
+}
+
+.chart-gridline {
+  stroke: #f2eee6;
+  stroke-width: 1;
+}
+
+.chart-axis-label {
+  font-size: 11px;
+  fill: #a5a199;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-area {
+  animation: area-fade 0.6s ease backwards;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #5a7a64;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-previous {
+  fill: none;
+  stroke: #d6d2ca;
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  stroke-linecap: round;
+}
+
+.chart-guide {
+  stroke: #e5e1d9;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.chart-dot {
+  fill: #ffffff;
+  stroke: #5a7a64;
+  stroke-width: 2.5;
+}
+
+.chart-dot--previous {
+  stroke: #cfcbc3;
+  stroke-width: 2;
+}
+
+.chart-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, calc(-100% - 12px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 110px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  background-color: #ffffff;
+  border: 1px solid #f2eee6;
+  box-shadow: 0 0 0 1px #cfc6b3;
+  color: #413d35;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chart-tooltip.align-start {
+  transform: translate(-14px, calc(-100% - 12px));
+}
+
+.chart-tooltip.align-end {
+  transform: translate(calc(-100% + 14px), calc(-100% - 12px));
+}
+
+.tip-label {
+  font-size: 0.72rem;
+  color: #9d9991;
+}
+
+.tip-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.tip-detail,
+.tip-previous {
+  font-size: 0.72rem;
+  color: #807c74;
+}
+
+.tip-previous {
+  margin-top: 0.15rem;
+  padding-top: 0.2rem;
+  border-top: 1px dashed #eeeae2;
+}
+
+@keyframes area-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-area {
+    animation: none;
+  }
+}

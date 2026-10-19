@@ -1,0 +1,289 @@
+<section class="container checkout-page">
+  @if (items().length > 0) {
+    @if (buyNowProductId(); as productId) {
+      <a class="back-link" [routerLink]="['/products', productId]" (click)="leaveBuyNow()">← Back to product</a>
+    } @else {
+      <a class="back-link" routerLink="/cart">← Back to cart</a>
+    }
+  }
+  <h1>Checkout</h1>
+
+  @if (items().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>There's nothing to check out.</p>
+      <a routerLink="/products" class="btn">Browse Products</a>
+    </div>
+  } @else if (showGuestGate()) {
+    <app-guest-checkout-gate (verified)="onGuestVerified()" />
+  } @else {
+    <div class="checkout-layout">
+      <div class="order-summary">
+        <h2>Review Your Order</h2>
+
+        @if (changeNotes().length > 0) {
+          <div class="checkout-notice" role="status">
+            <strong>Your order was updated:</strong>
+            <ul>
+              @for (note of changeNotes(); track note) {
+                <li>{{ note }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div class="summary-list">
+          @for (item of items(); track item.product.productId) {
+            <div class="summary-row">
+              <div class="summary-image">
+                @if (itemImage(item)) {
+                  <img [imgSrc]="itemImage(item)" imgSizes="120px" [alt]="item.product.name" width="120" height="120" loading="lazy" decoding="async" imgFallback />
+                } @else {
+                    <svg class="thumb-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M8 3h8l4 5-10 13L2 8Z"/>
+                    </svg>
+                  }
+                </div>
+
+                <div class="summary-info">
+                  <span class="summary-name">{{ item.product.name }}</span>
+                  <span class="summary-meta">
+                    {{ item.product.price | inr }} × {{ item.quantity }}
+                  </span>
+                  @if (item.product.stockQuantity <= 0) {
+                    <span class="summary-stock-error">Sold out</span>
+                  } @else if (item.quantity > item.product.stockQuantity) {
+                    <span class="summary-stock-error">Only {{ item.product.stockQuantity }} left</span>
+                  }
+                </div>
+
+                <span class="summary-subtotal">{{ itemSubtotal(item) | inr }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="coupon-box">
+            <h3 class="coupon-box-heading">Have a coupon?</h3>
+            @if (!appliedCouponCode()) {
+              @if (availableCoupons().length > 0) {
+                <ul class="available-coupons">
+                  @for (coupon of availableCoupons(); track coupon.code) {
+                    <li class="available-coupon">
+                      <div class="available-coupon-info">
+                        <span class="available-coupon-code">{{ coupon.code }}</span>
+                        <span class="available-coupon-value">{{ couponValueLabel(coupon) }}</span>
+                        @if (coupon.description) {
+                          <span class="available-coupon-desc">{{ coupon.description }}</span>
+                        }
+                        @if (coupon.minimumOrderAmount > 0) {
+                          <span class="available-coupon-desc">Min. order {{ coupon.minimumOrderAmount | inr:0 }}</span>
+                        }
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-outline coupon-apply-btn"
+                        [disabled]="isApplyingCoupon()"
+                        (click)="selectCoupon(coupon)"
+                      >
+                        Apply
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+
+              <div class="coupon-input-row">
+                <input
+                  type="text"
+                  class="coupon-input"
+                  name="couponCode"
+                  placeholder="Coupon code"
+                  aria-label="Coupon code"
+                  [(ngModel)]="couponCodeInput"
+                  [disabled]="isApplyingCoupon()"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline coupon-apply-btn"
+                  [disabled]="isApplyingCoupon() || !couponCodeInput.trim()"
+                  (click)="applyCoupon()"
+                >
+                  {{ isApplyingCoupon() ? 'Applying...' : 'Apply' }}
+                </button>
+              </div>
+            } @else {
+              <div class="coupon-applied-row">
+                <span class="coupon-applied-label">Coupon "{{ appliedCouponCode() }}" applied</span>
+                <button type="button" class="link-btn" (click)="removeCoupon()">Remove</button>
+              </div>
+            }
+
+            @if (couponMessage()) {
+              <p class="coupon-message" [class.error]="couponMessageType() === 'error'">
+                {{ couponMessage() }}
+              </p>
+            }
+          </div>
+
+          <div class="summary-subtotal-row">
+            <span>Subtotal</span>
+            <span>{{ total() | inr }}</span>
+          </div>
+
+          @if (appliedDiscountAmount() > 0) {
+            <div class="summary-subtotal-row discount-row">
+              <span>Discount</span>
+              <span>-{{ appliedDiscountAmount() | inr }}</span>
+            </div>
+          }
+
+          <div class="summary-subtotal-row">
+            <span>Shipping</span>
+            @if (shippingFee() > 0) {
+              <span>{{ shippingFee() | inr }}</span>
+            } @else {
+              <span class="shipping-free">FREE</span>
+            }
+          </div>
+
+          <div class="summary-total">
+            <span>Total</span>
+            <span>{{ orderTotal() | inr }}</span>
+          </div>
+        </div>
+
+        <form class="checkout-form" (ngSubmit)="onSubmit(checkoutForm)" #checkoutForm="ngForm">
+          <div class="step-header">
+            <h2>1. Shipping Address</h2>
+            @if (addressConfirmed()) {
+              <button type="button" class="link-btn" (click)="editAddress()">Change</button>
+            }
+          </div>
+
+          @if (addressConfirmed()) {
+            <!-- Step 1 done: folded into one line; its values live on the component. -->
+            <p class="step-summary">
+              <strong>{{ shippingName }}</strong>,
+              {{ shippingAddress }}, {{ city }}, {{ state }} {{ postalCode }}
+              <span class="step-summary-meta">{{ phone }} · {{ shippingEmail }}</span>
+            </p>
+          } @else {
+
+          @if (savedAddresses().length > 0) {
+            <div class="saved-address-list">
+              @for (address of savedAddresses(); track address.addressId) {
+                <label class="saved-address-option" [class.selected]="selectedAddressId() === address.addressId">
+                  <input
+                    type="radio"
+                    name="selectedAddress"
+                    [checked]="selectedAddressId() === address.addressId"
+                    (change)="selectAddress(address)"
+                  />
+                  <span class="saved-address-details">
+                    <strong>{{ address.fullName }}</strong>
+                    @if (address.isDefault) {
+                      <span class="status-pill">Default</span>
+                    }
+                    <span>{{ addressLine1And2(address) }}</span>
+                    <span>{{ address.city }}, {{ address.state }} {{ address.postalCode }}</span>
+                    <span>{{ address.phone }}</span>
+                  </span>
+                </label>
+              }
+
+              <label class="saved-address-option" [class.selected]="selectedAddressId() === null">
+                <input
+                  type="radio"
+                  name="selectedAddress"
+                  [checked]="selectedAddressId() === null"
+                  (change)="useNewAddress()"
+                />
+                <span class="saved-address-details">
+                  <strong>Use a new address</strong>
+                </span>
+              </label>
+            </div>
+          }
+
+          <label for="shippingEmail">Email *</label>
+          <input
+            id="shippingEmail"
+            name="shippingEmail"
+            type="email"
+            [(ngModel)]="shippingEmail"
+            [readonly]="isGuest()"
+            required
+            email
+            #shippingEmailField="ngModel"
+          />
+          @if (isGuest()) {
+            <small class="field-hint">Verified guest email · <button type="button" class="link-btn" (click)="switchGuestEmail()">use a different email</button></small>
+          }
+          @if (shippingEmailField.invalid && shippingEmailField.touched) {
+            <p class="field-hint error">
+              {{ shippingEmailField.errors?.['required'] ? 'Email is required.' : 'Enter a valid email address.' }}
+            </p>
+          }
+
+          <!-- A chosen saved address already fills these; they only open for a new address. -->
+          @if (selectedAddressId() === null) {
+            <label for="shippingName">Name *</label>
+            <input id="shippingName" name="shippingName" type="text" [(ngModel)]="shippingName" required #shippingNameField="ngModel" />
+            @if (shippingNameField.invalid && shippingNameField.touched) {
+              <p class="field-hint error">Name is required.</p>
+            }
+
+            <app-map-address-fields
+              [(line)]="shippingAddress"
+              [(city)]="city"
+              [(state)]="state"
+              [(postalCode)]="postalCode"
+              [(latitude)]="latitude"
+              [(longitude)]="longitude"
+            />
+
+            <app-phone-input [(phone)]="phone" />
+          }
+
+
+          <button type="submit" class="btn place-order-btn">
+            Continue to Payment
+          </button>
+        }
+
+        <h2 class="step-heading" [class.step-pending]="!addressConfirmed()">2. Payment</h2>
+        @if (addressConfirmed()) {
+          <app-payment-method-select [(method)]="paymentMethod" [hideLegend]="true" [cardOnly]="isGuest()" />
+
+          @if (errorMessage()) {
+            <p class="form-error">{{ errorMessage() }}</p>
+          }
+
+          @if (stockProblems().length > 0) {
+            <p class="form-error" role="alert">
+              Some items are no longer in stock.
+              @if (buyNowProductId(); as productId) {
+                <a [routerLink]="['/products', productId]" (click)="leaveBuyNow()">Back to product</a>
+              } @else {
+                <a routerLink="/cart">Update your cart</a>
+              }
+              to continue.
+            </p>
+          }
+
+          <button
+            type="submit"
+            class="btn place-order-btn"
+            [disabled]="checkoutForm.invalid || isSubmitting() || !paymentSelect()?.canSubmit() || stockProblems().length > 0"
+          >
+            @if (isSubmitting()) {
+              {{ paymentMethod() === 'Card' ? 'Processing payment...' : 'Placing order...' }}
+            } @else {
+              {{ paymentMethod() === 'Card' ? 'Pay' : 'Place Order' }} · {{ orderTotal() | inr }}
+            }
+          </button>
+        }
+
+      </form>
+    </div>
+  }
+</section>

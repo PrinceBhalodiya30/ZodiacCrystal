@@ -1,0 +1,35 @@
+.wishlist-page {
+  padding: 2rem 1.5rem 3rem;
+}
+
+.wishlist-page h1 {
+  margin-bottom: 1.5rem;
+  color: var(--color-ink);
+}
+
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+.state-message--empty h2 {
+  margin: 0 0 0.5rem;
+  color: var(--color-ink);
+}
+
+@media (max-width: 480px) {
+  .wishlist-page {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Inside the My Account layout the shell provides the page padding. */
+:host-context(.account-content) .wishlist-page {
+  padding: 0;
+  margin: 0;
+}

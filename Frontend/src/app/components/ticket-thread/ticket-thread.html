@@ -1,0 +1,40 @@
+<ol class="thread">
+  @for (m of messages(); track m.ticketMessageId) {
+    <li class="thread-msg" [class.mine]="isMine(m)" [class.internal]="m.isInternal" [class.deleted]="m.isDeleted">
+      <div class="thread-meta">
+        <strong>{{ m.isInternal ? 'Internal note · ' + m.senderName : m.senderName }}</strong>
+        <time [attr.datetime]="m.createdAt">
+          {{ m.createdAt | date:'dd MMM, h:mm a' }}{{ m.isEdited && !m.isDeleted ? ' · edited' : '' }}{{ m.isDeleted && forAdmin() ? ' · deleted' : '' }}
+        </time>
+      </div>
+
+      @if (editingId() === m.ticketMessageId) {
+        <textarea class="thread-edit" rows="3" maxlength="2000" [(ngModel)]="editText" [attr.aria-label]="'Edit message'"></textarea>
+        <div class="thread-actions">
+          <button type="button" class="thread-action" (click)="cancelEdit()">Cancel</button>
+          <button type="button" class="thread-action primary" [disabled]="busy() || !editText.trim()" (click)="saveEdit(m)">Save</button>
+        </div>
+      } @else {
+        <div class="thread-body">{{ m.body }}</div>
+        @if (m.attachments.length) {
+          <div class="thread-photos">
+            @for (url of m.attachments; track url) {
+              <a [href]="url" target="_blank" rel="noopener">
+                <img [src]="url" alt="Attached photo" loading="lazy" />
+              </a>
+            }
+          </div>
+        }
+        @if (forAdmin() && m.canModify) {
+          <div class="thread-actions">
+            @if (m.editableUntil) {
+              <span class="thread-window">Editable until {{ m.editableUntil | date:'h:mm a' }}</span>
+            }
+            <button type="button" class="thread-action" [disabled]="busy()" (click)="startEdit(m)">Edit</button>
+            <button type="button" class="thread-action danger" [disabled]="busy()" (click)="deleteMessage.emit(m)">Delete</button>
+          </div>
+        }
+      }
+    </li>
+  }
+</ol>

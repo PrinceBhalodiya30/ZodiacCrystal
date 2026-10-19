@@ -1,0 +1,73 @@
+.order-placed-page {
+  padding: 2.5rem 1.5rem 3rem;
+  max-width: 640px;
+}
+
+.op-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.op-icon {
+  width: 56px;
+  height: 56px;
+  color: var(--color-success);
+}
+
+.op-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.op-card h1 {
+  margin: 0.25rem 0;
+  font-size: 1.5rem;
+  color: var(--color-ink);
+}
+
+.op-card p {
+  margin: 0;
+}
+
+.op-muted {
+  color: var(--color-muted);
+  font-size: 0.92rem;
+}
+
+.op-items {
+  list-style: none;
+  margin: 0.5rem 0;
+  padding: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.op-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1.25rem;
+  background-color: var(--color-cream-light);
+  border-radius: 6px;
+}
+
+.op-account p {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.op-link {
+  margin-top: 0.75rem;
+  color: var(--color-brand);
+  font-weight: 600;
+}

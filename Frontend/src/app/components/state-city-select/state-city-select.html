@@ -1,0 +1,58 @@
+<div>
+  <label for="state">State *</label>
+  <select
+    id="state"
+    name="state"
+    [ngModel]="stateSelectValue()"
+    (ngModelChange)="onStateChange($event)"
+    required
+    #stateField="ngModel"
+  >
+    <option value="" disabled>Select state</option>
+    @for (s of stateOptions(); track s) {
+      <option [value]="s">{{ s }}</option>
+    }
+  </select>
+  @if (stateField.invalid && stateField.touched) {
+    <p class="field-hint error">State is required.</p>
+  }
+</div>
+
+<div>
+  <label for="city">City *</label>
+  <select
+    id="city"
+    name="city"
+    [ngModel]="citySelectValue()"
+    (ngModelChange)="onCityChange($event)"
+    [disabled]="!state()"
+    required
+    #cityField="ngModel"
+  >
+    <option value="" disabled>{{ state() ? 'Select city' : 'Select state first' }}</option>
+    @for (c of cities(); track c) {
+      <option [value]="c">{{ c }}</option>
+    }
+    <option [value]="otherValue">Other</option>
+  </select>
+
+  @if (isOther()) {
+    <input
+      id="cityOther"
+      name="cityOther"
+      type="text"
+      class="city-other"
+      [ngModel]="city()"
+      (ngModelChange)="city.set($event)"
+      required
+      placeholder="Enter your city"
+      aria-label="City name"
+      #cityOtherField="ngModel"
+    />
+    @if (cityOtherField.invalid && cityOtherField.touched) {
+      <p class="field-hint error">City is required.</p>
+    }
+  } @else if (cityField.invalid && cityField.touched && state()) {
+    <p class="field-hint error">City is required.</p>
+  }
+</div>

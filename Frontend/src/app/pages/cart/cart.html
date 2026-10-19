@@ -1,0 +1,100 @@
+<section class="container cart-page">
+  <h1>Your Cart</h1>
+
+  @if (cartService.items().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>Your cart is empty.</p>
+      <a routerLink="/products" class="btn">Browse Products</a>
+    </div>
+  } @else {
+    @if (changeNotes().length > 0) {
+      <div class="cart-notice" role="status">
+        <strong>Your cart was updated:</strong>
+        <ul>
+          @for (note of changeNotes(); track note) {
+            <li>{{ note }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="cart-list">
+      @for (item of cartService.items(); track item.product.productId) {
+        <div class="cart-item" animate.leave="cart-item-leaving">
+          <div class="cart-item-image">
+            @if (itemImage(item)) {
+              <img [imgSrc]="itemImage(item)" imgSizes="120px" [alt]="item.product.name" width="120" height="120" loading="lazy" decoding="async" imgFallback />
+            } @else {
+              <svg class="thumb-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 3h8l4 5-10 13L2 8Z"/>
+              </svg>
+            }
+          </div>
+
+          <div class="cart-item-info">
+            <span class="cart-item-name">{{ item.product.name }}</span>
+            <span class="cart-item-price">{{ item.product.price | inr }}</span>
+            @if (item.product.stockQuantity <= 0) {
+              <span class="cart-item-stock-error">Sold out - please remove</span>
+            } @else if (isOverStock(item)) {
+              <span class="cart-item-stock-error">Only {{ item.product.stockQuantity }} left - reduce quantity</span>
+            }
+          </div>
+
+          <div class="cart-item-qty">
+            <button type="button" [attr.aria-label]="'Decrease quantity of ' + item.product.name" (click)="decrease(item)" [disabled]="item.quantity <= 1">−</button>
+            <span aria-live="polite" [attr.aria-label]="'Quantity ' + item.quantity">{{ item.quantity }}</span>
+            <button
+              type="button"
+              [attr.aria-label]="'Increase quantity of ' + item.product.name"
+              (click)="increase(item)"
+              [disabled]="item.quantity >= item.product.stockQuantity"
+            >+</button>
+          </div>
+
+          <div class="cart-item-subtotal">{{ itemSubtotal(item) | inr }}</div>
+
+          <button type="button" class="cart-item-remove" [attr.aria-label]="'Remove ' + item.product.name + ' from cart'" (click)="remove(item)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="cart-summary">
+      <button type="button" class="btn btn-cancel clear-cart" (click)="clearCart()">Clear Cart</button>
+
+      <div class="cart-totals">
+        <div class="cart-total-row">
+          <span>Subtotal</span>
+          <span>{{ cartService.total() | inr }}</span>
+        </div>
+        <div class="cart-total-row">
+          <span>Shipping</span>
+          <span>{{ shippingFee() === 0 ? 'Free' : (shippingFee() | inr) }}</span>
+        </div>
+        <div class="cart-total-row cart-total-final">
+          <span>Total</span>
+          <span>{{ grandTotal() | inr }}</span>
+        </div>
+
+        @if (amountToFreeShipping() > 0) {
+          <p class="cart-hint">Add {{ amountToFreeShipping() | inr }} more for free shipping.</p>
+        }
+        <p class="cart-hint">Have a coupon? Apply it at checkout.</p>
+
+        @if (cartService.stockProblems().length > 0) {
+          <p class="cart-stock-block" role="alert">Fix the highlighted items to continue.</p>
+        }
+
+        <button type="button" class="btn checkout-btn" (click)="checkout()" [disabled]="cartService.stockProblems().length > 0">
+          Proceed to Checkout
+        </button>
+
+        <a routerLink="/products" class="continue-shopping">← Continue shopping</a>
+      </div>
+    </div>
+  }
+</section>

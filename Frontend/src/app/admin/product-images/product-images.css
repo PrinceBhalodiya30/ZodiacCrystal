@@ -1,0 +1,13 @@
+/* Page-specific tweaks only - shared table/form styles live in admin-shared.css */
+
+.row-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+.thumb-placeholder {
+  font-size: 1.4rem;
+}

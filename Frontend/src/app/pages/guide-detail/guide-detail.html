@@ -1,0 +1,37 @@
+<section class="container guide-detail-page">
+  <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Crystal Guides', link: '/guides' }, { label: guide()?.title ?? 'Guide' }]"></app-breadcrumbs>
+
+  @if (guide(); as g) {
+    <article class="guide-article">
+      <h1>{{ g.title }}</h1>
+      <p class="guide-intro">{{ g.shortDescription }}</p>
+
+      @for (section of g.sections; track $index) {
+        <div class="guide-section">
+          @if (section.heading) {
+            <h2>{{ section.heading }}</h2>
+          }
+          @for (paragraph of section.paragraphs; track $index) {
+            <p>{{ paragraph }}</p>
+          }
+        </div>
+      }
+
+      @if (g.relatedLinks.length > 0) {
+        <div class="guide-links">
+          <h3>Continue exploring</h3>
+          <div class="guide-links-row">
+            @for (link of g.relatedLinks; track link.path) {
+              <a class="btn" [routerLink]="[link.path]">{{ link.label }}</a>
+            }
+          </div>
+        </div>
+      }
+    </article>
+  } @else {
+    <div class="state-message state-message--empty">
+      <p>We couldn't find that guide.</p>
+      <a routerLink="/guides" class="btn">Browse All Guides</a>
+    </div>
+  }
+</section>

@@ -1,0 +1,25 @@
+<section class="unsubscribe">
+  @switch (state()) {
+    @case ('confirm') {
+      <h1>Unsubscribe from our newsletter?</h1>
+      <p>You'll stop receiving emails about new stones and restocks. Order emails aren't affected.</p>
+      <button type="button" class="btn" (click)="confirm()">Yes, unsubscribe me</button>
+      <a routerLink="/" class="unsubscribe-secondary">No, keep me subscribed</a>
+    }
+    @case ('working') {
+      <h1>Unsubscribing…</h1>
+    }
+    @case ('done') {
+      <h1>You're unsubscribed</h1>
+      <p>{{ message() }}</p>
+      <p class="unsubscribe-note">Changed your mind? You can subscribe again any time from the bottom of our website.</p>
+      <a routerLink="/" class="btn">Back to Home</a>
+    }
+    @case ('error') {
+      <h1>We couldn't unsubscribe you</h1>
+      <p>{{ message() }}</p>
+      <p class="unsubscribe-note">If this keeps happening, email us at support&#64;zodiaccrystals.com and we'll remove you.</p>
+      <a routerLink="/" class="btn">Back to Home</a>
+    }
+  }
+</section>

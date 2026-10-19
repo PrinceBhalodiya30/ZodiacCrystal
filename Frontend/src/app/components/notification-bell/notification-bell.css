@@ -1,0 +1,328 @@
+.notification-bell {
+  position: relative;
+}
+
+/* ---- Bell button ------------------------------------------------------
+   Mirrors the navbar's .icon-link / .icon-badge. Those live in navbar.css
+   and Angular's style encapsulation keeps them from reaching this
+   component, which is why the bell used to render as a plain grey button. */
+.icon-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.icon-link svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  transform-origin: 50% 10%;
+}
+
+.icon-link:hover,
+.icon-link.active {
+  background-color: var(--color-cream);
+  color: var(--color-brand);
+}
+
+.icon-link:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.icon-link.has-unread {
+  color: var(--color-brand);
+}
+
+.icon-link.ringing svg {
+  animation: bell-ring 0.9s ease;
+}
+
+@keyframes bell-ring {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(16deg); }
+  30% { transform: rotate(-14deg); }
+  45% { transform: rotate(10deg); }
+  60% { transform: rotate(-8deg); }
+  75% { transform: rotate(4deg); }
+}
+
+.icon-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background-color: var(--color-brand);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+.icon-link.ringing .icon-badge {
+  animation: badge-bump 0.35s ease;
+}
+
+@keyframes badge-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+/* ---- Dropdown ------------------------------------------------------- */
+.notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 340px;
+  max-width: 90vw;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 20;
+  animation: dropdown-in 0.15s ease;
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notification-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mark-all-btn {
+  background: none;
+  border: none;
+  color: var(--color-brand);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mark-all-btn:hover {
+  text-decoration: underline;
+}
+
+.notification-list {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s ease;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background-color: #f9f7fb;
+}
+
+.notification-item.unread {
+  background-color: var(--color-cream);
+}
+
+.notification-item:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: -2px;
+}
+
+/* Per-type icon */
+.notification-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  color: var(--color-brand);
+}
+
+.notification-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.notification-icon.placed { background-color: var(--color-cream); color: var(--color-brand); }
+.notification-icon.confirmed { background-color: #e8f0fe; color: #2f6fd6; }
+.notification-icon.shipped { background-color: #fff3e0; color: #c26a00; }
+.notification-icon.delivered { background-color: #e6f6ec; color: #1e8a4c; }
+.notification-icon.cancelled { background-color: #fdecec; color: #c62828; }
+.notification-icon.stock { background-color: #fff3e0; color: #c26a00; }
+.notification-icon.return { background-color: #e8f0fe; color: #2f6fd6; }
+.notification-icon.welcome { background-color: var(--color-cream); color: var(--color-brand); }
+.notification-icon.coupon { background-color: #e6f6ec; color: #1e8a4c; }
+.notification-icon.restock { background-color: #e6f6ec; color: #1e8a4c; }
+.notification-icon.price { background-color: #e6f6ec; color: #1e8a4c; }
+
+.notification-coupon-code {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border: 1px dashed currentColor;
+  border-radius: 6px;
+  color: #1e8a4c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.notification-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.notification-message {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* Long order ids or emails wrap instead of spilling out of the panel. */
+.notification-title,
+.notification-message {
+  overflow-wrap: anywhere;
+}
+
+.notification-time {
+  font-size: 0.7rem;
+  color: var(--color-subtle);
+  margin-top: 0.15rem;
+}
+
+.unread-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 0.4rem;
+  border-radius: 50%;
+  background-color: var(--color-brand);
+}
+
+/* Empty state */
+.notification-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.75rem 1rem;
+  text-align: center;
+}
+
+.notification-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.6rem;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  color: var(--color-brand);
+}
+
+.notification-empty-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.notification-empty-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.notification-empty-text {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-subtle);
+}
+
+/* Mobile navbar (same 800px breakpoint as navbar.css): the bell isn't the
+   last icon, so a panel aligned to the bell runs off the left edge. Let the
+   panel anchor to the sticky navbar instead and hug the screen's right edge. */
+@media (max-width: 800px) {
+  .notification-bell {
+    position: static;
+  }
+
+  .notification-dropdown {
+    top: 100%;
+    right: 12px;
+    width: min(340px, calc(100vw - 24px));
+    max-width: none;
+  }
+
+  .notification-list {
+    max-height: min(380px, 65vh);
+  }
+}
+
+@media (max-width: 600px) {
+  .notification-title { font-size: 0.9rem; }
+  .notification-message { font-size: 0.85rem; }
+  .notification-time { font-size: 0.75rem; }
+
+  .mark-all-btn {
+    font-size: 0.8rem;
+    padding: 0.35rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-link.ringing svg,
+  .icon-link.ringing .icon-badge,
+  .notification-dropdown {
+    animation: none;
+  }
+}

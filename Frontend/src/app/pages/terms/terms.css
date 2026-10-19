@@ -1,0 +1,75 @@
+.info-page {
+  padding: 2rem 1.5rem 3rem;
+  max-width: 800px;
+}
+
+.info-page h1 {
+  margin-bottom: 0.5rem;
+  color: var(--color-ink);
+}
+
+.info-page h1::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  margin: 0.85rem 0 1.5rem;
+  background: var(--color-accent-gold);
+  border-radius: 999px;
+}
+
+.info-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  border-top: 3px solid var(--color-border);
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.75rem;
+}
+
+.info-card h2 {
+  margin: 1.5rem 0 0.5rem;
+  color: var(--color-ink);
+  font-size: 1.1rem;
+}
+
+.info-card h2:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.info-card p,
+.info-card li {
+  margin: 0 0 0.5rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.info-card ul {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.info-card a {
+  color: var(--color-brand);
+  font-weight: 600;
+}
+
+.info-note {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #68645c;
+  background-color: var(--color-tint);
+  border: 1px solid #e2dac9;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 480px) {
+  .info-page {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .info-card {
+    padding: 1.25rem;
+  }
+}

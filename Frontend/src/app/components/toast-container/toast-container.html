@@ -1,0 +1,33 @@
+<div class="toast-stack">
+  @for (toast of service.toasts(); track toast.id) {
+    <div
+      class="toast"
+      [class]="toast.type"
+      [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
+      [attr.aria-live]="toast.type === 'error' ? 'assertive' : 'polite'"
+      aria-atomic="true"
+      [style.--toast-duration]="toast.durationMs + 'ms'"
+      animate.leave="toast-leaving">
+      <span class="toast-icon">
+        @if (toast.type === 'success') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="m8 12.5 2.5 2.5L16 9.5"/>
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 8v5"/>
+            <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+          </svg>
+        }
+      </span>
+      <span class="toast-message">{{ toast.message }}</span>
+      <button type="button" class="toast-close" (click)="service.dismiss(toast.id)" aria-label="Dismiss">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M5 5l14 14M19 5 5 19"/>
+        </svg>
+      </button>
+    </div>
+  }
+</div>

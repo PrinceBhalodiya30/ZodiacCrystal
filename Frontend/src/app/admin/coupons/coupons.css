@@ -1,0 +1,18 @@
+/* Page-specific tweaks only - shared table/form styles live in admin-shared.css */
+
+/* Coupon status badges - same wording as the status filter. */
+.status-pill.coupon-status--scheduled {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.status-pill.coupon-status--usedup {
+  background-color: #fdf4e3;
+  color: #9a6206;
+}
+
+/* Inactive keeps the shared red "inactive" pill. */
+.status-pill.coupon-status--expired {
+  background-color: var(--color-border-light);
+  color: var(--color-muted);
+}

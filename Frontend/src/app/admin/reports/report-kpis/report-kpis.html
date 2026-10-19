@@ -1,0 +1,67 @@
+<section class="kpi-grid" aria-label="Summary">
+  @for (card of cards(); track card.key) {
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <span class="kpi-label">{{ card.label }}</span>
+        <span [class]="'kpi-icon tone--' + card.tone" aria-hidden="true">
+          @switch (card.icon) {
+            @case ('revenue') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12M6 9h12M14.5 20 7 13h2.5a4.5 4.5 0 0 0 0-9"/></svg>
+            }
+            @case ('orders') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+            }
+            @case ('average') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+            }
+            @default {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+            }
+          }
+        </span>
+      </div>
+      <span class="kpi-value" [countUp]="card.value" [countUpPrefix]="card.currency ? '₹' : ''">—</span>
+      <div class="kpi-foot">
+        @if (card.change; as ch) {
+          <span class="chip" [class.chip--good]="ch.good" [class.chip--bad]="ch.bad" [title]="'vs ' + previousLabel">{{ ch.text }}</span>
+        }
+        <span class="kpi-context">{{ card.context }}</span>
+      </div>
+    </article>
+  }
+</section>
+
+@if (money(); as m) {
+  <section class="pay-card" aria-labelledby="payTitle">
+    <div class="pay-head">
+      <h2 id="payTitle">Payments</h2>
+      <span class="pay-sub">Where the money from these orders stands</span>
+    </div>
+
+    @if (m.hasAny) {
+      <div class="pay-bar" aria-hidden="true">
+        <span class="seg seg--collected" [style.flex-grow]="m.collectedPct"></span>
+        <span class="seg seg--pending" [style.flex-grow]="m.pendingPct"></span>
+        <span class="seg seg--refunded" [style.flex-grow]="m.refundedPct"></span>
+      </div>
+    }
+
+    <dl class="pay-items">
+      <div>
+        <dt><i class="dot seg--collected"></i>Collected</dt>
+        <dd>{{ m.collected | inr }}</dd>
+        <span class="pay-hint">Card payments + COD cash received</span>
+      </div>
+      <div>
+        <dt><i class="dot seg--pending"></i>Pending COD</dt>
+        <dd>{{ m.pending | inr }}</dd>
+        <span class="pay-hint">To be collected on delivery</span>
+      </div>
+      <div>
+        <dt><i class="dot seg--refunded"></i>Refunded</dt>
+        <dd>{{ m.refunded | inr }}</dd>
+        <span class="pay-hint">Cancellations and refunded returns</span>
+      </div>
+    </dl>
+  </section>
+}

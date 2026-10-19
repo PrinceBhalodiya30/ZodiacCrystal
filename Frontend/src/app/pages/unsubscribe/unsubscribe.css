@@ -1,0 +1,36 @@
+.unsubscribe {
+  min-height: 60vh;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.unsubscribe h1 {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.unsubscribe p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.unsubscribe .btn {
+  margin-top: 0.75rem;
+}
+
+.unsubscribe-note {
+  font-size: 0.9rem;
+}
+
+.unsubscribe-secondary {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}

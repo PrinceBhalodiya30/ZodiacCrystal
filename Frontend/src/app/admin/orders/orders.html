@@ -1,0 +1,136 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-orders-page">
+  <div class="page-header">
+    <h1>Manage Orders</h1>
+    <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
+    [title]="'Exports the ' + totalCount() + ' row(s) matching the current filters'"
+    (click)="exportCsv()">
+      {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by customer, email, order # or tracking #..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="orderSearch"
+    />
+    <select
+      class="status-filter"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="onStatusFilterChange($event)"
+      name="orderStatusFilter"
+    >
+      <option value="">All Statuses</option>
+      @for (status of statuses; track status) {
+        <option [value]="status">{{ status }}</option>
+      }
+    </select>
+    <select
+      class="status-filter"
+      [ngModel]="paymentFilter()"
+      (ngModelChange)="onPaymentFilterChange($event)"
+      name="orderPaymentFilter"
+      aria-label="Filter by payment"
+    >
+      <option value="">All Payments</option>
+      <optgroup label="Payment status">
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending (COD not collected)</option>
+        <option value="Refunded">Refunded</option>
+        <option value="Cancelled">Cancelled (COD)</option>
+      </optgroup>
+      <optgroup label="Payment method">
+        <option value="Card">Card</option>
+        <option value="COD">Cash on Delivery</option>
+      </optgroup>
+    </select>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (isLoading() && orders().length === 0) {
+    <app-spinner label="Loading orders..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadOrders()">Retry</button>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>No orders found.</p>
+      @if (searchTerm() || statusFilter() || paymentFilter()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap" [class.is-refreshing]="isLoading()">
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.orderId) {
+            <tr class="clickable-row" [class.is-open]="openOrderId() === order.orderId" [class.row-new]="newOrderIds().has(order.orderId)" tabindex="0" role="button" [attr.aria-label]="'Open order #' + order.orderId" (click)="openOrder(order)" (keydown.enter)="openOrder(order)" (keydown.space)="$event.preventDefault(); openOrder(order)">
+              <td data-label="Order ID">
+                #{{ order.orderId }}
+                @if (newOrderIds().has(order.orderId)) {
+                  <span class="new-tag">New</span>
+                }
+              </td>
+              <td data-label="Customer">
+                <div class="customer-name">{{ order.customerName }}</div>
+                <div class="customer-email">{{ order.customerEmail }}</div>
+              </td>
+              <td data-label="Date">{{ order.orderDate | date:'dd MMM yyyy' }}</td>
+              <td data-label="Total">{{ order.totalAmount | inr }}</td>
+              <td data-label="Payment">
+                <div class="payment-cell">
+                  <span class="payment-method">{{ order.paymentMethod === 'Card' ? 'Card' : 'COD' }}</span>
+                  <span class="payment-badge" [class]="'payment-badge ' + order.paymentStatus.toLowerCase()">
+                    {{ order.paymentStatus }}
+                  </span>
+                </div>
+              </td>
+              <td data-label="Status">
+                <span class="order-status" [class]="'order-status ' + order.status.toLowerCase()">{{ order.status }}</span>
+              </td>
+              <td class="cell-actions">
+                <div class="row-actions">
+                  <button
+                    type="button"
+                    class="chip-btn"
+                    [attr.aria-label]="'View order #' + order.orderId"
+                    (click)="openOrder(order); $event.stopPropagation()"
+                  >
+                    View
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+
+  @if (openOrderId(); as id) {
+    <app-order-detail-drawer [orderId]="id" (closed)="closeOrder()" (orderChanged)="onOrderChanged($event)"></app-order-detail-drawer>
+  }
+</section>

@@ -1,0 +1,462 @@
+.checkout-page {
+  padding: 2rem 1.5rem 3rem;
+}
+
+.checkout-page h1 {
+  margin-bottom: 1.5rem;
+  color: var(--color-ink);
+}
+
+.checkout-layout {
+  display: grid;
+  /* Steps 1-2 (form) on the left, the order review on the right and kept in view. */
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.checkout-form {
+  order: 1;
+}
+
+.order-summary {
+  order: 2;
+  position: sticky;
+  top: 90px;
+}
+
+.checkout-form .step-heading {
+  margin-top: 1.75rem;
+}
+
+.order-summary,
+.checkout-form {
+  background-color: #ffffff;
+  border-radius: 6px;
+  border-top: 3px solid var(--color-border);
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.5rem;
+}
+
+.order-summary {
+  background: #ffffff;
+}
+
+.order-summary h2,
+.checkout-form h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  color: var(--color-ink);
+}
+
+.order-summary h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.order-summary h2::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-brand);
+}
+
+.saved-address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.saved-address-option {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+}
+
+.saved-address-option.selected {
+  border-color: var(--color-brand);
+  background-color: var(--color-tint);
+}
+
+.saved-address-option input[type='radio'] {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.saved-address-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+
+.saved-address-details strong {
+  color: var(--color-ink);
+  font-size: 0.95rem;
+}
+
+.saved-address-details .status-pill {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.summary-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-placeholder {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: #6f8f78;
+}
+
+.summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-name {
+  font-weight: 600;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+}
+
+.summary-meta {
+  font-size: 0.8rem;
+  color: var(--color-subtle);
+}
+
+.summary-subtotal {
+  font-weight: 600;
+  color: var(--color-brand);
+  white-space: nowrap;
+}
+
+.coupon-box {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.coupon-box-heading {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.available-coupons {
+  list-style: none;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.available-coupon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: #f6f3ec;
+  border: 1px dashed #d3cfc7;
+  border-radius: 4px;
+}
+
+.available-coupon-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.available-coupon-code {
+  font-weight: 700;
+  color: var(--color-brand);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.available-coupon-value {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.available-coupon-desc {
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.coupon-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.coupon-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.coupon-input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+}
+
+.coupon-input:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.coupon-apply-btn {
+  flex-shrink: 0;
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+}
+
+.coupon-applied-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background-color: var(--color-cream);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+}
+
+.coupon-applied-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-brand);
+}
+
+.coupon-message {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--color-success);
+}
+
+.coupon-message.error {
+  color: var(--color-danger);
+}
+
+.summary-subtotal-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.summary-subtotal-row.discount-row {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.shipping-free {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-ink);
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-form label {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-weight: 500;
+  margin-top: 0.6rem;
+}
+
+.checkout-form input:not([type='radio']):not([type='checkbox']) {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.checkout-form input:not([type='radio']):not([type='checkbox']):focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.saved-address-option input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-brand);
+}
+
+.checkout-form input:not([type='radio']):not([type='checkbox']):focus {
+  outline: none;
+  border-color: var(--color-brand);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.place-order-btn {
+  margin-top: 1.5rem;
+  background-color: var(--color-brand);
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.place-order-btn:hover:not(:disabled) {
+  background-color: var(--color-brand-hover);
+  transform: translateY(-1px);
+}
+
+.place-order-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Single column: show what they're buying first, so the summary never
+     ends up below the Place Order button. */
+  .order-summary {
+    position: static;
+    order: 0;
+  }
+}
+
+.step-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.step-summary {
+  margin: 0.25rem 0 0;
+  padding: 0.85rem 1rem;
+  background-color: #f6f3ec;
+  border-radius: 4px;
+  line-height: 1.5;
+  color: var(--color-ink);
+}
+
+.step-summary-meta {
+  display: block;
+  color: var(--color-subtle);
+  font-size: 0.9rem;
+}
+
+/* Step 2 heading stays visible but muted until the address is confirmed. */
+.checkout-form .step-pending {
+  color: #aaa;
+}
+
+.checkout-notice {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  background-color: #fdf6e3;
+  box-shadow: 0 0 0 1px #eadcb5;
+  font-size: 0.9rem;
+}
+
+.checkout-notice ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.summary-stock-error {
+  display: block;
+  color: var(--color-danger);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--color-subtle);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--color-brand);
+  font-weight: 600;
+  cursor: pointer;
+}

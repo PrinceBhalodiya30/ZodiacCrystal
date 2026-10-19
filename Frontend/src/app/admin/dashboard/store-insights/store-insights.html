@@ -1,0 +1,155 @@
+<section class="insights" aria-labelledby="insightsTitle">
+  <header class="insights-head">
+    <div>
+      <h2 id="insightsTitle">Store insights</h2>
+      <p class="insights-sub">Orders placed in the last {{ rangeDays() }} days</p>
+    </div>
+    <div class="range-toggle" role="group" aria-label="Date range">
+      @for (range of ranges; track range.days) {
+        <button
+          type="button"
+          [class.is-active]="rangeDays() === range.days"
+          [attr.aria-pressed]="rangeDays() === range.days"
+          (click)="setRange(range.days)"
+        >{{ range.label }}</button>
+      }
+    </div>
+  </header>
+
+  @if (hasError() && !isLoading()) {
+    <p class="insights-error">Some insights could not be loaded.</p>
+  }
+
+  @if (isLoading()) {
+    <div class="insights-grid" role="status" aria-label="Loading insights">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="ins-panel"><span class="ins-sk ins-sk--title"></span><span class="ins-sk ins-sk--body"></span></div>
+      }
+    </div>
+  } @else {
+    <div class="insights-grid">
+      <!-- Order outcomes + why customers cancel -->
+      <article class="ins-panel">
+        <div class="ins-panel-head">
+          <h3>Order status</h3>
+          <span class="ins-total">{{ totalOrders() }} {{ totalOrders() === 1 ? 'order' : 'orders' }}</span>
+        </div>
+
+        @if (totalOrders() === 0) {
+          <p class="ins-empty">No orders in this range.</p>
+        } @else {
+          <div class="status-bar" aria-hidden="true">
+            @for (seg of statusSegments(); track seg.status) {
+              @if (seg.count > 0) {
+                <span [class]="'status-seg seg--' + seg.status.toLowerCase()" [style.flex-grow]="seg.count" [title]="seg.status + ': ' + seg.count"></span>
+              }
+            }
+          </div>
+          <ul class="status-legend">
+            @for (seg of statusSegments(); track seg.status) {
+              <li>
+                <a routerLink="/admin/orders" [queryParams]="statusLink(seg.status)">
+                  <span [class]="'dot seg--' + seg.status.toLowerCase()" aria-hidden="true"></span>
+                  <span class="legend-label">{{ seg.status }}</span>
+                  <span class="legend-count">{{ seg.count }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+
+          <div class="cancel-block">
+            <p class="cancel-rate">
+              <strong [class.is-high]="cancelRate() >= 20">{{ cancelRate() }}%</strong> cancellation rate
+            </p>
+            @if (cancellationReasons().length > 0) {
+              <p class="mini-title">Top reasons customers cancel</p>
+              <ul class="reason-list">
+                @for (reason of cancellationReasons(); track reason.reason) {
+                  <li>
+                    <span class="reason-label">{{ reason.reason }}</span>
+                    <span class="reason-track" aria-hidden="true"><span class="reason-fill" [style.transform]="'scaleX(' + reason.scale + ')'"></span></span>
+                    <span class="reason-count">{{ reason.count }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="ins-note">No customer cancellations with a reason yet.</p>
+            }
+          </div>
+        }
+      </article>
+
+      <!-- Best sellers -->
+      <article class="ins-panel">
+        <div class="ins-panel-head">
+          <h3>Top products</h3>
+          <a class="ins-link" routerLink="/admin/reports">Full report</a>
+        </div>
+        <app-ranked-bars [items]="topProductBars()" ariaLabel="Top products by revenue" emptyMessage="No products sold in this range."></app-ranked-bars>
+      </article>
+
+      <!-- How customers pay, and where the money is -->
+      <article class="ins-panel">
+        <div class="ins-panel-head">
+          <h3>Payments</h3>
+        </div>
+        @if (!payments().hasOrders) {
+          <p class="ins-empty">No paid orders in this range.</p>
+        } @else {
+          @let p = payments();
+          <div class="pay-split" aria-hidden="true">
+            <span class="pay-card" [style.flex-grow]="p.card.orders"></span>
+            <span class="pay-cod" [style.flex-grow]="p.cod.orders"></span>
+          </div>
+          <div class="pay-legend">
+            <a routerLink="/admin/orders" [queryParams]="{ payment: 'Card' }">
+              <span class="dot pay-card" aria-hidden="true"></span>
+              Card <strong>{{ p.cardPercent }}%</strong>
+              <span class="pay-detail">{{ p.card.orders }} orders · {{ p.card.revenue | inr }}</span>
+            </a>
+            <a routerLink="/admin/orders" [queryParams]="{ payment: 'COD' }">
+              <span class="dot pay-cod" aria-hidden="true"></span>
+              COD <strong>{{ 100 - p.cardPercent }}%</strong>
+              <span class="pay-detail">{{ p.cod.orders }} orders · {{ p.cod.revenue | inr }}</span>
+            </a>
+          </div>
+        }
+        @if (money(); as m) {
+          <dl class="money-list">
+            <div><dt>Collected</dt><dd>{{ m.collected | inr }}</dd></div>
+            <div><dt>COD cash to collect</dt><dd class="is-pending">{{ m.codPending | inr }}</dd></div>
+            <div><dt>Refunded</dt><dd class="is-refund">{{ m.refunded | inr }}</dd></div>
+          </dl>
+        }
+      </article>
+      <!-- Zodiac signs: the shop's own angle on sales -->
+      <article class="ins-panel ins-panel--wide">
+        <div class="ins-panel-head">
+          <h3>Sales by zodiac sign</h3>
+          @if (topZodiac(); as best) {
+            <span class="ins-total">Top sign: <strong>{{ best.name }}</strong></span>
+          }
+        </div>
+        @if (zodiacTiles().length === 0) {
+          <p class="ins-empty">Zodiac signs could not be loaded.</p>
+        } @else {
+          <ul class="zodiac-grid">
+            @for (tile of zodiacTiles(); track tile.zodiacId) {
+              <li
+                class="zodiac-tile"
+                [class.is-empty]="tile.revenue === 0"
+                [style.--intensity]="tile.intensity"
+                [title]="tile.name + ': ' + tile.units + ' sold'"
+              >
+                <app-zodiac-icon class="zodiac-glyph" [sign]="tile.name"></app-zodiac-icon>
+                <span class="zodiac-name">{{ tile.name }}</span>
+                <span class="zodiac-rev">{{ tile.revenue > 0 ? (tile.revenue | inr) : '—' }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </article>
+
+    </div>
+  }
+</section>

@@ -1,0 +1,13 @@
+@if (products().length > 0) {
+  <section class="recently-viewed">
+    <div class="recently-viewed-header">
+      <h2>Recently Viewed</h2>
+      <button type="button" class="clear-history" (click)="clearHistory()">Clear history</button>
+    </div>
+    <div class="recently-viewed-grid">
+      @for (product of products(); track product.productId) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </div>
+  </section>
+}

@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  margin-top: 1rem;
+}
+
+.payment-methods {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+legend {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  padding: 0;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.payment-option:hover {
+  border-color: #bcc5c0;
+}
+
+.payment-option.selected {
+  border-color: var(--color-brand);
+  background-color: #f6f3ec;
+}
+
+.payment-option input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-brand);
+}
+
+.payment-option input[type='radio']:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.payment-option-icon {
+  display: flex;
+  color: var(--color-brand);
+}
+
+.payment-option-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.payment-option-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.payment-option-text strong {
+  font-size: 0.9rem;
+  color: #222;
+}
+
+.payment-option-text small {
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.card-panel {
+  margin-top: 0.75rem;
+}
+
+.dropin-container:empty {
+  display: none;
+}
+
+.payment-hint {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin: 0.4rem 0 0;
+}
+
+.retry-btn {
+  background: none;
+  border: 1px solid var(--color-brand);
+  color: var(--color-brand);
+  border-radius: 4px;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+}
+
+.payment-guest-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-subtle);
+}
+
+.payment-guest-note a {
+  color: var(--color-brand);
+  font-weight: 600;
+}

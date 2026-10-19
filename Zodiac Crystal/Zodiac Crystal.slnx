@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Zodiac Crystal/Zodiac Crystal.csproj" />
+  <Project Path="Zodiac Crystal.Tests/Zodiac Crystal.Tests.csproj" />
+</Solution>

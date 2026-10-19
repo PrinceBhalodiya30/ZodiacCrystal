@@ -1,0 +1,50 @@
+.guides-page {
+  padding: 2rem 1.5rem 3rem;
+}
+
+.guides-page h1 {
+  margin: 0 0 0.4rem;
+  color: var(--color-ink);
+}
+
+.page-subtitle {
+  margin: 0 0 2rem;
+  color: var(--color-muted);
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.guide-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px #e6e0d4;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.guide-icon {
+  font-size: 2rem;
+}
+
+.guide-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--color-ink);
+}
+
+.guide-card p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.btn-outline {
+  align-self: flex-start;
+}

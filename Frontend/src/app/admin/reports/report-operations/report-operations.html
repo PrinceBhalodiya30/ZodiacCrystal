@@ -1,0 +1,168 @@
+<h2 class="ops-title">Operations &amp; customers</h2>
+
+@if (isLoading()) {
+  <div class="ops-grid" role="status" aria-label="Loading operations">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="ops-panel"><span class="ops-sk ops-sk--title"></span><span class="ops-sk ops-sk--body"></span></div>
+    }
+  </div>
+} @else if (hasError() && !data()) {
+  <p class="ops-error">Couldn't load operations data.</p>
+} @else if (data(); as d) {
+  <div class="ops-grid">
+    <!-- How fast orders move through each step -->
+    <section class="ops-panel ops-panel--wide">
+      <div class="ops-head">
+        <h3>Fulfilment speed</h3>
+        <span class="ops-sub">Average time per step</span>
+      </div>
+      <div class="speed-row">
+        @for (step of fulfilmentSteps(); track step.label; let last = $last) {
+          <div class="speed-step">
+            <span class="speed-value" [class.is-empty]="step.value === null">{{ formatDuration(step.value) }}</span>
+            <span class="speed-label">{{ step.label }}</span>
+          </div>
+          @if (!last) {
+            <span class="speed-arrow" aria-hidden="true">→</span>
+          }
+        }
+        <div class="speed-step speed-step--total">
+          <span class="speed-value" [class.is-empty]="d.fulfilment.hoursEndToEnd === null">{{ formatDuration(d.fulfilment.hoursEndToEnd) }}</span>
+          <span class="speed-label">Order → Delivered · {{ d.fulfilment.deliveredCount }} delivered</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cancellations -->
+    <section class="ops-panel">
+      <div class="ops-head">
+        <h3>Cancellations</h3>
+        <span class="ops-sub">{{ d.cancellations.cancelled }} of {{ d.cancellations.totalOrders }} orders</span>
+      </div>
+      <div class="metric-row">
+        <div class="metric">
+          <span class="metric-value" [class.is-bad]="d.cancellations.cancellationRate >= 20">{{ d.cancellations.cancellationRate }}%</span>
+          <span class="metric-label">Cancellation rate</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value metric-value--sm">{{ d.cancellations.byCustomer }} / {{ d.cancellations.byAdmin }}</span>
+          <span class="metric-label">By customer / admin</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value metric-value--sm">{{ d.cancellations.cardCancellationRate }}% / {{ d.cancellations.codCancellationRate }}%</span>
+          <span class="metric-label">Card / COD rate</span>
+        </div>
+      </div>
+      <p class="mini-title">Reasons given by customers</p>
+      @if (cancelReasons().length === 0) {
+        <p class="ops-empty">No customer cancellations with a reason in this range.</p>
+      } @else {
+        <ul class="reason-list">
+          @for (r of cancelReasons(); track r.reason) {
+            <li>
+              <span class="reason-label" [title]="r.reason">{{ r.reason }}</span>
+              <span class="reason-track" aria-hidden="true"><span class="reason-fill" [style.transform]="'scaleX(' + r.scale + ')'"></span></span>
+              <span class="reason-count">{{ r.count }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- Returns -->
+    <section class="ops-panel">
+      <div class="ops-head">
+        <h3>Returns</h3>
+        <span class="ops-sub">On orders placed in this range</span>
+      </div>
+      <div class="metric-row">
+        <div class="metric">
+          <span class="metric-value" [class.is-bad]="d.returns.returnRate >= 10">{{ d.returns.returnRate }}%</span>
+          <span class="metric-label">of {{ d.returns.deliveredOrders }} delivered</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value metric-value--sm is-refund">{{ d.returns.refundedAmount | inr }}</span>
+          <span class="metric-label">Refunded</span>
+        </div>
+      </div>
+      <ul class="status-chips">
+        <li>Requested <strong>{{ d.returns.requested }}</strong></li>
+        <li>Approved <strong>{{ d.returns.approved }}</strong></li>
+        <li>Refunded <strong>{{ d.returns.refunded }}</strong></li>
+        <li>Rejected <strong>{{ d.returns.rejected }}</strong></li>
+      </ul>
+      @if (returnReasons().length === 0) {
+        <p class="ops-empty">No returns in this range.</p>
+      } @else {
+        <p class="mini-title">Return reasons</p>
+        <ul class="reason-list reason-list--return">
+          @for (r of returnReasons(); track r.reason) {
+            <li>
+              <span class="reason-label" [title]="r.reason">{{ r.reason }}</span>
+              <span class="reason-track" aria-hidden="true"><span class="reason-fill" [style.transform]="'scaleX(' + r.scale + ')'"></span></span>
+              <span class="reason-count">{{ r.count }}</span>
+            </li>
+          }
+        </ul>
+        @if (d.returns.topProducts.length > 0) {
+          <p class="mini-title">Most returned products</p>
+          <ol class="plain-list">
+            @for (p of d.returns.topProducts; track p.productId) {
+              <li>
+                <span class="plain-name" [title]="p.productName">{{ p.productName }}</span>
+                <span class="plain-value">{{ p.returnCount }} {{ p.returnCount === 1 ? 'return' : 'returns' }} · {{ p.unitsReturned }} units</span>
+              </li>
+            }
+          </ol>
+        }
+      }
+    </section>
+
+    <!-- Customers -->
+    <section class="ops-panel">
+      <div class="ops-head">
+        <h3>Customers</h3>
+        <span class="ops-sub">{{ d.customers.customers }} who ordered</span>
+      </div>
+      @if (d.customers.customers === 0) {
+        <p class="ops-empty">No customers ordered in this range.</p>
+      } @else {
+        <div class="split-bar" aria-hidden="true">
+          <span class="split-new" [style.flex-grow]="d.customers.newCustomers"></span>
+          <span class="split-returning" [style.flex-grow]="d.customers.returningCustomers"></span>
+        </div>
+        <div class="split-legend">
+          <span><i class="dot split-new"></i>New <strong>{{ d.customers.newCustomers }}</strong> ({{ newShare() }}%)</span>
+          <span><i class="dot split-returning"></i>Returning <strong>{{ d.customers.returningCustomers }}</strong></span>
+          <span>Repeat buyers <strong>{{ d.customers.repeatRate }}%</strong></span>
+        </div>
+        @if (d.customers.topCustomers.length > 0) {
+          <p class="mini-title">Top customers by spend</p>
+          <ol class="plain-list">
+            @for (c of d.customers.topCustomers; track c.userId) {
+              <li>
+                <span class="plain-name">
+                  {{ c.name }}
+                  <small>{{ c.email }}</small>
+                </span>
+                <span class="plain-value"><strong>{{ c.spent | inr }}</strong> · {{ c.orders }} {{ c.orders === 1 ? 'order' : 'orders' }}</span>
+              </li>
+            }
+          </ol>
+        }
+      }
+    </section>
+
+    <!-- Where orders ship to -->
+    <section class="ops-panel">
+      <div class="ops-head">
+        <h3>Sales by state</h3>
+        <span class="ops-sub">By shipping address</span>
+      </div>
+      <app-ranked-bars [items]="stateBars()" ariaLabel="Sales by state" emptyMessage="No sales in this range."></app-ranked-bars>
+      @if (moreStates() > 0) {
+        <p class="ops-note">+ {{ moreStates() }} more {{ moreStates() === 1 ? 'state' : 'states' }} in the CSV export</p>
+      }
+    </section>
+  </div>
+}

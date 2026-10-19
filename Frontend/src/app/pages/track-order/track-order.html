@@ -1,0 +1,76 @@
+<section class="container track-page">
+  @if (isGuestView) {
+    <a class="page-back-link" [routerLink]="['/order', orderId]">← Back to order #{{ orderId }}</a>
+  } @else {
+    <app-breadcrumbs [items]="[{ label: 'My Account', link: '/profile' }, { label: 'My Orders', link: '/orders' }, { label: 'Order #' + orderId, link: ['/orders', orderId] }, { label: 'Track Package' }]"></app-breadcrumbs>
+  }
+
+  @if (isLoading()) {
+    <app-spinner label="Loading tracking..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <a [routerLink]="isGuestView ? '/find-order' : '/orders'" class="btn">{{ isGuestView ? 'Find my order' : 'Back to My Orders' }}</a>
+    </div>
+  } @else if (order(); as o) {
+    <div class="track-card">
+      <div class="track-header">
+        <div>
+          <h1>Track Package</h1>
+          <p class="track-sub">Order #{{ o.orderId }}</p>
+        </div>
+        <span class="order-status" [class]="o.status.toLowerCase()">{{ o.status }}</span>
+      </div>
+
+      @if (o.estimatedDeliveryTo) {
+        <p class="eta">
+          Estimated delivery
+          <strong>{{ o.estimatedDeliveryFrom | date:'EEE, dd MMM' }} – {{ o.estimatedDeliveryTo | date:'EEE, dd MMM' }}</strong>
+        </p>
+      } @else if (o.deliveredAt) {
+        <p class="eta">Delivered on <strong>{{ o.deliveredAt | date:'EEE, dd MMM yyyy' }}</strong></p>
+      }
+
+      @if (o.trackingNumber) {
+        <dl class="shipment-info">
+          <div>
+            <dt>Courier</dt>
+            <dd>{{ o.courierName }}</dd>
+          </div>
+          <div>
+            <dt>Tracking number</dt>
+            <dd class="tracking-row">
+              <span class="tracking-number">{{ o.trackingNumber }}</span>
+              <button type="button" class="copy-btn" (click)="copyTrackingNumber(o.trackingNumber)">Copy</button>
+            </dd>
+          </div>
+        </dl>
+      } @else if (!isCancelled()) {
+        <p class="not-shipped">Your order hasn't shipped yet. Tracking details will appear here once it does.</p>
+      }
+
+      @if (isCancelled()) {
+        <div class="cancelled-note" role="status">This order was cancelled.</div>
+      } @else {
+        <ol class="track-steps" aria-label="Shipment progress">
+          @for (step of steps(); track step.title) {
+            <li [class]="'track-step ' + step.state" [attr.aria-current]="step.state === 'current' ? 'step' : null">
+              <span class="track-dot" aria-hidden="true">
+                @if (step.state === 'completed') { ✓ }
+              </span>
+              <div>
+                <p class="track-title">{{ step.title }}</p>
+                @if (step.state !== 'upcoming') {
+                  <p class="track-detail">{{ step.detail }}</p>
+                }
+                @if (step.at) {
+                  <p class="track-date">{{ step.at | date:'EEE, dd MMM yyyy · h:mm a' }}</p>
+                }
+              </div>
+            </li>
+          }
+        </ol>
+      }
+    </div>
+  }
+</section>

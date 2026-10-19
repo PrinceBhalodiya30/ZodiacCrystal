@@ -1,0 +1,121 @@
+<footer class="site-footer">
+  <div class="container footer-newsletter">
+    <div class="footer-newsletter-copy">
+      <h3>Join the Celestial Circle</h3>
+      <p>Zodiac insights, crystal guides, and offers — delivered monthly.</p>
+    </div>
+    @if (newsletterSubmitted()) {
+      <p class="footer-newsletter-success">You're subscribed. We'll email you about new stones and restocks.</p>
+    } @else {
+      <form class="footer-newsletter-form" (ngSubmit)="subscribeNewsletter()">
+        <input
+          type="email"
+          name="newsletterEmail"
+          placeholder="Enter your email"
+          required
+          [ngModel]="newsletterEmail()"
+          (ngModelChange)="newsletterEmail.set($event)"
+          [disabled]="isSubscribing()"
+          aria-label="Email address"
+        />
+        <button type="submit" class="btn btn-outline" [disabled]="isSubscribing()">
+          {{ isSubscribing() ? 'Subscribing...' : 'Subscribe' }}
+        </button>
+      </form>
+      @if (newsletterError()) {
+        <p class="footer-newsletter-error">{{ newsletterError() }}</p>
+      }
+    }
+  </div>
+
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="footer-logo">
+        <img src="logo.svg?v=2" alt="" class="footer-logo-icon" aria-hidden="true" />
+        Zodiac Crystals
+      </span>
+      <p>Crystals matched to your zodiac energy.</p>
+      <div class="footer-social">
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg>
+        </a>
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1Z"/></svg>
+        </a>
+        <a href="https://pinterest.com" target="_blank" rel="noopener" aria-label="Pinterest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 18c.8-2.5 1.5-4.9 2.2-7.4M11 11.5c.3-1.4 1.6-2 2.8-1.6 1.3.4 1.7 1.9 1.3 3.2-.5 1.6-1.7 2.9-3.2 2.4-.6-.2-1-.7-1-1.3"/></svg>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter / X">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m4 4 16 16M20 4 4 20"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <nav class="footer-links">
+      <h4>Shop</h4>
+      <a routerLink="/products">All Products</a>
+      <a routerLink="/categories">Categories</a>
+      <a routerLink="/zodiac">Zodiac Signs</a>
+    </nav>
+
+    <nav class="footer-links">
+      <h4>Account</h4>
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin/dashboard">Admin Dashboard</a>
+      } @else if (authService.isLoggedIn()) {
+        <a routerLink="/profile">My Account</a>
+        <a routerLink="/orders">My Orders</a>
+        <a routerLink="/cart">Cart</a>
+      } @else {
+        <a routerLink="/login">Login</a>
+        <a routerLink="/register">Register</a>
+      }
+    </nav>
+
+    <nav class="footer-links">
+      <h4>Support</h4>
+      <a routerLink="/help">Help Center</a>
+      <a routerLink="/find-order">Find my order</a>
+      <a routerLink="/guides">Crystal Guides</a>
+      <a routerLink="/about">About Us</a>
+      <a routerLink="/contact">Contact Us</a>
+      <a routerLink="/faq">FAQ</a>
+      <a routerLink="/shipping-returns">Shipping &amp; Returns</a>
+    </nav>
+
+    <div class="footer-links">
+      <h4>Contact</h4>
+      <a href="mailto:support@zodiaccrystals.com">support&#64;zodiaccrystals.com</a>
+      <span class="footer-contact-hours">Mon - Sat, 9am - 6pm</span>
+    </div>
+  </div>
+
+  <div class="footer-trust">
+    <div class="footer-trust-badges">
+      <span class="footer-trust-badge">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/></svg>
+        Secure Checkout
+      </span>
+      <span class="footer-trust-badge">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h11"/></svg>
+        Visa
+      </span>
+      <span class="footer-trust-badge">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>
+        Mastercard
+      </span>
+      <span class="footer-trust-badge">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+        UPI
+      </span>
+    </div>
+  </div>
+
+  <div class="footer-copy">
+    <p>&copy; 2026 Zodiac Crystals</p>
+    <div class="footer-copy-links">
+      <a routerLink="/privacy">Privacy</a>
+      <a routerLink="/terms">Terms of Use</a>
+    </div>
+  </div>
+</footer>

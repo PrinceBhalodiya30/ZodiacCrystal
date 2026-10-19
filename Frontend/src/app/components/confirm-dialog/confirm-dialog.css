@@ -1,0 +1,101 @@
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  /* Above drawers (1000) and the image manager (1010), which can both ask for confirmation. */
+  z-index: 1050;
+  animation: confirm-fade 0.15s ease;
+}
+
+.confirm-panel {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  animation: confirm-pop 0.18s ease;
+}
+
+.confirm-overlay.confirm-leaving {
+  animation: confirm-fade 0.15s ease reverse forwards;
+}
+
+.confirm-leaving .confirm-panel {
+  animation: confirm-pop 0.15s ease reverse forwards;
+}
+
+@keyframes confirm-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirm-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.confirm-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background-color: var(--color-border-light);
+  color: var(--color-brand);
+}
+
+.confirm-icon svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.confirm-icon.danger {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.confirm-message {
+  margin: 0 0 1.5rem;
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.confirm-reason {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-align: left;
+}
+
+.confirm-reason select {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #d9d5cd;
+  border-radius: 4px;
+  font: inherit;
+  font-weight: 400;
+}

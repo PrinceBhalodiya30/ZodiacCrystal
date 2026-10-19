@@ -1,0 +1,358 @@
+.help-page {
+  padding: 2rem 1.5rem 3rem;
+  max-width: 900px;
+}
+
+.help-hero {
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+  background-color: var(--color-cream);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.help-hero h1 {
+  color: var(--color-ink);
+  margin-bottom: 1rem;
+}
+
+.help-search {
+  width: 100%;
+  max-width: 560px;
+  padding: 0.8rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font: inherit;
+  background-color: var(--color-surface);
+}
+
+.help-search:focus-visible {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 4px rgba(47, 74, 58, 0.12);
+}
+
+.help-requests-link {
+  display: inline-block;
+  margin-top: 0.9rem;
+  color: var(--color-brand);
+  font-weight: 600;
+}
+
+.help-page h2 {
+  font-size: 1.15rem;
+  color: var(--color-ink);
+  margin: 1.5rem 0 0.75rem;
+}
+
+.help-muted {
+  color: var(--color-subtle);
+  font-size: 0.9rem;
+}
+
+/* Quick answers */
+.help-article {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.help-article-q {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.help-article-a {
+  margin: 0 0 0.9rem;
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+.help-more-links {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  color: var(--color-subtle);
+}
+
+.help-more-links a {
+  color: var(--color-brand);
+}
+
+/* Guided flow */
+.help-flow {
+  margin-top: 1rem;
+  scroll-margin-top: 90px;
+}
+
+.help-orders {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.help-order {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.85rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.help-order:hover,
+.help-topic:hover {
+  border-color: var(--color-brand);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.help-order img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.help-order-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: var(--color-subtle);
+}
+
+.help-order-text strong {
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.help-order-status {
+  color: var(--color-brand);
+  font-weight: 600;
+}
+
+.help-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.help-topics--list {
+  flex-direction: column;
+}
+
+.help-topic {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font: inherit;
+  color: var(--color-ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.help-link-btn,
+.help-back {
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+  font: inherit;
+  color: var(--color-brand);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.help-selected-order {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  background-color: var(--color-cream-light);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--color-subtle);
+}
+
+.help-selected-order strong {
+  color: var(--color-ink);
+}
+
+.help-answer {
+  padding: 1.1rem 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  line-height: 1.55;
+}
+
+.help-answer p {
+  margin: 0 0 0.75rem;
+}
+
+.help-answer-item + .help-answer-item {
+  margin-top: 0.9rem;
+}
+
+.help-answer-item p {
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+}
+
+.help-still {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  color: var(--color-subtle);
+}
+
+.help-login {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background-color: var(--color-cream-light);
+  border-radius: 6px;
+}
+
+.help-login p {
+  margin: 0;
+}
+
+/* Contact form */
+.help-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.help-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+.help-form input[type='text'],
+.help-form textarea {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+
+.help-form > .btn {
+  align-self: flex-start;
+  margin-top: 0.75rem;
+}
+
+.help-form-context {
+  font-size: 0.85rem;
+  color: var(--color-brand);
+  font-weight: 600;
+}
+
+.help-photos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.help-photos .help-photo-btn {
+  margin: 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.help-photo-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.help-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  background-color: var(--color-tint);
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.help-file button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.help-error {
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
+
+.help-sent {
+  padding: 1.5rem;
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  border-radius: 6px;
+}
+
+.help-sent h2 {
+  margin-top: 0;
+  color: var(--color-success);
+}
+
+.help-sent-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.help-contact {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-subtle);
+}
+
+.help-contact a {
+  color: var(--color-brand);
+}

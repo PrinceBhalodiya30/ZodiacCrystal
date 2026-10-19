@@ -1,0 +1,152 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-returns-page">
+  <div class="page-header">
+    <h1>Returns</h1>
+    <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
+    [title]="'Exports the ' + totalCount() + ' row(s) matching the current filters'"
+    (click)="exportCsv()">
+      {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by order #, customer name or email..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="returnSearch"
+    />
+    <select
+      class="status-filter"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="onStatusFilterChange($event)"
+      name="returnStatusFilter"
+      aria-label="Filter by return status"
+    >
+      <option value="">All Returns</option>
+      @for (status of statuses; track status) {
+        <option [value]="status">{{ statusFilterLabel(status) }}</option>
+      }
+    </select>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (active(); as a) {
+    <div #actionPanel class="action-panel" [class.danger]="a.action === 'reject'" animate.leave="reveal-out">
+      <h2>{{ actionTitle(a.action) }} · Order #{{ a.request.orderId }}</h2>
+
+      @if (a.action === 'refund') {
+        <p class="action-hint">
+          @if (a.request.paymentMethod === 'Card') {
+            {{ a.request.orderTotal | inr }} will be refunded to the customer's card through Braintree.
+          } @else {
+            This was a Cash on Delivery order - pay the customer {{ a.request.orderTotal | inr }} yourself, then record it here.
+          }
+        </p>
+        <label class="restock-option">
+          <input type="checkbox" name="restock" [(ngModel)]="restock" />
+          Put the returned items back into stock
+        </label>
+      }
+
+      <label for="adminNote">Note to customer (optional)</label>
+      <textarea
+        id="adminNote"
+        name="adminNote"
+        rows="2"
+        maxlength="500"
+        [(ngModel)]="adminNote"
+        [placeholder]="a.action === 'reject' ? 'Explain why the return was not approved' : 'e.g. return instructions'"
+      ></textarea>
+
+      <div class="action-buttons">
+        <button type="button" class="btn btn-outline" (click)="cancelAction()" [disabled]="isActing()">Cancel</button>
+        <button type="button" class="btn" (click)="confirmAction()" [disabled]="isActing()">
+          {{ isActing() ? 'Saving...' : confirmLabel(a) }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <app-spinner label="Loading returns..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadReturns()">Retry</button>
+    </div>
+  } @else if (returns().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>{{ statusFilter() === 'Requested' && !searchTerm().trim() ? 'No returns waiting for review.' : 'No return requests found.' }}</p>
+      @if (hasFilters()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      } @else {
+        <button type="button" class="btn btn-outline" (click)="showAllReturns()">View all returns</button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Reason</th>
+            <th>Requested</th>
+            <th>Refund</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of returns(); track r.returnRequestId) {
+            <tr [class.is-active]="active()?.request?.returnRequestId === r.returnRequestId">
+              <td data-label="Order">#{{ r.orderId }}</td>
+              <td data-label="Customer">
+                <div class="customer-name">{{ r.customerName }}</div>
+                <div class="customer-email">{{ r.customerEmail }}</div>
+              </td>
+              <td data-label="Reason">
+                <div>{{ r.reasonLabel }}</div>
+                @if (r.details) {
+                  <div class="return-details">{{ r.details }}</div>
+                }
+                @if (r.adminNote) {
+                  <div class="return-note"><strong>Note:</strong> {{ r.adminNote }}</div>
+                }
+              </td>
+              <td data-label="Requested">{{ r.createdAt | date:'dd MMM yyyy' }}</td>
+              <td data-label="Refund">
+                <div>{{ r.orderTotal | inr }}</div>
+                <div class="return-details">{{ r.paymentMethod === 'Card' ? 'Card' : 'COD' }}{{ r.restocked ? ' · restocked' : '' }}</div>
+              </td>
+              <td data-label="Status">
+                <span class="return-status" [class]="'return-status ' + r.status.toLowerCase()">{{ r.status }}</span>
+                @if (r.status === 'Approved') {
+                  <div class="return-details">refund due</div>
+                }
+              </td>
+              <td class="cell-actions">
+                <div class="row-actions">
+                  @if (r.status === 'Requested') {
+                    <button type="button" class="chip-btn" (click)="startAction(r, 'approve')">Approve</button>
+                    <button type="button" class="chip-btn danger" (click)="startAction(r, 'reject')">Reject</button>
+                  } @else if (r.status === 'Approved') {
+                    <button type="button" class="chip-btn" (click)="startAction(r, 'refund')">Issue refund {{ r.orderTotal | inr }}</button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+</section>

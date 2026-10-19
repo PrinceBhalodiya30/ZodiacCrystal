@@ -1,0 +1,562 @@
+/* Global styles */
+
+:root {
+  /* Storefront content width; backgrounds still run full-bleed. */
+  --container-max: 1400px;
+  --color-brand: #2f4a3a;
+  --color-brand-dark: #243a2d;
+  --color-brand-darker: #18271e;
+  --color-brand-hover: #263d30;
+  --color-accent-gold: #c9962e;
+  --color-accent-gold-light: #e8c77a;
+  /* Purple-tinted text scale: one ink, one body grey, one label grey. */
+  --color-ink: #1d1b18;
+  --color-muted: #57524a;
+  --color-subtle: #6f695f;
+  --color-tint: #f1ede4;
+
+  /* Semantic status colors - shared by every badge/pill across the app
+     (order status, stock status, review status, password strength, etc.)
+     so "success" always looks like the same green everywhere. */
+  --color-success: #1e7e34;
+  --color-success-bg: #e6f4ea;
+  --color-success-border: #a3d9b1;
+  --color-danger: #c0392b;
+  --color-danger-bg: #fdeaea;
+  --color-danger-border: #f3c3bd;
+  --color-warning: #b56a00;
+  --color-warning-bg: #fff4e5;
+  --color-warning-border: #f5cd8f;
+  --color-danger-hover: #a53024;
+  --color-danger-text: #7a2419;
+  /* "Confirmed" (blue) and "Shipped" (rust) status pills. */
+  --color-info: #1c5cba;
+  --color-info-bg: #e6f0fd;
+  --color-shipped: #8a4b2e;
+  --color-shipped-bg: #f6e9e2;
+  /* Neutral surfaces used across cards, tables and hover states. */
+  --color-surface: #ffffff;
+  --color-cream: #f3efe7;
+  --color-cream-light: #f9f5ed;
+  --color-border: #e3dccd;
+  --color-border-light: #efe9dd;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
+  --radius-card: 6px;
+  --radius-pill: 999px;
+  --shadow-card: 0 0 0 1px #e6e0d4;
+  --shadow-card-hover: 0 0 0 1px #cfc6b3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--color-ink);
+  background-color: #f7f4ee;
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* A consistent exit path for informational pages reached from the footer. */
+.page-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  color: var(--color-brand);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.page-back-link:hover {
+  text-decoration: underline;
+}
+
+/* Shared button styles - used across every customer and admin page */
+.btn {
+  display: inline-block;
+  background-color: var(--color-brand);
+  color: #ffffff;
+  border: none;
+  text-decoration: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--color-brand-hover);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: var(--color-brand);
+  border: 1px solid var(--color-brand);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--color-cream);
+}
+
+.btn-accent {
+  background: var(--color-accent-gold);
+  color: #2b1a06;
+}
+
+.btn-accent:hover:not(:disabled) {
+  background: #b3811f;
+}
+
+/* Shared inline field-validation hint - used by every form page */
+.field-hint {
+  font-size: 0.8rem;
+  margin: 0.35rem 0 0;
+}
+
+.field-hint.error {
+  color: var(--color-danger);
+}
+
+/* Small "nothing here" note inside a panel, card or table cell. Full-page
+   empty/error states use .state-message instead. */
+.empty-note {
+  margin: 0;
+  padding: 1.25rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-subtle);
+}
+
+/* Scroll-reveal - used by the ScrollRevealDirective on homepage sections */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Edge/IE add their own "reveal password" eye (and a clear X) inside inputs.
+   Our password fields already have a show/hide toggle, so hide the browser's
+   to avoid two eye icons side by side. */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* Focus visibility - keyboard navigation outline, site-wide */
+:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.link-btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Full-page loading/error/empty state - the one pattern used on every page. */
+.state-message {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.state-message p {
+  margin: 0 0 1rem;
+}
+
+.state-message .btn,
+.state-message a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.state-message--error {
+  color: var(--color-danger-text);
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
+}
+
+.state-message--error .btn {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #fff;
+}
+
+.state-message--empty {
+  color: #57534b;
+  background-color: #f1ede4;
+  border: 1px dashed #d6d2ca;
+}
+
+@keyframes empty-state-twinkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .state-message--empty p:first-child::before {
+    animation: none;
+  }
+}
+
+/* Stock status badge - shared by the product card and product details page */
+.stock-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.stock-badge.in-stock {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.stock-badge.low-stock {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.stock-badge.out-of-stock {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* Order status badge - shared by the orders list and order details page */
+.order-status {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.order-status.pending {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.order-status.confirmed {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.order-status.shipped {
+  /* Rust, so "on its way" never reads as the green "Delivered". */
+  background-color: var(--color-shipped-bg);
+  color: var(--color-shipped);
+}
+
+.order-status.delivered {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.order-status.cancelled {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* Loading skeletons - shimmering placeholder blocks shaped like the content
+   that is on its way. Pair with a .visually-hidden role="status" label. */
+.skeleton {
+  display: block;
+  background: linear-gradient(90deg, #f4f0e8 25%, #e9e5dd 37%, #f4f0e8 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+.skeleton-line {
+  height: 0.9rem;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* Screen-reader-only text. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Shared enter/leave motion. Use the *-in classes on an element that appears
+   inside an @if, and the *-out ones with Angular's animate.leave="..." so the
+   element animates out before it is removed. */
+.fade-in { animation: fade-in 0.18s ease both; }
+.fade-out { animation: fade-out 0.16s ease forwards; }
+.reveal-in { animation: reveal-in 0.18s ease both; }
+.reveal-out { animation: reveal-out 0.14s ease forwards; }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes reveal-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* Reduced motion - site-wide. Users who ask their OS for less motion get every
+   animation and transition cut to an instant change, including the looping ones
+   (announcement shimmer, hero twinkle/glow).
+   !important is needed to win over component styles. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Loading spinners keep turning (slowly) - a frozen one looks like a hang. */
+  .spinner,
+  .btn-spinner {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+
+/* Serif headings give the storefront a boutique feel; body text stays sans.
+   Admin keeps the plain sans font - it is a working tool of tables and numbers. */
+:where(main:not(.admin-main)) :is(h1, h2, h3),
+.navbar-brand,
+.brand-logo,
+.mobile-brand {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Phones: the serif is wider than the old sans, so pages without their own
+   heading size get a smaller h1/h2 instead of the 2em browser default. */
+@media (max-width: 600px) {
+  :where(main:not(.admin-main)) h1 {
+    font-size: 1.6rem;
+    line-height: 1.25;
+  }
+
+  :where(main:not(.admin-main)) h2 {
+    font-size: 1.3rem;
+    line-height: 1.3;
+  }
+}
+
+/* Destructive but secondary (e.g. "Cancel Order"): quiet grey text that only
+   turns red on hover, so it never competes with the main action. */
+.btn.btn-cancel {
+  background-color: #ffffff;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+.btn.btn-cancel:hover:not(:disabled) {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger);
+}
+
+/* ---------------------------------------------------------------------------
+   Button system - the only button looks on the site (customer and admin):
+     .btn               primary (filled brand pill)
+     .btn.btn-outline   secondary (white pill, brand border)
+     .btn.btn-accent    promotional (gold)
+     .btn.btn-cancel    destructive but secondary (red outline) - "Cancel Order", "Clear Cart"
+     .btn.btn-danger    destructive final step (red filled) - confirm dialogs, "Delete account"
+   Sizes: .btn-sm (compact rows/cards), .btn-block (full width).
+   --------------------------------------------------------------------------- */
+.btn.btn-danger {
+  background-color: var(--color-danger);
+  color: #ffffff;
+  border: 1px solid var(--color-danger);
+}
+
+.btn.btn-danger:hover:not(:disabled) {
+  background-color: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+}
+
+.btn.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.btn.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/* Text-style action inside a row or card ("Edit", "Set as default", "Delete").
+   Same look on every page; add .danger for removals. */
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-brand);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.link-btn.danger {
+  color: var(--color-danger);
+}
+
+.link-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* In-page "← Back to X" navigation - one look everywhere. */
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--color-brand);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Form-level error under a form or action (field errors use .field-hint.error). */
+.form-error {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+
+/* Two-or-more option toggle (e.g. Revenue / Units). */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.segmented button {
+  background: var(--color-surface);
+  border: none;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.segmented button.active,
+.segmented button[aria-pressed="true"] {
+  background: var(--color-brand);
+  color: #ffffff;
+}
+
+/* Loading convention: skeletons for page content (cards, grids, dashboards),
+   <app-spinner> for tables, drawers and small panels. Status pills keep 4px
+   corners on purpose - they're labels, not buttons. */
+
+/* Page titles: one size for every storefront page (phones get the smaller
+   size from the media query above). Error pages keep their larger hero title. */
+@media (min-width: 601px) {
+  :where(main:not(.admin-main)) h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+}

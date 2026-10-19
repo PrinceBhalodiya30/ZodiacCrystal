@@ -1,0 +1,142 @@
+@if (isAnnouncementVisible() && !isCheckout()) {
+  <div class="announcement-bar">
+    <span class="announcement-text">Free shipping on orders over ₹999 · Cash on Delivery available · 7-day returns</span>
+    <button
+      type="button"
+      class="announcement-close"
+      aria-label="Dismiss announcement"
+      (click)="dismissAnnouncement()"
+    >✕</button>
+  </div>
+}
+
+<header class="navbar" [class.scrolled]="isScrolled()">
+  <div class="navbar-container">
+    <a routerLink="/" class="navbar-brand" (click)="closeMenu()">
+      <img class="navbar-brand-icon" src="logo.svg?v=2" alt="" aria-hidden="true" />
+      Zodiac Crystals
+    </a>
+
+    @if (isCheckout()) {
+      <span class="navbar-secure">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4.5" y="10.5" width="15" height="10" rx="2"/>
+          <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>
+        </svg>
+        Secure checkout
+      </span>
+    } @else {
+    <nav id="navbar-links" class="navbar-links" [class.open]="isMenuOpen()">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+      >Home</a>
+      <a routerLink="/products" routerLinkActive="active" (click)="closeMenu()">Products</a>
+      <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">Zodiac Signs</a>
+      <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">Categories</a>
+      <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
+
+      @if (authService.isLoggedIn()) {
+        @if (authService.isAdmin()) {
+          <a routerLink="/admin" routerLinkActive="active" (click)="closeMenu()">Admin</a>
+        } @else {
+          <a routerLink="/orders" routerLinkActive="active" (click)="closeMenu()">My Orders</a>
+          <a routerLink="/profile" routerLinkActive="active" (click)="closeMenu()">My Account</a>
+        }
+
+        <button type="button" class="navbar-logout" (click)="logout()">Logout</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active" (click)="closeMenu()">Login</a>
+        <a routerLink="/register" class="navbar-cta" (click)="closeMenu()">Register</a>
+      }
+    </nav>
+
+    <div class="navbar-icons">
+      <button
+        type="button"
+        class="icon-link search-toggle"
+        [class.active]="isSearchOpen()"
+        aria-label="Toggle search"
+        [attr.aria-expanded]="isSearchOpen()"
+        (click)="toggleSearch()"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"/>
+          <path d="m20.5 20.5-4.6-4.6"/>
+        </svg>
+      </button>
+
+      @if (authService.isLoggedIn()) {
+        <app-notification-bell></app-notification-bell>
+      }
+
+      @if (authService.isLoggedIn() && !authService.isAdmin()) {
+        <a routerLink="/wishlist" routerLinkActive="active" class="icon-link" aria-label="Wishlist" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
+          </svg>
+          @if (wishlistService.count() > 0) {
+            <span class="icon-badge" [class.bump]="wishlistBump()">{{ wishlistService.count() }}</span>
+          }
+        </a>
+        <a routerLink="/cart" routerLinkActive="active" class="icon-link" aria-label="Cart" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="21" r="1.3"/>
+            <circle cx="18" cy="21" r="1.3"/>
+            <path d="M2.5 3h2l2.2 11.4a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6"/>
+          </svg>
+          @if (cartService.totalQuantity() > 0) {
+            <span class="icon-badge" [class.bump]="cartBump()">{{ cartService.totalQuantity() }}</span>
+          }
+        </a>
+      }
+
+      <button
+        type="button"
+        class="navbar-toggle"
+        (click)="toggleMenu()"
+        [attr.aria-label]="isMenuOpen() ? 'Close navigation menu' : 'Open navigation menu'"
+        [attr.aria-expanded]="isMenuOpen()"
+        aria-controls="navbar-links"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          @if (isMenuOpen()) {
+            <path d="M5 5l14 14M19 5 5 19"/>
+          } @else {
+            <path d="M3 6h18M3 12h18M3 18h18"/>
+          }
+        </svg>
+      </button>
+    </div>
+    }
+  </div>
+
+  @if (isSearchOpen() && !isCheckout()) {
+    <div class="navbar-search-bar reveal-in" animate.leave="reveal-out">
+      <form class="navbar-search-form container" (ngSubmit)="submitSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"/>
+          <path d="m20 20-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          name="navbarSearch"
+          placeholder="Search for crystals, zodiac signs, categories..."
+          autofocus
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          aria-label="Search products"
+        />
+        <button type="submit" class="btn">Search</button>
+        <button
+          type="button"
+          class="navbar-search-close"
+          aria-label="Close search"
+          (click)="toggleSearch()"
+        >✕</button>
+      </form>
+    </div>
+  }
+</header>

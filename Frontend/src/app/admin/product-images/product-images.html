@@ -1,0 +1,89 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-product-images-page">
+  <div class="page-header">
+    <h1>Manage Product Images</h1>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by name or SKU..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="productImagesSearch"
+    />
+    <label class="filter-check">
+      <input type="checkbox" [ngModel]="missingImagesOnly()" (ngModelChange)="onMissingImagesChange($event)" name="missingImagesOnly" />
+      Missing images only
+    </label>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (isLoading() && products().length === 0) {
+    <app-spinner label="Loading products..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadProducts()">Retry</button>
+    </div>
+  } @else if (products().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>No products found.</p>
+      @if (hasFilters()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap" [class.is-refreshing]="isLoading()">
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Images</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.productId) {
+            <tr>
+              <td class="cell-media">
+                @if (primaryImage(product); as url) {
+                  <img [src]="url" [alt]="product.name" class="row-thumb" loading="lazy" imgFallback />
+                } @else {
+                  <span class="thumb-placeholder">{{ product.name.charAt(0) }}</span>
+                }
+              </td>
+              <td data-label="SKU">{{ product.sku }}</td>
+              <td data-label="Name">{{ product.name }}</td>
+              <td data-label="Images">{{ product.images.length }}</td>
+              <td class="cell-actions">
+                <div class="row-actions">
+                  <button type="button" class="chip-btn" (click)="openImageManager(product)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg>
+                    Manage Images
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+
+  @if (manageImagesProduct(); as imageProduct) {
+    <app-image-manager-modal
+      [product]="imageProduct"
+      (closed)="closeImageManager()"
+      (productUpdated)="onImagesProductUpdated($event)"
+    />
+  }
+</section>

@@ -1,0 +1,64 @@
+<div class="column-chart">
+  @if (columns.length === 0 || !hasValues) {
+    <p class="chart-empty">{{ emptyMessage }}</p>
+  } @else {
+    <svg
+      class="column-chart-svg"
+      [attr.viewBox]="'0 0 ' + width + ' ' + height"
+      role="img"
+      [attr.aria-label]="'Column chart with ' + columns.length + ' bars'"
+      (mouseleave)="setHover(null)"
+    >
+      @for (g of gridlines; track $index) {
+        <line class="chart-gridline" [class.baseline]="$index === 0" [attr.x1]="plotLeft" [attr.x2]="plotRight" [attr.y1]="g.y" [attr.y2]="g.y"></line>
+        <text class="chart-axis-label" [attr.x]="plotLeft - 8" [attr.y]="g.y" text-anchor="end" dominant-baseline="middle">{{ g.label }}</text>
+      }
+
+      @for (c of columns; track $index; let i = $index) {
+        <!-- Full-height hit area so short (or empty) days are easy to hover. -->
+        <rect
+          class="column-hit"
+          [attr.x]="c.center - (c.width / 2) - 3"
+          [attr.y]="plotTop"
+          [attr.width]="c.width + 6"
+          [attr.height]="plotBottom - plotTop"
+          tabindex="0"
+          [attr.aria-label]="c.label + ': ' + formatValue(c.value)"
+          (mouseenter)="setHover(i)"
+          (focus)="setHover(i)"
+          (blur)="setHover(null)"
+        ></rect>
+        @if (c.height > 0) {
+          <rect
+            class="column-bar"
+            [class.is-hover]="hoverIndex === i"
+            [attr.x]="c.x"
+            [attr.y]="c.y"
+            [attr.width]="c.width"
+            [attr.height]="c.height"
+            rx="3"
+            [style.animation-delay.ms]="i * 15"
+          ></rect>
+        }
+        @if (xLabelIndexes.has(i)) {
+          <text class="chart-axis-label" [attr.x]="c.center" [attr.y]="plotBottom + 18" text-anchor="middle">{{ c.label }}</text>
+        }
+      }
+    </svg>
+
+    @if (hovered; as c) {
+      <div
+        class="chart-tooltip"
+        [class]="'chart-tooltip align-' + tooltipAlign"
+        [style.left.%]="(c.center / width) * 100"
+        [style.top.%]="((c.height > 0 ? c.y : plotBottom) / height) * 100"
+      >
+        <span class="chart-tooltip-label">{{ c.label }}</span>
+        <span class="chart-tooltip-value">{{ formatValue(c.value) }}</span>
+        @for (line of c.details ?? []; track $index) {
+          <span class="chart-tooltip-detail">{{ line }}</span>
+        }
+      </div>
+    }
+  }
+</div>

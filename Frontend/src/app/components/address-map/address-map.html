@@ -1,0 +1,66 @@
+<div class="address-map">
+  <button type="button" class="link-btn address-map-toggle" (click)="toggle()">
+    {{ isOpen() ? 'Hide map' : '📍 Find my address on a map' }}
+  </button>
+
+  @if (isOpen()) {
+    <div class="address-map-search">
+      <input
+        type="search"
+        placeholder="Search area, street or landmark"
+        aria-label="Search address on map"
+        autocomplete="off"
+        [value]="query()"
+        (input)="onQueryInput($any($event.target).value)"
+        (keydown.enter)="$event.preventDefault()"
+      />
+      <button type="button" class="btn btn-outline" [disabled]="isLocating()" (click)="useMyLocation()">
+        {{ isLocating() ? 'Locating...' : 'Use my location' }}
+      </button>
+
+      @if (results().length > 0) {
+        <ul class="address-map-results" role="listbox">
+          @for (r of results(); track $index) {
+            <li role="option" tabindex="0" (click)="choose(r)" (keydown.enter)="choose(r)">{{ r.display_name }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    @if (isSearching()) {
+      <p class="field-hint">Searching...</p>
+    } @else if (message()) {
+      <p class="field-hint">{{ message() }}</p>
+    }
+
+    <label for="addressMapFlat">Flat / House no., Building name *</label>
+    <input
+      id="addressMapFlat"
+      name="addressMapFlat"
+      type="text"
+      maxlength="100"
+      placeholder="e.g. Flat 402, Shanti Apartments"
+      required
+      #flatField="ngModel"
+      [ngModel]="flat()"
+      (ngModelChange)="flat.set($event)"
+      (change)="onFlatChange($any($event.target).value)"
+    />
+    @if (flatField.invalid && flatField.touched) {
+      <p class="field-hint error">Please enter your flat / house number and building name.</p>
+    }
+
+    <div #mapEl class="address-map-canvas"></div>
+    @if (usingGoogle()) {
+      <p class="field-hint">
+        Search your building or society name, or zoom in and tap your building. Drag the pin to adjust;
+        switch to Satellite (top left) to see rooftops.
+      </p>
+    } @else {
+      <p class="field-hint">
+        Zoom in to see buildings outlined in purple, then tap yours to select it. If your building isn't outlined,
+        switch to Satellite (top right) and tap or drag the pin onto it.
+      </p>
+    }
+  }
+</div>

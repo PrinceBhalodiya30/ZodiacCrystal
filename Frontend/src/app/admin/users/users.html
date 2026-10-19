@@ -1,0 +1,116 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-users-page">
+  <div class="page-header">
+    <h1>Manage Users</h1>
+    <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
+    [title]="'Exports the ' + totalCount() + ' row(s) matching the current filters'"
+    (click)="exportCsv()">
+      {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by name or email..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="onSearchInput($event)"
+      name="userSearch"
+    />
+    <select [ngModel]="roleFilter()" (ngModelChange)="roleFilter.set($event); onFilterChange()" name="userRole" aria-label="Filter by role">
+      <option value="">All roles</option>
+      <option value="User">Customers</option>
+      <option value="Admin">Admins</option>
+    </select>
+    <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="userStatus" aria-label="Filter by status">
+      <option value="">All statuses</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+    @if (hasFilters()) {
+      <button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+    }
+  </div>
+
+  @if (isLoading() && users().length === 0) {
+    <app-spinner label="Loading users..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadUsers()">Retry</button>
+    </div>
+  } @else if (users().length === 0) {
+    <div class="state-message state-message--empty">
+      <p>No users found.</p>
+      @if (hasFilters()) {
+        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap" [class.is-refreshing]="isLoading()">
+      <table class="stack-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.userId) {
+            <tr>
+              <td data-label="Name">{{ user.name }}</td>
+              <td data-label="Email">{{ user.email }}</td>
+              <td data-label="Role">{{ user.role }}</td>
+              <td data-label="Status">
+                <span class="status-pill" [class.inactive]="!user.isActive">
+                  {{ user.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td data-label="Created">{{ user.createdAt | date:'dd MMM yyyy' }}</td>
+              <td class="cell-actions">
+                <div class="row-actions">
+                  @if (user.userId !== currentUserId) {
+                    <button
+                      type="button"
+                      class="chip-btn"
+                      [class.danger]="user.isActive"
+                      [disabled]="updatingUserId() === user.userId"
+                      (click)="toggleStatus(user)"
+                    >
+                      @if (user.isActive) {
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12h6"/></svg>
+                      } @else {
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+                      }
+                      {{ user.isActive ? 'Deactivate' : 'Activate' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="chip-btn danger"
+                      aria-label="Delete {{ user.name }}"
+                      [disabled]="updatingUserId() === user.userId"
+                      (click)="deleteUser(user)"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                      Delete
+                    </button>
+                  } @else {
+                    <span class="you-label">(you)</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+</section>

@@ -1,0 +1,106 @@
+:host {
+  display: block;
+}
+
+.column-chart {
+  position: relative;
+  width: 100%;
+}
+
+.column-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.chart-gridline {
+  stroke: #f0ece4;
+  stroke-width: 1;
+}
+
+.chart-gridline.baseline {
+  stroke: #d9d5cd;
+}
+
+.chart-axis-label {
+  font-size: 11px;
+  fill: var(--color-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.column-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.column-hit:focus-visible {
+  fill: rgba(47, 74, 58, 0.08);
+}
+
+.column-bar {
+  fill: var(--color-brand);
+  opacity: 0.8;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transition: opacity 0.12s ease;
+  animation: column-grow 0.45s ease backwards;
+}
+
+.column-bar.is-hover {
+  opacity: 1;
+}
+
+@keyframes column-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+.chart-tooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 4px;
+  background-color: #1a2920;
+  color: #ffffff;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(29, 27, 24, 0.28);
+  z-index: 2;
+}
+
+.chart-tooltip.align-start {
+  transform: translate(-12px, calc(-100% - 8px));
+}
+
+.chart-tooltip.align-end {
+  transform: translate(calc(-100% + 12px), calc(-100% - 8px));
+}
+
+.chart-tooltip-label {
+  color: #d6d2ca;
+  font-size: 0.7rem;
+}
+
+.chart-tooltip-value {
+  font-weight: 700;
+}
+
+.chart-tooltip-detail {
+  color: #e7e3db;
+  font-size: 0.72rem;
+}

@@ -1,0 +1,27 @@
+@if (items.length === 0) {
+  <p class="ranked-empty">{{ emptyMessage }}</p>
+} @else {
+  <ol class="ranked-list" [attr.aria-label]="ariaLabel">
+    @for (item of items; track item.id; let i = $index) {
+      <li class="ranked-row" [class.is-top]="i === 0">
+        <span class="ranked-rank" aria-hidden="true">{{ i + 1 }}</span>
+        <div class="ranked-main">
+          <div class="ranked-line">
+            <span class="ranked-label" [title]="item.label">{{ item.label }}</span>
+            <span class="ranked-value">{{ item.valueText }}</span>
+          </div>
+          <div class="ranked-track" aria-hidden="true">
+            <span
+              class="ranked-fill"
+              [style.transform]="'scaleX(' + barScale(item) + ')'"
+              [style.animation-delay.ms]="i * 50"
+            ></span>
+          </div>
+          @if (item.detail) {
+            <span class="ranked-detail">{{ item.detail }}</span>
+          }
+        </div>
+      </li>
+    }
+  </ol>
+}

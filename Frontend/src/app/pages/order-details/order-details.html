@@ -1,0 +1,208 @@
+<section class="container order-details-page">
+  @if (!isGuestView) {
+    <app-breadcrumbs [items]="[{ label: 'My Account', link: '/profile' }, { label: 'My Orders', link: '/orders' }, { label: order() ? 'Order #' + order()!.orderId : 'Order' }]"></app-breadcrumbs>
+  }
+
+  @if (isLoading()) {
+    <app-spinner label="Loading order..."></app-spinner>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      @if (isGuestView) {
+        <a routerLink="/find-order" class="btn">Find my order</a>
+      } @else {
+        <a routerLink="/orders" class="btn">Back to My Orders</a>
+      }
+    </div>
+  } @else if (order(); as o) {
+    @if (showConfirmation()) {
+      <div class="confirmation-banner" role="status" style="position: relative">
+        <button type="button" aria-label="Close message" (click)="dismissConfirmation()"
+          style="position: absolute; top: 0.6rem; right: 0.75rem; background: none; border: none; font-size: 1rem; cursor: pointer; opacity: 0.6; color: inherit">✕</button>
+        <h2>Order placed successfully!</h2>
+        <p>Thank you - your crystals are on their way.</p>
+      </div>
+    }
+
+    <div class="order-card">
+      <div class="order-header">
+        <h1>Order #{{ o.orderId }}</h1>
+        <span class="order-status" [class]="o.status.toLowerCase()">{{ o.status }}</span>
+      </div>
+
+      <!-- Invoice is issued once the order ships (none for cancelled orders). -->
+      @if (o.status === 'Shipped' || o.status === 'Delivered') {
+        <button
+          type="button"
+          class="btn btn-outline invoice-btn"
+          [disabled]="isDownloadingInvoice()"
+          (click)="downloadInvoice()"
+        >
+          {{ isDownloadingInvoice() ? 'Preparing Invoice...' : 'Download Invoice' }}
+        </button>
+      } @else if (!isCancelled()) {
+        <p class="invoice-pending">Your invoice will be available once your order ships.</p>
+      }
+
+      @if (o.trackingNumber && o.status === 'Shipped') {
+        <a class="btn track-btn" [routerLink]="[orderBase, o.orderId, 'track']">Track Package</a>
+      }
+
+      @if (o.status === 'Delivered' && !isMysteryBox()) {
+        <button type="button" class="btn buy-again-btn" [disabled]="isBuyingAgain()" (click)="buyAgain()">
+          {{ isBuyingAgain() ? 'Adding...' : 'Buy Again' }}
+        </button>
+      }
+
+      @if (o.status === 'Delivered') {
+        <p class="delivery-estimate">
+          @if (o.deliveredAt) {
+            Delivered on <strong>{{ o.deliveredAt | date:'EEE, dd MMM yyyy' }}</strong>
+          } @else {
+            <strong>Delivered</strong>
+          }
+          @if (o.trackingNumber) {
+            · <a class="delivery-details-link" [routerLink]="[orderBase, o.orderId, 'track']">View delivery details</a>
+          }
+        </p>
+      } @else if (o.estimatedDeliveryTo) {
+        <p class="delivery-estimate">
+          Estimated delivery: <strong>{{ o.estimatedDeliveryFrom | date:'EEE, dd MMM' }} – {{ o.estimatedDeliveryTo | date:'EEE, dd MMM' }}</strong>
+        </p>
+      }
+
+      @if (isCancelled()) {
+        <div class="status-cancelled-note" role="status">
+          <span class="status-cancelled-icon" aria-hidden="true">✕</span>
+          <span class="status-cancelled-text">Order Cancelled</span>
+        </div>
+        @if (o.cancellationReason) {
+          <p class="cancel-reason">Reason: {{ o.cancellationReason }}</p>
+        }
+      } @else {
+        <ol class="status-stepper" aria-label="Order status">
+          @for (step of statusSteps(); track step.label; let last = $last) {
+            <li
+              class="status-step"
+              [class]="step.state"
+              [attr.aria-current]="step.state === 'current' ? 'step' : null"
+            >
+              <span class="status-step-dot" aria-hidden="true">
+                @if (step.state === 'completed') {
+                  ✓
+                }
+              </span>
+              <span class="status-step-label">
+                {{ step.label }}
+                <span class="visually-hidden">
+                  @if (step.state === 'completed') {
+                    (completed)
+                  } @else if (step.state === 'current') {
+                    (current step)
+                  } @else {
+                    (upcoming)
+                  }
+                </span>
+              </span>
+            </li>
+            @if (!last) {
+              <li class="status-step-connector" [class.completed]="step.state === 'completed'" aria-hidden="true"></li>
+            }
+          }
+        </ol>
+      }
+
+      @if (actionError()) {
+        <p class="form-error" role="alert">{{ actionError() }}</p>
+      }
+
+      @if (canCancel()) {
+        <button
+          type="button"
+          class="btn btn-cancel"
+          [disabled]="isCancelling()"
+          (click)="cancelOrder()"
+        >
+          {{ isCancelling() ? 'Cancelling...' : 'Cancel Order' }}
+        </button>
+      }
+
+      <p class="order-date">Date: {{ o.orderDate | date:'dd MMM yyyy' }}</p>
+
+      <h3>Products</h3>
+      <div class="order-items">
+        @for (item of o.items; track item.orderItemId) {
+          <div class="order-item-row">
+            <span class="item-name">{{ item.productName }}</span>
+            <span class="item-calc">
+              {{ item.unitPrice | inr }} × {{ item.quantity }} =
+              {{ item.subtotal | inr }}
+            </span>
+          </div>
+        }
+      </div>
+
+      @if (isMysteryBox()) {
+        <div class="order-total-row">
+          <span>Mystery Crystal Box savings</span>
+          <span>-{{ (o.discountAmount ?? 0) | inr }}</span>
+        </div>
+      } @else {
+        @if (couponDiscountAmount() > 0 && o.couponCode) {
+          <div class="order-total-row">
+            <span>Coupon: {{ o.couponCode }}</span>
+            <span>-{{ couponDiscountAmount() | inr }}</span>
+          </div>
+        }
+
+      }
+
+      <div class="order-total-row">
+        <span>Shipping</span>
+        @if (o.shippingFee > 0) {
+          <span>{{ o.shippingFee | inr }}</span>
+        } @else {
+          <span class="shipping-free">FREE</span>
+        }
+      </div>
+
+      <div class="order-total-row">
+        <span>Total</span>
+        <span>{{ o.totalAmount | inr }}</span>
+      </div>
+
+      <div class="order-total-row payment-row">
+        <span>Payment</span>
+        <span class="payment-status" [class]="'payment-status ' + o.paymentStatus.toLowerCase()">
+          {{ paymentLabel(o) }}
+          @if (o.paidAt && o.paymentStatus === 'Paid') {
+            <small>on {{ o.paidAt | date:'dd MMM yyyy' }}</small>
+          }
+        </span>
+      </div>
+
+      <h3>Shipping Information</h3>
+      <div class="shipping-info">
+        <p>{{ o.shippingName }}</p>
+        <p>{{ o.shippingAddress }}</p>
+        <p>{{ o.city }}, {{ o.state }} {{ o.postalCode }}</p>
+        <p>{{ o.phone }}</p>
+      </div>
+
+      @if (!isGuestView) {
+        <app-return-request-panel [order]="o" (returnRequested)="loadOrder()" />
+      }
+
+      <p class="order-help-link">
+        Problem with this order? <a routerLink="/help" [queryParams]="{ orderId: o.orderId }">Get help</a>
+      </p>
+
+      @if (justPlaced && !isCancelled()) {
+        <div class="confirmation-actions">
+          <a class="btn btn-outline" routerLink="/products">Continue Shopping</a>
+          <a class="btn" routerLink="/orders">View My Orders</a>
+        </div>
+      }
+    </div>
+  }
+</section>

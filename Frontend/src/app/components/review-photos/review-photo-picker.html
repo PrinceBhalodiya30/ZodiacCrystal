@@ -1,0 +1,33 @@
+<div class="photo-picker">
+  <div class="photo-thumbs">
+    @for (photo of photos(); track photo.previewUrl; let i = $index) {
+      <div class="photo-thumb">
+        <img [src]="photo.previewUrl" [alt]="'Selected photo ' + (i + 1)" />
+        <button
+          type="button"
+          class="photo-thumb-remove"
+          [attr.aria-label]="'Remove photo ' + (i + 1)"
+          [disabled]="disabled()"
+          (click)="remove(i)"
+        >×</button>
+      </div>
+    }
+
+    @if (photos().length < max()) {
+      <label class="photo-add" [class.is-disabled]="disabled()">
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          [disabled]="disabled()"
+          (change)="onFilesSelected($any($event.target))"
+        />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>
+        </svg>
+        <span>Add photo</span>
+      </label>
+    }
+  </div>
+  <p class="photo-hint">Up to {{ max() }} photos (JPG, PNG or WebP, 5 MB each). Photos appear after a quick check by our team.</p>
+</div>

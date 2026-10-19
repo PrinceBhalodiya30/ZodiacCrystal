@@ -1,0 +1,35 @@
+<section class="container order-placed-page">
+  @if (order; as o) {
+    <div class="op-card">
+      <div class="op-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>
+      </div>
+      <h1>Thank you, your order is placed!</h1>
+      <p>Order <strong>#{{ o.orderId }}</strong> · {{ o.totalAmount | inr }} · paid by card</p>
+      <p class="op-muted">
+        We've emailed your confirmation{{ email ? ' to ' + email : '' }} with a private link to track your order.
+      </p>
+
+      <a class="btn btn-outline" [routerLink]="['/order', o.orderId]">View your order</a>
+
+      <ul class="op-items">
+        @for (item of o.items; track item.productId) {
+          <li>{{ item.productName }} × {{ item.quantity }}</li>
+        }
+      </ul>
+
+      <div class="op-account">
+        <strong>Save time next time</strong>
+        <p>Create an account with {{ email || 'this email' }} to track this order, request returns and check out faster. Your order will be added to it automatically.</p>
+        <a class="btn" routerLink="/register">Create an account</a>
+      </div>
+
+      <a class="op-link" routerLink="/products">Continue shopping</a>
+    </div>
+  } @else {
+    <div class="state-message state-message--empty">
+      <p>Your order confirmation has been emailed to you.</p>
+      <a class="btn" routerLink="/products">Continue shopping</a>
+    </div>
+  }
+</section>

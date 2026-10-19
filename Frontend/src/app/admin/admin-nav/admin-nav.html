@@ -1,0 +1,43 @@
+<nav class="admin-nav" aria-label="Admin">
+  <div class="admin-nav-brand">
+    <img class="admin-nav-logo" src="logo.svg?v=2" alt="" aria-hidden="true" />
+    <span class="admin-nav-brand-name">Zodiac Crystals</span>
+    <span class="admin-nav-brand-tag">Admin</span>
+  </div>
+
+  <div class="admin-nav-links">
+    @for (group of groups; track group.title) {
+      <div class="admin-nav-group">
+        @if (group.title) {
+          <div class="admin-nav-group-title">{{ group.title }}</div>
+        }
+        @for (link of group.links; track link.path) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+          >
+            <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="link.icon" /></svg>
+            <span class="admin-nav-label">{{ link.label }}</span>
+            @if (badgeCount(link.badge) > 0) {
+              <span class="admin-nav-badge" [attr.aria-label]="badgeCount(link.badge) + ' ' + link.badgeLabel">
+                {{ badgeCount(link.badge) > 99 ? '99+' : badgeCount(link.badge) }}
+              </span>
+            }
+          </a>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="admin-nav-footer">
+    <a routerLink="/" class="admin-nav-back">
+      <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="icons.store" /></svg>
+      <span class="admin-nav-label">Back to Store</span>
+    </a>
+    <button type="button" class="admin-nav-logout" (click)="logout()">
+      <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="icons.logout" /></svg>
+      <span class="admin-nav-label">Logout</span>
+    </button>
+  </div>
+</nav>

@@ -1,0 +1,112 @@
+.return-panel {
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid #e8e4dc;
+  border-radius: 4px;
+  background-color: #f9f7f2;
+}
+
+.return-panel p {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.return-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.return-badge {
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #fff3e0;
+  color: #b25e00;
+}
+
+.status-approved .return-badge { background-color: #e8f0fe; color: #2f6fd6; }
+.status-refunded .return-badge { background-color: #e6f6ec; color: #1e8a4c; }
+.status-rejected .return-badge { background-color: #fdecec; color: #c62828; }
+
+.admin-note {
+  padding: 0.5rem 0.7rem;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.return-offer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+label {
+  display: block;
+  margin: 0.8rem 0 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+select,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+}
+
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-brand);
+}
+
+.return-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.return-btn,
+.cancel-btn {
+  border-radius: 4px;
+  padding: 0.5rem 1.1rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.return-btn {
+  border: 1px solid var(--color-brand);
+  background-color: var(--color-brand);
+  color: #ffffff;
+}
+
+.cancel-btn {
+  border: 1px solid #ccc;
+  background: none;
+  color: var(--color-muted);
+}
+
+.return-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

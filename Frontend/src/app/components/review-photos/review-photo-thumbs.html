@@ -1,0 +1,13 @@
+@if (heading()) {
+  <h3 class="photo-thumbs-heading">{{ heading() }}</h3>
+}
+<div class="photo-thumbs" [class.size-md]="size() === 'md'">
+  @for (photo of photos(); track photo.imageUrl; let i = $index) {
+    <button type="button" class="photo-thumb photo-thumb-button" [attr.aria-label]="'View photo ' + (i + 1)" (click)="open.emit(i)">
+      <img [src]="photo.imageUrl" [alt]="photo.alt || 'Customer photo ' + (i + 1)" loading="lazy" />
+      @if (photo.pending) {
+        <span class="photo-thumb-badge">Awaiting approval</span>
+      }
+    </button>
+  }
+</div>

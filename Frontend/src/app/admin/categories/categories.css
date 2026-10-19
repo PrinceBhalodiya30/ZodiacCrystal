@@ -1,0 +1,6 @@
+/* Page-specific tweaks only - shared table/form styles live in admin-shared.css */
+
+/* 0 products: greyed, so empty categories stand out before deleting. */
+.empty-count {
+  color: var(--color-subtle);
+}

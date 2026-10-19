@@ -1,0 +1,19 @@
+<a class="zodiac-card" [routerLink]="['/zodiac', zodiac.zodiacId]">
+  <div class="zodiac-image">
+    @if (zodiac.imageUrl) {
+      <img [src]="zodiac.imageUrl" [alt]="zodiac.name" loading="lazy" decoding="async" imgFallback />
+    } @else {
+      <app-zodiac-icon class="image-placeholder" [sign]="zodiac.name"></app-zodiac-icon>
+    }
+  </div>
+
+  <h3 class="zodiac-name">{{ zodiac.name }}</h3>
+
+  @if (zodiac.description) {
+    <p class="zodiac-description">{{ zodiac.description }}</p>
+  }
+
+  @if (showButton) {
+    <span class="btn">View Crystals</span>
+  }
+</a>

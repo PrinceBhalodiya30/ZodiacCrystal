@@ -1,0 +1,81 @@
+<div class="area-chart">
+  @if (points.length === 0 || !hasValues) {
+    <p class="chart-empty">{{ emptyMessage }}</p>
+  } @else {
+    @if (previousPath) {
+      <div class="chart-legend" aria-hidden="true">
+        <span><i class="key key--current"></i>This period</span>
+        <span><i class="key key--previous"></i>{{ previousLabel }}</span>
+      </div>
+    }
+
+    <svg
+      class="area-chart-svg"
+      [attr.viewBox]="'0 0 ' + width + ' ' + height"
+      role="img"
+      [attr.aria-label]="'Area chart with ' + points.length + ' points'"
+      (mouseleave)="setHover(null)"
+    >
+      <defs>
+        <linearGradient [attr.id]="gradientId" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5a7a64" stop-opacity="0.28" />
+          <stop offset="100%" stop-color="#5a7a64" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+
+      @for (g of gridlines; track $index) {
+        <line class="chart-gridline" [attr.x1]="plotLeft" [attr.x2]="plotRight" [attr.y1]="g.y" [attr.y2]="g.y"></line>
+        <text class="chart-axis-label" [attr.x]="plotLeft - 10" [attr.y]="g.y" text-anchor="end" dominant-baseline="middle">{{ g.label }}</text>
+      }
+
+      @if (previousPath) {
+        <path class="chart-previous" [attr.d]="previousPath"></path>
+      }
+      <path class="chart-area" [attr.d]="areaPath" [attr.fill]="'url(#' + gradientId + ')'"></path>
+      <path class="chart-line" [attr.d]="linePath"></path>
+
+      @if (hovered; as p) {
+        <line class="chart-guide" [attr.x1]="p.x" [attr.x2]="p.x" [attr.y1]="plotTop" [attr.y2]="plotBottom"></line>
+        @if (p.previousY !== null) {
+          <circle class="chart-dot chart-dot--previous" [attr.cx]="p.x" [attr.cy]="p.previousY" r="3.5"></circle>
+        }
+        <circle class="chart-dot" [attr.cx]="p.x" [attr.cy]="p.y" r="5"></circle>
+      }
+
+      @for (p of points; track $index; let i = $index) {
+        <rect
+          class="chart-hit"
+          [attr.x]="hitX(i)"
+          [attr.y]="plotTop"
+          [attr.width]="hitWidth(i)"
+          [attr.height]="plotBottom - plotTop"
+          tabindex="0"
+          [attr.aria-label]="p.label + ': ' + formatValue(p.value)"
+          (mouseenter)="setHover(i)"
+          (focus)="setHover(i)"
+          (blur)="setHover(null)"
+        ></rect>
+        @if (xLabelIndexes.has(i)) {
+          <text class="chart-axis-label" [attr.x]="p.x" [attr.y]="plotBottom + 18" text-anchor="middle">{{ p.label }}</text>
+        }
+      }
+    </svg>
+
+    @if (hovered; as p) {
+      <div
+        [class]="'chart-tooltip align-' + tooltipAlign"
+        [style.left.%]="(p.x / width) * 100"
+        [style.top.%]="((p.previousY !== null && p.previousY < p.y ? p.previousY : p.y) / height) * 100"
+      >
+        <span class="tip-label">{{ p.label }}</span>
+        <span class="tip-value">{{ formatValue(p.value) }}</span>
+        @for (line of p.details ?? []; track $index) {
+          <span class="tip-detail">{{ line }}</span>
+        }
+        @if (p.previous !== null) {
+          <span class="tip-previous">{{ previousLabel }}: {{ formatValue(p.previous) }}</span>
+        }
+      </div>
+    }
+  }
+</div>

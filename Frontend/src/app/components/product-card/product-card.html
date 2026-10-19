@@ -1,0 +1,107 @@
+<div class="product-card">
+  <a class="product-image" [routerLink]="['/products', product.productId]" [attr.aria-label]="'View details for ' + product.name">
+    @if (selectedImageUrl()) {
+      <img [imgSrc]="selectedImageUrl()" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="product.name" width="400" height="400" loading="lazy" decoding="async" imgFallback />
+    } @else {
+      <div class="image-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 3h8l4 5-10 13L2 8Z"/>
+        </svg>
+        <span>No Image</span>
+      </div>
+    }
+    @if (isUnavailable) {
+      <span class="stock-badge stock-badge-overlay out-of-stock">Unavailable</span>
+    } @else {
+      <span class="stock-badge stock-badge-overlay" [class]="stockStatus">{{ stockLabel }}</span>
+    }
+    @if (discountPercent; as percent) {
+      <span class="sale-badge">-{{ percent }}%</span>
+    }
+    <button
+      type="button"
+      class="wishlist-toggle"
+      [class.active]="isWishlisted"
+      [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+      (click)="$event.preventDefault(); $event.stopPropagation(); toggleWishlist()"
+    >
+      <svg viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
+      </svg>
+    </button>
+  </a>
+
+  <div class="product-body">
+    <h3 class="product-name">
+      <a [routerLink]="['/products', product.productId]">{{ product.name }}</a>
+    </h3>
+
+    @if (product.description) {
+      <p class="product-description">{{ product.description }}</p>
+    }
+
+    @if (product.reviewCount) {
+      <p class="product-rating">
+        <span class="stars">{{ ratingStars }}</span>
+        <span class="rating-count">({{ product.reviewCount }})</span>
+      </p>
+    }
+
+    <p class="product-price">
+      {{ product.price | inr }}
+      @if (discountPercent) {
+        <span class="product-price-compare">{{ product.compareAtPrice | inr }}</span>
+      }
+    </p>
+
+    @if (product.zodiacs && product.zodiacs.length > 0) {
+      <div class="zodiac-tags">
+        @for (zodiac of product.zodiacs; track zodiac.zodiacId) {
+          <span class="zodiac-tag">
+            <app-zodiac-icon class="zodiac-tag-icon" [sign]="zodiac.name"></app-zodiac-icon>
+            {{ zodiac.name }}
+          </span>
+        }
+      </div>
+    }
+
+    @if (purchaseDisabled) {
+      <p class="unavailable-message">{{ unavailableMessage }}</p>
+    }
+
+    <!-- The image and name already open the product page, so the card keeps
+         just the purchase actions on a single row. -->
+    <div class="product-actions">
+      @if (variant === 'wishlist') {
+        <button
+          type="button"
+          class="btn"
+          [disabled]="purchaseDisabled"
+          [attr.title]="purchaseDisabled ? unavailableMessage : null"
+          (click)="moveToCart()"
+        >Move to Cart</button>
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="toggleWishlist()"
+        >Remove</button>
+      } @else {
+        <button
+          type="button"
+          class="btn"
+          [class.btn-added]="justAdded()"
+          [disabled]="purchaseDisabled"
+          [attr.title]="purchaseDisabled ? unavailableMessage : null"
+          (click)="addToCart()"
+        >{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
+        <button
+          type="button"
+          class="btn btn-outline"
+          [disabled]="purchaseDisabled"
+          [attr.title]="purchaseDisabled ? unavailableMessage : null"
+          (click)="buyNow()"
+        >Buy Now</button>
+      }
+    </div>
+  </div>
+</div>
