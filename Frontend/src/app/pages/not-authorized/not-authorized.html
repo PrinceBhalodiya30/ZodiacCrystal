@@ -1,5 +1,17 @@
 <section class="not-authorized">
-  <h1>Access Restricted</h1>
-  <p>You don't have permission to view this page.</p>
-  <a routerLink="/" class="btn">Back to Home</a>
+  <div class="not-authorized-card">
+    <div class="not-authorized-glyph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+    </div>
+    <span class="auth-status-code">403 Restricted</span>
+    <h1>Access Restricted</h1>
+    <p>You don't have permission to view this page. If you are an administrator, please sign in with an authorized account.</p>
+    <div class="not-authorized-actions">
+      <a routerLink="/" class="btn btn-primary">Back to Home</a>
+      <a routerLink="/login" class="btn btn-outline">Sign In</a>
+    </div>
+  </div>
 </section>

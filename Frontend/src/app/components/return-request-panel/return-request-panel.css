@@ -1,15 +1,16 @@
 .return-panel {
-  margin-top: 1.25rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid #e8e4dc;
-  border-radius: 4px;
-  background-color: #f9f7f2;
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-sunken);
 }
 
 .return-panel p {
-  margin: 0.3rem 0 0;
-  font-size: 0.9rem;
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
   color: var(--color-muted);
+  line-height: 1.5;
 }
 
 .return-panel-header {
@@ -19,78 +20,89 @@
 }
 
 h3 {
+  font-family: var(--font-display);
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  color: var(--color-ink);
 }
 
 .return-badge {
-  padding: 0.15rem 0.6rem;
-  border-radius: 4px;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
-  background-color: #fff3e0;
-  color: #b25e00;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background-color: var(--color-amber-bg, #fff3e0);
+  color: var(--color-amber, #b25e00);
 }
 
-.status-approved .return-badge { background-color: #e8f0fe; color: #2f6fd6; }
-.status-refunded .return-badge { background-color: #e6f6ec; color: #1e8a4c; }
-.status-rejected .return-badge { background-color: #fdecec; color: #c62828; }
+.status-approved .return-badge { background-color: var(--color-info-bg); color: var(--color-info); }
+.status-refunded .return-badge { background-color: var(--color-success-bg); color: var(--color-success); }
+.status-rejected .return-badge { background-color: var(--color-danger-bg); color: var(--color-danger); }
 
 .admin-note {
-  padding: 0.5rem 0.7rem;
-  border-radius: 4px;
-  background-color: #ffffff;
+  margin-top: 0.75rem !important;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  font-size: 0.88rem !important;
 }
 
 .return-offer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
 }
 
 label {
   display: block;
-  margin: 0.8rem 0 0.3rem;
+  margin: 0.85rem 0 0.35rem;
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--color-muted);
+  font-weight: 600;
+  color: var(--color-ink);
 }
 
 select,
 textarea {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.55rem 0.7rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font: inherit;
-  font-size: 0.9rem;
-  background-color: #ffffff;
+  font-size: 0.95rem;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
 }
 
 .return-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.6rem;
-  margin-top: 0.9rem;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
 }
 
 .return-btn,
 .cancel-btn {
-  border-radius: 4px;
-  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1.25rem;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .return-btn {
@@ -99,10 +111,18 @@ textarea:focus {
   color: #ffffff;
 }
 
+.return-btn:hover:not(:disabled) {
+  background-color: var(--color-brand-hover);
+}
+
 .cancel-btn {
-  border: 1px solid #ccc;
-  background: none;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   color: var(--color-muted);
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background-color: var(--color-surface-sunken);
 }
 
 .return-btn:disabled,

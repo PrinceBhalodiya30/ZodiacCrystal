@@ -1,18 +1,76 @@
 <section class="container about-page">
-  <a class="page-back-link" routerLink="/">← Back to home</a>
-  <h1>About Zodiac Crystals</h1>
+  <nav class="about-breadcrumb" aria-label="Breadcrumb">
+    <a class="page-back-link" routerLink="/">← Back to home</a>
+  </nav>
 
-  <div class="about-card">
-    <p>
-      Zodiac Crystals is a small crystal shop built around a simple idea: every zodiac sign
-      resonates with different stones. We curate our collection so you can find crystals
-      that connect with your sign's energy, whether you're just getting started or already
-      have a shelf full of favorites.
-    </p>
-    <p>
-      Every product listed here is checked for quality before it goes up for sale, and our
-      team keeps stock and pricing up to date so what you see is what you get.
-    </p>
-    <a class="btn" routerLink="/products">Browse Our Crystals</a>
+  <header class="about-hero">
+    <div class="about-badge">
+      <svg class="about-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+      </svg>
+      <span>Our Philosophy &amp; Craft</span>
+    </div>
+    <h1>About Zodiac Crystals</h1>
+    <p class="about-lead">Connecting earthly minerals with celestial archetypes since our founding.</p>
+  </header>
+
+  <div class="about-story-card">
+    <div class="about-card-body">
+      <h2>Celestial Resonance &amp; Earthly Wonders</h2>
+      <p>
+        Zodiac Crystals is a small crystal shop built around a simple idea: every zodiac sign
+        resonates with different stones. We curate our collection so you can find crystals
+        that connect with your sign's energy, whether you're just getting started or already
+        have a shelf full of favorites.
+      </p>
+      <p>
+        Every product listed here is checked for quality before it goes up for sale, and our
+        team keeps stock and pricing up to date so what you see is what you get.
+      </p>
+    </div>
+
+    <div class="about-pillars">
+      <div class="about-pillar">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2l8 5v10l-8 5-8-5V7l8-5z" />
+          </svg>
+        </div>
+        <h3>Ethical Selection</h3>
+        <p>Genuinely sourced raw and tumbled specimens chosen for natural clarity, structure, and integrity.</p>
+      </div>
+
+      <div class="about-pillar">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 3v18M3 12h18" />
+          </svg>
+        </div>
+        <h3>Astrological Synergy</h3>
+        <p>Intentionally paired with solar, lunar, and elemental affinities across all twelve zodiac houses.</p>
+      </div>
+
+      <div class="about-pillar">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+        <h3>Physical Verification</h3>
+        <p>Every stone is physically inspected, cataloged, and photographed truthfully before entering inventory.</p>
+      </div>
+    </div>
+
+    <div class="about-cta-banner">
+      <div class="about-cta-text">
+        <h3>Begin Your Discovery</h3>
+        <p>Explore raw minerals, polished palms, and celestial pairings crafted for your sign.</p>
+      </div>
+      <div class="about-cta-actions">
+        <a class="btn btn-primary" routerLink="/products">Browse Our Crystals</a>
+        <a class="btn btn-outline" routerLink="/zodiac">Shop by Zodiac</a>
+      </div>
+    </div>
   </div>
 </section>

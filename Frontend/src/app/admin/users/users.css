@@ -3,3 +3,32 @@
   font-size: 0.85rem;
   font-style: italic;
 }
+
+.role-badge {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.role-badge.role-admin {
+  background-color: #f5ebe6;
+  color: #a33e26;
+  border: 1px solid rgba(163, 62, 38, 0.2);
+}
+
+.role-badge.role-customer,
+.role-badge.role-user {
+  background-color: #e8f4ed;
+  color: #1f683f;
+  border: 1px solid rgba(31, 104, 63, 0.2);
+}
+
+.role-badge.role-guest {
+  background-color: #f1f3f5;
+  color: #495057;
+  border: 1px solid #ced4da;
+}

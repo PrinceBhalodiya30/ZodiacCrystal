@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -228,12 +228,12 @@ namespace Zodiac_Crystal.Controllers
         }
 
         // Shared by the Users list and its export, so both always match.
-        // role: "Admin" | "User"; status: "active" | "inactive".
+        // role: "Admin" | "User" | "Guest"; status: "active" | "inactive".
         private static IQueryable<Models.User> ApplyFilters(IQueryable<Models.User> query, string? search, string? role, string? status)
         {
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(u => u.Name.Contains(search) || u.Email.Contains(search));
+                query = query.Where(u => u.Name.Contains(search) || u.Email.Contains(search) || u.Role.Contains(search));
             }
 
             if (!string.IsNullOrWhiteSpace(role))

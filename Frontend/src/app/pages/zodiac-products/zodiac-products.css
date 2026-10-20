@@ -1,28 +1,46 @@
 .zodiac-products-page {
-  padding: 1.5rem 1.5rem 3rem;
+  padding: 2rem 1.5rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .zodiac-header {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 0 0 1px #e6e0d4;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 2rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem 2.25rem;
+  margin: 1.5rem 0 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.zodiac-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
 }
 
 .zodiac-image {
-  width: 90px;
-  height: 90px;
-  min-width: 90px;
+  width: 96px;
+  height: 96px;
+  min-width: 96px;
   border-radius: 50%;
-  background-color: var(--color-cream);
+  background: var(--color-surface-sunken);
+  border: 2px solid var(--color-brass);
+  box-shadow: 0 0 0 4px rgba(184, 134, 45, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .zodiac-image img {
@@ -32,35 +50,60 @@
 }
 
 .image-placeholder {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   color: var(--color-brand);
 }
 
 .zodiac-header h1 {
-  margin: 0.25rem 0;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
   color: var(--color-ink);
 }
 
 .zodiac-description {
   margin: 0;
   color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 720px;
 }
 
-h2 {
-  margin-bottom: 1.25rem;
+.zodiac-products-page h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin: 0 0 1.5rem;
   color: var(--color-ink);
 }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.75rem;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 640px) {
+  .zodiac-products-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
   .zodiac-header {
     flex-direction: column;
     text-align: center;
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .zodiac-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
   }
 }

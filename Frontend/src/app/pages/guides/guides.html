@@ -1,15 +1,35 @@
 <section class="container guides-page">
-  <a class="page-back-link" routerLink="/">← Back to home</a>
-  <h1>Crystal Guides</h1>
-  <p class="page-subtitle">Learn how to choose, care for, and understand the crystals in our collection.</p>
+  <nav class="guides-breadcrumb" aria-label="Breadcrumb">
+    <a class="page-back-link" routerLink="/">← Back to home</a>
+  </nav>
+
+  <header class="guides-hero">
+    <div class="guides-tag">Knowledge &amp; Wisdom</div>
+    <h1>Crystal Guides</h1>
+    <p class="page-subtitle">Learn how to choose, care for, and understand the crystals in our collection.</p>
+  </header>
 
   <div class="guide-grid">
     @for (guide of guides; track guide.slug) {
-      <div class="guide-card">
+      <article class="guide-card">
+        <div class="guide-card-top">
+          <span class="guide-meta-tag">Editorial Guide</span>
+          <div class="guide-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          </div>
+        </div>
         <h2>{{ guide.title }}</h2>
         <p>{{ guide.shortDescription }}</p>
-        <a class="btn btn-outline btn-sm" [routerLink]="['/guides', guide.slug]">Read Guide</a>
-      </div>
+        <div class="guide-card-footer">
+          <a class="btn btn-outline btn-sm read-btn" [routerLink]="['/guides', guide.slug]">
+            <span>Read Guide</span>
+            <span class="arrow-glyph" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
     }
   </div>
 </section>

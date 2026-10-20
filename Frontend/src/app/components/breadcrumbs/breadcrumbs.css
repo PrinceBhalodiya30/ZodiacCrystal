@@ -1,6 +1,6 @@
 .breadcrumbs {
   margin-bottom: 1.5rem;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--color-subtle);
 }
 
@@ -22,17 +22,26 @@
 }
 
 .breadcrumbs a {
-  color: var(--color-brand);
+  color: var(--color-muted);
+  font-weight: 500;
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .breadcrumbs a:hover {
+  color: var(--color-brand);
   text-decoration: underline;
 }
 
+.breadcrumbs a:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
 .breadcrumb-current {
-  color: var(--color-muted);
-  font-weight: 500;
+  color: var(--color-ink);
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

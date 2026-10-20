@@ -1,20 +1,25 @@
 <section class="hero">
   <div class="container hero-inner">
     <div class="hero-copy">
-      <span class="hero-eyebrow">Curated Crystal Collection</span>
-      <h1>Discover Crystals Connected to <span class="hero-highlight">Your Zodiac</span></h1>
+      <span class="hero-eyebrow">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M12 2 14 9.3 21 12 14 14.7 12 22 10 14.7 3 12 10 9.3Z"/>
+        </svg>
+        Curated Mineral Sanctuary
+      </span>
+      <h1>Discover Crystals Aligned with <span class="hero-highlight">Your Zodiac</span></h1>
       <p>
-        Explore a curated collection of healing crystals matched to each zodiac sign.
-        Find the stones that resonate with your energy and personality.
+        Ethically sourced crystals, raw clusters, polished towers, and gemstone jewelry
+        intuitively chosen to resonate with your astrological blueprint and daily intentions.
       </p>
       <div class="hero-actions">
-        <a class="btn btn-accent" routerLink="/products">Shop Crystals</a>
-        <a class="btn btn-outline" routerLink="/zodiac">Find My Crystal</a>
+        <a class="btn" routerLink="/products">Shop All Crystals</a>
+        <a class="btn btn-outline" routerLink="/zodiac">Find My Sign</a>
       </div>
       <ul class="hero-trust">
-        <li>✓ Ethically sourced</li>
-        <li>✓ 12 zodiac collections</li>
-        <li>✓ Hand-picked stones</li>
+        <li><span>✓</span> Ethically Sourced</li>
+        <li><span>✓</span> 12 Zodiac Alignments</li>
+        <li><span>✓</span> Hand-Picked Quality</li>
       </ul>
     </div>
 
@@ -33,8 +38,15 @@
   </div>
 </section>
 
+<!-- Shop by Zodiac -->
 <section class="container zodiac-section" scrollReveal>
-  <h2>Shop by Zodiac</h2>
+  <div class="section-header">
+    <span class="section-tag">Astrological Harmony</span>
+    <h2>Shop by Zodiac Sign</h2>
+    <p class="section-subtitle">
+      Select your sun, moon, or rising sign to explore stones tuned to your cosmic qualities.
+    </p>
+  </div>
 
   @if (isLoading()) {
     <span class="visually-hidden" role="status">Loading zodiac signs...</span>
@@ -62,9 +74,13 @@
   }
 </section>
 
+<!-- Featured Crystals -->
 @if (productsLoading()) {
   <section class="container featured-section">
-    <h2>Featured Crystals</h2>
+    <div class="section-header">
+      <span class="section-tag">Customer Favorites</span>
+      <h2>Featured Crystals</h2>
+    </div>
     <span class="visually-hidden" role="status">Loading featured crystals...</span>
     <div class="featured-grid" aria-hidden="true">
       @for (n of [1, 2, 3, 4]; track n) {
@@ -74,7 +90,10 @@
   </section>
 } @else if (productsError()) {
   <section class="container featured-section">
-    <h2>Featured Crystals</h2>
+    <div class="section-header">
+      <span class="section-tag">Customer Favorites</span>
+      <h2>Featured Crystals</h2>
+    </div>
     <div class="state-message state-message--error">
       <p>{{ productsError() }}</p>
       <button type="button" class="btn" (click)="loadFeaturedProducts()">Retry</button>
@@ -82,7 +101,13 @@
   </section>
 } @else if (featuredProducts().length > 0) {
   <section class="container featured-section" scrollReveal>
-    <h2>Featured Crystals</h2>
+    <div class="section-header">
+      <span class="section-tag">Customer Favorites</span>
+      <h2>Featured Crystals</h2>
+      <p class="section-subtitle">
+        Hand-selected raw clusters, polished obelisks, and tumbled pocket stones.
+      </p>
+    </div>
     <div class="featured-grid">
       @for (product of featuredProducts(); track product.productId) {
         <app-product-card [product]="product"></app-product-card>
@@ -91,13 +116,42 @@
   </section>
 }
 
-<div class="container">
-  <app-recently-viewed></app-recently-viewed>
-</div>
+<!-- Mystery Box Spotlight Banner -->
+<section class="container mystery-box-spotlight" scrollReveal>
+  <div class="mystery-box-card">
+    <div class="mystery-box-content">
+      <span class="mystery-box-eyebrow">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M12 2 14 9.3 21 12 14 14.7 12 22 10 14.7 3 12 10 9.3Z"/>
+        </svg>
+        Intuitive Curation
+      </span>
+      <h2>The Celestial Mystery Box</h2>
+      <p>
+        Let the universe choose for you. Each mystery box includes hand-selected raw specimens,
+        carved crystal points, affirmation cards, and custom notes tuned to your zodiac energy.
+      </p>
+      <div class="mystery-box-actions">
+        <a class="btn btn-accent" routerLink="/mystery-box">Explore Mystery Boxes</a>
+      </div>
+    </div>
+    <div class="mystery-box-visual" aria-hidden="true">
+      <div class="mystery-box-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- Shop by Category -->
 @if (categoriesLoading()) {
   <section class="container category-section">
-    <h2>Shop by Category</h2>
+    <div class="section-header">
+      <span class="section-tag">Forms & Shapes</span>
+      <h2>Shop by Category</h2>
+    </div>
     <span class="visually-hidden" role="status">Loading categories...</span>
     <div class="category-grid" aria-hidden="true">
       @for (n of [1, 2, 3, 4]; track n) {
@@ -110,7 +164,10 @@
   </section>
 } @else if (categoriesError()) {
   <section class="container category-section">
-    <h2>Shop by Category</h2>
+    <div class="section-header">
+      <span class="section-tag">Forms & Shapes</span>
+      <h2>Shop by Category</h2>
+    </div>
     <div class="state-message state-message--error">
       <p>{{ categoriesError() }}</p>
       <button type="button" class="btn" (click)="loadCategories()">Retry</button>
@@ -118,7 +175,13 @@
   </section>
 } @else if (categoryTiles().length > 0) {
   <section class="container category-section" scrollReveal>
-    <h2>Shop by Category</h2>
+    <div class="section-header">
+      <span class="section-tag">Forms & Shapes</span>
+      <h2>Shop by Category</h2>
+      <p class="section-subtitle">
+        Explore natural specimens, towers, tumbled stones, jewelry, and sacred shapes.
+      </p>
+    </div>
     <div class="category-grid">
       @for (tile of categoryTiles(); track tile.category.categoryId) {
         <a class="category-tile" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
@@ -142,18 +205,52 @@
   </section>
 }
 
+<!-- Crystal Wisdom Guides -->
+@if (guides().length > 0) {
+  <section class="container guides-section" scrollReveal>
+    <div class="section-header">
+      <span class="section-tag">Knowledge & Rituals</span>
+      <h2>Crystal Guides & Wisdom</h2>
+      <p class="section-subtitle">
+        Practical advice for choosing, cleansing, and pairing your crystals.
+      </p>
+    </div>
+    <div class="guides-grid">
+      @for (guide of guides(); track guide.slug) {
+        <article class="guide-card">
+          <span class="guide-card-tag">Guide</span>
+          <h3>{{ guide.title }}</h3>
+          <p>{{ guide.shortDescription }}</p>
+          <a class="guide-card-link" [routerLink]="['/guides', guide.slug]">Read Guide →</a>
+        </article>
+      }
+    </div>
+    <a class="guides-view-all" routerLink="/guides">Explore all crystal guides →</a>
+  </section>
+}
+
+<!-- Recently Viewed -->
+<div class="container">
+  <app-recently-viewed></app-recently-viewed>
+</div>
+
+<!-- Why Choose Us -->
 <section class="container why-us-section" scrollReveal>
-  <h2>Why Choose Us</h2>
+  <div class="section-header">
+    <span class="section-tag">Our Promise</span>
+    <h2>Why Choose Zodiac Crystals</h2>
+    <p class="section-subtitle">Authentic craftsmanship, transparent sourcing, and mindful packaging.</p>
+  </div>
   <div class="why-us-grid">
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="round" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter" stroke-linecap="round" aria-hidden="true">
           <path d="M8 3h8l4 5-10 13L2 8Z"/>
           <path d="M2 8h18M8 3l2 5 0 13M16 3l-2 5 -4 13"/>
         </svg>
       </span>
-      <h3>Quality Crystals</h3>
-      <p>Every crystal is carefully sourced and checked before it reaches you.</p>
+      <h3>100% Genuine Crystals</h3>
+      <p>Natural, ethically gathered minerals tested for authenticity and quality.</p>
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
@@ -162,8 +259,8 @@
           <path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/>
         </svg>
       </span>
-      <h3>Secure Checkout</h3>
-      <p>Your orders and payments are handled through a secure, protected process.</p>
+      <h3>Secure Payments & COD</h3>
+      <p>Safe transactions powered by Braintree, UPI, card, and Cash on Delivery.</p>
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
@@ -171,8 +268,8 @@
           <path d="M12 2 14 9.3 21 12 14 14.7 12 22 10 14.7 3 12 10 9.3Z"/>
         </svg>
       </span>
-      <h3>Zodiac-Based Discovery</h3>
-      <p>Find crystals matched to your zodiac sign's energy and traits.</p>
+      <h3>Astrological Guidance</h3>
+      <p>Every stone is classified by zodiac affinity, element, and chakra resonance.</p>
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
@@ -182,8 +279,8 @@
           <path d="M2.5 3h2l2.2 11.4a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6"/>
         </svg>
       </span>
-      <h3>Easy Shopping</h3>
-      <p>Browse, add to cart, and check out in just a few simple steps.</p>
+      <h3>Protective Eco Packaging</h3>
+      <p>Carefully cushioned in recyclable wrapping to arrive in pristine condition.</p>
     </div>
   </div>
 </section>

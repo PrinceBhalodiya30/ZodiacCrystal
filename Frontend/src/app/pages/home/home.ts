@@ -14,6 +14,8 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ScrollRevealDirective } from '../../directives/scroll-reveal.directive';
+import { GUIDES } from '../../data/guides.data';
+import { Guide } from '../../models/guide';
 
 const FEATURED_PRODUCT_LIMIT = 8;
 const CATEGORY_TILE_LIMIT = 8;
@@ -38,6 +40,7 @@ export class Home implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
 
+  guides = signal<Guide[]>(GUIDES.slice(0, 3));
   zodiacSigns = signal<Zodiac[]>([]);
   isLoading = signal(true);
   errorMessage = signal('');

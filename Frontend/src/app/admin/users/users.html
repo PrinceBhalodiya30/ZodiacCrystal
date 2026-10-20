@@ -22,6 +22,7 @@
     <select [ngModel]="roleFilter()" (ngModelChange)="roleFilter.set($event); onFilterChange()" name="userRole" aria-label="Filter by role">
       <option value="">All roles</option>
       <option value="User">Customers</option>
+      <option value="Guest">Guests</option>
       <option value="Admin">Admins</option>
     </select>
     <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="userStatus" aria-label="Filter by status">
@@ -66,7 +67,11 @@
             <tr>
               <td data-label="Name">{{ user.name }}</td>
               <td data-label="Email">{{ user.email }}</td>
-              <td data-label="Role">{{ user.role }}</td>
+              <td data-label="Role">
+                <span class="role-badge" [class]="'role-' + user.role.toLowerCase()">
+                  {{ user.role === 'User' ? 'Customer' : user.role }}
+                </span>
+              </td>
               <td data-label="Status">
                 <span class="status-pill" [class.inactive]="!user.isActive">
                   {{ user.isActive ? 'Active' : 'Inactive' }}

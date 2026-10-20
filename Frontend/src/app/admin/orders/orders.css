@@ -74,17 +74,17 @@
 }
 
 .clickable-row:focus-visible {
-  outline: 2px solid #7c5cbf;
+  outline: 2px solid var(--color-brand);
   outline-offset: -2px;
 }
 
 .clickable-row:hover td,
 .clickable-row.is-open td {
-  background-color: #fbf9fe;
+  background-color: var(--color-cream-light, #faf8f5);
 }
 
 .clickable-row.is-open td:first-child {
-  box-shadow: inset 3px 0 0 #cfc6b3;
+  box-shadow: inset 3px 0 0 var(--color-brand);
 }
 
 /* Orders that just arrived live over SignalR. */

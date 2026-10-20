@@ -1,5 +1,19 @@
 <section class="not-found">
-  <h1>404</h1>
-  <p>This page has drifted out of alignment with the stars.</p>
-  <a routerLink="/" class="btn">Back to Home</a>
+  <div class="not-found-card">
+    <div class="not-found-glyph">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="24" cy="24" r="20" stroke-dasharray="3 3" opacity="0.6" />
+        <path d="M24 8v32M8 24h32" opacity="0.4" />
+        <polygon points="24 10 28 20 38 24 28 28 24 38 20 28 10 24 20 20" fill="rgba(196, 152, 79, 0.15)" stroke="var(--color-accent-gold)" />
+      </svg>
+    </div>
+    <span class="error-code">404</span>
+    <h1>Page Not Found</h1>
+    <p>This page has drifted out of alignment with the stars.</p>
+    <div class="not-found-actions">
+      <a routerLink="/" class="btn btn-primary">Back to Home</a>
+      <a routerLink="/products" class="btn btn-outline">Browse Crystals</a>
+      <a routerLink="/zodiac" class="btn btn-outline">Shop by Zodiac</a>
+    </div>
+  </div>
 </section>

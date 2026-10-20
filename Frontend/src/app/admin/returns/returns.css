@@ -20,8 +20,8 @@
 .status-filter:focus,
 .status-filter:focus-visible {
   outline: none;
-  border-color: #cfc6b3;
-  box-shadow: 0 0 0 4px rgba(90, 122, 100, 0.14);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 4px rgba(47, 74, 58, 0.14);
 }
 
 .customer-name {
@@ -71,7 +71,7 @@ tbody tr.is-active td {
 }
 
 tbody tr.is-active td:first-child {
-  box-shadow: inset 3px 0 0 #cfc6b3;
+  box-shadow: inset 3px 0 0 var(--color-brand);
 }
 
 /* Closing (animate.leave): the entrance played backwards. */

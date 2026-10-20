@@ -1,22 +1,52 @@
 .address-map {
-  margin: 0.5rem 0 1rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.address-map-toggle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.address-map-toggle:hover {
+  color: var(--color-brand-hover);
 }
 
 .address-map-search {
   position: relative;
   display: flex;
   gap: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
 }
 
 .address-map-search input {
   flex: 1;
   min-width: 0;
   margin: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.92rem;
+}
+
+.address-map-search input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
 }
 
 .address-map-search .btn {
   white-space: nowrap;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
 }
 
 .address-map-results {
@@ -25,22 +55,24 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  margin: 0.25rem 0 0;
+  margin: 0.35rem 0 0;
   padding: 0;
   list-style: none;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
   max-height: 260px;
   overflow-y: auto;
 }
 
 .address-map-results li {
-  padding: 0.6rem 0.8rem;
-  font-size: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  color: var(--color-ink);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background-color var(--transition-fast);
 }
 
 .address-map-results li:last-child {
@@ -49,30 +81,34 @@
 
 .address-map-results li:hover,
 .address-map-results li:focus {
-  background: #f6f3fb;
+  background: var(--color-surface-sunken);
+  color: var(--color-brand);
   outline: none;
 }
 
 .address-map-canvas {
-  height: 260px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  height: 280px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
   z-index: 0;
+  margin: 0.5rem 0;
 }
 
 /* CSS pin: Leaflet's bundled marker PNGs don't resolve under the Angular build. */
 .address-map-pin {
   box-sizing: border-box;
   cursor: grab;
-  background: #7b3fe4;
-  border: 3px solid #fff;
+  background: #50327c;
+  border: 3px solid #ffffff;
   border-radius: 50% 50% 50% 0;
   /* `rotate`, not `transform`: Leaflet positions markers with an inline transform. */
   rotate: -45deg;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 520px) {
+@media (max-width: 540px) {
   .address-map-search {
     flex-direction: column;
   }

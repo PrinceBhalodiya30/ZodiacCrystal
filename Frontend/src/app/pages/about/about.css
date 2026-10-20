@@ -1,27 +1,196 @@
 .about-page {
-  padding: 2rem 1.5rem 3rem;
-  max-width: 800px;
+  padding: 2.5rem 1.5rem 4rem;
+  max-width: 920px;
+  margin: 0 auto;
 }
 
-.about-page h1 {
+.about-breadcrumb {
   margin-bottom: 1.5rem;
+}
+
+.page-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-brand);
+  text-decoration: none;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.page-back-link:hover {
   color: var(--color-ink);
+  transform: translateX(-2px);
 }
 
-.about-card {
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 0 0 1px #e6e0d4;
-  padding: 1.75rem;
+.about-hero {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 3rem;
 }
 
-.about-card p {
-  margin: 0 0 1rem;
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.9rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  margin-bottom: 1rem;
+}
+
+.about-badge-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-accent-gold);
+}
+
+.about-hero h1 {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.2;
+  margin: 0 0 0.85rem;
+}
+
+.about-lead {
+  font-size: 1.1rem;
   color: var(--color-muted);
   line-height: 1.6;
+  margin: 0;
 }
 
-.about-card .btn {
-  margin-top: 0.5rem;
-  padding: 0.7rem 1.4rem;
+.about-story-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.about-card-body {
+  padding: 2.5rem 2.5rem 2rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.about-card-body h2 {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 1.25rem;
+}
+
+.about-card-body p {
+  font-size: 1rem;
+  color: var(--color-muted);
+  line-height: 1.7;
+  margin: 0 0 1.25rem;
+}
+
+.about-card-body p:last-child {
+  margin-bottom: 0;
+}
+
+.about-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 2.25rem 2.5rem;
+  background: var(--color-cream-light, #faf8f5);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.about-pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pillar-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand);
+  margin-bottom: 0.2rem;
+}
+
+.pillar-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.about-pillar h3 {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.about-pillar p {
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.about-cta-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 2rem 2.5rem;
+  background-color: var(--color-surface);
+  flex-wrap: wrap;
+}
+
+.about-cta-text h3 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 0.3rem;
+}
+
+.about-cta-text p {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.about-cta-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 800px) {
+  .about-pillars {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .about-card-body,
+  .about-cta-banner {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .about-hero h1 {
+    font-size: 1.9rem;
+  }
 }

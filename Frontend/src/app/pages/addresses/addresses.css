@@ -1,33 +1,52 @@
 .addresses-page {
-  padding: 2rem 1.5rem 3rem;
-  max-width: 900px;
+  padding: 2rem 1.5rem 4rem;
+  max-width: 960px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .addresses-page h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   margin: 0;
   color: var(--color-ink);
 }
 
 .profile-card {
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 0 0 1px #e6e0d4;
-  padding: 1.5rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
 }
 
 .profile-card h2 {
-  margin: 0 0 1rem;
-  font-size: 1.1rem;
+  font-family: var(--font-display);
+  margin: 0 0 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 500;
   color: var(--color-ink);
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .form-row {
@@ -38,109 +57,159 @@ form {
 
 label {
   font-size: 0.85rem;
-  color: var(--color-muted);
-  font-weight: 500;
-  margin-top: 0.6rem;
+  color: var(--color-ink);
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.9rem;
+  gap: 0.6rem;
+  margin-top: 1rem;
   cursor: pointer;
+  font-size: 0.92rem;
+  color: var(--color-ink);
+  font-weight: 500;
 }
 
 input:not([type='checkbox']):not([type='radio']),
 select {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-size: 0.95rem;
   width: 100%;
   font-family: inherit;
   box-sizing: border-box;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 input:not([type='checkbox']):not([type='radio']):focus,
 select:focus {
   outline: none;
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(47, 74, 58, 0.12);
+  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
 }
 
 .checkbox-label input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   accent-color: var(--color-brand);
+  cursor: pointer;
 }
 
 .profile-actions {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-.btn {
+.addresses-page > .btn {
   align-self: flex-start;
 }
 
 .address-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .address-card {
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 0 0 1px #e6e0d4;
-  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.25rem;
+  transition: all var(--transition-fast);
+}
+
+.address-card:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 .status-pill {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1.25rem;
+  right: 1.25rem;
   display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   background-color: var(--color-success-bg);
   color: var(--color-success);
+  border: 1px solid var(--color-success-border);
 }
 
 .address-type {
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-brand);
+  font-weight: 700;
+  color: var(--color-brass);
   text-transform: uppercase;
-  margin-bottom: 0.4rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
 }
 
 .address-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--color-ink);
-  margin: 0 0 0.2rem;
+  margin: 0 0 0.25rem;
 }
 
 .address-line {
   margin: 0;
   color: var(--color-muted);
   font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .address-actions {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border-subtle);
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-wrap: wrap;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-brand);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
+}
+
+.link-btn:hover {
+  color: var(--color-brand-hover);
+}
+
+.link-btn.danger {
+  color: var(--color-danger);
+}
+
+.link-btn.danger:hover {
+  color: #a82020;
 }
 
 @media (max-width: 600px) {
@@ -153,6 +222,5 @@ select:focus {
 :host-context(.account-content) .addresses-page {
   padding: 0;
   margin: 0;
+  max-width: none;
 }
-
-/* The account side menu already links back to the overview. */

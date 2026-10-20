@@ -89,9 +89,12 @@ export class ProductCard implements OnInit {
     return null;
   }
 
-  // Open to logged-out shoppers too: guest checkout (the cart lives in the browser).
   addToCart(): void {
     if (this.purchaseDisabled) {
+      return;
+    }
+
+    if (!this.requireLogin(this.router.url, 'Please log in to add items to your cart.')) {
       return;
     }
 
@@ -149,11 +152,12 @@ export class ProductCard implements OnInit {
     this.router.navigate(['/checkout']);
   }
 
-  private requireLogin(returnUrl: string = this.router.url): boolean {
+  private requireLogin(returnUrl: string = this.router.url, message = 'Please log in to continue.'): boolean {
     if (this.authService.isLoggedIn()) {
       return true;
     }
 
+    this.toast.error(message);
     this.router.navigate(['/login'], { queryParams: { returnUrl } });
     return false;
   }

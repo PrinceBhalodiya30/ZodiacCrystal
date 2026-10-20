@@ -4,11 +4,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem 1.5rem;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
 }
 
 .pager-range {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--color-muted);
 }
 
@@ -24,34 +24,36 @@
   align-items: center;
   gap: 0.25rem;
   margin: 0 0 0 auto;
-  padding: 0.3rem;
+  padding: 0.35rem;
   list-style: none;
   background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-sm);
 }
 
 .pager-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.1rem;
-  height: 2.1rem;
-  padding: 0 0.4rem;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.5rem;
   border: none;
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--color-ink);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color var(--transition-fast), color var(--transition-fast), transform 0.1s ease;
 }
 
 .pager-btn:hover:not(:disabled):not(.active) {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface-tint);
+  color: var(--color-brand);
 }
 
 .pager-btn.active {
@@ -59,11 +61,17 @@
   color: #ffffff;
   font-weight: 700;
   cursor: default;
+  box-shadow: 0 2px 6px rgba(36, 65, 50, 0.25);
 }
 
 .pager-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+.pager-btn:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
 }
 
 .pager-arrow svg {
@@ -97,8 +105,8 @@
   }
 
   .pager-btn {
-    min-width: 1.9rem;
-    height: 1.9rem;
+    min-width: 2rem;
+    height: 2rem;
     font-size: 0.82rem;
   }
 }

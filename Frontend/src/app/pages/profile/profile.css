@@ -1,51 +1,56 @@
 .profile-page {
-  padding: 2rem 1.5rem 3rem;
-  max-width: 640px;
+  padding: 2rem 1.5rem 4rem;
+  max-width: 680px;
 }
 
 .settings-header h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   margin: 0;
-  font-size: 1.6rem;
   color: var(--color-ink);
 }
 
 .settings-header p {
-  margin: 0.3rem 0 1.25rem;
+  margin: 0.35rem 0 1.5rem;
   color: var(--color-muted);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .settings-stack {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 /* Inside the My Account layout the shell provides the page padding. */
 :host-context(.account-content) .profile-page {
   padding: 0;
   margin: 0;
+  max-width: none;
 }
 
 .profile-card {
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 0 0 1px #e6e0d4;
-  padding: 1.5rem;
-  border: 1px solid transparent;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.75rem 2rem;
+  transition: all var(--transition-fast);
 }
 
 .profile-card.editing {
-  background-color: #f7f4ee;
-  border-color: #e2dac9;
+  background-color: var(--color-cream-light);
+  border-color: var(--color-border);
 }
 
 .profile-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .profile-row:last-child {
@@ -54,19 +59,25 @@
 
 .profile-label {
   color: var(--color-subtle);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 500;
 }
 
 .profile-value {
   color: var(--color-ink);
-  font-weight: 500;
+  font-weight: 600;
   text-align: right;
   overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .profile-card h2 {
+  font-family: var(--font-display);
   margin: 0 0 1rem;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  font-weight: 500;
   color: var(--color-ink);
 }
 
@@ -74,64 +85,68 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 0.75rem;
 }
 
 .profile-card-header h2 {
-  margin: 0 0 1rem;
+  margin: 0;
 }
 
 .icon-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   background: none;
-  border: none;
+  border: 1px solid var(--color-border);
   color: var(--color-brand);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
 }
 
 .icon-btn:hover {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface-sunken);
+  border-color: var(--color-brand);
 }
 
 .quick-link-list {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
 .quick-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0.85rem;
-  border-radius: 4px;
-  border: 1px solid #eee;
-  background: none;
+  gap: 0.9rem;
+  padding: 0.9rem 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
   color: inherit;
   text-decoration: none;
   font: inherit;
   cursor: pointer;
   text-align: left;
   width: 100%;
+  box-sizing: border-box;
+  transition: all var(--transition-fast);
 }
 
 .quick-link:hover {
-  background-color: var(--color-cream);
-  border-color: #e2dac9;
+  background-color: var(--color-surface-sunken);
+  border-color: var(--color-brand);
 }
 
 .quick-link-icon {
   flex-shrink: 0;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background-color: var(--color-cream);
+  background-color: var(--color-cream-light);
   color: var(--color-brand);
   display: flex;
   align-items: center;
@@ -140,14 +155,14 @@
 
 .quick-link-label {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-ink);
 }
 
 .quick-link-chevron {
   flex-shrink: 0;
-  color: #aaa;
+  color: var(--color-subtle);
 }
 
 form {
@@ -158,28 +173,28 @@ form {
 
 label {
   font-size: 0.85rem;
-  color: var(--color-muted);
-  font-weight: 500;
-  margin-top: 0.6rem;
+  color: var(--color-ink);
+  font-weight: 600;
+  margin-top: 0.75rem;
 }
 
 input {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-size: 0.95rem;
+  font-family: inherit;
   width: 100%;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 input:focus {
   outline: none;
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(47, 74, 58, 0.12);
-}
-
-input:focus-visible {
-  outline: 3px solid var(--color-brand);
-  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
 }
 
 .password-field {
@@ -194,7 +209,7 @@ input:focus-visible {
 
 .toggle-password {
   position: absolute;
-  right: 0.6rem;
+  right: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,6 +218,7 @@ input:focus-visible {
   color: var(--color-subtle);
   cursor: pointer;
   padding: 0.25rem;
+  transition: color var(--transition-fast);
 }
 
 .toggle-password:hover {
@@ -218,96 +234,82 @@ input:focus-visible {
 
 .password-strength-bar {
   height: 4px;
-  width: 28px;
+  width: 32px;
   border-radius: 999px;
-  background-color: #e5e5e5;
+  background-color: var(--color-border);
 }
 
 .password-strength-label {
   font-size: 0.78rem;
   font-weight: 600;
   text-transform: capitalize;
-  margin-left: 0.15rem;
+  margin-left: 0.25rem;
 }
 
-.password-strength.weak .password-strength-bar:nth-child(1) {
-  background-color: var(--color-danger);
-}
-
-.password-strength.weak .password-strength-label {
-  color: var(--color-danger);
-}
-
+.password-strength.weak .password-strength-bar:nth-child(1) { background-color: var(--color-danger); }
+.password-strength.weak .password-strength-label { color: var(--color-danger); }
 .password-strength.medium .password-strength-bar:nth-child(1),
-.password-strength.medium .password-strength-bar:nth-child(2) {
-  background-color: var(--color-warning);
-}
-
-.password-strength.medium .password-strength-label {
-  color: var(--color-warning);
-}
-
-.password-strength.strong .password-strength-bar {
-  background-color: var(--color-success);
-}
-
-.password-strength.strong .password-strength-label {
-  color: var(--color-success);
-}
+.password-strength.medium .password-strength-bar:nth-child(2) { background-color: var(--color-warning); }
+.password-strength.medium .password-strength-label { color: var(--color-warning); }
+.password-strength.strong .password-strength-bar { background-color: var(--color-success); }
+.password-strength.strong .password-strength-label { color: var(--color-success); }
 
 .profile-actions {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-.profile-actions .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
 /* Email change flow */
 .email-change-title {
-  margin: 0 0 0.35rem;
-  font-size: 1rem;
+  font-family: var(--font-display);
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: var(--color-ink);
 }
 
 .email-change-hint {
-  margin: 0 0 0.75rem;
-  font-size: 0.88rem;
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
   color: var(--color-muted);
-  overflow-wrap: anywhere;
+  line-height: 1.5;
 }
 
 .otp-input {
-  letter-spacing: 0.4em;
-  font-size: 1.1rem;
+  letter-spacing: 0.45em;
+  font-size: 1.25rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  text-align: center;
 }
 
 .email-change-links {
-  margin: 0.9rem 0 0;
-  font-size: 0.85rem;
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
   color: var(--color-muted);
 }
 
 .text-btn {
   background: none;
   border: none;
-  padding: 0.25rem 0.2rem;
+  padding: 0;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--color-brand);
   cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
 }
 
 .text-btn:hover:not(:disabled) {
-  text-decoration: underline;
+  color: var(--color-brand-hover);
 }
 
 .text-btn:disabled {
-  color: var(--color-muted);
+  color: var(--color-subtle);
   cursor: not-allowed;
+  text-decoration: none;
 }

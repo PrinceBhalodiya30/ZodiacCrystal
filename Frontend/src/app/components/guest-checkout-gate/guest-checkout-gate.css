@@ -1,11 +1,11 @@
 .gate {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .gate-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .gate-option,
@@ -13,63 +13,109 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.6rem;
-  padding: 1.5rem;
+  gap: 0.75rem;
+  padding: 2rem;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.gate-option:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.gate-option::before,
+.gate-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
 }
 
 .gate-form {
-  max-width: 480px;
+  max-width: 500px;
+  margin: 0 auto;
   align-items: stretch;
 }
 
 .gate h2 {
-  margin: 0;
-  font-size: 1.15rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
   color: var(--color-ink);
+  margin: 0 0 0.25rem;
 }
 
 .gate-option p,
 .gate-hint {
   margin: 0;
   color: var(--color-muted);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .gate-option .btn {
-  margin-top: auto;
+  margin-top: 1rem;
+  width: 100%;
 }
 
 .gate-form label {
+  font-size: 0.88rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  color: var(--color-ink);
+  margin-top: 0.5rem;
 }
 
 .gate-form input {
-  padding: 0.7rem 0.9rem;
+  padding: 0.75rem 0.9rem;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font: inherit;
+  font-size: 0.95rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.gate-form input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
 }
 
 #guestCode {
-  letter-spacing: 0.4em;
-  font-size: 1.2rem;
-  max-width: 200px;
+  letter-spacing: 0.45em;
+  font-size: 1.4rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  text-align: center;
+  max-width: 220px;
+  margin: 0.25rem auto 0.75rem;
 }
 
 .gate-form > .btn,
 .gate-actions {
-  margin-top: 0.4rem;
+  margin-top: 0.75rem;
 }
 
 .gate-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
+}
+
+.gate-actions .btn {
+  flex: 1;
+  min-width: 160px;
 }
 
 .gate-link,
@@ -83,19 +129,39 @@
   color: var(--color-brand);
   font-weight: 600;
   cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
+}
+
+.gate-link:hover,
+.gate-link-btn:hover:not(:disabled),
+.gate-back:hover {
+  color: var(--color-brand-hover);
 }
 
 .gate-link-btn:disabled {
   color: var(--color-subtle);
   cursor: default;
+  text-decoration: none;
 }
 
 .gate-back {
   align-self: flex-start;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
 }
 
 .gate-error {
-  margin: 0;
+  margin: 0.5rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
   color: var(--color-danger);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 500;
 }

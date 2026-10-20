@@ -1,30 +1,47 @@
 .order-details-page {
-  padding: 1.5rem 1.5rem 3rem;
-  max-width: 700px;
+  padding: 2rem 1.5rem 4rem;
+  max-width: 760px;
 }
 
 .confirmation-banner {
   background-color: var(--color-success-bg);
-  border-radius: 4px;
+  border: 1px solid var(--color-success-border);
+  border-radius: var(--radius-md);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
 }
 
 .confirmation-banner h2 {
+  font-family: var(--font-display);
   margin: 0 0 0.35rem;
   color: var(--color-success);
+  font-size: 1.3rem;
 }
 
 .confirmation-banner p {
   margin: 0;
-  color: #2b5c37;
+  color: var(--color-success);
+  font-size: 0.95rem;
 }
 
 .order-card {
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 0 0 1px #e6e0d4;
-  padding: 1.75rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.order-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
 }
 
 .order-header {
@@ -35,17 +52,22 @@
 }
 
 .order-header h1 {
+  font-family: var(--font-display);
   margin: 0;
   color: var(--color-ink);
-  font-size: 1.6rem;
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
 }
 
 .invoice-btn {
   margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.88rem;
 }
 
 .order-date {
   color: var(--color-subtle);
+  font-size: 0.9rem;
   margin: 0.5rem 0 1.5rem;
 }
 
@@ -62,27 +84,27 @@
 }
 
 .status-cancelled-note {
-  margin: 1rem 0 0;
-  padding: 0.85rem 1rem;
+  margin: 1.25rem 0 0;
+  padding: 0.85rem 1.15rem;
   background-color: var(--color-danger-bg);
   color: var(--color-danger);
-  border: 1px solid var(--color-danger-border);
-  border-radius: 4px;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .status-cancelled-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-color: var(--color-danger);
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
 }
 
@@ -91,10 +113,11 @@
   font-weight: 700;
 }
 
+/* Status Stepper */
 .status-stepper {
   display: flex;
   align-items: flex-start;
-  margin: 1.5rem 0 0;
+  margin: 1.75rem 0 0.5rem;
   padding: 0;
   list-style: none;
 }
@@ -103,24 +126,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   flex: 1 1 0;
   min-width: 0;
 }
 
 .status-step-dot {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background-color: #e5e5e5;
-  border: 3px solid #e5e5e5;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   line-height: 1;
   color: #ffffff;
   box-sizing: border-box;
+  transition: all var(--transition-fast);
 }
 
 .status-step.completed .status-step-dot {
@@ -129,9 +154,9 @@
 }
 
 .status-step.current .status-step-dot {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(47, 74, 58, 0.2);
+  box-shadow: 0 0 0 4px rgba(45, 90, 69, 0.18);
 }
 
 .status-step.current .status-step-dot::after {
@@ -143,7 +168,7 @@
 }
 
 .status-step-label {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--color-subtle);
   text-align: center;
 }
@@ -155,10 +180,10 @@
 }
 
 .status-step-connector {
-  flex: 0 1 32px;
+  flex: 0 1 36px;
   height: 3px;
-  background-color: #e5e5e5;
-  margin-top: 8px;
+  background-color: var(--color-border);
+  margin-top: 10px;
   list-style: none;
 }
 
@@ -166,11 +191,11 @@
   background-color: var(--color-brand);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
   .status-stepper {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 0.6rem;
   }
 
   .status-step {
@@ -182,20 +207,24 @@
     width: 3px;
     height: 18px;
     flex: 0 0 auto;
-    margin: 0 0 0 9px;
+    margin: 0 0 0 10px;
   }
 }
 
 .order-card h3 {
-  margin: 1.5rem 0 0.75rem;
+  font-family: var(--font-display);
+  margin: 1.75rem 0 0.85rem;
   color: var(--color-ink);
-  font-size: 1rem;
+  font-size: 1.15rem;
+  font-weight: 500;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .order-items {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
 .order-item-row {
@@ -203,7 +232,7 @@
   justify-content: space-between;
   gap: 1rem;
   font-size: 0.95rem;
-  color: var(--color-muted);
+  color: var(--color-ink);
 }
 
 .item-name {
@@ -218,36 +247,47 @@
 .order-total-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
+
+.order-total-row:last-of-type {
+  border-top: 1px dashed var(--color-border);
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   color: var(--color-ink);
+}
+
+.order-total-row:last-of-type span:last-child {
+  color: var(--color-brand);
 }
 
 .shipping-free {
   color: var(--color-success);
+  font-weight: 700;
 }
 
 .shipping-info p {
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.35rem;
   color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
 .confirmation-actions {
-  margin-top: 1.75rem;
+  margin-top: 2rem;
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
-.order-card > .btn-outline {
-  margin: 1rem 0 0;
-}
-
 .payment-row {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
 }
 
 .payment-status {
@@ -258,19 +298,20 @@
 .payment-status small {
   display: block;
   font-weight: 400;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--color-subtle);
 }
 
-.payment-status.paid { color: #1e8a4c; }
-.payment-status.pending { color: #b25e00; }
-.payment-status.refunded { color: #2f6fd6; }
+.payment-status.paid { color: var(--color-success); }
+.payment-status.pending { color: var(--color-warning); }
+.payment-status.refunded { color: var(--color-info); }
 .payment-status.cancelled { color: var(--color-subtle); }
 
 /* Inside the My Account layout the shell provides the page padding. */
 :host-context(.account-content) .order-details-page {
   padding: 0;
   margin: 0;
+  max-width: none;
 }
 
 .track-btn {
@@ -286,8 +327,9 @@
 }
 
 .delivery-estimate {
-  margin: 1rem 0 0;
+  margin: 1.25rem 0 0;
   color: var(--color-ink);
+  font-size: 0.95rem;
 }
 
 .buy-again-btn {
@@ -297,16 +339,17 @@
 .delivery-details-link {
   color: var(--color-brand);
   font-weight: 600;
+  text-decoration: underline;
 }
 
 .invoice-pending {
   margin: 1rem 0 0;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: var(--color-muted);
 }
 
 .order-help-link {
-  margin: 1rem 0 0;
+  margin: 1.5rem 0 0;
   font-size: 0.9rem;
   color: var(--color-muted);
 }
@@ -314,4 +357,15 @@
 .order-help-link a {
   color: var(--color-brand);
   font-weight: 600;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .order-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .order-header h1 {
+    font-size: 1.45rem;
+  }
 }

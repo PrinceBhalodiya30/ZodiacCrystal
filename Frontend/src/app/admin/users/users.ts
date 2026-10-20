@@ -43,7 +43,7 @@ export class AdminUsers implements OnInit {
   // Rows matching the current filters - shown on the Export button.
   totalCount = signal(0);
   searchTerm = signal('');
-  roleFilter = signal<'' | 'Admin' | 'User'>('');
+  roleFilter = signal<'' | 'Admin' | 'User' | 'Guest'>('');
   statusFilter = signal<'' | 'active' | 'inactive'>('');
   hasFilters = computed(() => !!this.searchTerm().trim() || !!this.roleFilter() || !!this.statusFilter());
 
