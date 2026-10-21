@@ -36,6 +36,7 @@ import { adminGuard } from './guards/admin.guard';
 import { customerGuard } from './guards/customer.guard';
 import { shopperGuard } from './guards/shopper.guard';
 import { guestOrderGuard } from './guards/guest-order.guard';
+import { SITE_NAME } from './services/page-title.service';
 
 export const routes: Routes = [
   { path: '', component: Home, data: { description: 'Shop healing crystals matched to your zodiac sign. Rose quartz, amethyst, citrine and more, with crystal guides, mystery boxes and fast delivery across India.' } },
@@ -67,7 +68,7 @@ export const routes: Routes = [
   {
     path: 'find-order',
     title: 'Find My Order',
-    data: { description: 'Checked out as a guest? Get a private link to track your Crystal Studio order.' },
+    data: { description: `Checked out as a guest? Get a private link to track your ${SITE_NAME} order.` },
     loadComponent: () => import('./pages/find-order/find-order').then(m => m.FindOrder)
   },
   {
@@ -108,18 +109,18 @@ export const routes: Routes = [
   },
   { path: 'guides', title: 'Crystal Guides', component: Guides, data: { description: 'Practical crystal guides: how to choose, care for and use crystals, and which stones suit each zodiac sign.' } },
   { path: 'guides/:slug', title: route => GUIDES.find(g => g.slug === route.paramMap.get('slug'))?.title ?? 'Crystal Guides', component: GuideDetail },
-  { path: 'about', title: 'About Us', component: About, data: { description: 'Who we are and how we source the healing crystals we sell at Crystal Studio.' } },
+  { path: 'about', title: 'About Us', component: About, data: { description: `Who we are and how we source the healing crystals we sell at ${SITE_NAME}.` } },
   {
     path: 'help',
     title: 'Help Center',
-    data: { description: 'Get help with your Crystal Studio order: tracking, returns, refunds, damaged items and crystal care.' },
+    data: { description: `Get help with your ${SITE_NAME} order: tracking, returns, refunds, damaged items and crystal care.` },
     loadComponent: () => import('./pages/help/help').then(m => m.Help)
   },
   { path: 'faq', title: 'FAQ', component: Faq, data: { description: 'Answers to common questions about orders, payment, delivery, returns and our crystals.' } },
-  { path: 'contact', title: 'Contact Us', component: Contact, data: { description: 'Get in touch with Crystal Studio about orders, products or anything else.' } },
-  { path: 'shipping-returns', title: 'Shipping & Returns', component: ShippingReturns, data: { description: 'Delivery times, shipping charges and how to return an order from Crystal Studio.' } },
-  { path: 'privacy', title: 'Privacy Policy', component: Privacy, data: { description: 'How Crystal Studio collects, uses and protects your personal information.' } },
-  { path: 'terms', title: 'Terms & Conditions', component: Terms, data: { description: 'The terms that apply when you shop with Crystal Studio.' } },
+  { path: 'contact', title: 'Contact Us', component: Contact, data: { description: `Get in touch with ${SITE_NAME} about orders, products or anything else.` } },
+  { path: 'shipping-returns', title: 'Shipping & Returns', component: ShippingReturns, data: { description: `Delivery times, shipping charges and how to return an order from ${SITE_NAME}.` } },
+  { path: 'privacy', title: 'Privacy Policy', component: Privacy, data: { description: `How ${SITE_NAME} collects, uses and protects your personal information.` } },
+  { path: 'terms', title: 'Terms & Conditions', component: Terms, data: { description: `The terms that apply when you shop with ${SITE_NAME}.` } },
   { path: 'not-authorized', title: 'Not Authorized', component: NotAuthorized, data: { noindex: true } },
   { path: 'unsubscribe', title: 'Unsubscribe', component: Unsubscribe, data: { noindex: true } },
   {

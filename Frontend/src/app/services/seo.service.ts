@@ -2,6 +2,7 @@ import { DOCUMENT, Injectable, Injector, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { SITE_URL } from './api-config';
+import { SITE_NAME } from './page-title.service';
 
 export const DEFAULT_DESCRIPTION =
   'Shop healing crystals matched to your zodiac sign. Rose quartz, amethyst, citrine and more, with crystal guides, mystery boxes and fast delivery across India.';
@@ -36,7 +37,7 @@ export class SeoService {
 
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ name: 'robots', content: page.noindex ? 'noindex, nofollow' : 'index, follow' });
-    this.meta.updateTag({ property: 'og:site_name', content: 'Crystal Studio' });
+    this.meta.updateTag({ property: 'og:site_name', content: SITE_NAME });
     this.meta.updateTag({ property: 'og:title', content: page.title });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:type', content: page.type ?? 'website' });

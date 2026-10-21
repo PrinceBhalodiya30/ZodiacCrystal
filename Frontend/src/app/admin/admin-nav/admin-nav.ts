@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AdminNavCountsService } from './admin-nav-counts.service';
+import { SITE_NAME } from '../../services/page-title.service';
 
 type BadgeKey = 'pendingOrders' | 'requestedReturns' | 'lowStock' | 'openTickets';
 
@@ -47,6 +48,7 @@ const ICONS = {
   styleUrl: './admin-nav.css'
 })
 export class AdminNav implements OnInit {
+  readonly siteName = SITE_NAME;
   private authService = inject(AuthService);
   private router = inject(Router);
   private counts = inject(AdminNavCountsService);

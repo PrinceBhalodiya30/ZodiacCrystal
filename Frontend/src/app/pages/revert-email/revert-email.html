@@ -4,7 +4,7 @@
     <div class="brand-content">
       <a routerLink="/" class="brand-logo">
         <img src="logo-icon.png" alt="" class="brand-logo-icon" aria-hidden="true" />
-        Crystal Studio
+        {{ siteName }}
       </a>
       <h2>Let's Secure Your Account.</h2>
       <p>Put your email back and sign out everyone who has access.</p>
@@ -21,7 +21,7 @@
     <div class="auth-form-wrap">
       <a routerLink="/" class="mobile-brand">
         <img src="logo-icon.png" alt="" class="mobile-brand-icon" aria-hidden="true" />
-        Crystal Studio
+        {{ siteName }}
       </a>
 
       @if (state() === 'confirm') {

@@ -11,6 +11,7 @@ import { SUPPORT_MAX_PHOTOS, SUPPORT_REPLY_WITHIN_HOURS, SupportTicket } from '.
 import { Spinner } from '../../components/spinner/spinner';
 import { TicketThread } from '../../components/ticket-thread/ticket-thread';
 import { InrPipe } from '../../pipes/inr.pipe';
+import { SITE_NAME } from '../../services/page-title.service';
 
 // One support conversation: thread, reply box, "my problem is solved" and rating.
 @Component({
@@ -21,6 +22,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
   styleUrl: './support-ticket.css'
 })
 export class SupportTicketPage implements OnInit {
+  readonly siteName = SITE_NAME;
   private supportService = inject(SupportService);
   private toast = inject(ToastService);
   private ticketId = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));

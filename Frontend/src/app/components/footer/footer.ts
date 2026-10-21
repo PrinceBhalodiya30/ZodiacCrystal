@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { NewsletterService } from '../../services/newsletter.service';
+import { SITE_NAME } from '../../services/page-title.service';
 
 @Component({
   selector: 'app-footer',
@@ -13,6 +14,8 @@ import { NewsletterService } from '../../services/newsletter.service';
   styleUrl: './footer.css'
 })
 export class Footer {
+  readonly siteName = SITE_NAME;
+  readonly currentYear = new Date().getFullYear();
   authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
 

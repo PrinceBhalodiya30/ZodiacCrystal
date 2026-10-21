@@ -8,6 +8,7 @@ import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { CheckoutModeService } from '../../services/checkout-mode.service';
 import { NotificationBell } from '../notification-bell/notification-bell';
+import { SITE_NAME } from '../../services/page-title.service';
 
 const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
 
@@ -19,6 +20,7 @@ const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
   styleUrl: './navbar.css'
 })
 export class Navbar {
+  readonly siteName = SITE_NAME;
   authService = inject(AuthService);
   cartService = inject(CartService);
   wishlistService = inject(WishlistService);

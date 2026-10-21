@@ -16,6 +16,7 @@ import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ScrollRevealDirective } from '../../directives/scroll-reveal.directive';
 import { GUIDES } from '../../data/guides.data';
 import { Guide } from '../../models/guide';
+import { SITE_NAME } from '../../services/page-title.service';
 
 const FEATURED_PRODUCT_LIMIT = 8;
 const CATEGORY_TILE_LIMIT = 8;
@@ -36,6 +37,7 @@ export interface CategoryTile {
   styleUrl: './home.css'
 })
 export class Home implements OnInit {
+  readonly siteName = SITE_NAME;
   private zodiacService = inject(ZodiacService);
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);

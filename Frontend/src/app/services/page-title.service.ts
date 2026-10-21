@@ -3,8 +3,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { SeoService } from './seo.service';
 
-const SITE_NAME = 'Crystal Studio';
-const HOME_TITLE = 'Crystal Studio – Healing Crystals for Every Zodiac Sign';
+export const SITE_NAME = 'Crystal Studio';
+export const HOME_TITLE = `${SITE_NAME} – Healing Crystals for Every Zodiac Sign`;
+export const SUPPORT_EMAIL = 'support@crystalstudio.com';
 
 // Browser tab titles: each route's `title` becomes "<title> | Crystal Studio".
 // Also resets the search/social tags on every navigation from the route's

@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
+import { SITE_NAME } from '../../services/page-title.service';
 
 // Landing page for the "this wasn't me" link in the email-changed notice.
 // Nothing happens until the owner clicks the button, so mail scanners that
@@ -16,6 +17,7 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
   styleUrls: ['../register/register.css', '../forgot-password/forgot-password.css']
 })
 export class RevertEmail {
+  readonly siteName = SITE_NAME;
   private authService = inject(AuthService);
 
   private token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';

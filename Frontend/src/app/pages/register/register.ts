@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { getPasswordStrength, PasswordStrength } from '../../utils/password-strength.util';
 import { AuthShowcase } from '../../components/auth-showcase/auth-showcase';
+import { SITE_NAME } from '../../services/page-title.service';
 
 @Component({
   selector: 'app-register',
@@ -13,6 +14,7 @@ import { AuthShowcase } from '../../components/auth-showcase/auth-showcase';
   styleUrl: './register.css'
 })
 export class Register {
+  readonly siteName = SITE_NAME;
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);

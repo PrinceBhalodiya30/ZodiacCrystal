@@ -32,7 +32,7 @@
     <div class="footer-brand">
       <span class="footer-logo">
         <img src="logo-icon.png" alt="" class="footer-logo-icon" aria-hidden="true" />
-        Crystal Studio
+        {{ siteName }}
       </span>
       <p>Crystals matched to your zodiac energy.</p>
       <div class="footer-social">
@@ -112,7 +112,7 @@
   </div>
 
   <div class="footer-copy">
-    <p>&copy; 2026 Crystal Studio</p>
+    <p>&copy; {{ currentYear }} {{ siteName }}</p>
     <div class="footer-copy-links">
       <a routerLink="/privacy">Privacy</a>
       <a routerLink="/terms">Terms of Use</a>

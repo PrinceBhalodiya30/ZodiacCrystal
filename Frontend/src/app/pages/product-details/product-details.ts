@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { ProductService } from '../../services/product.service';
-import { PageTitleService } from '../../services/page-title.service';
+import { PageTitleService, SITE_NAME } from '../../services/page-title.service';
 import { SeoService, absoluteUrl } from '../../services/seo.service';
 import { SITE_URL } from '../../services/api-config';
 import { Product } from '../../models/product';
@@ -59,6 +59,7 @@ import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.
   styleUrl: './product-details.css'
 })
 export class ProductDetails implements OnInit {
+  readonly siteName = SITE_NAME;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private productService = inject(ProductService);
@@ -225,7 +226,7 @@ export class ProductDetails implements OnInit {
 
     this.seo.update({
       title: fullTitle,
-      description: product.description || `${product.name} healing crystal from Crystal Studio.`,
+      description: product.description || `${product.name} healing crystal from ${SITE_NAME}.`,
       image: primaryImage,
       type: 'product'
     });
@@ -238,7 +239,7 @@ export class ProductDetails implements OnInit {
       description: product.description || undefined,
       image: images.length ? images : undefined,
       category: product.categoryName || undefined,
-      brand: { '@type': 'Brand', name: 'Crystal Studio' },
+      brand: { '@type': 'Brand', name: SITE_NAME },
       url,
       offers: {
         '@type': 'Offer',

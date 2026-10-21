@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NewsletterService } from '../../services/newsletter.service';
+import { SUPPORT_EMAIL } from '../../services/page-title.service';
 
 // Opened from the unsubscribe link in a newsletter (/unsubscribe?token=...).
 // Asks for one click to confirm instead of unsubscribing on page load, so email
@@ -14,6 +15,7 @@ import { NewsletterService } from '../../services/newsletter.service';
   styleUrl: './unsubscribe.css'
 })
 export class Unsubscribe {
+  readonly supportEmail = SUPPORT_EMAIL;
   private newsletterService = inject(NewsletterService);
 
   token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';

@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import type { Dropin } from 'braintree-web-drop-in';
 import { PaymentService } from '../../services/payment.service';
 import { PaymentDetails, PaymentMethod } from '../../models/order';
+import { SITE_NAME } from '../../services/page-title.service';
 
 type CardFormStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -17,6 +18,7 @@ type CardFormStatus = 'idle' | 'loading' | 'ready' | 'error';
   styleUrl: './payment-method-select.css'
 })
 export class PaymentMethodSelect {
+  readonly siteName = SITE_NAME;
   private paymentService = inject(PaymentService);
 
   method = model<PaymentMethod>('COD');

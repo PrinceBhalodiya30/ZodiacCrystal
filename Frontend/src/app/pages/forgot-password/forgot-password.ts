@@ -6,6 +6,7 @@ import { ToastService } from '../../services/toast.service';
 import { getPasswordStrength, PasswordStrength } from '../../utils/password-strength.util';
 import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
+import { SITE_NAME } from '../../services/page-title.service';
 
 // Two steps, like registration: 'email' asks where to send a code; 'reset'
 // takes the code plus the new password.
@@ -18,6 +19,7 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
   styleUrls: ['../register/register.css', './forgot-password.css']
 })
 export class ForgotPassword {
+  readonly siteName = SITE_NAME;
   private authService = inject(AuthService);
   private toast = inject(ToastService);
   private router = inject(Router);

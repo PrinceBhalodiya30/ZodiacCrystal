@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { AuthShowcase } from '../../components/auth-showcase/auth-showcase';
+import { SITE_NAME } from '../../services/page-title.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ import { AuthShowcase } from '../../components/auth-showcase/auth-showcase';
   styleUrl: './login.css'
 })
 export class Login {
+  readonly siteName = SITE_NAME;
   private authService = inject(AuthService);
   private wishlistService = inject(WishlistService);
   private router = inject(Router);
