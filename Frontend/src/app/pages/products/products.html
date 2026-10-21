@@ -98,10 +98,30 @@
       <button type="button" class="btn" (click)="loadProducts()">Retry</button>
     </div>
   } @else if (products().length === 0) {
-    <div class="state-message state-message--empty">
-      <p>No products match your search.</p>
+    <div class="state-message state-message--empty products-empty-state">
+      <div class="empty-icon-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <h2>No crystals match your search</h2>
+      <p>Try clearing your active filters or explore one of our curated collections:</p>
+      
+      @if (categories().length > 0) {
+        <div class="empty-category-pills">
+          @for (cat of categories().slice(0, 6); track cat.categoryId) {
+            <button
+              type="button"
+              class="category-pill-btn"
+              (click)="onCategoryChange(cat.categoryId)"
+            >{{ cat.name }}</button>
+          }
+        </div>
+      }
+
       @if (hasActiveFilters()) {
-        <button type="button" class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+        <button type="button" class="btn btn-outline empty-clear-btn" (click)="clearFilters()">Clear All Filters</button>
       }
     </div>
   } @else {

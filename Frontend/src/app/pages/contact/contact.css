@@ -57,6 +57,7 @@
 }
 
 .contact-lead {
+  max-width: 68ch;
   font-size: 1.05rem;
   color: var(--color-muted);
   line-height: 1.6;

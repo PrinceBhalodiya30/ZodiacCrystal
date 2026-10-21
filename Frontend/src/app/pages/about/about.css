@@ -90,6 +90,7 @@
 }
 
 .about-card-body p {
+  max-width: 68ch;
   font-size: 1rem;
   color: var(--color-muted);
   line-height: 1.7;
