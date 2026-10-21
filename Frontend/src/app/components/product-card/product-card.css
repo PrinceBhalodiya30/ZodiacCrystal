@@ -287,3 +287,13 @@
   40% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .product-image img,
+  .product-actions .btn {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

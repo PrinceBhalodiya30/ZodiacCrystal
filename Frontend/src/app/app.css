@@ -33,6 +33,7 @@
   --color-accent-gold: #ab7a24;
   --color-accent-gold-light: #fbf5e8;
   --color-brass: #ab7a24;
+  --color-brass-text: #7d5918;
   --color-brass-light: #fbf5e8;
   --color-brass-border: #dcc28b;
   --color-amethyst: #4a3656;
@@ -60,7 +61,8 @@
 
   /* --- Typography Scale (Major Second / Minor Third) --- */
   --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-heading);
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
   --text-xs: 0.75rem;     /* 12px */

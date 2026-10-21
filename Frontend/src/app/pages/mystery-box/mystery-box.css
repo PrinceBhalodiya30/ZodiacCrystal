@@ -43,7 +43,7 @@
   height: 72px;
   border-radius: 50%;
   background: var(--color-cream-light);
-  color: var(--color-brass);
+  color: var(--color-brass-text, #7d5918);
   box-shadow: 0 0 0 6px rgba(184, 134, 45, 0.1);
   margin-bottom: 1.25rem;
 }
@@ -330,6 +330,299 @@
   transform: none;
 }
 
+/* Zodiac Picker in Promo Card */
+.zodiac-picker-section {
+  margin: 1.75rem auto 2.25rem;
+  max-width: 620px;
+  text-align: center;
+}
+
+.zodiac-picker-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.zodiac-picker-subtext {
+  margin: 0 auto 1.25rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  max-width: 480px;
+  line-height: 1.45;
+}
+
+.zodiac-pill-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+.zodiac-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.zodiac-pill:hover {
+  border-color: var(--color-brand);
+  background-color: var(--color-surface-sunken);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(45, 90, 69, 0.12);
+}
+
+.zodiac-pill.selected {
+  border-color: var(--color-brass);
+  background: var(--color-cream-light);
+  box-shadow: 0 0 0 2px rgba(184, 134, 45, 0.35), 0 4px 14px rgba(184, 134, 45, 0.14);
+  transform: translateY(-2px);
+}
+
+.zodiac-pill-emblem {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(36, 65, 50, 0.22);
+  transition: transform var(--transition-fast);
+}
+
+.zodiac-pill.selected .zodiac-pill-emblem {
+  box-shadow: 0 0 0 2px var(--color-brass);
+  transform: scale(1.05);
+}
+
+.zodiac-emblem-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.zodiac-glyph-fallback {
+  font-size: 0.85rem;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.zodiac-pill-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.zodiac-pill.selected .zodiac-pill-name {
+  color: var(--color-brand);
+}
+
+/* Selected Zodiac Affinity Card */
+.zodiac-affinity-card {
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.4rem;
+  background: linear-gradient(135deg, rgba(253, 250, 243, 0.95) 0%, rgba(246, 240, 227, 0.9) 100%);
+  border: 1px solid rgba(184, 134, 45, 0.35);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 18px rgba(184, 134, 45, 0.09);
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  text-align: left;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.affinity-emblem-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
+  border: 2.5px solid var(--color-brass);
+  box-shadow: 0 4px 12px rgba(36, 65, 50, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.affinity-emblem-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.affinity-symbol {
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.affinity-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.affinity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.affinity-header strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.affinity-traits {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.affinity-promise {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-brand);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.sparkle-icon {
+  margin-right: 0.25rem;
+}
+
+/* Step 1 Zodiac Summary */
+.step-summary-zodiac {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.95rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.85rem;
+}
+
+.summary-emblem-wrapper {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-brass);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-brand);
+}
+
+.summary-emblem-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.summary-symbol {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.summary-zodiac-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.summary-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.summary-zodiac-name {
+  font-size: 0.95rem;
+  color: var(--color-brand);
+}
+
+.summary-zodiac-name strong {
+  font-family: var(--font-display);
+}
+
+/* Form Zodiac Selection Dropdown */
+.form-zodiac-selection {
+  margin-bottom: 1.15rem;
+}
+
+.zodiac-dropdown {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+}
+
+.zodiac-dropdown:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .zodiac-pill-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 600px) {
   .mystery-box-page {
     padding: 2rem 1rem 3rem;
@@ -343,5 +636,18 @@
   .mystery-box-facts {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .zodiac-pill-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .zodiac-affinity-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .affinity-header {
+    justify-content: center;
   }
 }

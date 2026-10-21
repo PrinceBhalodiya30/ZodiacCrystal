@@ -52,7 +52,7 @@
   height: 68px;
   border-radius: 50%;
   background: var(--color-surface-sunken);
-  color: var(--color-brass);
+  color: var(--color-brass-text, #7d5918);
   display: flex;
   align-items: center;
   justify-content: center;

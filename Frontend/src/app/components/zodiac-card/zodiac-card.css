@@ -95,3 +95,12 @@
   background-color: var(--color-brand-hover);
   color: #ffffff;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .zodiac-card,
+  .zodiac-image,
+  .zodiac-card .btn {
+    transition: none !important;
+    transform: none !important;
+  }
+}

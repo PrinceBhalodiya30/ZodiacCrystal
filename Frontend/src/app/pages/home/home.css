@@ -143,7 +143,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-brass, #ab7a24);
+  color: var(--color-brass-text, #7d5918);
   margin-bottom: 0.5rem;
 }
 
@@ -421,7 +421,7 @@ section h2 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-brass);
+  color: var(--color-brass-text, #7d5918);
   margin-bottom: 0.65rem;
 }
 

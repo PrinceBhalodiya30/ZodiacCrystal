@@ -156,7 +156,7 @@ select:focus {
 .address-type {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-brass);
+  color: var(--color-brass-text, #7d5918);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 0.5rem;
