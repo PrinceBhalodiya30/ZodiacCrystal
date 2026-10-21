@@ -74,9 +74,9 @@
   list-style: none;
   margin: 2.25rem 0 0;
   padding: 0.65rem 1.35rem;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
   border-radius: var(--radius-pill);
   color: var(--color-muted);
   font-size: 0.85rem;

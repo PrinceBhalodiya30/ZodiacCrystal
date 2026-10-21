@@ -21,7 +21,7 @@
       <ul class="mystery-box-facts">
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 5-10 13L2 8Z"/></svg>
-          {{ boxInfo.itemCount }} Random Crystals
+          {{ boxInfo.itemCount }} Curated Crystals
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1-3 2.2c0 3 6 1.5 6 4.5 0 1.4-1.3 2.3-3 2.3s-3-1-3-2.3"/></svg>
@@ -34,10 +34,63 @@
       </ul>
 
       <p class="mystery-box-note">
-        You won't know exactly which crystals you'll get until your order arrives - every box is
-        picked at random from our in-stock crystals and is worth at least {{ boxInfo.minimumValue | inr:0 }}
-        at catalog prices.
+        Every box is personalized with crystals attuned to your zodiac sign, picked from our
+        in-stock authentic collection and worth at least {{ boxInfo.minimumValue | inr:0 }} at catalog prices.
       </p>
+
+      @if (zodiacSigns().length > 0) {
+        <div class="zodiac-picker-section">
+          <label class="zodiac-picker-label" id="zodiac-select-label">Choose Your Zodiac Sign</label>
+          <p class="zodiac-picker-subtext">Each mystery box is curated with authentic crystals aligned with your cosmic sign.</p>
+
+          <div class="zodiac-pill-grid" role="radiogroup" aria-labelledby="zodiac-select-label">
+            @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
+              <button
+                type="button"
+                class="zodiac-pill"
+                [class.selected]="selectedZodiacId() === zodiac.zodiacId"
+                (click)="selectZodiac(zodiac.zodiacId)"
+                role="radio"
+                [attr.aria-checked]="selectedZodiacId() === zodiac.zodiacId"
+                [attr.title]="zodiac.name + (zodiac.description ? ' - ' + zodiac.description : '')"
+              >
+                <span class="zodiac-pill-emblem">
+                  @if (zodiac.imageUrl) {
+                    <img [src]="zodiac.imageUrl" [alt]="zodiac.name" class="zodiac-emblem-img" loading="lazy" decoding="async" imgFallback />
+                  } @else {
+                    <span class="zodiac-glyph-fallback">✦</span>
+                  }
+                </span>
+                <span class="zodiac-pill-name">{{ zodiac.name }}</span>
+              </button>
+            }
+          </div>
+
+          @if (selectedZodiac(); as currentZodiac) {
+            <div class="zodiac-affinity-card">
+              <div class="affinity-emblem-wrapper">
+                @if (currentZodiac.imageUrl) {
+                  <img [src]="currentZodiac.imageUrl" [alt]="currentZodiac.name" class="affinity-emblem-img" />
+                } @else {
+                  <span class="affinity-symbol">✦</span>
+                }
+              </div>
+              <div class="affinity-details">
+                <div class="affinity-header">
+                  <strong>{{ currentZodiac.name }}</strong>
+                </div>
+                @if (currentZodiac.description) {
+                  <p class="affinity-traits">{{ currentZodiac.description }}</p>
+                }
+                <p class="affinity-promise">
+                  <span class="affinity-bullet" aria-hidden="true">✦</span>
+                  Your mystery box will be specially curated with crystals attuned to <strong>{{ currentZodiac.name }}</strong> energy.
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      }
 
       @if (!showShippingForm()) {
         <button type="button" class="btn mystery-box-cta" (click)="startPurchase()">
@@ -50,7 +103,7 @@
       <form #shippingForm class="mystery-box-form reveal-in" (ngSubmit)="onSubmit(boxForm)" #boxForm="ngForm">
         <button type="button" class="back-link" [disabled]="isPurchasing()" (click)="cancelPurchase()">← Back to Mystery Box</button>
         <div class="step-header">
-          <h2>1. Shipping Address</h2>
+          <h2>1. Shipping Address &amp; Zodiac Affinity</h2>
           @if (addressConfirmed()) {
             <button type="button" class="link-btn" (click)="editAddress()">Change</button>
           }
@@ -58,12 +111,48 @@
 
         @if (addressConfirmed()) {
           <!-- Step 1 done: folded into one line; its values live on the component. -->
-          <p class="step-summary">
-            <strong>{{ shippingName }}</strong>,
-            {{ shippingAddress }}, {{ city }}, {{ state }} {{ postalCode }}
-            <span class="step-summary-meta">{{ phone }} · {{ shippingEmail }}</span>
-          </p>
+          <div class="step-summary">
+            @if (selectedZodiac(); as currentZodiac) {
+              <div class="step-summary-zodiac">
+                <div class="summary-emblem-wrapper">
+                  @if (currentZodiac.imageUrl) {
+                    <img [src]="currentZodiac.imageUrl" [alt]="currentZodiac.name" class="summary-emblem-img" />
+                  } @else {
+                    <span class="summary-symbol">✦</span>
+                  }
+                </div>
+                <div class="summary-zodiac-text">
+                  <span class="summary-label">Curated for Zodiac Sign</span>
+                  <span class="summary-zodiac-name">
+                    <strong>{{ currentZodiac.name }}</strong>
+                  </span>
+                </div>
+              </div>
+            }
+            <div>
+              <strong>{{ shippingName }}</strong>,
+              {{ shippingAddress }}, {{ city }}, {{ state }} {{ postalCode }}
+              <span class="step-summary-meta">{{ phone }} · {{ shippingEmail }}</span>
+            </div>
+          </div>
         } @else {
+          @if (zodiacSigns().length > 0) {
+            <div class="form-zodiac-selection">
+              <label for="checkoutZodiac">Zodiac Affinity *</label>
+              <select
+                id="checkoutZodiac"
+                name="checkoutZodiac"
+                [ngModel]="selectedZodiacId()"
+                (ngModelChange)="selectZodiac($event)"
+                class="zodiac-dropdown"
+                required
+              >
+                @for (z of zodiacSigns(); track z.zodiacId) {
+                  <option [value]="z.zodiacId">{{ z.name }}</option>
+                }
+              </select>
+            </div>
+          }
           @if (savedAddresses().length > 0) {
             <div class="saved-address-list">
               @for (address of savedAddresses(); track address.addressId) {

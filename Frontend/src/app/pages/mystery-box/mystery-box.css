@@ -31,8 +31,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
+  height: 2px;
+  background: var(--color-brand);
 }
 
 .mystery-box-icon {
@@ -137,8 +137,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
+  height: 2px;
+  background: var(--color-brand);
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
 }
@@ -516,8 +516,9 @@
   line-height: 1.4;
 }
 
-.sparkle-icon {
-  margin-right: 0.25rem;
+.affinity-bullet {
+  margin-right: 0.35rem;
+  color: var(--color-brand);
 }
 
 /* Step 1 Zodiac Summary */

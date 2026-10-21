@@ -53,9 +53,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--color-border-subtle);
-  background-color: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(4px);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface, #ffffff);
   color: var(--color-brand);
   cursor: pointer;
   display: flex;

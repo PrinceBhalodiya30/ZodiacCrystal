@@ -26,8 +26,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-brand), var(--color-brass));
+  height: 2px;
+  background: var(--color-brand);
 }
 
 .track-header {
