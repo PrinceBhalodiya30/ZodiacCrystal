@@ -91,7 +91,7 @@
         >{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
         <button
           type="button"
-          class="btn btn-outline btn-buy-now"
+          class="btn btn-accent btn-buy-now"
           [disabled]="purchaseDisabled"
           [attr.title]="purchaseDisabled ? unavailableMessage : null"
           (click)="buyNow()"
