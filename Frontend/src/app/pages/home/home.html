@@ -118,9 +118,6 @@
   <div class="mystery-box-card">
     <div class="mystery-box-content">
       <span class="mystery-box-eyebrow">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
-          <path d="M12 2 14 9.3 21 12 14 14.7 12 22 10 14.7 3 12 10 9.3Z"/>
-        </svg>
         Intuitive Curation
       </span>
       <h2>The Celestial Mystery Box</h2>
@@ -184,7 +181,7 @@
         <a class="category-tile" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
           <span class="category-tile-image">
             @if (tile.imageUrl) {
-              <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="" loading="lazy" decoding="async" imgFallback />
+              <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="tile.category.name" loading="lazy" decoding="async" imgFallback />
             } @else {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
                 <path d="M8 3h8l4 5-10 13L2 8Z"/>

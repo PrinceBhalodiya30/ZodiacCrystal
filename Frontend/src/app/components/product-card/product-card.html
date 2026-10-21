@@ -36,10 +36,6 @@
       <a [routerLink]="['/products', product.productId]">{{ product.name }}</a>
     </h3>
 
-    @if (product.description) {
-      <p class="product-description">{{ product.description }}</p>
-    }
-
     @if (product.reviewCount) {
       <p class="product-rating">
         <span class="stars">{{ ratingStars }}</span>
@@ -69,8 +65,7 @@
       <p class="unavailable-message">{{ unavailableMessage }}</p>
     }
 
-    <!-- The image and name already open the product page, so the card keeps
-         just the purchase actions on a single row. -->
+    <!-- Single prominent, accessible action button -->
     <div class="product-actions">
       @if (variant === 'wishlist') {
         <button
@@ -88,7 +83,7 @@
       } @else {
         <button
           type="button"
-          class="btn"
+          class="btn btn-add-cart"
           [class.btn-added]="justAdded()"
           [disabled]="purchaseDisabled"
           [attr.title]="purchaseDisabled ? unavailableMessage : null"
@@ -96,7 +91,7 @@
         >{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
         <button
           type="button"
-          class="btn btn-outline"
+          class="btn btn-outline btn-buy-now"
           [disabled]="purchaseDisabled"
           [attr.title]="purchaseDisabled ? unavailableMessage : null"
           (click)="buyNow()"
