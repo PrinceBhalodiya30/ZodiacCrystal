@@ -89,7 +89,6 @@
               Coupon available: {{ offer }}
             </li>
           }
-          <li>Free delivery on orders above {{ freeShippingThreshold | inr }}, otherwise {{ flatShippingFee | inr }}</li>
         </ul>
 
         @if (!reviewsLoading() && reviewCount() > 0) {
@@ -105,16 +104,6 @@
             <span class="stock-badge" [class]="stockStatus">{{ stockLabel }}</span>
           </li>
         </ul>
-
-        <p class="delivery-estimate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="1" y="6" width="13" height="11"/>
-            <path d="M14 9h4l4 4v4h-8V9Z"/>
-            <circle cx="6" cy="19" r="1.6"/>
-            <circle cx="17.5" cy="19" r="1.6"/>
-          </svg>
-          Estimated delivery: 3-5 business days
-        </p>
 
         @if (p.zodiacs && p.zodiacs.length > 0) {
           <div class="zodiac-tags">
@@ -189,6 +178,41 @@
             {{ isWishlisted ? 'Wishlisted' : 'Wishlist' }}
           </button>
         </div>
+
+        <div class="product-trust-box">
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="1" y="6" width="13" height="11"/>
+              <path d="M14 9h4l4 4v4h-8V9Z"/>
+              <circle cx="6" cy="19" r="1.6"/>
+              <circle cx="17.5" cy="19" r="1.6"/>
+            </svg>
+            <div class="trust-item-body">
+              <strong>Free Delivery over {{ freeShippingThreshold | inr }}</strong>
+              <span>Estimated 3-5 business days across India</span>
+            </div>
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+            <div class="trust-item-body">
+              <strong>7-Day Returns & Exchanges</strong>
+              <span>Protected transit with zero hassle</span>
+            </div>
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+            <div class="trust-item-body">
+              <strong>Secure Checkout & COD Available</strong>
+              <span>UPI, Cards, and Net Banking supported</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -216,8 +240,13 @@
       } @else {
         @if (reviewCount() > 0) {
           <div class="reviews-summary">
-            <span class="stars stars-lg">{{ getStars(averageRating()) }}</span>
-            <span class="reviews-summary-text">{{ averageRating() }} ★ ({{ reviewCount() }} review{{ reviewCount() === 1 ? '' : 's' }})</span>
+            <div class="reviews-score-block">
+              <span class="reviews-score-number">{{ averageRating() }}</span>
+              <div class="reviews-score-meta">
+                <span class="stars stars-lg">{{ getStars(averageRating()) }}</span>
+                <span class="reviews-summary-text">Based on {{ reviewCount() }} customer review{{ reviewCount() === 1 ? '' : 's' }}</span>
+              </div>
+            </div>
           </div>
         }
 
