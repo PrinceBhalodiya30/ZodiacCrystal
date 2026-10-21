@@ -1,7 +1,8 @@
-import { Component, ElementRef, Injector, OnDestroy, OnInit, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, Injector, OnDestroy, OnInit, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MysteryBoxService } from '../../services/mystery-box.service';
+import { ZodiacService } from '../../services/zodiac.service';
 import { AuthService } from '../../services/auth.service';
 import { AddressService } from '../../services/address.service';
 import { CheckoutModeService } from '../../services/checkout-mode.service';
@@ -11,19 +12,22 @@ import { PaymentMethodSelect } from '../../components/payment-method-select/paym
 import { MysteryBoxInfo } from '../../models/mystery-box';
 import { PaymentDetails, PaymentMethod } from '../../models/order';
 import { Address } from '../../models/address';
+import { Zodiac } from '../../models/zodiac';
 import { MapAddressFields } from '../../components/map-address-fields/map-address-fields';
+import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { scrollBehavior } from '../../utils/motion.util';
 
 import { InrPipe } from '../../pipes/inr.pipe';
 @Component({
   selector: 'app-mystery-box',
   standalone: true,
-  imports: [InrPipe, FormsModule, Spinner, PhoneInput, PaymentMethodSelect, MapAddressFields],
+  imports: [InrPipe, FormsModule, Spinner, PhoneInput, PaymentMethodSelect, MapAddressFields, ImgFallbackDirective],
   templateUrl: './mystery-box.html',
   styleUrl: './mystery-box.css'
 })
 export class MysteryBox implements OnInit, OnDestroy {
   private mysteryBoxService = inject(MysteryBoxService);
+  private zodiacService = inject(ZodiacService);
   private authService = inject(AuthService);
   private addressService = inject(AddressService);
   private router = inject(Router);
@@ -33,6 +37,10 @@ export class MysteryBox implements OnInit, OnDestroy {
 
   paymentMethod = signal<PaymentMethod>('COD');
   paymentSelect = viewChild(PaymentMethodSelect);
+
+  zodiacSigns = signal<Zodiac[]>([]);
+  selectedZodiacId = signal<number | null>(null);
+  selectedZodiac = computed(() => this.zodiacSigns().find(z => z.zodiacId === this.selectedZodiacId()) ?? null);
 
   info = signal<MysteryBoxInfo | null>(null);
   isLoadingInfo = signal(true);
@@ -76,6 +84,24 @@ export class MysteryBox implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadInfo();
+    this.loadZodiacSigns();
+  }
+
+  selectZodiac(zodiacId: number): void {
+    this.selectedZodiacId.set(zodiacId);
+    this.idempotencyKey = null;
+  }
+
+  private loadZodiacSigns(): void {
+    this.zodiacService.getZodiacSigns().subscribe({
+      next: signs => {
+        this.zodiacSigns.set(signs);
+        if (signs.length > 0 && !this.selectedZodiacId()) {
+          this.selectedZodiacId.set(signs[0].zodiacId);
+        }
+      },
+      error: () => {}
+    });
   }
 
   // "Back" closes the inline checkout and returns to the promo card, with the
@@ -224,6 +250,7 @@ export class MysteryBox implements OnInit, OnDestroy {
     }
 
     const shipping = {
+      zodiacId: this.selectedZodiacId() ?? undefined,
       shippingName: this.shippingName,
       shippingEmail: this.shippingEmail,
       shippingAddress: this.shippingAddress,

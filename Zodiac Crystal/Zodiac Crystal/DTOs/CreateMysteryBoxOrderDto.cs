@@ -59,5 +59,9 @@ namespace Zodiac_Crystal.DTOs
         [StringLength(64)]
         [RegularExpression("^[A-Za-z0-9-]{8,64}$", ErrorMessage = "Invalid idempotency key.")]
         public string? IdempotencyKey { get; set; }
+
+        // Optional zodiac sign to personalize the mystery box with matching crystals.
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid zodiac sign.")]
+        public int? ZodiacId { get; set; }
     }
 }

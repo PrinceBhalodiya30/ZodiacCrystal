@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 226" width="126" height="226">
+  <!-- Crystal base shadow / back -->
+  <polygon points="12,140 38,218 8,160" fill="#143623" />
+  
+  <!-- Left secondary crystal facet -->
+  <polygon points="8,160 22,176 38,218 20,218" fill="#2d6344" />
+  <polygon points="12,140 8,160 22,176 18,136" fill="#4a8b64" />
+  
+  <!-- Main crystal top facets -->
+  <polygon points="52,6 20,50 48,34" fill="#68a67d" />
+  <polygon points="52,6 48,34 85,26" fill="#88c49d" />
+  <polygon points="20,50 18,62 48,34" fill="#3d7a54" />
+  <polygon points="48,34 85,26 85,82 46,64" fill="#4f916a" />
+  <polygon points="18,62 46,64 48,34" fill="#5ba077" />
+  
+  <!-- Main crystal body front large facet -->
+  <polygon points="18,62 85,82 118,150 76,218" fill="#44845e" />
+  
+  <!-- Left body facet -->
+  <polygon points="18,62 18,136 46,218 76,218" fill="#27563b" />
+  <polygon points="18,136 12,140 38,218 46,218" fill="#1b3f2a" />
+  
+  <!-- Right edge facet -->
+  <polygon points="85,82 85,26 118,150" fill="#2e6445" />
+  <polygon points="118,150 97,218 76,218" fill="#1e4630" />
+  
+  <!-- Crisp facet division lines -->
+  <!-- Outline -->
+  <polygon points="52,6 85,26 118,150 97,218 38,218 20,218 8,160 12,140 20,50" 
+           fill="none" stroke="#0e2819" stroke-width="4.5" stroke-linejoin="round" />
+  
+  <!-- Interior lines -->
+  <line x1="52" y1="6" x2="48" y2="34" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="20" y1="50" x2="48" y2="34" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="85" y1="26" x2="48" y2="34" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="18" y1="62" x2="46" y2="64" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="48" y1="34" x2="46" y2="64" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="46" y1="64" x2="85" y2="82" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="18" y1="62" x2="76" y2="218" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="85" y1="82" x2="118" y2="150" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="118" y1="150" x2="76" y2="218" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="18" y1="62" x2="46" y2="218" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="18" y1="136" x2="12" y2="140" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="12" y1="140" x2="38" y2="218" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="8" y1="160" x2="22" y2="176" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+  <line x1="22" y1="176" x2="38" y2="218" stroke="#0e2819" stroke-width="3.5" stroke-linecap="round" />
+</svg>

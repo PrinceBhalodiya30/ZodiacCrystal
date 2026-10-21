@@ -103,6 +103,11 @@ namespace Zodiac_Crystal.Controllers
                 return BadRequest(new { message = addressError });
             }
 
+            if (dto.ZodiacId.HasValue && !await _context.ZodiacSigns.AnyAsync(z => z.ZodiacId == dto.ZodiacId.Value))
+            {
+                return BadRequest(new { message = "Selected zodiac sign does not exist." });
+            }
+
             using var transaction = await _context.Database.BeginTransactionAsync();
             string? chargedTransactionId = null;
             decimal chargedAmount = 0m;
@@ -116,10 +121,11 @@ namespace Zodiac_Crystal.Controllers
                 // Re-checked inside the transaction (not just at selection time) so a
                 // product that sold out between selection and commit can't be double-sold.
                 var eligibleProducts = await _context.Products
+                    .Include(p => p.Zodiacs)
                     .Where(p => p.IsActive && p.StockQuantity > 0)
                     .ToListAsync();
 
-                var selected = SelectBoxProducts(eligibleProducts);
+                var selected = SelectBoxProducts(eligibleProducts, dto.ZodiacId);
 
                 if (selected == null)
                 {
@@ -372,13 +378,75 @@ namespace Zodiac_Crystal.Controllers
         }
 
         // Picks ItemCount distinct eligible products whose combined price is at
-        // least MinValue. Tries a handful of random samples first (so the box is
-        // genuinely a surprise), then falls back to the highest-priced eligible
-        // products (the only combination guaranteed to reach MinValue if any can).
-        // Returns null if the catalog simply can't support the guarantee right now.
-        internal static List<Product>? SelectBoxProducts(List<Product> eligibleProducts)
+        // least MinValue. When a zodiac sign is provided, it prioritizes crystals
+        // attuned to that sign, combining with general crystals if inventory is
+        // constrained, and falling back safely if necessary.
+        internal static List<Product>? SelectBoxProducts(List<Product> eligibleProducts, int? zodiacId = null)
         {
             if (eligibleProducts.Count < ItemCount)
+            {
+                return null;
+            }
+
+            if (zodiacId.HasValue)
+            {
+                var zodiacMatching = eligibleProducts
+                    .Where(p => p.Zodiacs.Any(z => z.ZodiacId == zodiacId.Value))
+                    .ToList();
+
+                // 1. If 3 or more products match the zodiac sign, try pure zodiac selection
+                if (zodiacMatching.Count >= ItemCount)
+                {
+                    var pureZodiac = TryPick(zodiacMatching);
+                    if (pureZodiac != null)
+                    {
+                        return pureZodiac;
+                    }
+                }
+
+                // 2. If fewer than 3 match or pure zodiac pool couldn't reach MinValue,
+                // prioritize matching zodiac products and fill remaining slots with non-zodiac products
+                if (zodiacMatching.Count > 0)
+                {
+                    var otherProducts = eligibleProducts
+                        .Where(p => !p.Zodiacs.Any(z => z.ZodiacId == zodiacId.Value))
+                        .ToList();
+
+                    var random = Random.Shared;
+                    var takeZodiac = Math.Min(zodiacMatching.Count, ItemCount - 1);
+
+                    for (var attempt = 0; attempt < RandomAttempts; attempt++)
+                    {
+                        var sampleZodiac = zodiacMatching.OrderBy(_ => random.Next()).Take(takeZodiac).ToList();
+                        var needed = ItemCount - sampleZodiac.Count;
+                        var sampleOther = otherProducts.OrderBy(_ => random.Next()).Take(needed).ToList();
+                        var combined = sampleZodiac.Concat(sampleOther).ToList();
+
+                        if (combined.Count == ItemCount && combined.Sum(p => p.Price) >= MinValue)
+                        {
+                            return combined;
+                        }
+                    }
+
+                    // Greedy combination: highest priced zodiac items + highest priced others
+                    var topZodiac = zodiacMatching.OrderByDescending(p => p.Price).Take(takeZodiac).ToList();
+                    var topOther = otherProducts.OrderByDescending(p => p.Price).Take(ItemCount - topZodiac.Count).ToList();
+                    var topCombined = topZodiac.Concat(topOther).ToList();
+
+                    if (topCombined.Count == ItemCount && topCombined.Sum(p => p.Price) >= MinValue)
+                    {
+                        return topCombined;
+                    }
+                }
+            }
+
+            // Fallback: general catalog selection
+            return TryPick(eligibleProducts);
+        }
+
+        private static List<Product>? TryPick(List<Product> pool)
+        {
+            if (pool.Count < ItemCount)
             {
                 return null;
             }
@@ -386,11 +454,11 @@ namespace Zodiac_Crystal.Controllers
             var random = Random.Shared;
 
             for (var attempt = 0; attempt < RandomAttempts; attempt++)
-            { 
-                var sample = eligibleProducts
-                    .OrderBy(_ => random.Next()) 
+            {
+                var sample = pool
+                    .OrderBy(_ => random.Next())
                     .Take(ItemCount)
-                    .ToList(); 
+                    .ToList();
 
                 if (sample.Sum(p => p.Price) >= MinValue)
                 {
@@ -398,7 +466,7 @@ namespace Zodiac_Crystal.Controllers
                 }
             }
 
-            var topByPrice = eligibleProducts
+            var topByPrice = pool
                 .OrderByDescending(p => p.Price)
                 .Take(ItemCount)
                 .ToList();

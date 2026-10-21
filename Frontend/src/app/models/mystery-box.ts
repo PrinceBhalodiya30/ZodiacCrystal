@@ -16,6 +16,8 @@ export interface CreateMysteryBoxOrderRequest extends PaymentDetails {
   phone: string;
   latitude?: number;
   longitude?: number;
+  // Astrological sign used to personalize crystal selection in the mystery box
+  zodiacId?: number;
   // One per checkout attempt; a retry with the same key returns the order already placed.
   idempotencyKey?: string;
 }
