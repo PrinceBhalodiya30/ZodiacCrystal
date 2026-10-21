@@ -272,7 +272,7 @@ namespace Zodiac_Crystal.Controllers
                         ? "Your Mystery Crystal Box could not be created. Please try again."
                         : reversed
                             ? "Your Mystery Crystal Box could not be created and your payment has been reversed. Please try again."
-                            : $"Your Mystery Crystal Box could not be created, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@zodiaccrystals.com quoting payment reference {chargedTransactionId}.",
+                            : $"Your Mystery Crystal Box could not be created, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@crystalstudio.com quoting payment reference {chargedTransactionId}.",
                     paymentReference = chargedTransactionId != null && !reversed ? chargedTransactionId : null
                 });
             }

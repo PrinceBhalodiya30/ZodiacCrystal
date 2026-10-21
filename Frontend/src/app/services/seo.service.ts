@@ -36,7 +36,7 @@ export class SeoService {
 
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ name: 'robots', content: page.noindex ? 'noindex, nofollow' : 'index, follow' });
-    this.meta.updateTag({ property: 'og:site_name', content: 'Zodiac Crystals' });
+    this.meta.updateTag({ property: 'og:site_name', content: 'Crystal Studio' });
     this.meta.updateTag({ property: 'og:title', content: page.title });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:type', content: page.type ?? 'website' });

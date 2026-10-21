@@ -47,7 +47,10 @@ export class Login {
         this.errorMessage.set(
           error.status === 401
             ? 'Invalid email or password.'
-            : 'Unable to log in right now. Please try again.'
+            : (error.error?.message ||
+                (error.status === 0
+                  ? 'Unable to connect to the server. Please check your connection or verify the backend is running.'
+                  : 'Unable to log in right now. Please try again.'))
         );
       }
     });

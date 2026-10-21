@@ -465,6 +465,45 @@
   padding-left: 1.25rem;
 }
 
+.cart-notice--info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cart-notice-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cart-notice-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-accent, #c9933f);
+  flex-shrink: 0;
+}
+
+.cart-notice-dismiss {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--color-subtle);
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  transition: color var(--transition-fast);
+}
+
+.cart-notice-dismiss:hover {
+  color: var(--color-ink);
+}
+
 /* Leaving item animation */
 .cart-item.cart-item-leaving {
   animation: cart-item-out 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards;

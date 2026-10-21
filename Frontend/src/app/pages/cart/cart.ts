@@ -1,7 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CartService, FREE_SHIPPING_THRESHOLD, shippingFeeFor } from '../../services/cart.service';
-import { AuthService } from '../../services/auth.service';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { CartItem } from '../../models/cart';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
@@ -18,7 +17,6 @@ import { InrPipe } from '../../pipes/inr.pipe';
 })
 export class Cart implements OnInit {
   cartService = inject(CartService);
-  private authService = inject(AuthService);
   private router = inject(Router);
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);
@@ -76,12 +74,6 @@ export class Cart implements OnInit {
 
   checkout(): void {
     if (this.cartService.stockProblems().length > 0) {
-      return;
-    }
-
-    if (!this.authService.isLoggedIn()) {
-      this.toast.error('Please log in to proceed to checkout.');
-      this.router.navigate(['/login'], { queryParams: { returnUrl: '/checkout' } });
       return;
     }
 

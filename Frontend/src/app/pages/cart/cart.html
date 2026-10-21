@@ -20,6 +20,20 @@
       <a routerLink="/products" class="btn">Explore Crystals</a>
     </div>
   } @else {
+    @if (cartService.mergeNotice(); as notice) {
+      <div class="cart-notice cart-notice--info" role="status">
+        <div class="cart-notice-content">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="cart-notice-icon" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>{{ notice }}</span>
+        </div>
+        <button type="button" class="cart-notice-dismiss" (click)="cartService.dismissMergeNotice()" aria-label="Dismiss notice">✕</button>
+      </div>
+    }
+
     @if (changeNotes().length > 0) {
       <div class="cart-notice" role="status">
         <strong>Your cart was updated:</strong>

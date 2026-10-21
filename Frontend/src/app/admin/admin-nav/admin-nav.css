@@ -152,6 +152,7 @@
     grid-row: span 2;
     width: 1.75rem;
     height: 1.75rem;
+    object-fit: contain;
   }
 
   .admin-nav-brand-name {

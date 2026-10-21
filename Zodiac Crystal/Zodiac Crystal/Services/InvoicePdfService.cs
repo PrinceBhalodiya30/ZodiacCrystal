@@ -20,17 +20,24 @@ namespace Zodiac_Crystal.Services
         private const string StoneLine = "#e3dccd";
         private const string Ink = "#1d1b18";
 
-        // Same mark as Frontend/public/logo-white.svg - the light variant
-        // for the dark header band.
-        private const string LogoMarkSvg = """
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="60 60 296 296">
-              <ellipse cx="208" cy="208" rx="150" ry="58" transform="rotate(33 208 208)" fill="none" stroke="#c9d8ca" stroke-width="7"/>
-              <ellipse cx="208" cy="208" rx="150" ry="58" transform="rotate(-33 208 208)" fill="none" stroke="#ffffff" stroke-width="9"/>
-              <path d="M208,116 L222,194 L292,208 L222,222 L208,300 L194,222 L124,208 L194,194 Z" fill="#ffffff"/>
-              <path d="M208,140 L216,200 L268,208 L216,216 L208,276 L200,216 L148,208 L200,200 Z" fill="#1f3d2b"/>
-              <circle cx="208" cy="208" r="9" fill="#9db89f"/>
-            </svg>
-            """;
+        private static byte[]? _logoBytes;
+        private static byte[] GetLogoBytes()
+        {
+            if (_logoBytes != null) return _logoBytes;
+            try
+            {
+                var path = Path.Combine(AppContext.BaseDirectory, "Assets", "logo.png");
+                if (File.Exists(path)) return _logoBytes = File.ReadAllBytes(path);
+            }
+            catch { }
+            try
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "logo.png");
+                if (File.Exists(path)) return _logoBytes = File.ReadAllBytes(path);
+            }
+            catch { }
+            return _logoBytes = Convert.FromBase64String("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");
+        }
 
         // returnRequest: the order's return, if any, so a refunded return is explained on the invoice.
         public byte[] GenerateInvoice(Order order, ReturnRequest? returnRequest = null)
@@ -55,14 +62,18 @@ namespace Zodiac_Crystal.Services
                     {
                         // A colored band behind the header gives the invoice a real letterhead
                         // instead of plain text-on-white, and makes it instantly recognizable
-                        // as a Zodiac Crystals document even on page 2+ of a multi-page order.
+                        // as a Crystal Studio document even on page 2+ of a multi-page order.
                         column.Item().Background(BrandGreenDark).Padding(16).Row(row =>
                         {
-                            row.AutoItem().Width(30).Height(30).Svg(LogoMarkSvg);
+                            var logoBytes = GetLogoBytes();
+                            if (logoBytes != null && logoBytes.Length > 0)
+                            {
+                                row.AutoItem().Width(34).Height(34).Image(logoBytes);
+                            }
 
                             row.RelativeItem().PaddingLeft(10).Column(c =>
                             {
-                                c.Item().Text("Zodiac Crystals").FontSize(20).Bold().FontColor(Colors.White);
+                                c.Item().Text("Crystal Studio").FontSize(20).Bold().FontColor(Colors.White);
                                 c.Item().Text("Hand-picked crystals for every zodiac sign").FontSize(9).FontColor(Colors.Grey.Lighten3);
                             });
 
@@ -274,14 +285,14 @@ namespace Zodiac_Crystal.Services
                             row.RelativeItem().Text(text =>
                             {
                                 text.Span("Questions about this order? ").FontSize(8).FontColor(Colors.Grey.Darken1);
-                                text.Span("support@zodiaccrystals.com").FontSize(8).FontColor(BrandGreen);
+                                text.Span("support@crystalstudio.com").FontSize(8).FontColor(BrandGreen);
                             });
 
                             row.RelativeItem().AlignRight().Text(t =>
                                 t.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Darken1));
                         });
 
-                        column.Item().PaddingTop(4).AlignCenter().Text("Thank you for shopping with Zodiac Crystals.")
+                        column.Item().PaddingTop(4).AlignCenter().Text("Thank you for shopping with Crystal Studio.")
                             .FontSize(9).FontColor(BrandGreen).Bold();
                     });
                 });

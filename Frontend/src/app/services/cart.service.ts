@@ -7,12 +7,14 @@ import { AuthService } from './auth.service';
 import { ProductService } from './product.service';
 import { CartItem } from '../models/cart';
 import { Product } from '../models/product';
+import { ToastService } from './toast.service';
 
 // Guest cart; each signed-in user gets their own key so the next person to sign
 // in on a shared device never sees someone else's cart.
 const GUEST_CART_KEY = 'cart_items';
 const cartKey = (userId: number | null) => (userId ? `cart_items_${userId}` : GUEST_CART_KEY);
 const BUY_NOW_KEY = 'buy_now_item';
+const MERGE_NOTICE_KEY = 'cart_merge_notice';
 
 // Mirrors OrdersController.CreateOrder: free at/above ₹999 item subtotal, flat ₹50
 // otherwise. Display only - the backend computes the fee it actually charges.
@@ -26,10 +28,34 @@ export class CartService {
   private auth = inject(AuthService);
   private productService = inject(ProductService);
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   private syncTimer?: ReturnType<typeof setTimeout>;
   private storageKey = cartKey(this.auth.currentUser()?.userId ?? null);
 
   items = signal<CartItem[]>(this.loadStoredCart(this.storageKey));
+  mergeNotice = signal<string | null>(this.loadStoredMergeNotice());
+
+  private loadStoredMergeNotice(): string | null {
+    try {
+      return sessionStorage.getItem(MERGE_NOTICE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  setMergeNotice(msg: string): void {
+    this.mergeNotice.set(msg);
+    try {
+      sessionStorage.setItem(MERGE_NOTICE_KEY, msg);
+    } catch {}
+  }
+
+  dismissMergeNotice(): void {
+    this.mergeNotice.set(null);
+    try {
+      sessionStorage.removeItem(MERGE_NOTICE_KEY);
+    } catch {}
+  }
 
   // A "Buy Now" purchase never touches the persisted cart - it's handed to the
   // Checkout page directly, then cleared. Kept in sessionStorage (not just
@@ -59,16 +85,32 @@ export class CartService {
 
     // Signing in: bring along anything added while browsing as a guest.
     if (this.storageKey === GUEST_CART_KEY && key !== GUEST_CART_KEY) {
-      for (const guestItem of this.items()) {
-        const existing = items.find(i => i.product.productId === guestItem.product.productId);
-        if (existing) {
-          existing.quantity = Math.min(existing.quantity + guestItem.quantity, guestItem.product.stockQuantity);
-          existing.product = guestItem.product;
+      const guestItems = this.items();
+      const hadPreviousItems = items.length > 0;
+
+      if (guestItems.length > 0) {
+        for (const guestItem of guestItems) {
+          const existing = items.find(i => i.product.productId === guestItem.product.productId);
+          if (existing) {
+            existing.quantity = Math.min(existing.quantity + guestItem.quantity, guestItem.product.stockQuantity);
+            existing.product = guestItem.product;
+          } else {
+            items.push(guestItem);
+          }
+        }
+        localStorage.removeItem(GUEST_CART_KEY);
+
+        // Notify user about merged items so they understand why both are in the cart
+        if (hadPreviousItems) {
+          const msg = 'We combined the items from your browsing session with your saved cart.';
+          this.toast.success(msg);
+          this.setMergeNotice(msg);
         } else {
-          items.push(guestItem);
+          this.toast.success('Your cart items have been saved to your account.');
         }
       }
-      localStorage.removeItem(GUEST_CART_KEY);
+    } else {
+      this.dismissMergeNotice();
     }
 
     this.storageKey = key;

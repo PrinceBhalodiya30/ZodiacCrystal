@@ -24,7 +24,7 @@ namespace Zodiac_Crystal.Controllers
         }
 
         // GET: api/addresses (the logged-in user's own addresses)
-        [HttpGet]
+        [HttpGet]     
         public async Task<ActionResult<IEnumerable<AddressDto>>> GetMyAddresses()
         {
             var userId = GetCurrentUserId();

@@ -157,7 +157,7 @@ namespace Zodiac_Crystal.Services
         {
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>Use the code below to verify your email and finish creating your Zodiac Crystals account.</p>
+              <p>Use the code below to verify your email and finish creating your Crystal Studio account.</p>
               <p style=""margin:24px 0;text-align:center;"">
                 <span style=""display:inline-block;padding:12px 24px;background:#f3efe7;border-radius:4px;font-size:28px;font-weight:bold;letter-spacing:8px;color:#2f4a3a;"">{Encode(otp)}</span>
               </p>
@@ -166,7 +166,7 @@ namespace Zodiac_Crystal.Services
             await SendEmailAsync(
                 toEmail,
                 toName,
-                "Your Zodiac Crystals verification code",
+                "Your Crystal Studio verification code",
                 Layout("Verify Your Email", content));
         }
 
@@ -177,7 +177,7 @@ namespace Zodiac_Crystal.Services
                 ? (viewUrl, "View Your Order",
                     $"This private link works for {(int)OrderAccessService.LinkLifetime.TotalDays} days. Please don't share it.")
                 : ($"{siteUrl}/login?returnUrl=/orders/{orderId}", "Log In to View",
-                    "This order belongs to your Zodiac Crystals account, so log in to see it.");
+                    "This order belongs to your Crystal Studio account, so log in to see it.");
 
             var content = $@"
               <p>Hi {Encode(toName)},</p>
@@ -200,7 +200,7 @@ namespace Zodiac_Crystal.Services
               </p>
               <p>This code expires in {(int)validFor.TotalMinutes} minutes. If you didn't start a checkout, you can ignore this email.</p>";
 
-            await SendEmailAsync(toEmail, toEmail, "Your Zodiac Crystals checkout code", Layout("Verify Your Email", content));
+            await SendEmailAsync(toEmail, toEmail, "Your Crystal Studio checkout code", Layout("Verify Your Email", content));
         }
 
         public async Task SendRegistrationAttemptOnExistingAccountAsync(string toEmail, string toName)
@@ -208,24 +208,24 @@ namespace Zodiac_Crystal.Services
             var siteUrl = _settings.SiteUrl.TrimEnd('/');
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>Someone just tried to create a new Zodiac Crystals account with this email address, but you already have one.</p>
+              <p>Someone just tried to create a new Crystal Studio account with this email address, but you already have one.</p>
               <p>If that was you, simply <a href=""{Encode(siteUrl)}/login"">log in</a>. Forgotten your password? Use ""Forgot password?"" on the login page.</p>
               <p>If it wasn't you, no action is needed - your account hasn't changed.</p>";
 
-            await SendEmailAsync(toEmail, toName, "You already have a Zodiac Crystals account", Layout("Account Already Exists", content));
+            await SendEmailAsync(toEmail, toName, "You already have a Crystal Studio account", Layout("Account Already Exists", content));
         }
 
         public async Task SendPasswordResetCodeAsync(string toEmail, string toName, string code, TimeSpan validFor)
         {
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>We received a request to reset the password for your Zodiac Crystals account. Enter this code to choose a new password:</p>
+              <p>We received a request to reset the password for your Crystal Studio account. Enter this code to choose a new password:</p>
               <p style=""margin:24px 0;text-align:center;"">
                 <span style=""display:inline-block;padding:12px 24px;background:#f3efe7;border-radius:4px;font-size:28px;font-weight:bold;letter-spacing:8px;color:#2f4a3a;"">{Encode(code)}</span>
               </p>
               <p>This code expires in {(int)validFor.TotalMinutes} minutes. If you didn't ask to reset your password, you can ignore this email - your password stays the same.</p>";
 
-            await SendEmailAsync(toEmail, toName, "Reset your Zodiac Crystals password", Layout("Password Reset", content));
+            await SendEmailAsync(toEmail, toName, "Reset your Crystal Studio password", Layout("Password Reset", content));
         }
 
         public async Task SendPasswordChangedAsync(string toEmail, string toName, bool viaReset)
@@ -235,26 +235,26 @@ namespace Zodiac_Crystal.Services
 
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>The password for your Zodiac Crystals account was <strong>{how}</strong> on {when} (IST).</p>
+              <p>The password for your Crystal Studio account was <strong>{how}</strong> on {when} (IST).</p>
               <p>If this was you, no action is needed.</p>
               <p style=""padding:12px;background:#fdecec;border-radius:4px;color:#8a1c1c;"">
-                <strong>Wasn't you?</strong> Reset your password right away using ""Forgot password?"" on the login page, and contact us at support@zodiaccrystals.com.
+                <strong>Wasn't you?</strong> Reset your password right away using ""Forgot password?"" on the login page, and contact us at support@crystalstudio.com.
               </p>";
 
-            await SendEmailAsync(toEmail, toName, "Your Zodiac Crystals password was changed", Layout("Password Changed", content));
+            await SendEmailAsync(toEmail, toName, "Your Crystal Studio password was changed", Layout("Password Changed", content));
         }
 
         public async Task SendEmailChangeCodeAsync(string toEmail, string toName, string code, TimeSpan validFor)
         {
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>Use the code below to confirm this as the new email address for your Zodiac Crystals account.</p>
+              <p>Use the code below to confirm this as the new email address for your Crystal Studio account.</p>
               <p style=""margin:24px 0;text-align:center;"">
                 <span style=""display:inline-block;padding:12px 24px;background:#f3efe7;border-radius:4px;font-size:28px;font-weight:bold;letter-spacing:8px;color:#2f4a3a;"">{Encode(code)}</span>
               </p>
               <p>This code expires in {(int)validFor.TotalMinutes} minutes. If you didn't ask to change your email, you can ignore this message - nothing will change.</p>";
 
-            await SendEmailAsync(toEmail, toName, "Confirm your new Zodiac Crystals email", Layout("Confirm Your New Email", content));
+            await SendEmailAsync(toEmail, toName, "Confirm your new Crystal Studio email", Layout("Confirm Your New Email", content));
         }
 
         public async Task SendEmailChangedAsync(string oldEmail, string toName, string newEmail, string revertToken)
@@ -265,7 +265,7 @@ namespace Zodiac_Crystal.Services
 
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>The email address for your Zodiac Crystals account was changed from this address to <strong>{Encode(newEmail)}</strong> on {when} (IST).</p>
+              <p>The email address for your Crystal Studio account was changed from this address to <strong>{Encode(newEmail)}</strong> on {when} (IST).</p>
               <p>From now on, sign in and receive order updates using the new address.</p>
               <p style=""padding:12px;background:#fdecec;border-radius:4px;color:#8a1c1c;"">
                 <strong>Wasn't you?</strong> Use the button below within {revertDays} days to put this address back on your account.
@@ -274,21 +274,21 @@ namespace Zodiac_Crystal.Services
               <p style=""margin:24px 0;text-align:center;"">
                 <a href=""{revertUrl}"" style=""display:inline-block;padding:12px 24px;background:#8a1c1c;color:#ffffff;border-radius:4px;text-decoration:none;font-weight:bold;"">This wasn't me - undo the change</a>
               </p>
-              <p>Need help? Contact us at support@zodiaccrystals.com.</p>";
+              <p>Need help? Contact us at support@crystalstudio.com.</p>";
 
-            await SendEmailAsync(oldEmail, toName, "Your Zodiac Crystals email was changed", Layout("Email Changed", content));
+            await SendEmailAsync(oldEmail, toName, "Your Crystal Studio email was changed", Layout("Email Changed", content));
         }
 
         public async Task SendAccountDeletedAsync(string toEmail, string toName)
         {
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>Your Zodiac Crystals account has been deleted as you requested. Your saved addresses, wishlist and notifications have been removed, and you can no longer log in.</p>
+              <p>Your Crystal Studio account has been deleted as you requested. Your saved addresses, wishlist and notifications have been removed, and you can no longer log in.</p>
               <p>Records of past orders are kept for accounting purposes only.</p>
-              <p>If you didn't request this, please contact us at support@zodiaccrystals.com.</p>
+              <p>If you didn't request this, please contact us at support@crystalstudio.com.</p>
               <p>Thank you for shopping with us.</p>";
 
-            await SendEmailAsync(toEmail, toName, "Your Zodiac Crystals account has been deleted", Layout("Account Deleted", content));
+            await SendEmailAsync(toEmail, toName, "Your Crystal Studio account has been deleted", Layout("Account Deleted", content));
         }
 
         public async Task SendWelcomeAsync(string toEmail, string toName)
@@ -297,7 +297,7 @@ namespace Zodiac_Crystal.Services
 
             var content = $@"
               <p>Hi {Encode(toName)},</p>
-              <p>Welcome to Zodiac Crystals! Your account is ready, and we're so glad you're here.</p>
+              <p>Welcome to Crystal Studio! Your account is ready, and we're so glad you're here.</p>
               <p>We hand-pick crystals for every star sign, so you can find stones that match your energy, or a thoughtful gift for someone else's.</p>
               <table width=""100%"" cellpadding=""0"" cellspacing=""0"" style=""border-collapse:collapse;font-size:14px;margin:8px 0 16px;"">
                 <tr><td style=""padding:6px 0;""><strong>Find your crystal</strong> - browse by your zodiac sign</td></tr>
@@ -309,10 +309,10 @@ namespace Zodiac_Crystal.Services
                 &nbsp;
                 <a href=""{siteUrl}/products"" style=""display:inline-block;padding:12px 24px;background:#f3efe7;color:#2f4a3a;border-radius:4px;text-decoration:none;font-weight:bold;"">Shop All Crystals</a>
               </p>
-              <p>Questions? Reach us any time at support@zodiaccrystals.com.</p>
-              <p>With love,<br/>The Zodiac Crystals team</p>";
+              <p>Questions? Reach us any time at support@crystalstudio.com.</p>
+              <p>With love,<br/>The Crystal Studio team</p>";
 
-            await SendEmailAsync(toEmail, toName, "Welcome to Zodiac Crystals", Layout($"Welcome, {Encode(toName)}!", content));
+            await SendEmailAsync(toEmail, toName, "Welcome to Crystal Studio", Layout($"Welcome, {Encode(toName)}!", content));
         }
 
         public async Task SendCartReminderAsync(string toEmail, string toName, IReadOnlyList<(string Name, decimal Price, int Quantity)> items)
@@ -346,7 +346,7 @@ namespace Zodiac_Crystal.Services
                 <a href=""{siteUrl}/cart"" style=""display:inline-block;padding:12px 24px;background:#2f4a3a;color:#ffffff;border-radius:4px;text-decoration:none;font-weight:bold;"">Complete My Order</a>
               </p>
               <p style=""color:#6f695f;font-size:13px;"">Stock is limited, so items aren't held for you. Prices are confirmed at checkout.</p>
-              <p>With love,<br/>The Zodiac Crystals team</p>";
+              <p>With love,<br/>The Crystal Studio team</p>";
 
             await SendEmailAsync(toEmail, toName, "You left something in your cart", Layout("Still thinking it over?", content));
         }
@@ -377,7 +377,7 @@ namespace Zodiac_Crystal.Services
                 <a href=""{siteUrl}/products/{first.ProductId}"" style=""display:inline-block;padding:12px 24px;background:#2f4a3a;color:#ffffff;border-radius:4px;text-decoration:none;font-weight:bold;"">Shop Now</a>
               </p>
               <p style=""color:#6f695f;font-size:13px;"">Stock is limited and items aren't held, so they may sell out again. This was a one-time alert you asked for.</p>
-              <p>With love,<br/>The Zodiac Crystals team</p>";
+              <p>With love,<br/>The Crystal Studio team</p>";
 
             await SendEmailAsync(toEmail, toName, subject, Layout("Back in stock", content));
         }
@@ -413,7 +413,7 @@ namespace Zodiac_Crystal.Services
                 <a href=""{siteUrl}/wishlist"" style=""display:inline-block;padding:12px 24px;background:#2f4a3a;color:#ffffff;border-radius:4px;text-decoration:none;font-weight:bold;"">View My Wishlist</a>
               </p>
               <p style=""color:#6f695f;font-size:13px;"">Prices can change and are confirmed at checkout. To stop these emails for an item, remove it from your wishlist.</p>
-              <p>With love,<br/>The Zodiac Crystals team</p>";
+              <p>With love,<br/>The Crystal Studio team</p>";
 
             await SendEmailAsync(toEmail, toName, subject, Layout("Price drop on your wishlist", content));
         }
@@ -591,7 +591,7 @@ namespace Zodiac_Crystal.Services
         <td align=""center"">
           <table width=""600"" cellpadding=""0"" cellspacing=""0"" style=""max-width:600px;width:100%;background:#ffffff;border:1px solid #e3dccd;border-radius:4px;overflow:hidden;"">
             <tr>
-              <td style=""background:#2f4a3a;color:#ffffff;padding:20px 24px;font-size:22px;font-weight:bold;font-family:Georgia,'Times New Roman',serif;"">Zodiac Crystals</td>
+              <td style=""background:#2f4a3a;color:#ffffff;padding:20px 24px;font-size:22px;font-weight:bold;font-family:Georgia,'Times New Roman',serif;"">Crystal Studio</td>
             </tr>
             <tr>
               <td style=""padding:24px;"">
@@ -601,7 +601,7 @@ namespace Zodiac_Crystal.Services
             </tr>
             <tr>
               <td style=""padding:16px 24px;background:#f3efe7;color:#6f695f;font-size:12px;border-top:1px solid #e3dccd;text-align:center;"">
-                This is an automated message from Zodiac Crystals. Please do not reply to this email.
+                This is an automated message from Crystal Studio. Please do not reply to this email.
               </td>
             </tr>
           </table>

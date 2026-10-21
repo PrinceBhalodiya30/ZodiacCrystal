@@ -377,7 +377,7 @@ namespace Zodiac_Crystal.Controllers
                         ? "Your order could not be placed. Please try again."
                         : reversed
                             ? "Your order could not be placed and your payment has been reversed. Please try again."
-                            : $"Your order could not be placed, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@zodiaccrystals.com quoting payment reference {chargedTransactionId}.",
+                            : $"Your order could not be placed, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@crystalstudio.com quoting payment reference {chargedTransactionId}.",
                     paymentReference = chargedTransactionId != null && !reversed ? chargedTransactionId : null
                 });
             }

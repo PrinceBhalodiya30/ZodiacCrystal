@@ -13,8 +13,8 @@
 <header class="navbar" [class.scrolled]="isScrolled()">
   <div class="navbar-container">
     <a routerLink="/" class="navbar-brand" (click)="closeMenu()">
-      <img class="navbar-brand-icon" src="logo.svg?v=2" alt="" aria-hidden="true" />
-      Zodiac Crystals
+      <img class="navbar-brand-icon" src="logo-icon.png" alt="" aria-hidden="true" />
+      Crystal Studio
     </a>
 
     @if (isCheckout()) {
@@ -81,6 +81,9 @@
             <span class="icon-badge" [class.bump]="wishlistBump()">{{ wishlistService.count() }}</span>
           }
         </a>
+      }
+
+      @if (!authService.isAdmin()) {
         <a routerLink="/cart" routerLinkActive="active" class="icon-link" aria-label="Cart" (click)="closeMenu()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="9" cy="21" r="1.3"/>

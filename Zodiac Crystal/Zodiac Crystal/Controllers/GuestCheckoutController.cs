@@ -226,7 +226,7 @@ namespace Zodiac_Crystal.Controllers
                 return Conflict(new
                 {
                     accountExists = true,
-                    message = "You already have a Zodiac Crystals account with this email. Please log in to check out - use \"Forgot password?\" if you need to reset it."
+                    message = "You already have a Crystal Studio account with this email. Please log in to check out - use \"Forgot password?\" if you need to reset it."
                 });
             }
 

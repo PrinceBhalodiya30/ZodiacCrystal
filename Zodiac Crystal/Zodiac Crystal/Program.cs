@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
@@ -235,7 +235,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowAngularDev");
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // Serves uploaded product images from wwwroot/uploads (e.g. /uploads/products/xyz.jpg).
 // nosniff stops a browser from treating an uploaded file as anything other
@@ -244,8 +249,6 @@ app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx => ctx.Context.Response.Headers["X-Content-Type-Options"] = "nosniff"
 });
-
-app.UseCors("AllowAngularDev");
 
 // After authentication so signed-in users are limited by user id; before
 // authorization so requests that end up refused still count. After CORS so a

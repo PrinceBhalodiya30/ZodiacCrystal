@@ -25,14 +25,14 @@ export class GuideDetail implements OnInit {
     this.guide.set(guide);
 
     if (guide) {
-      this.seo.update({ title: `${guide.title} | Zodiac Crystals`, description: guide.shortDescription, type: 'article' });
+      this.seo.update({ title: `${guide.title} | Crystal Studio`, description: guide.shortDescription, type: 'article' });
       this.seo.setJsonLd({
         '@context': 'https://schema.org',
         '@type': 'Article',
         headline: guide.title,
         description: guide.shortDescription,
         url: `${SITE_URL}/guides/${guide.slug}`,
-        publisher: { '@type': 'Organization', name: 'Zodiac Crystals', logo: `${SITE_URL}/logo.svg` }
+        publisher: { '@type': 'Organization', name: 'Crystal Studio', logo: `${SITE_URL}/logo.png` }
       });
     }
   }

@@ -94,10 +94,6 @@ export class ProductCard implements OnInit {
       return;
     }
 
-    if (!this.requireLogin(this.router.url, 'Please log in to add items to your cart.')) {
-      return;
-    }
-
     const added = this.cartService.addToCart(this.product, 1);
     if (added === 0) {
       this.toast.error(CartService.shortfallMessage(this.product, 1, 0)!);

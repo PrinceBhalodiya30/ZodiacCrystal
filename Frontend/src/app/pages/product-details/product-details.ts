@@ -91,6 +91,14 @@ export class ProductDetails implements OnInit {
   selectedImageUrl = signal<string | null>(null);
   quantity = signal(1);
   justAdded = signal(false);
+  cartQuantity = computed(() => {
+    const p = this.product();
+    if (!p) {
+      return 0;
+    }
+    const item = this.cartService.items().find(i => i.product.productId === p.productId);
+    return item?.quantity ?? 0;
+  });
   isLoading = signal(true);
   errorMessage = signal('');
   isLightboxOpen = signal(false);
@@ -217,7 +225,7 @@ export class ProductDetails implements OnInit {
 
     this.seo.update({
       title: fullTitle,
-      description: product.description || `${product.name} healing crystal from Zodiac Crystals.`,
+      description: product.description || `${product.name} healing crystal from Crystal Studio.`,
       image: primaryImage,
       type: 'product'
     });
@@ -230,7 +238,7 @@ export class ProductDetails implements OnInit {
       description: product.description || undefined,
       image: images.length ? images : undefined,
       category: product.categoryName || undefined,
-      brand: { '@type': 'Brand', name: 'Zodiac Crystals' },
+      brand: { '@type': 'Brand', name: 'Crystal Studio' },
       url,
       offers: {
         '@type': 'Offer',
@@ -485,10 +493,6 @@ export class ProductDetails implements OnInit {
   addToCart(): void {
     const product = this.product();
     if (!product) {
-      return;
-    }
-
-    if (!this.requireLogin(this.router.url, 'Please log in to add items to your cart.')) {
       return;
     }
 

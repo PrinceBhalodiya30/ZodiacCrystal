@@ -3,10 +3,10 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { SeoService } from './seo.service';
 
-const SITE_NAME = 'Zodiac Crystals';
-const HOME_TITLE = 'Zodiac Crystals – Healing Crystals for Every Zodiac Sign';
+const SITE_NAME = 'Crystal Studio';
+const HOME_TITLE = 'Crystal Studio – Healing Crystals for Every Zodiac Sign';
 
-// Browser tab titles: each route's `title` becomes "<title> | Zodiac Crystals".
+// Browser tab titles: each route's `title` becomes "<title> | Crystal Studio".
 // Also resets the search/social tags on every navigation from the route's
 // `data.description` / `data.noindex`. Pages whose title depends on loaded
 // data (a product, a zodiac sign) call setPageTitle() once it arrives.

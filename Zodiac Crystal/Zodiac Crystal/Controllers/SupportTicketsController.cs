@@ -321,8 +321,8 @@ namespace Zodiac_Crystal.Controllers
                         TicketMessageId = m.TicketMessageId,
                         IsFromAdmin = m.IsFromAdmin,
                         IsInternal = m.IsInternal,
-                        // Customers see "Zodiac Crystals Support", not the admin's own name.
-                        SenderName = m.IsFromAdmin && !forAdmin ? "Zodiac Crystals Support" : m.Sender?.Name ?? (m.IsFromAdmin ? "Support" : t.User.Name),
+                        // Customers see "Crystal Studio Support", not the admin's own name.
+                        SenderName = m.IsFromAdmin && !forAdmin ? "Crystal Studio Support" : m.Sender?.Name ?? (m.IsFromAdmin ? "Support" : t.User.Name),
                         Body = hidden ? "This message was removed." : m.Body,
                         Attachments = hidden ? new List<string>() : SplitUrls(m.AttachmentUrls),
                         CreatedAt = Utc(m.CreatedAt),

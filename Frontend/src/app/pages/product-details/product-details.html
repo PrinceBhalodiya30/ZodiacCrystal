@@ -172,6 +172,9 @@
               [disabled]="isOutOfStock"
               (click)="buyNow()"
             >Buy Now</button>
+            @if (cartQuantity() > 0) {
+              <a routerLink="/cart" class="btn btn-outline view-cart-link">View in Cart ({{ cartQuantity() }})</a>
+            }
           }
           <button
             type="button"
@@ -294,7 +297,7 @@
                 }
                 @if (review.adminReply) {
                   <div class="review-admin-reply">
-                    <span class="review-admin-reply-label">Response from Zodiac Crystal</span>
+                    <span class="review-admin-reply-label">Response from Crystal Studio</span>
                     <p>{{ review.adminReply }}</p>
                   </div>
                 }
@@ -315,6 +318,9 @@
       <div class="mobile-add-bar">
         <span class="mobile-add-bar-price">{{ p.price | inr }}</span>
         <button type="button" class="btn" [class.btn-added]="justAdded()" (click)="addToCart()">{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
+        @if (cartQuantity() > 0) {
+          <a routerLink="/cart" class="btn btn-outline">View Cart ({{ cartQuantity() }})</a>
+        }
       </div>
     }
 

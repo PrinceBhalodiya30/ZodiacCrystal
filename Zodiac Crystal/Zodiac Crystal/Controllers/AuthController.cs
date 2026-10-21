@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -171,7 +171,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return BadRequest(new
                 {
-                    message = "We couldn't restore this address automatically. Please contact support@zodiaccrystals.com and we'll secure your account."
+                    message = "We couldn't restore this address automatically. Please contact support@crystalstudio.com and we'll secure your account."
                 });
             }
 

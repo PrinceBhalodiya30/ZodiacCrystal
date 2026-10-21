@@ -52,6 +52,7 @@
   width: 1.6rem;
   height: 1.6rem;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .brand-content h2 {
@@ -100,6 +101,7 @@
   width: 1.4rem;
   height: 1.4rem;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .auth-form-wrap h1 {

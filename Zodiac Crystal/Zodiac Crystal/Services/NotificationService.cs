@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Data;
@@ -162,7 +162,7 @@ namespace Zodiac_Crystal.Services
                 user.UserId,
                 null,
                 $"Welcome, {user.Name}!",
-                "Your Zodiac Crystals account is ready. Tap here to find the crystal for your sign.",
+                "Your Crystal Studio account is ready. Tap here to find the crystal for your sign.",
                 "Welcome");
         }
 
