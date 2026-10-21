@@ -209,6 +209,8 @@
             id="shippingEmail"
             name="shippingEmail"
             type="email"
+            autocomplete="email"
+            inputmode="email"
             [(ngModel)]="shippingEmail"
             [readonly]="isGuest()"
             required
@@ -227,7 +229,15 @@
           <!-- A chosen saved address already fills these; they only open for a new address. -->
           @if (selectedAddressId() === null) {
             <label for="shippingName">Name *</label>
-            <input id="shippingName" name="shippingName" type="text" [(ngModel)]="shippingName" required #shippingNameField="ngModel" />
+            <input
+              id="shippingName"
+              name="shippingName"
+              type="text"
+              autocomplete="name"
+              [(ngModel)]="shippingName"
+              required
+              #shippingNameField="ngModel"
+            />
             @if (shippingNameField.invalid && shippingNameField.touched) {
               <p class="field-hint error">Name is required.</p>
             }

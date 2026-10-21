@@ -27,6 +27,9 @@ export class Cart implements OnInit {
   shippingFee = computed(() => shippingFeeFor(this.cartService.total()));
   grandTotal = computed(() => this.cartService.total() + this.shippingFee());
   amountToFreeShipping = computed(() => Math.max(0, FREE_SHIPPING_THRESHOLD - this.cartService.total()));
+  freeShippingProgress = computed(() =>
+    Math.min(100, Math.round((this.cartService.total() / FREE_SHIPPING_THRESHOLD) * 100))
+  );
 
   ngOnInit(): void {
     // The saved cart is a snapshot; pull today's prices and stock before the customer decides.

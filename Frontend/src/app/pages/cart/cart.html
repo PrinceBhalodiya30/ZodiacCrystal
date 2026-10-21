@@ -116,24 +116,24 @@
             <span class="cart-grand-total">{{ grandTotal() | inr }}</span>
           </div>
 
-          @if (amountToFreeShipping() > 0) {
-            <div class="free-shipping-card">
-              <div class="free-shipping-text">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12v12"></path>
-                  <path d="M15 9h4l4 4v3h-2"></path>
-                  <circle cx="7" cy="18" r="2"></circle>
-                  <circle cx="17" cy="18" r="2"></circle>
-                </svg>
+          <div class="free-shipping-card" [class.unlocked]="amountToFreeShipping() === 0">
+            <div class="free-shipping-text">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12v12"></path>
+                <path d="M15 9h4l4 4v3h-2"></path>
+                <circle cx="7" cy="18" r="2"></circle>
+                <circle cx="17" cy="18" r="2"></circle>
+              </svg>
+              @if (amountToFreeShipping() > 0) {
                 <span>Add <strong>{{ amountToFreeShipping() | inr }}</strong> more for <strong>Free Shipping</strong></span>
-              </div>
+              } @else {
+                <span>You've unlocked <strong>Free Standard Shipping</strong>!</span>
+              }
             </div>
-          } @else {
-            <div class="free-shipping-card unlocked">
-              <span class="free-shipping-check">✓</span>
-              <span>You've unlocked <strong>Free Standard Shipping</strong>!</span>
+            <div class="free-shipping-track">
+              <div class="free-shipping-fill" [style.width.%]="freeShippingProgress()"></div>
             </div>
-          }
+          </div>
 
           <p class="cart-hint">Promotional coupons & gift codes can be applied at checkout.</p>
 
@@ -154,6 +154,20 @@
           </div>
         </div>
       </aside>
+    </div>
+
+    <!-- Mobile Sticky Checkout Bar -->
+    <div class="cart-mobile-sticky-bar">
+      <div class="cart-sticky-info">
+        <span class="cart-sticky-label">Estimated Total</span>
+        <span class="cart-sticky-price">{{ grandTotal() | inr }}</span>
+      </div>
+      <button
+        type="button"
+        class="btn cart-sticky-btn"
+        (click)="checkout()"
+        [disabled]="cartService.stockProblems().length > 0"
+      >Proceed to Checkout</button>
     </div>
   }
 </section>
