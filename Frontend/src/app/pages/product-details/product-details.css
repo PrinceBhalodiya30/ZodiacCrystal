@@ -373,8 +373,18 @@
   font-weight: 600;
 }
 
-.wishlist-toggle-btn {
+.wishlist-toggle-btn,
+.compare-toggle-btn {
   min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.compare-toggle-btn.active {
+  background-color: var(--color-brand);
+  color: #ffffff;
+  border-color: var(--color-brand);
 }
 
 /* Trust & Guarantees Box */

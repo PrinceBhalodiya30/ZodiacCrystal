@@ -130,10 +130,14 @@
 
         @if (t.status !== 'Closed' || isInternal) {
           <form class="panel-reply" (ngSubmit)="send()">
-            <div class="canned">
-              @for (c of cannedReplies; track c.label) {
-                <button type="button" class="canned-btn" (click)="useCanned(c.text)">{{ c.label }}</button>
-              }
+            <div class="canned-dropdown-bar">
+              <label for="cannedSelect" class="canned-select-label">⚡ Canned reply:</label>
+              <select id="cannedSelect" class="canned-select" (change)="onSelectCanned($event)" aria-label="Insert canned reply template">
+                <option value="" selected>Choose ready-made response (tracking, damaged, crystal care...)</option>
+                @for (c of cannedReplies; track c.label) {
+                  <option [value]="c.text">{{ c.label }}</option>
+                }
+              </select>
             </div>
             <textarea name="reply" rows="4" maxlength="2000" [(ngModel)]="reply"
               [placeholder]="isInternal ? 'Internal note - only admins see this' : 'Reply to ' + t.customerName + '...'"

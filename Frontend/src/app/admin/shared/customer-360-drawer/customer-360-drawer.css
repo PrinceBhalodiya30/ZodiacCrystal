@@ -1,0 +1,222 @@
+.customer-360-drawer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 580px;
+  height: 100%;
+  background-color: #ffffff;
+  border-left: 3px solid var(--color-brand);
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.25);
+  animation: drawer-in 0.22s ease;
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.customer-badge-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.customer-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-brand), #2e5944);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(27, 58, 43, 0.25);
+  flex-shrink: 0;
+}
+
+.role-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  background-color: var(--color-cream);
+  color: var(--color-brand);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.c360-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.c360-kpi-card {
+  padding: 0.85rem 1rem;
+  background-color: var(--color-bone, #fcfbfa);
+  border: 1px solid #ebe6df;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.c360-kpi-label {
+  font-size: 0.74rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.c360-kpi-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-ink, #2a2521);
+}
+
+.c360-tabs {
+  display: flex;
+  gap: 0.4rem;
+  border-bottom: 1px solid #e5e0d8;
+  margin-bottom: 1rem;
+}
+
+.c360-tab {
+  padding: 0.5rem 0.85rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.c360-tab:hover {
+  color: var(--color-brand);
+}
+
+.c360-tab.active {
+  color: var(--color-brand);
+  border-bottom-color: var(--color-brand);
+}
+
+.c360-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.c360-order-item,
+.c360-return-item,
+.c360-ticket-item {
+  padding: 0.85rem 1rem;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  transition: border-color 0.15s ease;
+}
+
+.c360-order-item:hover {
+  border-color: #dcd6cd;
+}
+
+.c360-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.c360-item-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.c360-item-date {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.c360-item-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: #444;
+}
+
+.c360-item-note {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-brand);
+  font-style: italic;
+}
+
+.c360-item-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.c360-item-total {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-ink, #2a2521);
+}
+
+.c360-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  background: var(--color-bone, #fcfbfa);
+  border-radius: 6px;
+  border: 1px dashed #e2ddd5;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.status-confirmed, .status-approved, .status-resolved {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.status-pending, .status-requested, .status-open {
+  background: #fef7e0;
+  color: #b06000;
+}
+
+.status-shipped, .status-awaitingcustomer {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.status-delivered, .status-refunded {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.status-cancelled, .status-rejected, .status-closed {
+  background: #fce8e6;
+  color: #c5221f;
+}

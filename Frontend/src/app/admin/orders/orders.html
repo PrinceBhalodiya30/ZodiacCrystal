@@ -54,6 +54,30 @@
     }
   </div>
 
+  @if (selectedCount() > 0) {
+    <div class="bulk-bar" role="region" aria-label="Bulk order actions">
+      <div class="bulk-bar-info">
+        <span class="bulk-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <strong>{{ selectedCount() }}</strong> order{{ selectedCount() === 1 ? '' : 's' }} selected
+        </span>
+        <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear</button>
+      </div>
+      <div class="bulk-bar-controls">
+        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" name="bulkAction" aria-label="Bulk status transition">
+          <option value="Confirmed">Mark as Confirmed</option>
+          <option value="Shipped">Mark as Shipped</option>
+          <option value="Cancelled">Cancel Orders</option>
+        </select>
+        <button type="button" class="btn btn-bulk-apply" [disabled]="isBulkUpdating()" (click)="applyBulkAction()">
+          {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
+        </button>
+      </div>
+    </div>
+  }
+
   @if (isLoading() && orders().length === 0) {
     <app-spinner label="Loading orders..."></app-spinner>
   } @else if (errorMessage()) {
@@ -73,6 +97,14 @@
       <table class="stack-table">
         <thead>
           <tr>
+            <th class="cb-col" style="width: 44px">
+              <input
+                type="checkbox"
+                [checked]="pageAllSelected()"
+                (change)="toggleSelectAllPage($event)"
+                aria-label="Select all orders on this page"
+              />
+            </th>
             <th>Order ID</th>
             <th>Customer</th>
             <th>Date</th>
@@ -85,6 +117,14 @@
         <tbody>
           @for (order of orders(); track order.orderId) {
             <tr class="clickable-row" [class.is-open]="openOrderId() === order.orderId" [class.row-new]="newOrderIds().has(order.orderId)" tabindex="0" role="button" [attr.aria-label]="'Open order #' + order.orderId" (click)="openOrder(order)" (keydown.enter)="openOrder(order)" (keydown.space)="$event.preventDefault(); openOrder(order)">
+              <td class="cb-col" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [checked]="selectedIds().has(order.orderId)"
+                  (change)="toggleSelectOrder(order.orderId)"
+                  [attr.aria-label]="'Select order #' + order.orderId"
+                />
+              </td>
               <td data-label="Order ID">
                 #{{ order.orderId }}
                 @if (newOrderIds().has(order.orderId)) {
@@ -92,7 +132,18 @@
                 }
               </td>
               <td data-label="Customer">
-                <div class="customer-name">{{ order.customerName }}</div>
+                <div class="customer-name-row" style="display: flex; align-items: center; gap: 0.4rem">
+                  <div class="customer-name">{{ order.customerName }}</div>
+                  <button
+                    type="button"
+                    class="chip-btn"
+                    style="font-size: 0.7rem; padding: 0.1rem 0.4rem; height: auto"
+                    title="View Customer 360"
+                    (click)="$event.stopPropagation(); customer360Email.set(order.customerEmail)"
+                  >
+                    👤 360
+                  </button>
+                </div>
                 <div class="customer-email">{{ order.customerEmail }}</div>
               </td>
               <td data-label="Date">{{ order.orderDate | date:'dd MMM yyyy' }}</td>
@@ -131,6 +182,19 @@
   }
 
   @if (openOrderId(); as id) {
-    <app-order-detail-drawer [orderId]="id" (closed)="closeOrder()" (orderChanged)="onOrderChanged($event)"></app-order-detail-drawer>
+    <app-order-detail-drawer
+      [orderId]="id"
+      (closed)="closeOrder()"
+      (orderChanged)="onOrderChanged($event)"
+      (viewCustomer)="customer360Email.set($event)"
+    ></app-order-detail-drawer>
+  }
+
+  @if (customer360Email(); as email) {
+    <app-customer-360-drawer
+      [customerEmail]="email"
+      (closed)="customer360Email.set(null)"
+      (viewOrder)="customer360Email.set(null); openOrderId.set($event)"
+    ></app-customer-360-drawer>
   }
 </section>

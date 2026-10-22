@@ -364,13 +364,13 @@
   color: var(--color-brand);
 }
 
-/* Free Shipping Callout */
+/* Free Shipping Callout in Order Summary */
 .free-shipping-card {
   margin: 1.25rem 0 0.75rem;
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-sm);
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-sm, 6px);
   background: var(--color-surface-tint, #f2eee6);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
   font-size: 0.85rem;
   color: var(--color-ink);
   display: flex;
@@ -382,38 +382,46 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  line-height: 1.4;
 }
 
 .free-shipping-text svg {
-  width: 1.3rem;
-  height: 1.3rem;
-  color: var(--color-brand);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-brand, #244132);
   flex-shrink: 0;
 }
 
 .free-shipping-track {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background-color: var(--color-border, #ded7c8);
   border-radius: var(--radius-pill);
   overflow: hidden;
+  position: relative;
 }
 
 .free-shipping-fill {
+  display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--color-brand) 0%, var(--color-accent) 100%);
+  min-width: 0;
+  background: linear-gradient(90deg, var(--color-brand, #244132) 0%, var(--color-brass, #ab7a24) 100%);
   border-radius: var(--radius-pill);
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .free-shipping-card.unlocked {
-  background: var(--color-success-bg);
-  border-color: var(--color-success-border);
-  color: var(--color-success);
+  background: var(--color-success-bg, #eaf4ee);
+  border-color: var(--color-success-border, #a6d8b5);
+  color: var(--color-success, #1b6e37);
+}
+
+.free-shipping-card.unlocked svg {
+  color: var(--color-success, #1b6e37);
 }
 
 .free-shipping-card.unlocked .free-shipping-fill {
-  background: var(--color-success);
+  background: var(--color-success, #1b6e37);
 }
 
 .free-shipping-check {

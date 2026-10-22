@@ -132,3 +132,119 @@
     font-size: 16px;
   }
 }
+
+/* Bulk order actions toolbar */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1.15rem;
+  background: linear-gradient(135deg, #fbf9f5 0%, #f6f0e6 100%);
+  border: 1px solid #e5ded2;
+  border-left: 4px solid var(--color-brand, #1b3a2b);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  animation: bulk-bar-in 0.18s ease-out;
+}
+
+@keyframes bulk-bar-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bulk-bar-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bulk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-brand, #1b3a2b);
+  background: #ffffff;
+  border: 1px solid #ded5c5;
+  border-radius: 20px;
+  padding: 0.28rem 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.bulk-badge svg {
+  color: var(--color-brand, #1b3a2b);
+}
+
+.bulk-clear-btn {
+  background: none;
+  border: none;
+  color: #7a7265;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.45rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bulk-clear-btn:hover {
+  color: var(--color-brand, #1b3a2b);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.bulk-bar-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.bulk-select {
+  padding: 0.55rem 2.25rem 0.55rem 0.95rem;
+  border: 1px solid #dcd4c6;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  font-weight: 500;
+  background-color: #ffffff;
+  color: #332f28;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+.bulk-select:hover {
+  border-color: #baa795;
+}
+
+.bulk-select:focus,
+.bulk-select:focus-visible {
+  outline: none;
+  border-color: var(--color-brand, #1b3a2b);
+  box-shadow: 0 0 0 3px rgba(27, 58, 43, 0.12);
+}
+
+.btn-bulk-apply {
+  padding: 0.55rem 1.15rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+

@@ -10,6 +10,8 @@ import { CheckoutModeService } from '../../services/checkout-mode.service';
 import { NotificationBell } from '../notification-bell/notification-bell';
 import { SITE_NAME } from '../../services/page-title.service';
 
+import { QuizService } from '../../services/quiz.service';
+
 const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
 
 @Component({
@@ -24,7 +26,12 @@ export class Navbar {
   authService = inject(AuthService);
   cartService = inject(CartService);
   wishlistService = inject(WishlistService);
+  quizService = inject(QuizService);
   private router = inject(Router);
+
+  openQuiz(): void {
+    this.quizService.open();
+  }
 
   // Checkout gets a focused header (logo + "Secure checkout" only) so shoppers
   // aren't tempted away mid-purchase; the logo still links home.

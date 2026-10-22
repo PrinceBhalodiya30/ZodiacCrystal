@@ -1,0 +1,171 @@
+<div class="admin-drawer-overlay" (click)="close()">
+  <aside
+    class="customer-360-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="customer360Title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="drawer-header">
+      <div class="customer-badge-head">
+        <div class="customer-avatar" aria-hidden="true">{{ avatarInitials() }}</div>
+        <div>
+          <h2 id="customer360Title">{{ displayName() }}</h2>
+          <p class="drawer-subtitle">
+            <a [href]="'mailto:' + customerEmail">{{ customerEmail }}</a>
+            @if (customerRole) { · <span class="role-pill">{{ customerRole }}</span> }
+          </p>
+        </div>
+      </div>
+      <button type="button" class="drawer-close" aria-label="Close customer 360" (click)="close()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+      </button>
+    </header>
+
+    @if (isLoading()) {
+      <div class="drawer-body">
+        <app-spinner label="Loading customer intelligence..."></app-spinner>
+      </div>
+    } @else {
+      <div class="drawer-body">
+        <!-- KPI Cards Grid -->
+        <div class="c360-kpis">
+          <div class="c360-kpi-card">
+            <span class="c360-kpi-label">Lifetime Spend</span>
+            <span class="c360-kpi-val">{{ totalSpend() | inr }}</span>
+          </div>
+          <div class="c360-kpi-card">
+            <span class="c360-kpi-label">Total Orders</span>
+            <span class="c360-kpi-val">{{ orders().length }}</span>
+          </div>
+          <div class="c360-kpi-card">
+            <span class="c360-kpi-label">Avg Order Value</span>
+            <span class="c360-kpi-val">{{ averageOrderValue() | inr }}</span>
+          </div>
+          <div class="c360-kpi-card">
+            <span class="c360-kpi-label">Returns / Tickets</span>
+            <span class="c360-kpi-val">{{ returns().length }} / {{ tickets().length }}</span>
+          </div>
+        </div>
+
+        <!-- Section Navigation Tabs -->
+        <div class="c360-tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            class="c360-tab"
+            [class.active]="activeTab() === 'orders'"
+            [attr.aria-selected]="activeTab() === 'orders'"
+            (click)="activeTab.set('orders')"
+          >
+            Orders ({{ orders().length }})
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="c360-tab"
+            [class.active]="activeTab() === 'returns'"
+            [attr.aria-selected]="activeTab() === 'returns'"
+            (click)="activeTab.set('returns')"
+          >
+            Returns ({{ returns().length }})
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="c360-tab"
+            [class.active]="activeTab() === 'tickets'"
+            [attr.aria-selected]="activeTab() === 'tickets'"
+            (click)="activeTab.set('tickets')"
+          >
+            Support ({{ tickets().length }})
+          </button>
+        </div>
+
+        <!-- Tab 1: Orders -->
+        @if (activeTab() === 'orders') {
+          <section class="c360-section">
+            @if (orders().length === 0) {
+              <p class="c360-empty">No orders placed by this customer yet.</p>
+            } @else {
+              <ul class="c360-list">
+                @for (o of orders(); track o.orderId) {
+                  <li class="c360-order-item">
+                    <div class="c360-item-main">
+                      <div class="c360-item-title">
+                        <strong>Order #{{ o.orderId }}</strong>
+                        <span class="status-badge" [class]="'status-' + o.status.toLowerCase()">{{ o.status }}</span>
+                      </div>
+                      <span class="c360-item-date">{{ o.orderDate | date:'dd MMM yyyy, h:mm a' }}</span>
+                    </div>
+                    <div class="c360-item-meta">
+                      <span class="c360-item-total">{{ o.totalAmount | inr }}</span>
+                      <button type="button" class="btn btn-sm btn-outline" (click)="openOrder(o.orderId)">
+                        View Order
+                      </button>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+
+        <!-- Tab 2: Returns -->
+        @if (activeTab() === 'returns') {
+          <section class="c360-section">
+            @if (returns().length === 0) {
+              <p class="c360-empty">No return requests on file.</p>
+            } @else {
+              <ul class="c360-list">
+                @for (r of returns(); track r.returnRequestId) {
+                  <li class="c360-return-item">
+                    <div class="c360-item-main">
+                      <div class="c360-item-title">
+                        <strong>Return #{{ r.returnRequestId }} (Order #{{ r.orderId }})</strong>
+                        <span class="status-badge" [class]="'status-' + r.status.toLowerCase()">{{ r.status }}</span>
+                      </div>
+                      <span class="c360-item-date">{{ r.createdAt | date:'dd MMM yyyy' }}</span>
+                      <p class="c360-item-desc"><strong>Reason:</strong> {{ r.reason }}</p>
+                      @if (r.adminNote) {
+                        <p class="c360-item-note"><strong>Admin note:</strong> {{ r.adminNote }}</p>
+                      }
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+
+        <!-- Tab 3: Tickets -->
+        @if (activeTab() === 'tickets') {
+          <section class="c360-section">
+            @if (tickets().length === 0) {
+              <p class="c360-empty">No support tickets created by this customer.</p>
+            } @else {
+              <ul class="c360-list">
+                @for (t of tickets(); track t.supportTicketId) {
+                  <li class="c360-ticket-item">
+                    <div class="c360-item-main">
+                      <div class="c360-item-title">
+                        <strong>{{ t.reference }} — {{ t.subject }}</strong>
+                        <span class="status-badge" [class]="'status-' + t.status.toLowerCase()">{{ t.statusLabel }}</span>
+                      </div>
+                      <span class="c360-item-date">Updated: {{ t.lastMessageAt | date:'dd MMM yyyy, h:mm a' }}</span>
+                      <p class="c360-item-desc">Topic: {{ t.categoryLabel }}</p>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+      </div>
+
+      <footer class="drawer-footer">
+        <button type="button" class="btn btn-outline" (click)="close()">Close Panel</button>
+      </footer>
+    }
+  </aside>
+</div>

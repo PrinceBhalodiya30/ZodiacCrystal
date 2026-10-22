@@ -16,6 +16,7 @@ import {
   UnsoldProducts,
   ZodiacSales
 } from '../../models/report';
+import { QuizService, ConsultationInsights } from '../../services/quiz.service';
 import { ToastService } from '../../services/toast.service';
 import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
 import { AreaChart, AreaChartPoint } from '../../components/charts/area-chart/area-chart';
@@ -75,9 +76,11 @@ const GRANULARITY_LABEL = { day: 'per day', week: 'per week', month: 'per month'
 })
 export class AdminReports implements OnInit {
   private reportService = inject(ReportService);
+  private quizService = inject(QuizService);
   private toast = inject(ToastService);
 
   isExporting = signal(false);
+  isExportingConsultation = signal(false);
 
   preset = signal<DatePreset>('last30');
   customFrom = '';
@@ -91,6 +94,7 @@ export class AdminReports implements OnInit {
   zodiacSales = signal<ZodiacSales[] | null>([]);
   couponPerformance = signal<CouponPerformance[] | null>([]);
   unsoldProducts = signal<UnsoldProducts | null>({ totalCount: 0, items: [] });
+  consultationInsights = signal<ConsultationInsights | null>(null);
   insightsLoading = signal(true);
 
   isLoading = signal(true);
@@ -270,6 +274,7 @@ export class AdminReports implements OnInit {
   private loadInsights(from?: string, to?: string): void {
     this.insightsLoading.set(true);
     this.insightsSubscription?.unsubscribe();
+    this.consultationInsights.set(this.quizService.getInsights(from, to));
     this.insightsSubscription = forkJoin({
       zodiac: this.reportService.getZodiacSales(from, to).pipe(catchError(() => of(null))),
       coupons: this.reportService.getCouponPerformance(from, to).pipe(catchError(() => of(null))),
@@ -328,6 +333,26 @@ export class AdminReports implements OnInit {
         blobErrorMessage(err, 'Unable to export the report.').then(message => this.toast.error(message));
       }
     });
+  }
+
+  exportConsultationCsv(): void {
+    if (this.isExportingConsultation()) {
+      return;
+    }
+    this.isExportingConsultation.set(true);
+    try {
+      const range = this.loadedRange();
+      const blob = this.quizService.exportCsvBlob(range?.from, range?.to);
+      const fileName = range
+        ? `consultation-insights_${range.from}_to_${range.to}.csv`
+        : 'consultation-insights-export.csv';
+      downloadBlob(blob, fileName);
+      this.toast.success('Consultation report exported as CSV.');
+    } catch {
+      this.toast.error('Unable to export consultation report.');
+    } finally {
+      this.isExportingConsultation.set(false);
+    }
   }
 
   previousPeriodLabel(): string {

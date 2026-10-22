@@ -1,0 +1,70 @@
+@if (isOpen()) {
+  <div class="palette-backdrop" (click)="close()">
+    <div
+      class="palette-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Admin Command Palette"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Search Input Header -->
+      <div class="palette-input-box">
+        <span class="palette-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+        </span>
+        <input
+          #searchInput
+          type="text"
+          class="palette-input"
+          placeholder="Type an order #, product, customer, or admin page..."
+          [ngModel]="query()"
+          (ngModelChange)="onQueryChange($event)"
+          (keydown)="onKeydown($event)"
+        />
+        <div class="palette-esc-badge" (click)="close()">ESC</div>
+      </div>
+
+      <!-- Commands & Results List -->
+      <div class="palette-list" role="listbox">
+        @if (filteredCommands().length === 0) {
+          <div class="palette-empty">
+            <p>No matching pages, orders, or items found for "{{ query() }}"</p>
+          </div>
+        } @else {
+          @for (item of filteredCommands(); track item.id; let idx = $index) {
+            <div
+              class="palette-item"
+              [class.is-selected]="selectedIndex() === idx"
+              role="option"
+              [attr.aria-selected]="selectedIndex() === idx"
+              (click)="executeCommand(item)"
+              (mouseenter)="selectedIndex.set(idx)"
+            >
+              <svg class="palette-item-icon" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+              <div class="palette-item-main">
+                <div class="palette-item-title">{{ item.title }}</div>
+                @if (item.subtitle) {
+                  <div class="palette-item-sub">{{ item.subtitle }}</div>
+                }
+              </div>
+              <span class="palette-category-badge">{{ item.category }}</span>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Footer Quick Tips -->
+      <footer class="palette-footer">
+        <div class="palette-shortcuts">
+          <span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span>
+          <span><kbd>↵</kbd> Select</span>
+          <span><kbd>ESC</kbd> Close</span>
+        </div>
+        <div class="palette-hint">Zodiac Crystals Admin Spotlight</div>
+      </footer>
+    </div>
+  </div>
+}

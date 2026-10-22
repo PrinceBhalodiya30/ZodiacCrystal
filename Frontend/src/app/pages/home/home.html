@@ -11,6 +11,7 @@
       </p>
       <div class="hero-actions">
         <a class="btn" routerLink="/products">Shop All Crystals</a>
+        <button type="button" class="btn btn-accent" (click)="openQuiz()">Crystal Consultation</button>
         <a class="btn btn-outline" routerLink="/zodiac">Find My Sign</a>
       </div>
       <ul class="hero-trust">
@@ -69,6 +70,39 @@
       }
     </div>
   }
+</section>
+
+<!-- Astrological Crystal Consultation Section -->
+<section class="container consultation-callout-section" scrollReveal>
+  <div class="consultation-callout-card">
+    <div class="consultation-callout-content">
+      <span class="consultation-callout-tag">Astrological Consultation</span>
+      <h2>Find Your Resonant Mineral</h2>
+      <p>
+        Every natural specimen carries a distinct crystalline geometry that harmonizes with your natal sign.
+        Complete our 3-step consultation to discover the specimens attuned to your astrological blueprint.
+      </p>
+      <button type="button" class="btn btn-accent consultation-cta" (click)="openQuiz()">
+        Begin Consultation →
+      </button>
+    </div>
+    <div class="consultation-callout-visual" aria-hidden="true">
+      <div class="astrolabe-art">
+        <svg viewBox="0 0 200 200" width="180" height="180" fill="none" stroke="currentColor">
+          <circle cx="100" cy="100" r="90" stroke="#dcc28b" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
+          <circle cx="100" cy="100" r="70" stroke="#dcc28b" stroke-width="1.2" opacity="0.75"/>
+          <circle cx="100" cy="100" r="48" stroke="#ffffff" stroke-width="0.8" opacity="0.4"/>
+          <line x1="100" y1="5" x2="100" y2="195" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
+          <line x1="5" y1="100" x2="195" y2="100" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
+          <!-- Central faceted gemstone outline -->
+          <polygon points="100 62 134 82 134 118 100 138 66 118 66 82" stroke="#f7d88b" stroke-width="1.6" fill="rgba(247, 216, 139, 0.08)"/>
+          <line x1="100" y1="62" x2="100" y2="138" stroke="#f7d88b" stroke-width="1" opacity="0.8"/>
+          <line x1="66" y1="82" x2="134" y2="82" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
+          <line x1="66" y1="118" x2="134" y2="118" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Featured Crystals -->

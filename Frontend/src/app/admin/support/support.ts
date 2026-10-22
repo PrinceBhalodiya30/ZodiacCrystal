@@ -20,13 +20,32 @@ import { debounced } from '../../utils/debounce.util';
 
 const PAGE_SIZE = 20;
 
-// Canned replies for the most common questions; inserted into the reply box to edit before sending.
+// Canned replies for the most common customer inquiries; inserted into the reply box to edit before sending.
 const CANNED_REPLIES: { label: string; text: string }[] = [
-  { label: 'Order on the way', text: 'Thanks for reaching out! Your order has been shipped and is on its way. You can follow it from the "Track Package" button on your order page. Delivery usually takes 3-7 business days.' },
-  { label: 'Start a return', text: 'Sorry to hear that! Your order is within our 7-day return window, so you can request a return from the order page - choose the reason and we\'ll review it right away.' },
-  { label: 'Ask for photo', text: 'We\'re sorry about this. Could you please reply with a photo of the item and the packaging so we can sort it out quickly?' },
-  { label: 'Refund issued', text: 'Your refund has been issued. Card refunds usually take 5-7 business days to appear depending on your bank.' },
-  { label: 'Natural variation', text: 'Every crystal is natural and unique, so colour, size and markings can vary slightly from the photos. That variation is part of what makes each stone one of a kind.' }
+  {
+    label: 'Tracking Delay / In Transit',
+    text: 'Thanks for reaching out! We checked with our courier partner, and your order is currently in transit. Occasional courier routing delays can take an extra 1-2 business days. You can track real-time milestones via the tracking link on your order page.'
+  },
+  {
+    label: 'Damaged Item / Replacement',
+    text: 'We are so sorry your crystal arrived damaged! Crystals are delicate gifts of nature. Please reply with a quick photo of the damaged piece and parcel packaging, and we will dispatch an immediate replacement or process a full refund right away.'
+  },
+  {
+    label: 'Crystal Care & Cleansing Guide',
+    text: 'Thank you for asking about crystal care! To cleanse your crystals without damaging them: use natural moonlight (especially Full Moon), incense smoke (sage/palo santo), or place them on a Selenite charging plate. Please avoid water for soft or iron-bearing minerals like Selenite, Malachite, and Pyrite.'
+  },
+  {
+    label: 'Natural Stone Variation & Authenticity',
+    text: 'Every natural crystal, geode, and mineral specimen is completely unique. Color saturation, internal inclusions, and size can vary naturally from studio photos. These natural variations are genuine signatures of authenticity from Mother Earth.'
+  },
+  {
+    label: 'Start a Return',
+    text: 'Sorry to hear that! Your order is within our 7-day return window. You can easily initiate a return directly from your Order Details page under your account, and our team will review and approve it immediately.'
+  },
+  {
+    label: 'Refund Issued Notice',
+    text: 'Your refund has been approved and processed. Depending on your bank or payment method, the credit should reflect on your statement within 5-7 business days.'
+  }
 ];
 
 @Component({
@@ -191,6 +210,15 @@ export class AdminSupport implements OnInit {
     const name = this.selected()?.customerName.split(' ')[0];
     this.reply = `${name ? 'Hi ' + name + ',\n\n' : ''}${text}`;
     this.isInternal = false;
+  }
+
+  onSelectCanned(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value;
+    if (value) {
+      this.useCanned(value);
+      select.selectedIndex = 0; // Reset to placeholder so user can pick again if needed
+    }
   }
 
   onFilesSelected(event: Event): void {

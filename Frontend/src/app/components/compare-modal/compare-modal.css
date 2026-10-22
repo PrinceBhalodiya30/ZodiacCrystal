@@ -1,0 +1,361 @@
+.compare-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 26, 20, 0.55);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 2200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  animation: overlay-fade 0.2s ease-out;
+}
+
+.compare-modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 960px;
+  max-height: 90vh;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  animation: modal-scale 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.compare-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.6rem 1rem;
+  background-color: var(--color-bone, #fcfbfa);
+  border-bottom: 1px solid #ebe5dc;
+}
+
+.compare-modal-header h2 {
+  margin: 0;
+  font-family: var(--font-heading, serif);
+  font-size: 1.5rem;
+  color: var(--color-brand, #1b3a2b);
+}
+
+.compare-modal-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-muted, #7a7265);
+}
+
+.compare-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #e0d8cc;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.compare-modal-close:hover {
+  background-color: #f2eee8;
+  color: #111;
+  transform: rotate(90deg);
+}
+
+.compare-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.6rem;
+  box-sizing: border-box;
+}
+
+.compare-table-wrap {
+  overflow-x: auto;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 680px;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 1rem 1.15rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #f0ebe2;
+}
+
+.col-feature {
+  width: 220px;
+  background-color: #faf7f2;
+  border-right: 1px solid #eee7dd;
+}
+
+.col-feature strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-ink, #23201c);
+  margin-bottom: 0.15rem;
+}
+
+.col-feature span {
+  font-size: 0.76rem;
+  color: var(--color-muted, #7a7265);
+}
+
+.col-product {
+  min-width: 200px;
+  border-right: 1px solid #f0ebe2;
+}
+
+.col-product:last-child {
+  border-right: none;
+}
+
+/* Head Card */
+.product-head-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.5rem 0.75rem;
+}
+
+.product-head-remove {
+  position: absolute;
+  top: -6px;
+  right: 0px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #e2ddd3;
+  background: #ffffff;
+  color: #888;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.product-head-remove:hover {
+  background: #fde8e6;
+  color: #c5221f;
+  border-color: #f7c3c0;
+}
+
+.product-head-img-link {
+  width: 96px;
+  height: 96px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--color-bone, #fcfbfa);
+  border: 1px solid #e8e2d6;
+  display: block;
+}
+
+.product-head-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.product-head-img-link:hover .product-head-img {
+  transform: scale(1.06);
+}
+
+.product-head-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-ink, #23201c);
+  text-decoration: none;
+  line-height: 1.3;
+  margin-top: 0.25rem;
+}
+
+.product-head-name:hover {
+  color: var(--color-brand, #1b3a2b);
+}
+
+.product-head-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.price-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-brand, #1b3a2b);
+}
+
+.compare-val {
+  font-size: 0.85rem;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.btn-head-add {
+  margin-top: 0.4rem;
+  width: 100%;
+  max-width: 160px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Cells */
+.zodiac-badges-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.zodiac-match-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-xs, 4px);
+  background-color: var(--color-brand-light, #eaf1ed);
+  border: 1px solid rgba(36, 65, 50, 0.16);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-brand, #244132);
+  line-height: 1.2;
+}
+
+.zodiac-pill-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand, #244132);
+}
+
+.zodiac-pill-name {
+  white-space: nowrap;
+}
+
+.category-pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: #faf7f2;
+  border: 1px solid #ebe4d8;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.rating-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stars-gold {
+  color: #e59819;
+  letter-spacing: 1px;
+}
+
+.rating-meta {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.stock-ok {
+  background: #eaf6ee;
+  color: #1e7e45;
+}
+
+.stock-low {
+  background: #fdf5e7;
+  color: #b07a22;
+}
+
+.stock-out {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.sku-tag {
+  background: #f5f2ec;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: #555;
+}
+
+.desc-cell {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #555;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cell-neutral {
+  font-size: 0.82rem;
+  color: #777;
+  font-style: italic;
+}
+
+.compare-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.6rem;
+  background-color: var(--color-bone, #fcfbfa);
+  border-top: 1px solid #ebe5dc;
+}
+
+@media (max-width: 640px) {
+  .compare-modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .compare-modal-header,
+  .compare-modal-body,
+  .compare-modal-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

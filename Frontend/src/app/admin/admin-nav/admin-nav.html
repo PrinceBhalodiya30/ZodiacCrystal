@@ -5,6 +5,17 @@
     <span class="admin-nav-brand-tag">Admin</span>
   </div>
 
+  <div class="admin-nav-search-wrap">
+    <button type="button" class="admin-nav-search-btn" (click)="openCommandPalette()" title="Quick Jump (Ctrl + K)">
+      <svg class="admin-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <span>Search &amp; Jump...</span>
+      <kbd>Ctrl K</kbd>
+    </button>
+  </div>
+
   <div class="admin-nav-links">
     @for (group of groups; track group.title) {
       <div class="admin-nav-group">
@@ -41,3 +52,5 @@
     </button>
   </div>
 </nav>
+
+<app-admin-command-palette></app-admin-command-palette>

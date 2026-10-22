@@ -1,0 +1,49 @@
+@if (items().length > 0) {
+  <aside class="compare-dock" role="region" aria-label="Compare crystals toolbar">
+    <div class="compare-dock-inner">
+      <div class="compare-dock-header">
+        <span class="compare-icon-wrap" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </span>
+        <div class="compare-dock-title">
+          <strong>Compare Crystals</strong>
+          <span class="compare-count-tag">{{ count() }} / {{ max }}</span>
+        </div>
+      </div>
+
+      <div class="compare-dock-items">
+        @for (item of items(); track item.productId) {
+          <div class="dock-thumb-wrap" [title]="item.name">
+            <img [src]="getImage(item)" [alt]="item.name" class="dock-thumb" imgFallback />
+            <button
+              type="button"
+              class="dock-remove-thumb"
+              [attr.aria-label]="'Remove ' + item.name + ' from comparison'"
+              (click)="remove(item, $event)"
+            >
+              ✕
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="compare-dock-actions">
+        <button
+          type="button"
+          class="btn btn-compare-open"
+          (click)="open()"
+        >
+          Compare Now
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <button type="button" class="btn-compare-clear" (click)="clear()">Clear</button>
+      </div>
+    </div>
+  </aside>
+}

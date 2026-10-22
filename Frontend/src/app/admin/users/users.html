@@ -80,6 +80,14 @@
               <td data-label="Created">{{ user.createdAt | date:'dd MMM yyyy' }}</td>
               <td class="cell-actions">
                 <div class="row-actions">
+                  <button
+                    type="button"
+                    class="chip-btn"
+                    title="Open Customer 360 Intelligence"
+                    (click)="selectedCustomerEmail.set(user.email)"
+                  >
+                    👤 360
+                  </button>
                   @if (user.userId !== currentUserId) {
                     <button
                       type="button"
@@ -117,5 +125,12 @@
     </div>
 
     <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+
+  @if (selectedCustomerEmail(); as email) {
+    <app-customer-360-drawer
+      [customerEmail]="email"
+      (closed)="selectedCustomerEmail.set(null)"
+    ></app-customer-360-drawer>
   }
 </section>

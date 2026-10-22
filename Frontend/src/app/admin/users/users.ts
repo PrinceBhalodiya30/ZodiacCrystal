@@ -16,12 +16,14 @@ import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../services/notification.service';
 
+import { Customer360Drawer } from '../shared/customer-360-drawer/customer-360-drawer';
+
 const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [Spinner, DatePipe, FormsModule, AdminNav, Pager],
+  imports: [Spinner, DatePipe, FormsModule, AdminNav, Pager, Customer360Drawer],
   templateUrl: './users.html',
   styleUrls: ['../admin-shared.css', './users.css']
 })
@@ -29,6 +31,7 @@ export class AdminUsers implements OnInit {
   private userService = inject(UserService);
 
   isExporting = signal(false);
+  selectedCustomerEmail = signal<string | null>(null);
   private authService = inject(AuthService);
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);

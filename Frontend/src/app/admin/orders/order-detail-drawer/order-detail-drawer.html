@@ -130,7 +130,12 @@
         <!-- Customer + shipping -->
         <section class="drawer-section two-col">
           <div>
-            <h3>Customer</h3>
+            <div class="section-title-row">
+              <h3>Customer</h3>
+              <button type="button" class="chip-btn c360-link" (click)="viewCustomer.emit(d.customerEmail)" title="Open Customer 360 Intelligence">
+                👤 360 View
+              </button>
+            </div>
             <p class="strong">{{ d.customerName }}</p>
             <p><a [href]="'mailto:' + d.customerEmail">{{ d.customerEmail }}</a></p>
           </div>
@@ -162,15 +167,25 @@
           </div>
         </section>
 
-        <!-- Timeline -->
+        <!-- Timeline: Enriched with Audit Logs (who did what & when) -->
         <section class="drawer-section">
-          <h3>Timeline</h3>
+          <div class="section-title-row">
+            <h3>Order Activity Timeline</h3>
+            <span class="audit-source-tag">Enriched via Audit Trail</span>
+          </div>
           <ol class="timeline">
-            @for (event of d.timeline; track $index) {
+            @for (event of combinedTimeline; track $index) {
               <li [class]="'timeline-item kind-' + event.kind">
                 <span class="timeline-dot" aria-hidden="true"></span>
                 <div>
-                  <p class="timeline-title">{{ event.title }}</p>
+                  <div class="timeline-title-row">
+                    <p class="timeline-title">{{ event.title }}</p>
+                    @if (event.actor) {
+                      <span class="timeline-actor-pill">
+                        {{ event.actor }}
+                      </span>
+                    }
+                  </div>
                   <p class="timeline-meta">
                     @if (event.at) {
                       {{ event.at | date:'dd MMM yyyy, h:mm a' }}
@@ -186,15 +201,114 @@
       </div>
 
       <footer class="drawer-footer">
+        <button type="button" class="btn btn-outline" (click)="printPackingSlip()" title="Print packing slip with barcode and checklist">
+          🖨️ Print Slip &amp; Invoice
+        </button>
         <button type="button" class="btn btn-outline" [disabled]="isDownloadingInvoice()" (click)="downloadInvoice()">
           @if (isDownloadingInvoice()) {
             <span class="btn-spinner" aria-hidden="true"></span> Preparing...
           } @else {
-            Download Invoice
+            PDF Invoice
           }
         </button>
         <button type="button" class="btn btn-outline" (click)="close()">Close</button>
       </footer>
+
+      <!-- Printable Packing Slip & Invoice (Visible in Print Mode or Preview) -->
+      @if (isPrintingSlip()) {
+        <div class="print-preview-modal" (click)="closePrintSlip()">
+          <div class="print-preview-dialog" (click)="$event.stopPropagation()">
+            <div class="print-preview-toolbar no-print">
+              <span>Packing Slip Preview</span>
+              <div class="print-toolbar-actions">
+                <button type="button" class="btn btn-sm" (click)="printPackingSlip()">Print Now</button>
+                <button type="button" class="btn btn-sm btn-outline" (click)="closePrintSlip()">Close</button>
+              </div>
+            </div>
+
+            <div class="printable-slip-sheet" id="printablePackingSlip">
+              <header class="slip-header">
+                <div class="slip-brand">
+                  <div class="slip-brand-name">{{ siteName }}</div>
+                  <div class="slip-brand-tag">Healing Crystals · Ethically Sourced</div>
+                  <div class="slip-brand-contact">support@zodiaccrystals.com · www.zodiaccrystals.com</div>
+                </div>
+                <div class="slip-doc-meta">
+                  <h1 class="slip-title">PACKING SLIP &amp; INVOICE</h1>
+                  <div class="slip-order-num">Order #{{ d.order.orderId }}</div>
+                  <div class="slip-order-date">Date: {{ d.order.orderDate | date:'dd MMM yyyy' }}</div>
+                  <div class="slip-order-status">Payment: {{ d.order.paymentMethod }} · {{ d.order.paymentStatus }}</div>
+                </div>
+              </header>
+
+              <hr class="slip-divider" />
+
+              <div class="slip-parties">
+                <div class="slip-col">
+                  <h3>Customer Details</h3>
+                  <p class="strong">{{ d.customerName }}</p>
+                  <p>{{ d.customerEmail }}</p>
+                </div>
+                <div class="slip-col">
+                  <h3>Ship To Address</h3>
+                  <p class="strong">{{ d.order.shippingName }}</p>
+                  <p>{{ d.order.shippingAddress }}</p>
+                  <p>{{ d.order.city }}, {{ d.order.state }} {{ d.order.postalCode }}</p>
+                  <p>Phone: {{ d.order.phone }}</p>
+                </div>
+              </div>
+
+              <table class="slip-table">
+                <thead>
+                  <tr>
+                    <th>Item Description</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-right">Unit Price</th>
+                    <th class="text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of d.order.items; track item.orderItemId) {
+                    <tr>
+                      <td>
+                        <strong>{{ item.productName }}</strong>
+                        <div class="slip-item-sku">SKU: ZC-{{ item.productId }}-{{ item.orderItemId }}</div>
+                      </td>
+                      <td class="text-center">{{ item.quantity }}</td>
+                      <td class="text-right">{{ item.unitPrice | inr }}</td>
+                      <td class="text-right">{{ item.subtotal | inr }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+
+              <div class="slip-bottom">
+                <div class="slip-checklist">
+                  <h4>Packer Checklist:</h4>
+                  <ul>
+                    <li>[ ] All crystals verified against order items</li>
+                    <li>[ ] Protective bubble wrap &amp; pouch applied</li>
+                    <li>[ ] Zodiac authenticity &amp; cleansing card enclosed</li>
+                    <li>[ ] Package sealed with security tamper tape</li>
+                  </ul>
+                </div>
+                <div class="slip-totals">
+                  <div class="slip-total-row"><span>Subtotal:</span> <strong>{{ subtotal | inr }}</strong></div>
+                  @if (d.order.discountAmount) {
+                    <div class="slip-total-row"><span>Discount:</span> <strong>−{{ d.order.discountAmount | inr }}</strong></div>
+                  }
+                  <div class="slip-total-row"><span>Shipping:</span> <strong>{{ d.order.shippingFee ? (d.order.shippingFee | inr) : 'FREE' }}</strong></div>
+                  <div class="slip-total-row grand"><span>Total:</span> <strong>{{ d.order.totalAmount | inr }}</strong></div>
+                </div>
+              </div>
+
+              <footer class="slip-footer">
+                <p>Thank you for choosing {{ siteName }}. May your crystals bring balance, harmony, and celestial energy into your space.</p>
+              </footer>
+            </div>
+          </div>
+        </div>
+      }
     }
   </aside>
 </div>

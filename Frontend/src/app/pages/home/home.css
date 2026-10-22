@@ -392,6 +392,123 @@ section h2 {
   text-decoration: underline;
 }
 
+/* Astrological Consultation Callout Banner */
+.consultation-callout-section {
+  margin: 3.5rem auto;
+}
+
+.consultation-callout-card {
+  position: relative;
+  background: linear-gradient(135deg, #183323 0%, #20412e 50%, #132419 100%);
+  border: 1px solid rgba(220, 194, 139, 0.35);
+  border-radius: var(--radius-md, 10px);
+  padding: 3.25rem 3.75rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  overflow: hidden;
+  box-shadow: 0 16px 44px rgba(20, 42, 29, 0.25);
+}
+
+.consultation-callout-content {
+  flex: 1;
+  max-width: 600px;
+  z-index: 2;
+}
+
+.consultation-callout-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #f7d88b;
+  background: rgba(247, 216, 139, 0.12);
+  border: 1px solid rgba(247, 216, 139, 0.25);
+  padding: 0.25rem 0.85rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 1rem;
+}
+
+.consultation-callout-content h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 2.5vw, 2.35rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.95rem;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.consultation-callout-content p {
+  font-size: var(--text-base);
+  color: rgba(255, 255, 255, 0.82);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 2rem;
+}
+
+.consultation-cta {
+  background-color: var(--color-brass, #ab7a24);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  padding: 0.85rem 2rem;
+  border: none;
+  border-radius: var(--radius-xs, 4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.consultation-cta:hover {
+  background-color: #bf8d32;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.consultation-callout-visual {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.astrolabe-art {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 16px rgba(247, 216, 139, 0.2));
+  animation: astrolabe-gentle-turn 90s linear infinite;
+}
+
+@keyframes astrolabe-gentle-turn {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .consultation-callout-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 2.5rem 1.75rem;
+  }
+
+  .consultation-callout-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .astrolabe-art {
+    margin-top: 1rem;
+    width: 140px;
+    height: 140px;
+  }
+}
+
 /* Crystal Guides Section */
 .guides-grid {
   display: grid;

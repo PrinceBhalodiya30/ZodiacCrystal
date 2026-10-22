@@ -34,6 +34,49 @@ export class CartService {
 
   items = signal<CartItem[]>(this.loadStoredCart(this.storageKey));
   mergeNotice = signal<string | null>(this.loadStoredMergeNotice());
+  isDrawerOpen = signal(false);
+  lastAddedProduct = signal<Product | null>(null);
+
+  private autoCloseTimer?: ReturnType<typeof setTimeout>;
+
+  openDrawer(autoDismissMs = 4500): void {
+    this.isDrawerOpen.set(true);
+    this.pauseAutoClose();
+    if (autoDismissMs > 0) {
+      this.autoCloseTimer = setTimeout(() => {
+        this.closeDrawer();
+      }, autoDismissMs);
+    }
+  }
+
+  closeDrawer(): void {
+    this.pauseAutoClose();
+    this.isDrawerOpen.set(false);
+  }
+
+  toggleDrawer(): void {
+    if (this.isDrawerOpen()) {
+      this.closeDrawer();
+    } else {
+      this.openDrawer(0); // Manual toggle stays open until user clicks away
+    }
+  }
+
+  pauseAutoClose(): void {
+    if (this.autoCloseTimer) {
+      clearTimeout(this.autoCloseTimer);
+      this.autoCloseTimer = undefined;
+    }
+  }
+
+  resumeAutoClose(ms = 2500): void {
+    this.pauseAutoClose();
+    if (this.isDrawerOpen()) {
+      this.autoCloseTimer = setTimeout(() => {
+        this.closeDrawer();
+      }, ms);
+    }
+  }
 
   private loadStoredMergeNotice(): string | null {
     try {
@@ -237,7 +280,7 @@ export class CartService {
 
   // Returns how many were actually added - less than asked (or 0) when stock runs
   // out, so callers can say "Only N in stock" instead of a false success.
-  addToCart(product: Product, quantity = 1): number {
+  addToCart(product: Product, quantity = 1, openDrawer = true): number {
     const items = [...this.items()];
     const index = items.findIndex(item => item.product.productId === product.productId);
     const current = index >= 0 ? items[index].quantity : 0;
@@ -253,6 +296,12 @@ export class CartService {
     }
 
     this.setItems(items);
+    if (added > 0) {
+      this.lastAddedProduct.set(product);
+      if (openDrawer) {
+        this.openDrawer(4500);
+      }
+    }
     return added;
   }
 

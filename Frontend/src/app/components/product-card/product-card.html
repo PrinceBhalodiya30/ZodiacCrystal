@@ -29,6 +29,20 @@
         <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
       </svg>
     </button>
+    <button
+      type="button"
+      class="compare-toggle"
+      [class.active]="isCompared"
+      [attr.aria-label]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
+      [attr.title]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
+      (click)="$event.preventDefault(); $event.stopPropagation(); toggleCompare()"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+    </button>
   </a>
 
   <div class="product-body">

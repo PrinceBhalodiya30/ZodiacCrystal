@@ -1,0 +1,147 @@
+@if (isOpen()) {
+  <!-- Invisible click-outside backdrop so user can dismiss by clicking anywhere on page without a dark wall -->
+  <div class="cart-flyout-backdrop" (click)="close()"></div>
+
+  <!-- Top-Right Floating Bag Flyout -->
+  <aside
+    class="cart-flyout"
+    role="dialog"
+    aria-label="Shopping bag summary"
+    (click)="$event.stopPropagation()"
+    (mouseenter)="pauseAutoClose()"
+    (mouseleave)="resumeAutoClose()"
+  >
+    <!-- Header -->
+    <header class="cart-flyout-header">
+      <div class="cart-flyout-title-wrap">
+        <span class="added-confirmation-pill">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Added to Bag
+        </span>
+        <span class="cart-flyout-count">({{ totalQuantity() }} {{ totalQuantity() === 1 ? 'item' : 'items' }})</span>
+      </div>
+
+      <button
+        type="button"
+        class="cart-flyout-close"
+        aria-label="Close cart preview"
+        (click)="close()"
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Free Delivery Tracker -->
+    <div class="flyout-shipping-bar">
+      <div class="flyout-shipping-info">
+        @if (hasFreeShipping()) {
+          <span class="shipping-unlocked-text">
+            <strong>FREE Delivery Unlocked</strong> across India
+          </span>
+        } @else {
+          <span class="shipping-needed-text">
+            Add <strong>{{ amountNeeded() | inr }}</strong> more for <strong>FREE Delivery</strong>
+          </span>
+        }
+      </div>
+      <div class="shipping-progress-track">
+        <div
+          class="shipping-progress-fill"
+          [class.unlocked]="hasFreeShipping()"
+          [style.width.%]="progressPercent()"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Items List -->
+    <div class="cart-flyout-items">
+      @if (items().length === 0) {
+        <div class="flyout-empty-state">
+          <p>Your bag is currently empty.</p>
+          <a routerLink="/products" class="btn btn-outline" (click)="close()">Explore Crystals</a>
+        </div>
+      } @else {
+        <ul class="flyout-item-list">
+          @for (item of items(); track item.product.productId) {
+            <li class="flyout-item-row" [class.highlighted]="lastAddedProduct()?.productId === item.product.productId">
+              <a [routerLink]="['/products', item.product.productId]" class="flyout-item-thumb-link" (click)="close()">
+                <img
+                  [src]="getItemImage(item.product)"
+                  [alt]="item.product.name"
+                  class="flyout-item-thumb"
+                  imgFallback
+                />
+              </a>
+
+              <div class="flyout-item-content">
+                <div class="flyout-item-top">
+                  <a [routerLink]="['/products', item.product.productId]" class="flyout-item-name" (click)="close()">
+                    {{ item.product.name }}
+                  </a>
+                  <button
+                    type="button"
+                    class="flyout-item-remove"
+                    aria-label="Remove item"
+                    title="Remove item"
+                    (click)="remove(item)"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div class="flyout-item-bottom">
+                  <div class="flyout-stepper">
+                    <button
+                      type="button"
+                      class="flyout-stepper-btn"
+                      [attr.aria-label]="item.quantity === 1 ? 'Remove' : 'Decrease'"
+                      (click)="decrease(item)"
+                    >
+                      −
+                    </button>
+                    <span class="flyout-stepper-val">{{ item.quantity }}</span>
+                    <button
+                      type="button"
+                      class="flyout-stepper-btn"
+                      aria-label="Increase"
+                      [disabled]="item.quantity >= item.product.stockQuantity"
+                      (click)="increase(item)"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <span class="flyout-item-price">{{ (item.product.price * item.quantity) | inr }}</span>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Footer Actions -->
+    @if (items().length > 0) {
+      <footer class="cart-flyout-footer">
+        <div class="flyout-subtotal-row">
+          <span class="subtotal-label">Subtotal</span>
+          <span class="subtotal-amount">{{ total() | inr }}</span>
+        </div>
+
+        <div class="flyout-action-buttons">
+          <button type="button" class="btn btn-outline btn-view-bag" (click)="viewFullCart()">
+            View Bag
+          </button>
+          <button type="button" class="btn btn-accent btn-flyout-checkout" (click)="proceedToCheckout()">
+            Checkout →
+          </button>
+        </div>
+      </footer>
+    }
+  </aside>
+}

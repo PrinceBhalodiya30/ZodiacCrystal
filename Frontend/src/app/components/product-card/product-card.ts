@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { NotificationService } from '../../services/notification.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { CompareService } from '../../services/compare.service';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { getStars } from '../../utils/rating.util';
 import { getDiscountPercent } from '../../utils/pricing.util';
@@ -31,6 +32,7 @@ export class ProductCard implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
   wishlistService = inject(WishlistService);
+  compareService = inject(CompareService);
 
   constructor() {
     // Live stock (SignalR): the badge and Add to Cart follow sell-outs/restocks.
@@ -110,6 +112,14 @@ export class ProductCard implements OnInit {
 
   get isWishlisted(): boolean {
     return this.wishlistService.isWishlisted(this.product.productId);
+  }
+
+  get isCompared(): boolean {
+    return this.compareService.isComparing(this.product.productId);
+  }
+
+  toggleCompare(): void {
+    this.compareService.toggle(this.product);
   }
 
   toggleWishlist(): void {

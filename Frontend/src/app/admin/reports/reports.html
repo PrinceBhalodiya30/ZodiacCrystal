@@ -275,6 +275,99 @@
           </div>
         }
       </div>
+
+      <div class="dashboard-panel insights-wide consultation-panel">
+        <div class="panel-header-row">
+          <div>
+            <h2>Crystal Consultation Trends</h2>
+            <p class="panel-sub">Customer intention inquiries, zodiac demand, and recommendations conversion</p>
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline btn-sm export-consultation-btn"
+            (click)="exportConsultationCsv()"
+            [disabled]="isExportingConsultation() || !consultationInsights() || consultationInsights()!.totalCount === 0"
+            title="Download CSV of consultation inquiries in this date range"
+          >
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            {{ isExportingConsultation() ? 'Exporting…' : 'Export Consultation CSV' }}
+          </button>
+        </div>
+
+        @if (consultationInsights(); as ci) {
+          @if (ci.totalCount === 0) {
+            <p class="panel-empty">No consultations logged in this date range.</p>
+          } @else {
+            <div class="consultation-kpi-row">
+              <div class="consultation-kpi-card">
+                <span class="c-kpi-num">{{ ci.totalCount }}</span>
+                <span class="c-kpi-label">Total Inquiries</span>
+              </div>
+              <div class="consultation-kpi-card">
+                <span class="c-kpi-num">{{ ci.cartAddCount }}</span>
+                <span class="c-kpi-label">Added to Bag</span>
+              </div>
+              <div class="consultation-kpi-card">
+                <span class="c-kpi-num">{{ ci.conversionRate }}%</span>
+                <span class="c-kpi-label">Conversion Rate</span>
+              </div>
+              <div class="consultation-kpi-card">
+                <span class="c-kpi-num c-kpi-text" [title]="ci.topIntention">{{ ci.topIntention }}</span>
+                <span class="c-kpi-label">Top Wellness Goal</span>
+              </div>
+              <div class="consultation-kpi-card">
+                <span class="c-kpi-num c-kpi-text">{{ ci.topZodiac }}</span>
+                <span class="c-kpi-label">Top Zodiac Sign</span>
+              </div>
+            </div>
+
+            <div class="consultation-breakdown-grid">
+              <!-- Intentions Distribution -->
+              <div class="consultation-breakdown-card">
+                <h3>Customer Intentions</h3>
+                <ul class="c-stat-list">
+                  @for (item of ci.intentions; track item.name) {
+                    <li>
+                      <div class="c-stat-meta">
+                        <span class="c-stat-name">{{ item.name }}</span>
+                        <span class="c-stat-counts">{{ item.count }} ({{ item.percent }}%)</span>
+                      </div>
+                      <div class="c-stat-track">
+                        <div class="c-stat-bar" [style.width.%]="item.percent"></div>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </div>
+
+              <!-- Zodiac Demand Distribution -->
+              <div class="consultation-breakdown-card">
+                <h3>Zodiac Sign Inquiries</h3>
+                <ul class="c-stat-list">
+                  @for (z of ci.zodiacSigns; track z.name) {
+                    <li>
+                      <div class="c-stat-meta">
+                        <span class="c-stat-name">
+                          <span class="c-zodiac-symbol">{{ z.symbol }}</span>
+                          {{ z.name }}
+                        </span>
+                        <span class="c-stat-counts">{{ z.count }} ({{ z.percent }}%)</span>
+                      </div>
+                      <div class="c-stat-track">
+                        <div class="c-stat-bar c-stat-bar-gold" [style.width.%]="z.percent"></div>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+        }
+      </div>
     </div>
 
     @if (loadedRange(); as range) {

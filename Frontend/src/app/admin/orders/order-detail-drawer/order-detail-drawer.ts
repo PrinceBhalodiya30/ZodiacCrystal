@@ -30,6 +30,18 @@ const COURIERS = ['Delhivery', 'Blue Dart', 'DTDC', 'Ekart', 'India Post', 'Xpre
 // payment, a timeline - and the only place its status can be changed, so a
 // stray click in the orders table can't cancel or refund anything.
 import { AdminNavCountsService } from '../../admin-nav/admin-nav-counts.service';
+import { AuditLogService } from '../../../services/audit-log.service';
+import { AuditLog } from '../../../models/audit-log';
+import { SITE_NAME } from '../../../services/page-title.service';
+
+export interface EnrichedTimelineItem {
+  title: string;
+  at: string | null;
+  detail?: string | null;
+  actor?: string | null;
+  kind: string;
+}
+
 @Component({
   selector: 'app-order-detail-drawer',
   standalone: true,
@@ -38,17 +50,22 @@ import { AdminNavCountsService } from '../../admin-nav/admin-nav-counts.service'
   styleUrls: ['../../admin-shared.css', './order-detail-drawer.css']
 })
 export class OrderDetailDrawer implements OnInit {
+  readonly siteName = SITE_NAME;
   private orderService = inject(OrderService);
+  private auditLogService = inject(AuditLogService);
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);
   private navCounts = inject(AdminNavCountsService);
 
   @Input({ required: true }) orderId!: number;
   @Output() closed = new EventEmitter<void>();
+  @Output() viewCustomer = new EventEmitter<string>();
   // Tells the table to update its row after a status change.
   @Output() orderChanged = new EventEmitter<OrderRowUpdate>();
 
   detail = signal<AdminOrderDetail | null>(null);
+  auditLogs = signal<AuditLog[]>([]);
+  isPrintingSlip = signal(false);
   isLoading = signal(true);
   errorMessage = signal('');
   updatingTo = signal<string | null>(null);
@@ -95,6 +112,92 @@ export class OrderDetailDrawer implements OnInit {
         this.isLoading.set(false);
       }
     });
+
+    // Fetch audit logs matching this order ID for the enriched activity timeline
+    this.auditLogService.getPaged(1, 25, { search: this.orderId.toString() }).subscribe({
+      next: res => {
+        const orderLogs = (res.items || []).filter(
+          log => log.entityId === this.orderId ||
+                 (log.details && log.details.includes(this.orderId.toString()))
+        );
+        this.auditLogs.set(orderLogs);
+      },
+      error: () => this.auditLogs.set([])
+    });
+  }
+
+  // Combined timeline of standard progression + audit log records showing who made changes
+  get combinedTimeline(): EnrichedTimelineItem[] {
+    const d = this.detail();
+    if (!d) return [];
+
+    const items: EnrichedTimelineItem[] = [];
+    const logs = this.auditLogs();
+
+    // Base timeline from order detail
+    for (const event of d.timeline) {
+      let actor = event.kind === 'placed' ? (d.customerName || 'Customer') : null;
+      let matchedDetail = event.detail;
+
+      // Find if an audit log recorded this status change
+      const matchingLog = logs.find(l => {
+        const titleLower = event.title.toLowerCase();
+        const actionLower = l.action.toLowerCase();
+        return actionLower.includes(titleLower) ||
+               (l.details && l.details.toLowerCase().includes(titleLower));
+      });
+
+      if (matchingLog) {
+        actor = matchingLog.adminName || 'Admin';
+        if (matchingLog.details && !matchedDetail) {
+          matchedDetail = matchingLog.details;
+        }
+      } else if (!actor && event.kind !== 'placed') {
+        actor = 'Store System';
+      }
+
+      items.push({
+        title: event.title,
+        at: event.at,
+        detail: matchedDetail,
+        actor,
+        kind: event.kind
+      });
+    }
+
+    // Add any specific audit logs that aren't already represented in the timeline
+    for (const log of logs) {
+      const alreadyIncluded = items.some(
+        i => i.at === log.createdAt || (log.details && i.detail === log.details)
+      );
+      if (!alreadyIncluded) {
+        items.push({
+          title: log.action || 'Admin Action',
+          at: log.createdAt,
+          detail: log.details,
+          actor: log.adminName || 'Admin',
+          kind: 'status'
+        });
+      }
+    }
+
+    // Sort chronologically
+    return items.sort((a, b) => {
+      const timeA = a.at ? new Date(a.at).getTime() : 0;
+      const timeB = b.at ? new Date(b.at).getTime() : 0;
+      return timeA - timeB;
+    });
+  }
+
+  printPackingSlip(): void {
+    this.isPrintingSlip.set(true);
+    setTimeout(() => {
+      window.print();
+    }, 150);
+  }
+
+  closePrintSlip(): void {
+    this.isPrintingSlip.set(false);
   }
 
   actionLabel(status: string): string {

@@ -430,3 +430,146 @@
 .cell-muted {
   color: #6b6b6b;
 }
+
+/* Consultation Trends Panel */
+.consultation-panel .panel-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.consultation-panel .panel-header-row h2 {
+  margin: 0;
+}
+
+.export-consultation-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.export-consultation-btn svg {
+  flex-shrink: 0;
+}
+
+.consultation-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.consultation-kpi-card {
+  background: #fbf9f5;
+  border: 1px solid #ede8de;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.c-kpi-num {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-brand);
+  line-height: 1.2;
+}
+
+.c-kpi-num.c-kpi-text {
+  font-size: 0.98rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c-kpi-label {
+  font-size: 0.76rem;
+  color: #7a756b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.consultation-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.consultation-breakdown-card {
+  background: #ffffff;
+  border: 1px solid #f0ece3;
+  border-radius: 6px;
+  padding: 1.1rem 1.25rem;
+}
+
+.consultation-breakdown-card h3 {
+  margin: 0 0 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.c-stat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.c-stat-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  margin-bottom: 0.25rem;
+}
+
+.c-stat-name {
+  color: var(--color-ink);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.c-zodiac-symbol {
+  font-size: 0.95rem;
+  color: var(--color-brass, #ab7a24);
+}
+
+.c-stat-counts {
+  color: #6e6a62;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+}
+
+.c-stat-track {
+  height: 6px;
+  background-color: #f4f0e8;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.c-stat-bar {
+  height: 100%;
+  background-color: var(--color-brand);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.c-stat-bar.c-stat-bar-gold {
+  background: linear-gradient(90deg, var(--color-brand) 0%, var(--color-brass, #ab7a24) 100%);
+}

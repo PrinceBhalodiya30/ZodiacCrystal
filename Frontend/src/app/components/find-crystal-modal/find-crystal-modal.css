@@ -1,0 +1,767 @@
+.consultation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  background-color: rgba(23, 21, 18, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  overflow-y: auto;
+  animation: consult-fade 0.22s ease-out;
+}
+
+.consultation-modal {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 10px);
+  box-shadow: 0 24px 64px rgba(23, 21, 18, 0.28);
+  overflow: hidden;
+  animation: consult-pop 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes consult-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes consult-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Header & Editorial Stepper */
+.consultation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--color-border-subtle, #eae4d8);
+  background-color: var(--color-cream, #faf7f2);
+}
+
+.consultation-brand-line {
+  display: flex;
+  flex-direction: column;
+}
+
+.consultation-kicker {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-brass-text, #7d5918);
+  margin-bottom: 0.15rem;
+}
+
+.consultation-brand-line h2 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-ink, #1c1a17);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.consultation-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.stepper-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.4rem;
+  cursor: pointer;
+  color: var(--color-muted);
+  font-family: inherit;
+  font-size: var(--text-xs);
+  transition: color var(--transition-fast);
+}
+
+.stepper-num {
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--color-subtle);
+  transition: color var(--transition-fast);
+}
+
+.stepper-label {
+  font-weight: 500;
+}
+
+.stepper-item.active {
+  color: var(--color-brand);
+}
+
+.stepper-item.active .stepper-num {
+  color: var(--color-brand);
+}
+
+.stepper-item.completed {
+  color: var(--color-ink);
+}
+
+.stepper-item.completed .stepper-num {
+  color: var(--color-brass-text, #7d5918);
+}
+
+.stepper-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.stepper-divider {
+  width: 20px;
+  height: 1px;
+  background-color: var(--color-border);
+  transition: background-color var(--transition-fast);
+}
+
+.stepper-divider.filled {
+  background-color: var(--color-brass, #ab7a24);
+}
+
+.consultation-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.consultation-close:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-ink);
+}
+
+/* Step Layout & Typography */
+.consultation-step {
+  padding: 2rem 2.25rem 2.5rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 85px);
+}
+
+.step-intro {
+  text-align: center;
+  max-width: 580px;
+  margin: 0 auto 2rem;
+}
+
+.step-indicator {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-brass-text, #7d5918);
+  margin-bottom: 0.4rem;
+}
+
+.step-intro h3 {
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 0.45rem;
+  letter-spacing: -0.015em;
+}
+
+.step-intro p {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+/* Step 1: Intention Swatch Grid */
+.intentions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.15rem;
+}
+
+.intention-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
+  background-color: var(--color-surface, #ffffff);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.intention-tile:hover {
+  border-color: var(--color-brass, #ab7a24);
+  box-shadow: 0 6px 18px rgba(28, 26, 23, 0.06);
+  transform: translateY(-2px);
+}
+
+.intention-tile.selected {
+  border-color: var(--color-brand);
+  background-color: #f7f9f7;
+  box-shadow: 0 0 0 2px var(--color-brand);
+}
+
+.intention-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--color-cream, #faf7f2);
+  border: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-brand);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.intention-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+.intention-tile.selected .intention-icon-wrap {
+  background-color: var(--color-brand);
+  color: #ffffff;
+  border-color: var(--color-brand);
+}
+
+.intention-body {
+  flex: 1;
+}
+
+.intention-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 0.3rem;
+  line-height: 1.25;
+}
+
+.intention-desc {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+/* Step 2: Astrological Signs Grid */
+.zodiac-options-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+}
+
+.zodiac-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.25rem 0.75rem 1rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
+  background-color: var(--color-surface, #ffffff);
+  cursor: pointer;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.zodiac-tile:hover {
+  border-color: var(--color-brass, #ab7a24);
+  box-shadow: 0 6px 18px rgba(28, 26, 23, 0.06);
+  transform: translateY(-2px);
+}
+
+.zodiac-tile.selected {
+  border-color: var(--color-brand);
+  background-color: #f7f9f7;
+  box-shadow: 0 0 0 2px var(--color-brand);
+}
+
+.zodiac-medallion {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-brand, #244132) 0%, #15271d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f7d88b; /* refined warm gold */
+  margin-bottom: 0.65rem;
+  box-shadow: 0 2px 8px rgba(36, 65, 50, 0.22);
+  transition: transform var(--transition-base);
+}
+
+.zodiac-tile:hover .zodiac-medallion {
+  transform: scale(1.08);
+}
+
+.zodiac-glyph {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+}
+
+.zodiac-name {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-bottom: 0.2rem;
+}
+
+.zodiac-element {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-brass-text, #7d5918);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.15rem;
+}
+
+.zodiac-dates {
+  font-size: 0.68rem;
+  color: var(--color-muted);
+}
+
+.zodiac-tile-universal {
+  grid-column: span 4;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.15rem;
+  padding: 1.15rem 1.5rem;
+  background-color: var(--color-cream, #faf7f2);
+}
+
+.universal-medallion {
+  margin-bottom: 0;
+  color: #f7d88b;
+}
+
+.universal-meta {
+  text-align: left;
+}
+
+.universal-meta .zodiac-name {
+  margin-bottom: 0.15rem;
+}
+
+/* Step 3: Crystal Forms Grid */
+.forms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.15rem;
+}
+
+.form-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
+  background-color: var(--color-surface, #ffffff);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.form-tile:hover {
+  border-color: var(--color-brass, #ab7a24);
+  box-shadow: 0 6px 18px rgba(28, 26, 23, 0.06);
+  transform: translateY(-2px);
+}
+
+.form-tile.selected {
+  border-color: var(--color-brand);
+  background-color: #f7f9f7;
+  box-shadow: 0 0 0 2px var(--color-brand);
+}
+
+.form-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--color-cream, #faf7f2);
+  border: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-brand);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.form-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+.form-tile.selected .form-icon-wrap {
+  background-color: var(--color-brand);
+  color: #ffffff;
+  border-color: var(--color-brand);
+}
+
+.form-body {
+  flex: 1;
+}
+
+.form-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 0.3rem;
+  line-height: 1.25;
+}
+
+.form-desc {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+.consultation-nav-bar {
+  margin-top: 1.75rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Step 4: Loading & Specimen Results */
+.consultation-loader {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+}
+
+.crystal-silhouette {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-cream, #faf7f2);
+  border: 1px solid var(--color-brass-border, #dcc28b);
+  color: var(--color-brass, #ab7a24);
+  margin-bottom: 1.25rem;
+  animation: crystal-gentle-pulse 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes crystal-gentle-pulse {
+  from { transform: scale(0.96); box-shadow: 0 0 0 rgba(171, 122, 36, 0); }
+  to { transform: scale(1.05); box-shadow: 0 0 20px rgba(171, 122, 36, 0.25); }
+}
+
+.loader-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 0.4rem;
+}
+
+.loader-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.results-kicker {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-brass-text, #7d5918);
+  margin-bottom: 0.35rem;
+}
+
+.results-header h3 {
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 0.45rem;
+  letter-spacing: -0.015em;
+}
+
+.results-context {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.context-highlight {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.specimen-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
+  border-radius: var(--radius-sm, 6px);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.specimen-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.specimen-resonance-tag {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(28, 54, 39, 0.92);
+  color: #f7d88b;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #f7d88b;
+}
+
+.specimen-image-container {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: var(--color-cream, #faf7f2);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.specimen-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.specimen-image-container:hover img {
+  transform: scale(1.05);
+}
+
+.specimen-fallback-box {
+  color: var(--color-brand);
+}
+
+.specimen-body {
+  padding: 1.15rem 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.specimen-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  line-height: 1.35;
+}
+
+.specimen-title a {
+  color: var(--color-ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.specimen-title a:hover {
+  color: var(--color-brand);
+}
+
+.specimen-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-brand);
+  margin-bottom: 0.65rem;
+}
+
+.specimen-reason {
+  font-size: 0.74rem;
+  color: var(--color-muted);
+  line-height: 1.45;
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.75rem;
+  background-color: var(--color-cream, #faf7f2);
+  border-radius: var(--radius-xs, 4px);
+  border-left: 2px solid var(--color-brass, #ab7a24);
+  font-style: normal;
+  flex: 1;
+}
+
+.specimen-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.specimen-actions .btn {
+  width: 100%;
+  min-height: 38px;
+  font-size: var(--text-xs);
+  padding: 0.5rem;
+}
+
+.specimen-actions .btn.btn-added {
+  background-color: var(--color-success, #2e7d32);
+}
+
+.specimen-actions .btn-compare.active {
+  background-color: var(--color-brand-light, #eaf1ed);
+  color: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.results-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.no-matches-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: step-in 0.24s ease-out;
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .consultation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1.15rem 1.25rem;
+  }
+
+  .consultation-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .consultation-step {
+    padding: 1.25rem 1.15rem 1.75rem;
+  }
+
+  .intentions-grid,
+  .forms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zodiac-options-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .matches-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .results-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 520px) {
+  .zodiac-options-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .zodiac-tile-universal {
+    grid-column: span 2;
+  }
+
+  .consultation-stepper {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .stepper-label {
+    display: none;
+  }
+}

@@ -18,6 +18,8 @@ import { GUIDES } from '../../data/guides.data';
 import { Guide } from '../../models/guide';
 import { SITE_NAME } from '../../services/page-title.service';
 
+import { QuizService } from '../../services/quiz.service';
+
 const FEATURED_PRODUCT_LIMIT = 8;
 const CATEGORY_TILE_LIMIT = 8;
 
@@ -41,6 +43,11 @@ export class Home implements OnInit {
   private zodiacService = inject(ZodiacService);
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
+  quizService = inject(QuizService);
+
+  openQuiz(): void {
+    this.quizService.open();
+  }
 
   guides = signal<Guide[]>(GUIDES.slice(0, 3));
   zodiacSigns = signal<Zodiac[]>([]);

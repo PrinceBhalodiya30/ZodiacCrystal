@@ -35,6 +35,7 @@ import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
 const RELATED_PRODUCT_LIMIT = 4;
 
 import { InrPipe, formatInr } from '../../pipes/inr.pipe';
+import { CompareService } from '../../services/compare.service';
 import { CouponService } from '../../services/coupon.service';
 import { PublicCoupon } from '../../models/coupon';
 import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
@@ -512,6 +513,8 @@ export class ProductDetails implements OnInit {
     setTimeout(() => this.justAdded.set(false), 1100);
   }
 
+  compareService = inject(CompareService);
+
   get isWishlisted(): boolean {
     const product = this.product();
     return product !== null && this.wishlistService.isWishlisted(product.productId);
@@ -524,6 +527,20 @@ export class ProductDetails implements OnInit {
     }
 
     this.wishlistService.toggle(product);
+  }
+
+  get isCompared(): boolean {
+    const product = this.product();
+    return product !== null && this.compareService.isCompared(product.productId);
+  }
+
+  toggleCompare(): void {
+    const product = this.product();
+    if (!product) {
+      return;
+    }
+
+    this.compareService.toggle(product);
   }
 
   get canRequestStockAlert(): boolean {

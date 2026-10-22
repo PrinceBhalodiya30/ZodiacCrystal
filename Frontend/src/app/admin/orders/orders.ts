@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../../services/order.service';
@@ -13,7 +13,9 @@ import { ToastService } from '../../services/toast.service';
 import { NotificationService } from '../../services/notification.service';
 import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
 import { OrderDetailDrawer, OrderRowUpdate } from './order-detail-drawer/order-detail-drawer';
+import { Customer360Drawer } from '../shared/customer-360-drawer/customer-360-drawer';
 import { debounced } from '../../utils/debounce.util';
+import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { InrPipe } from '../../pipes/inr.pipe';
 
 const STATUSES = ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'];
@@ -38,13 +40,14 @@ function validPayment(value: string | null): string {
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [InrPipe, Spinner, DatePipe, FormsModule, AdminNav, Pager, OrderDetailDrawer],
+  imports: [InrPipe, Spinner, DatePipe, FormsModule, AdminNav, Pager, OrderDetailDrawer, Customer360Drawer],
   templateUrl: './orders.html',
   styleUrls: ['../admin-shared.css', './orders.css']
 })
 export class AdminOrders implements OnInit {
   private orderService = inject(OrderService);
   private toast = inject(ToastService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   statuses = STATUSES;
   orders = signal<AdminOrder[]>([]);
@@ -53,6 +56,16 @@ export class AdminOrders implements OnInit {
   // The order open in the detail drawer (also deep-linkable as ?order=123).
   openOrderId = signal<number | null>(validOrderId(inject(ActivatedRoute).snapshot.queryParamMap.get('order')));
   isExporting = signal(false);
+
+  // Bulk order selection & actions
+  selectedIds = signal<Set<number>>(new Set());
+  selectedCount = computed(() => this.selectedIds().size);
+  pageAllSelected = computed(() => this.orders().length > 0 && this.orders().every(o => this.selectedIds().has(o.orderId)));
+  bulkAction = signal<'Confirmed' | 'Shipped' | 'Cancelled'>('Confirmed');
+  isBulkUpdating = signal(false);
+
+  // Customer 360 intelligence drawer
+  customer360Email = signal<string | null>(null);
 
   page = signal(1);
   totalPages = signal(1);
@@ -218,5 +231,73 @@ export class AdminOrders implements OnInit {
         o.orderId === update.orderId ? { ...o, status: update.status, paymentStatus: update.paymentStatus } : o
       )
     );
+  }
+
+  toggleSelectOrder(orderId: number): void {
+    this.selectedIds.update(set => {
+      const next = new Set(set);
+      if (next.has(orderId)) {
+        next.delete(orderId);
+      } else {
+        next.add(orderId);
+      }
+      return next;
+    });
+  }
+
+  toggleSelectAllPage(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectedIds.update(set => {
+      const next = new Set(set);
+      if (checked) {
+        this.orders().forEach(o => next.add(o.orderId));
+      } else {
+        this.orders().forEach(o => next.delete(o.orderId));
+      }
+      return next;
+    });
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  async applyBulkAction(): Promise<void> {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0 || this.isBulkUpdating()) return;
+
+    const action = this.bulkAction();
+    if (action === 'Cancelled') {
+      const ok = await this.confirmDialog.confirm(
+        `Are you sure you want to cancel ${ids.length} selected order(s)? This will mark them as Cancelled.`,
+        { confirmLabel: 'Cancel Orders', cancelLabel: 'Keep Orders', danger: true }
+      );
+      if (!ok) return;
+    }
+
+    this.isBulkUpdating.set(true);
+    let successCount = 0;
+    let skippedCount = 0;
+
+    for (const id of ids) {
+      try {
+        await firstValueFrom(this.orderService.updateOrderStatus(id, action));
+        successCount++;
+      } catch {
+        skippedCount++;
+      }
+    }
+
+    this.isBulkUpdating.set(false);
+    this.clearSelection();
+    this.loadOrders();
+
+    if (successCount > 0 && skippedCount === 0) {
+      this.toast.success(`Updated ${successCount} order(s) to ${action}.`);
+    } else if (successCount > 0 && skippedCount > 0) {
+      this.toast.success(`Updated ${successCount} order(s) to ${action} (${skippedCount} skipped due to status rules).`);
+    } else if (skippedCount > 0) {
+      this.toast.error(`Could not update ${skippedCount} order(s) due to status rules.`);
+    }
   }
 }

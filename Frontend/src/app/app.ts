@@ -8,9 +8,24 @@ import { ToastContainer } from './components/toast-container/toast-container';
 import { AuthService } from './services/auth.service';
 import { WishlistService } from './services/wishlist.service';
 
+import { CartDrawer } from './components/cart-drawer/cart-drawer';
+import { CompareDock } from './components/compare-dock/compare-dock';
+import { CompareModal } from './components/compare-modal/compare-modal';
+import { FindCrystalModal } from './components/find-crystal-modal/find-crystal-modal';
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, Footer, ConfirmDialog, ToastContainer],
+  imports: [
+    RouterOutlet,
+    Navbar,
+    Footer,
+    ConfirmDialog,
+    ToastContainer,
+    CartDrawer,
+    CompareDock,
+    CompareModal,
+    FindCrystalModal
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

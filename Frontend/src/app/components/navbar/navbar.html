@@ -37,6 +37,16 @@
       <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">Zodiac Signs</a>
       <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">Categories</a>
       <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
+      <button type="button" class="navbar-quiz-btn" (click)="openQuiz(); closeMenu()" aria-label="Open crystal consultation">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2 8 7v13l4 2 4-2V7l-4-5Z"/>
+          <path d="M12 2v20"/>
+          <path d="m8 7 4 2 4-2"/>
+          <path d="M20 3v4M18 5h4"/>
+          <path d="M4 14v3M2.5 15.5h3"/>
+        </svg>
+        <span>Crystal Consultation</span>
+      </button>
 
       @if (authService.isLoggedIn()) {
         @if (authService.isAdmin()) {
@@ -84,7 +94,12 @@
       }
 
       @if (!authService.isAdmin()) {
-        <a routerLink="/cart" routerLinkActive="active" class="icon-link" aria-label="Cart" (click)="closeMenu()">
+        <button
+          type="button"
+          class="icon-link"
+          aria-label="Open cart bag"
+          (click)="cartService.toggleDrawer(); closeMenu()"
+        >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="9" cy="21" r="1.3"/>
             <circle cx="18" cy="21" r="1.3"/>
@@ -93,7 +108,7 @@
           @if (cartService.totalQuantity() > 0) {
             <span class="icon-badge" [class.bump]="cartBump()">{{ cartService.totalQuantity() }}</span>
           }
-        </a>
+        </button>
       }
 
       <button

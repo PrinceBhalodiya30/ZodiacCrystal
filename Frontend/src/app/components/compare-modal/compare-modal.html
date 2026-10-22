@@ -1,0 +1,180 @@
+@if (isOpen()) {
+  <div class="compare-modal-overlay" (click)="close()">
+    <div
+      class="compare-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="compareModalTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="compare-modal-header">
+        <div>
+          <h2 id="compareModalTitle">Compare Crystals</h2>
+          <p class="compare-modal-subtitle">Side-by-side energetic properties, zodiac affinity &amp; specifications</p>
+        </div>
+        <button
+          type="button"
+          class="compare-modal-close"
+          aria-label="Close comparison"
+          (click)="close()"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M5 5l14 14M19 5 5 19"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="compare-modal-body">
+        <div class="compare-table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th class="col-feature">Attribute</th>
+                @for (p of items(); track p.productId) {
+                  <th class="col-product">
+                    <div class="product-head-card">
+                      <button
+                        type="button"
+                        class="product-head-remove"
+                        [attr.aria-label]="'Remove ' + p.name + ' from comparison'"
+                        (click)="remove(p)"
+                      >
+                        ✕
+                      </button>
+                      <a [routerLink]="['/products', p.productId]" class="product-head-img-link" (click)="close()">
+                        <img [src]="getImage(p)" [alt]="p.name" class="product-head-img" imgFallback />
+                      </a>
+                      <a [routerLink]="['/products', p.productId]" class="product-head-name" (click)="close()">
+                        {{ p.name }}
+                      </a>
+                      <div class="product-head-price">
+                        <span class="price-val">{{ p.price | inr }}</span>
+                        @if (p.compareAtPrice && p.compareAtPrice > p.price) {
+                          <span class="compare-val">{{ p.compareAtPrice | inr }}</span>
+                        }
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-head-add"
+                        [disabled]="p.stockQuantity <= 0"
+                        (click)="addToCart(p)"
+                      >
+                        {{ p.stockQuantity <= 0 ? 'Sold Out' : 'Add to Cart' }}
+                      </button>
+                    </div>
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: Zodiac Sign Match -->
+              <tr>
+                <td class="col-feature">
+                  <strong>Zodiac Affinity</strong>
+                  <span>Astrological resonance</span>
+                </td>
+                @for (p of items(); track p.productId) {
+                  <td class="col-product">
+                    @if (p.zodiacs && p.zodiacs.length > 0) {
+                      <div class="zodiac-badges-cell">
+                        @for (z of p.zodiacs; track z.zodiacId) {
+                          <span class="zodiac-match-pill">
+                            <app-zodiac-icon class="zodiac-pill-icon" [sign]="z.name"></app-zodiac-icon>
+                            <span class="zodiac-pill-name">{{ z.name }}</span>
+                          </span>
+                        }
+                      </div>
+                    } @else {
+                      <span class="cell-neutral">All Signs / Universal</span>
+                    }
+                  </td>
+                }
+              </tr>
+
+              <!-- Row 2: Category / Form Factor -->
+              <tr>
+                <td class="col-feature">
+                  <strong>Form Factor</strong>
+                  <span>Type &amp; cut</span>
+                </td>
+                @for (p of items(); track p.productId) {
+                  <td class="col-product">
+                    <span class="category-pill">{{ p.categoryName || 'Healing Stone' }}</span>
+                  </td>
+                }
+              </tr>
+
+              <!-- Row 3: Rating & Reviews -->
+              <tr>
+                <td class="col-feature">
+                  <strong>Customer Rating</strong>
+                  <span>Verified feedback</span>
+                </td>
+                @for (p of items(); track p.productId) {
+                  <td class="col-product">
+                    <div class="rating-cell">
+                      <span class="stars-gold">{{ getRating(p) }}</span>
+                      <span class="rating-meta">
+                        {{ p.averageRating ? (p.averageRating | number:'1.1-1') : 'New' }}
+                        @if (p.reviewCount) { · ({{ p.reviewCount }}) }
+                      </span>
+                    </div>
+                  </td>
+                }
+              </tr>
+
+              <!-- Row 4: Stock & Availability -->
+              <tr>
+                <td class="col-feature">
+                  <strong>Stock Availability</strong>
+                  <span>Ready to dispatch</span>
+                </td>
+                @for (p of items(); track p.productId) {
+                  <td class="col-product">
+                    @if (p.stockQuantity <= 0) {
+                      <span class="stock-badge stock-out">Out of stock</span>
+                    } @else if (p.stockQuantity <= 5) {
+                      <span class="stock-badge stock-low">Only {{ p.stockQuantity }} left in stock</span>
+                    } @else {
+                      <span class="stock-badge stock-ok">In Stock ({{ p.stockQuantity }} available)</span>
+                    }
+                  </td>
+                }
+              </tr>
+
+              <!-- Row 5: SKU & Spec -->
+              <tr>
+                <td class="col-feature">
+                  <strong>Product SKU</strong>
+                  <span>Item identifier</span>
+                </td>
+                @for (p of items(); track p.productId) {
+                  <td class="col-product">
+                    <code class="sku-tag">{{ p.sku }}</code>
+                  </td>
+                }
+              </tr>
+
+              <!-- Row 6: Description Summary -->
+              <tr>
+                <td class="col-feature">
+                  <strong>Properties &amp; Energy</strong>
+                  <span>Healing attributes</span>
+                </td>
+                @for (p of items(); track p.productId) {
+                  <td class="col-product">
+                    <p class="desc-cell">{{ p.description || 'Natural healing crystal, ethically sourced and cleansed.' }}</p>
+                  </td>
+                }
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer class="compare-modal-footer">
+        <button type="button" class="btn btn-outline" (click)="close()">Close Comparison</button>
+      </footer>
+    </div>
+  </div>
+}
