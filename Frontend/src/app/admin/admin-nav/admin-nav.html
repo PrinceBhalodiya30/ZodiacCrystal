@@ -1,8 +1,13 @@
 <nav class="admin-nav" aria-label="Admin">
-  <div class="admin-nav-brand">
-    <img class="admin-nav-logo" src="logo-icon.png" alt="" aria-hidden="true" />
-    <span class="admin-nav-brand-name">{{ siteName }}</span>
-    <span class="admin-nav-brand-tag">Admin</span>
+  <div class="admin-nav-header">
+    <div class="admin-nav-brand">
+      <img class="admin-nav-logo" src="logo-icon.png" alt="" aria-hidden="true" />
+      <span class="admin-nav-brand-name">{{ siteName }}</span>
+      <span class="admin-nav-brand-tag">Admin</span>
+    </div>
+    <div class="admin-nav-bell-wrap" title="Admin Notifications">
+      <app-notification-bell align="left"></app-notification-bell>
+    </div>
   </div>
 
   <div class="admin-nav-search-wrap">

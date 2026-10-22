@@ -20,6 +20,8 @@ import { SITE_NAME } from '../../services/page-title.service';
 
 import { QuizService } from '../../services/quiz.service';
 
+import { BirthdaySignFinder } from '../../components/birthday-sign-finder/birthday-sign-finder';
+
 const FEATURED_PRODUCT_LIMIT = 8;
 const CATEGORY_TILE_LIMIT = 8;
 
@@ -34,7 +36,7 @@ export interface CategoryTile {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, ZodiacCard, ProductCard, ProductCardSkeleton, RecentlyViewed, ImgFallbackDirective, ScrollRevealDirective],
+  imports: [RouterLink, ZodiacCard, ProductCard, ProductCardSkeleton, RecentlyViewed, ImgFallbackDirective, ScrollRevealDirective, BirthdaySignFinder],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

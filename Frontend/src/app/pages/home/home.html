@@ -10,14 +10,34 @@
         intuitively paired to resonate with your astrological blueprint and daily intentions.
       </p>
       <div class="hero-actions">
-        <a class="btn" routerLink="/products">Shop All Crystals</a>
-        <button type="button" class="btn btn-accent" (click)="openQuiz()">Crystal Consultation</button>
-        <a class="btn btn-outline" routerLink="/zodiac">Find My Sign</a>
+        <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
+        <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openQuiz()">
+          <span class="btn-sparkle" aria-hidden="true">✦</span>
+          <span>Crystal Consultation</span>
+        </button>
       </div>
       <ul class="hero-trust">
-        <li><span>✓</span> Natural Minerals</li>
-        <li><span>✓</span> 12 Zodiac Alignments</li>
-        <li><span>✓</span> Hand-Picked Quality</li>
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+          <span>100% Natural Minerals</span>
+        </li>
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>12 Zodiac Attuned</span>
+        </li>
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+            <polyline points="2 9 12 13 22 9"/>
+            <line x1="12" y1="22" x2="12" y2="13"/>
+          </svg>
+          <span>Artisanal Hand-Selected</span>
+        </li>
       </ul>
     </div>
 
@@ -45,6 +65,8 @@
       Select your sun, moon, or rising sign to explore stones tuned to your cosmic qualities.
     </p>
   </div>
+
+  <app-birthday-sign-finder></app-birthday-sign-finder>
 
   @if (isLoading()) {
     <span class="visually-hidden" role="status">Loading zodiac signs...</span>

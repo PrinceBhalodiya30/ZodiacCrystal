@@ -198,31 +198,41 @@
                 <div class="form-icon-wrap">
                   @switch (form.icon) {
                     @case ('raw') {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 19 8 16 20 8 20 5 8 12 2"/>
-                        <polyline points="12 2 12 20"/>
-                        <line x1="5" y1="8" x2="19" y2="8"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3 8 9v11l4 2 4-2V9l-4-6Z"/>
+                        <path d="m8 9 4 2 4-2"/>
+                        <path d="M12 3v19"/>
+                        <path d="M4 14l4-3v9l-4-2v-4Z"/>
+                        <path d="M20 14l-4-3v9l4-2v-4Z"/>
                       </svg>
                     }
                     @case ('polished') {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 7 7 7 22 17 22 17 7 12 2"/>
-                        <line x1="12" y1="2" x2="12" y2="22"/>
-                        <line x1="7" y1="7" x2="17" y2="7"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m12 2-5 5v14l5 2 5-2V7l-5-5Z"/>
+                        <path d="M12 2v21"/>
+                        <path d="m7 7 5 3 5-3"/>
+                        <path d="m19 13-7 3-7-3"/>
                       </svg>
                     }
                     @case ('jewelry') {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="7"/>
-                        <circle cx="12" cy="5" r="1.5"/>
-                        <circle cx="19" cy="12" r="1.5"/>
-                        <circle cx="12" cy="19" r="1.5"/>
-                        <circle cx="5" cy="12" r="1.5"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <ellipse cx="12" cy="11" rx="8" ry="6"/>
+                        <circle cx="12" cy="5" r="1.4" fill="currentColor"/>
+                        <circle cx="17.5" cy="7.5" r="1.4" fill="currentColor"/>
+                        <circle cx="19.5" cy="11.5" r="1.4" fill="currentColor"/>
+                        <circle cx="16.5" cy="15.5" r="1.4" fill="currentColor"/>
+                        <circle cx="12" cy="17" r="1.8"/>
+                        <circle cx="7.5" cy="15.5" r="1.4" fill="currentColor"/>
+                        <circle cx="4.5" cy="11.5" r="1.4" fill="currentColor"/>
+                        <circle cx="6.5" cy="7.5" r="1.4" fill="currentColor"/>
+                        <path d="M12 18.8v2.5M10.5 22.5h3"/>
                       </svg>
                     }
                     @case ('any') {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" stroke-dasharray="2 3"/>
+                        <path d="M12 3v18M3 12h18"/>
+                        <polygon points="12 7 15 12 12 17 9 12" fill="currentColor" fill-opacity="0.15"/>
                       </svg>
                     }
                   }

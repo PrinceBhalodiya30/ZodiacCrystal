@@ -112,18 +112,25 @@
   gap: clamp(0.55rem, 1.15vw, 1.25rem);
 }
 
-.navbar-links a {
+.navbar-links a,
+.navbar-quiz-btn {
   text-decoration: none;
   color: var(--color-ink, #1c1a17);
   font-size: 0.875rem;
   font-weight: 500;
+  font-family: inherit;
+  background: none;
+  border: none;
   position: relative;
   padding: 0.35rem 0;
   white-space: nowrap;
+  cursor: pointer;
+  line-height: inherit;
   transition: color var(--transition-fast);
 }
 
-.navbar-links a::after {
+.navbar-links a::after,
+.navbar-quiz-btn::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -136,12 +143,14 @@
   transition: transform var(--transition-base);
 }
 
-.navbar-links a:hover {
+.navbar-links a:hover,
+.navbar-quiz-btn:hover {
   color: var(--color-brand);
 }
 
 .navbar-links a:hover::after,
-.navbar-links a.active::after {
+.navbar-links a.active::after,
+.navbar-quiz-btn:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
@@ -149,6 +158,12 @@
 .navbar-links a.active {
   color: var(--color-brand);
   font-weight: 600;
+}
+
+.navbar-quiz-btn:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .navbar-links a.navbar-cta {
@@ -171,39 +186,6 @@
   background-color: var(--color-brand-hover);
   color: #ffffff;
   transform: translateY(-1px);
-}
-
-.navbar-quiz-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(36, 65, 50, 0.08);
-  border: 1px solid rgba(36, 65, 50, 0.2);
-  color: var(--color-brand);
-  padding: 0.38rem 0.75rem;
-  border-radius: var(--radius-pill);
-  font-size: var(--text-xs);
-  font-family: inherit;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.navbar-quiz-btn svg {
-  flex-shrink: 0;
-  transition: transform var(--transition-fast);
-}
-
-.navbar-quiz-btn:hover {
-  background: var(--color-brand);
-  color: #ffffff;
-  border-color: var(--color-brand);
-  transform: translateY(-1px);
-}
-
-.navbar-quiz-btn:hover svg {
-  transform: scale(1.1);
 }
 
 .navbar-logout {
@@ -449,19 +431,29 @@
   }
 
   .navbar-links a,
-  .navbar-links .navbar-logout {
+  .navbar-links .navbar-logout,
+  .navbar-links .navbar-quiz-btn {
     padding: 0.85rem 1.75rem;
     text-align: left;
     border-left: 3px solid transparent;
     font-size: 0.95rem;
+    width: 100%;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 0;
   }
 
-  .navbar-links a::after {
+  .navbar-links a::after,
+  .navbar-links .navbar-quiz-btn::after {
     display: none;
   }
 
   .navbar-links a:hover,
-  .navbar-links a.active {
+  .navbar-links a.active,
+  .navbar-links .navbar-logout:hover,
+  .navbar-links .navbar-quiz-btn:hover {
     border-left-color: var(--color-brand);
     background-color: var(--color-surface-tint, #f2eee6);
     color: var(--color-brand);
@@ -470,13 +462,6 @@
   .navbar-links a.navbar-cta {
     margin: 0.75rem 1.75rem;
     text-align: center;
-  }
-
-  .navbar-links .navbar-quiz-btn {
-    margin: 0.5rem 1.75rem 0.75rem;
-    padding: 0.65rem 1.25rem;
-    justify-content: center;
-    font-size: var(--text-sm);
   }
 
   .navbar-icons {

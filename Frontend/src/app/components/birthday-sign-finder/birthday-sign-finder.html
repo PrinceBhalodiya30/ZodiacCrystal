@@ -1,0 +1,160 @@
+<div class="birthday-finder-card">
+  <div class="finder-header">
+    <span class="finder-eyebrow">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      Astrological Discovery
+    </span>
+    <h2 class="finder-title">Find Your Sign by Birthday</h2>
+    <p class="finder-subtitle">
+      Select your birth date to reveal your astrological sign and its attuned healing stones.
+    </p>
+  </div>
+
+  <!-- Standardized Control Bar matching .filter-bar -->
+  <div class="finder-controls-bar">
+    <select
+      id="birth-month"
+      class="finder-select"
+      name="birthMonth"
+      aria-label="Select Birth Month"
+      [ngModel]="selectedMonth()"
+      (ngModelChange)="onMonthChange($event)"
+    >
+      <option [ngValue]="null">Select Month</option>
+      @for (m of months; track m.value) {
+        <option [ngValue]="m.value">{{ m.name }}</option>
+      }
+    </select>
+
+    <select
+      id="birth-day"
+      class="finder-select"
+      name="birthDay"
+      aria-label="Select Birth Day"
+      [ngModel]="selectedDay()"
+      (ngModelChange)="onDayChange($event)"
+    >
+      <option [ngValue]="null">Select Day</option>
+      @for (d of availableDays(); track d) {
+        <option [ngValue]="d">{{ d }}</option>
+      }
+    </select>
+
+    <button
+      type="button"
+      class="btn btn-find-sign"
+      (click)="fetchAttunedCrystalsIfReady()"
+      [disabled]="!selectedMonth() || !selectedDay()"
+    >
+      <span class="btn-sparkle" aria-hidden="true">✦</span>
+      <span>Find My Sign</span>
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-outline btn-today"
+      (click)="setToday()"
+      title="Check current zodiac season"
+    >
+      <span>Today's Season</span>
+    </button>
+
+    @if (signResult()) {
+      <button
+        type="button"
+        class="btn-reset"
+        (click)="reset()"
+        aria-label="Reset selection"
+      >
+        ✕ Clear
+      </button>
+    }
+  </div>
+
+  <!-- Result Presentation -->
+  @if (signResult(); as result) {
+    <div class="finder-result" [attr.data-element]="result.element.toLowerCase()">
+      <div class="result-head">
+        <div class="result-sign-badge">
+          <app-zodiac-icon [sign]="result.signName" class="result-glyph"></app-zodiac-icon>
+          <div class="result-sign-info">
+            <span class="result-date-span">{{ result.dateRange }}</span>
+            <h3 class="result-sign-name">{{ result.signName }}</h3>
+          </div>
+        </div>
+
+        <div class="result-meta">
+          <span class="element-badge" [attr.data-element]="result.element.toLowerCase()">
+            {{ result.element }} Sign
+          </span>
+          <span class="ruler-badge">Ruled by {{ result.rulingPlanet }}</span>
+        </div>
+      </div>
+
+      <div class="traits-row">
+        @for (trait of result.traits; track trait) {
+          <span class="trait-chip">{{ trait }}</span>
+        }
+      </div>
+
+      <p class="result-description">{{ result.description }}</p>
+
+      <!-- Attuned Crystals Preview -->
+      <div class="attuned-crystals-section">
+        <div class="attuned-heading">
+          <h4>Attuned Crystals for {{ result.signName }}</h4>
+          @if (matchedZodiac(); as z) {
+            <a [routerLink]="['/zodiac', z.zodiacId]" class="link-view-all">
+              View All {{ result.signName }} Stones &rarr;
+            </a>
+          }
+        </div>
+
+        @if (isLoadingCrystals()) {
+          <div class="crystals-loading">
+            <span class="loading-pulse"></span>
+            <span>Aligning cosmic crystal resonance...</span>
+          </div>
+        } @else if (attunedCrystals().length > 0) {
+          <div class="crystals-mini-grid">
+            @for (product of attunedCrystals(); track product.productId) {
+              <a [routerLink]="['/products', product.productId]" class="crystal-mini-card">
+                <div class="mini-card-image">
+                  @if (product.images && product.images.length > 0) {
+                    <img [src]="product.images[0].imageUrl" [alt]="product.name" imgFallback />
+                  } @else {
+                    <div class="mini-card-placeholder">✦</div>
+                  }
+                </div>
+                <div class="mini-card-info">
+                  <span class="mini-card-name">{{ product.name }}</span>
+                  <span class="mini-card-price">{{ product.price | inr }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="crystals-empty-note">
+            Hand-selected stones for this sign are available in our full catalog.
+          </p>
+        }
+      </div>
+
+      <!-- Action Button -->
+      @if (matchedZodiac(); as z) {
+        <div class="result-action">
+          <a [routerLink]="['/zodiac', z.zodiacId]" class="btn btn-explore-sign">
+            <span>Explore All {{ result.signName }} Crystals</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+      }
+    </div>
+  }
+</div>

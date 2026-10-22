@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { AdminNavCountsService } from './admin-nav-counts.service';
 import { SITE_NAME } from '../../services/page-title.service';
 import { AdminCommandPalette } from '../shared/admin-command-palette/admin-command-palette';
+import { NotificationBell } from '../../components/notification-bell/notification-bell';
 
 type BadgeKey = 'pendingOrders' | 'requestedReturns' | 'lowStock' | 'openTickets';
 
@@ -29,7 +30,7 @@ const ICONS = ADMIN_NAV_ICONS;
 @Component({
   selector: 'app-admin-nav',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, AdminCommandPalette],
+  imports: [RouterLink, RouterLinkActive, AdminCommandPalette, NotificationBell],
   templateUrl: './admin-nav.html',
   styleUrl: './admin-nav.css'
 })

@@ -55,8 +55,9 @@
   align-items: center;
   gap: 0.6rem;
   margin: 0;
+  font-family: var(--font-heading);
   font-size: 1.65rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 

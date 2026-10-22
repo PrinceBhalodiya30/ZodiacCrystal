@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, HostListener, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, Input, computed, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -27,6 +27,8 @@ export type NotificationKind =
   styleUrl: './notification-bell.css'
 })
 export class NotificationBell {
+  @Input() align: 'left' | 'right' = 'right';
+
   service = inject(NotificationService);
   private router = inject(Router);
   private elementRef = inject(ElementRef);

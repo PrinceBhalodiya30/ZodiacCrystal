@@ -98,6 +98,24 @@
   animation: dropdown-in 0.18s var(--ease-out-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
+/* Left-aligned dropdown and compact button for sidebar / admin placement */
+:host-context(.admin-nav) .icon-link {
+  width: 38px;
+  height: 38px;
+}
+
+:host-context(.admin-nav) .icon-link svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+:host-context(.admin-nav) .notification-dropdown,
+.notification-bell.align-left .notification-dropdown {
+  right: auto;
+  left: 0;
+  max-width: min(380px, calc(100vw - 24px));
+}
+
 @keyframes dropdown-in {
   from { opacity: 0; transform: translateY(-6px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }

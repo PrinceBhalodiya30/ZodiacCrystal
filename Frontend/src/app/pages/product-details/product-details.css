@@ -357,34 +357,119 @@
   font-size: var(--text-base);
 }
 
-.product-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  align-items: center;
+/* Product Actions Hierarchy */
+.product-actions-group {
   margin-top: 1.5rem;
-  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
-.product-actions .btn {
+.product-main-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.product-main-actions .btn-add-cart {
+  flex: 1 1 200px;
   min-height: 48px;
-  padding: 0.85rem 1.85rem;
-  font-size: var(--text-sm);
+  background-color: var(--color-brand);
+  color: #ffffff;
   font-weight: 600;
-}
-
-.wishlist-toggle-btn,
-.compare-toggle-btn {
-  min-height: 48px;
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: var(--radius-pill);
+  transition: all var(--transition-fast);
 }
 
-.compare-toggle-btn.active {
+.product-main-actions .btn-add-cart:hover:not(:disabled) {
+  background-color: var(--color-brand-hover);
+  transform: translateY(-1px);
+}
+
+.product-main-actions .btn-add-cart.btn-added {
+  background-color: var(--color-success);
+}
+
+.product-main-actions .btn-buy-now {
+  flex: 1 1 140px;
+  min-height: 48px;
+  background-color: var(--color-brass, #ab7a24);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  transition: all var(--transition-fast);
+}
+
+.product-main-actions .btn-buy-now:hover:not(:disabled) {
+  background-color: #92661c;
+  transform: translateY(-1px);
+}
+
+.btn-icon-action {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #ded7c8);
+  border-radius: var(--radius-pill);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon-action:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  background-color: var(--color-surface-tint, #f2eee6);
+  transform: translateY(-1px);
+}
+
+.btn-icon-action.wishlist-toggle-btn.active {
+  color: var(--color-danger, #b3261a);
+  border-color: var(--color-danger, #b3261a);
+  background-color: var(--color-danger-bg, #fdf0ef);
+}
+
+.btn-icon-action.compare-toggle-btn.active {
   background-color: var(--color-brand);
   color: #ffffff;
   border-color: var(--color-brand);
+}
+
+.product-in-cart-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-xs);
+  color: var(--color-success, #1b6e37);
+  background: var(--color-success-bg, #eaf4ee);
+  border: 1px solid var(--color-success-border, #a6d8b5);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
+  width: fit-content;
+}
+
+.product-in-cart-notice .view-cart-link {
+  color: var(--color-brand);
+  font-weight: 600;
+  text-decoration: underline;
+  margin-left: 0.25rem;
+}
+
+.btn-stock-alert {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 /* Trust & Guarantees Box */

@@ -136,26 +136,13 @@
                     } @else if (p.stockQuantity <= 5) {
                       <span class="stock-badge stock-low">Only {{ p.stockQuantity }} left in stock</span>
                     } @else {
-                      <span class="stock-badge stock-ok">In Stock ({{ p.stockQuantity }} available)</span>
+                      <span class="stock-badge stock-ok">In Stock</span>
                     }
                   </td>
                 }
               </tr>
 
-              <!-- Row 5: SKU & Spec -->
-              <tr>
-                <td class="col-feature">
-                  <strong>Product SKU</strong>
-                  <span>Item identifier</span>
-                </td>
-                @for (p of items(); track p.productId) {
-                  <td class="col-product">
-                    <code class="sku-tag">{{ p.sku }}</code>
-                  </td>
-                }
-              </tr>
-
-              <!-- Row 6: Description Summary -->
+              <!-- Row 5: Description Summary -->
               <tr>
                 <td class="col-feature">
                   <strong>Properties &amp; Energy</strong>

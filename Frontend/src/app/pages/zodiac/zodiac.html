@@ -4,6 +4,8 @@
     <p>Discover the gemstones, crystals, and celestial energy harmonized with your astrological sign.</p>
   </header>
 
+  <app-birthday-sign-finder></app-birthday-sign-finder>
+
   @if (isLoading()) {
     <app-spinner label="Loading zodiac signs..."></app-spinner>
   } @else if (errorMessage()) {
