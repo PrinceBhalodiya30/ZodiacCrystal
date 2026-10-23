@@ -47,11 +47,11 @@
           <ul class="item-list">
             @for (item of visibleItems(order); track item.productId) {
               <li class="item-row">
-                <a class="item-thumb" [routerLink]="['/products', item.productId]" tabindex="-1" aria-hidden="true">
+                <a class="item-thumb" [routerLink]="['/products', itemSlug(item)]" tabindex="-1" aria-hidden="true">
                   <img [imgSrc]="item.imageUrl ?? null" imgSizes="72px" [alt]="item.productName" width="72" height="72" loading="lazy" decoding="async" imgFallback />
                 </a>
                 <div class="item-info">
-                  <a class="item-name" [routerLink]="['/products', item.productId]">{{ item.productName }}</a>
+                  <a class="item-name" [routerLink]="['/products', itemSlug(item)]">{{ item.productName }}</a>
                   <span class="item-qty">Qty: {{ item.quantity }}</span>
                 </div>
                 <span class="item-price">{{ item.subtotal | inr }}</span>

@@ -61,7 +61,7 @@
               </div>
 
               <div class="cart-item-info">
-                <a [routerLink]="['/products', item.product.productId]" class="cart-item-name">{{ item.product.name }}</a>
+                <a [routerLink]="['/products', productSlug(item)]" class="cart-item-name">{{ item.product.name }}</a>
                 <span class="cart-item-price">{{ item.product.price | inr }}</span>
                 @if (item.product.stockQuantity <= 0) {
                   <span class="cart-item-stock-error">Sold out - please remove</span>

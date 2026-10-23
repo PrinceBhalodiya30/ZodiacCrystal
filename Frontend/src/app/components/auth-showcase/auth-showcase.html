@@ -1,7 +1,7 @@
 <div class="showcase">
   <!-- One hand-picked product photo, linking to that product. -->
   @if (featured(); as f) {
-    <a class="feature-photo" [routerLink]="['/products', f.productId]">
+    <a class="feature-photo" [routerLink]="['/products', getProductSlug(f)]">
       <img [src]="f.imageUrl" [alt]="f.name" imgFallback />
       <span class="feature-caption">
         {{ f.name }}

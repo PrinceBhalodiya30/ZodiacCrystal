@@ -4,6 +4,7 @@ import { CartService, FREE_SHIPPING_THRESHOLD } from '../../services/cart.servic
 import { CartItem } from '../../models/cart';
 import { Product } from '../../models/product';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 
@@ -51,6 +52,10 @@ export class CartDrawer {
 
   getItemImage(product: Product): string | null {
     return getPrimaryImageUrl(product);
+  }
+
+  getProductSlug(product: Product): string {
+    return getProductSlug(product);
   }
 
   increase(item: CartItem): void {

@@ -29,12 +29,35 @@
   } @else if (product(); as p) {
     <div class="product-details">
       <div class="product-gallery">
-        <div class="product-image" [class.zoomable]="selectedImageUrl()" (click)="openLightbox()">
+        <div
+          class="product-image"
+          [class.zoomable]="selectedImageUrl()"
+          [class.is-zoomed]="isZooming()"
+          (mousemove)="onImageMouseMove($event)"
+          (mouseleave)="onImageMouseLeave()"
+          (click)="openLightbox()"
+        >
           @if (selectedImageUrl(); as imageUrl) {
             @for (url of [imageUrl]; track url) {
-              <img class="gallery-image" [imgSrc]="url" imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="p.name" width="800" height="800" fetchpriority="high" imgFallback />
+              <img
+                class="gallery-image"
+                [style.transform-origin]="zoomTransformOrigin()"
+                [imgSrc]="url"
+                imgSizes="(max-width: 900px) 100vw, 50vw"
+                [alt]="p.name"
+                width="800"
+                height="800"
+                fetchpriority="high"
+                imgFallback
+              />
             }
-            <button type="button" class="zoom-btn" aria-label="Zoom product image" (click)="openLightbox(); $event.stopPropagation()">
+            <button
+              type="button"
+              class="zoom-btn"
+              aria-label="Zoom product image"
+              title="Click to view full screen"
+              (click)="openLightbox(); $event.stopPropagation()"
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
                 <circle cx="10.5" cy="10.5" r="6.5"/>
                 <path d="m20 20-4.35-4.35"/>
@@ -391,23 +414,10 @@
     @if (photoViewer(); as viewer) {
       <app-photo-lightbox
         [photos]="viewer.urls"
-        [index]="viewer.index"
+        [(index)]="viewer.index"
         [caption]="viewer.caption"
-        (closed)="photoViewer.set(null)"
+        (closed)="closeLightbox()"
       ></app-photo-lightbox>
-    }
-
-    @if (isLightboxOpen() && selectedImageUrl()) {
-      <div class="lightbox-backdrop fade-in" animate.leave="fade-out" (click)="closeLightbox()">
-        <div class="lightbox-content" (click)="$event.stopPropagation()">
-          <button type="button" class="lightbox-close" aria-label="Close" (click)="closeLightbox()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-              <path d="M5 5l14 14M19 5 5 19"/>
-            </svg>
-          </button>
-          <img [imgSrc]="selectedImageUrl()" imgSizes="100vw" [alt]="p.name" decoding="async" imgFallback />
-        </div>
-      </div>
     }
   } @else {
     <div class="state-message state-message--empty">

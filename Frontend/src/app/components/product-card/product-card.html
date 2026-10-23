@@ -1,5 +1,5 @@
 <div class="product-card">
-  <a class="product-image" [routerLink]="['/products', product.productId]" [attr.aria-label]="'View details for ' + product.name">
+  <a class="product-image" [routerLink]="['/products', productSlug]" [attr.aria-label]="'View details for ' + product.name">
     @if (selectedImageUrl()) {
       <img [imgSrc]="selectedImageUrl()" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="product.name" width="400" height="400" loading="lazy" decoding="async" imgFallback />
     } @else {
@@ -47,7 +47,7 @@
 
   <div class="product-body">
     <h3 class="product-name">
-      <a [routerLink]="['/products', product.productId]">{{ product.name }}</a>
+      <a [routerLink]="['/products', productSlug]">{{ product.name }}</a>
     </h3>
 
     @if (product.reviewCount) {

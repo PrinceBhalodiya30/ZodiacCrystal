@@ -5,7 +5,14 @@
     </button>
 
     <figure class="photo-lightbox-figure" (click)="$event.stopPropagation()">
-      <img [src]="url" [alt]="caption() || 'Customer photo'" />
+      <div
+        class="photo-lightbox-img-wrap"
+        [class.is-zoomed]="isZoomed()"
+        (click)="toggleZoom($event)"
+        [attr.title]="isZoomed() ? 'Click to zoom out' : 'Click to zoom in'"
+      >
+        <img [src]="url" [alt]="caption() || 'Photo'" />
+      </div>
       @if (caption() || hasMany()) {
         <figcaption>
           {{ caption() }}

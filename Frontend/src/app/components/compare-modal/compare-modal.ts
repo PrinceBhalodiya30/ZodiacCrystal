@@ -5,6 +5,7 @@ import { CompareService } from '../../services/compare.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { getStars } from '../../utils/rating.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
@@ -37,6 +38,10 @@ export class CompareModal {
 
   getImage(product: Product): string | null {
     return getPrimaryImageUrl(product);
+  }
+
+  getProductSlug(product: Product): string {
+    return getProductSlug(product);
   }
 
   getRating(product: Product): string {

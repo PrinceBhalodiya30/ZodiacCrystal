@@ -13,6 +13,7 @@ import {
   BirthdaySignResult,
   MONTH_OPTIONS
 } from '../../utils/zodiac-finder.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 
 @Component({
   selector: 'app-birthday-sign-finder',
@@ -133,5 +134,9 @@ export class BirthdaySignFinder implements OnInit {
         }
       });
     }
+  }
+
+  getProductSlug(product: Product): string {
+    return getProductSlug(product);
   }
 }

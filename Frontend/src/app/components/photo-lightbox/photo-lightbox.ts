@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, input, model, output } from '@angular/core';
+import { Component, HostListener, computed, input, model, output, signal } from '@angular/core';
 
 // Full-screen viewer for a set of photos (customer review photos on the product
 // page and in admin). Arrow keys / buttons step through, Esc or backdrop closes.
@@ -13,6 +13,8 @@ export class PhotoLightbox {
   index = model(0);
   caption = input<string>('');
   closed = output<void>();
+
+  isZoomed = signal(false);
 
   current = computed(() => this.photos()[this.index()] ?? null);
   hasMany = computed(() => this.photos().length > 1);
@@ -31,7 +33,13 @@ export class PhotoLightbox {
   step(delta: number): void {
     const count = this.photos().length;
     if (count > 1) {
+      this.isZoomed.set(false);
       this.index.set((this.index() + delta + count) % count);
     }
+  }
+
+  toggleZoom(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isZoomed.update(z => !z);
   }
 }

@@ -7,6 +7,7 @@ import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { ZodiacService } from '../../services/zodiac.service';
 import { Product } from '../../models/product';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { Category } from '../../models/category';
 import { Zodiac } from '../../models/zodiac';
 import { ProductCard } from '../../components/product-card/product-card';
@@ -136,7 +137,7 @@ export class Products implements OnInit {
 
   selectSuggestion(product: Product): void {
     this.showSuggestions.set(false);
-    this.router.navigate(['/products', product.productId]);
+    this.router.navigate(['/products', getProductSlug(product)]);
   }
 
   onCategoryChange(categoryId: number | null): void {

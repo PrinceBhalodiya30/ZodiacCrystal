@@ -6,6 +6,7 @@ import { CompareService } from '../../services/compare.service';
 import { QuizService } from '../../services/quiz.service';
 import { Product } from '../../models/product';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
@@ -242,8 +243,13 @@ export class Consultation implements OnInit {
     setTimeout(() => this.addedProductId.set(null), 2000);
   }
 
-  navigateToProduct(productId: number): void {
-    this.router.navigate(['/products', productId]);
+  navigateToProduct(productOrId: Product | number): void {
+    if (typeof productOrId === 'object') {
+      this.router.navigate(['/products', getProductSlug(productOrId)]);
+    } else {
+      const match = this.products().find(p => p.productId === productOrId);
+      this.router.navigate(['/products', match ? getProductSlug(match) : productOrId]);
+    }
   }
 
   private calculateMatches(): void {

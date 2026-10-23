@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CartService, FREE_SHIPPING_THRESHOLD, shippingFeeFor } from '../../services/cart.service';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { CartItem } from '../../models/cart';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
@@ -42,6 +43,10 @@ export class Cart implements OnInit {
 
   itemImage(item: CartItem): string | null {
     return getPrimaryImageUrl(item.product);
+  }
+
+  productSlug(item: CartItem): string {
+    return getProductSlug(item.product);
   }
 
   itemSubtotal(item: CartItem): number {

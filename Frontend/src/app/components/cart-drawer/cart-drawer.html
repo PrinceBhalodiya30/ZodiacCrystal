@@ -69,7 +69,7 @@
         <ul class="flyout-item-list">
           @for (item of items(); track item.product.productId) {
             <li class="flyout-item-row" [class.highlighted]="lastAddedProduct()?.productId === item.product.productId">
-              <a [routerLink]="['/products', item.product.productId]" class="flyout-item-thumb-link" (click)="close()">
+              <a [routerLink]="['/products', getProductSlug(item.product)]" class="flyout-item-thumb-link" (click)="close()">
                 <img
                   [src]="getItemImage(item.product)"
                   [alt]="item.product.name"
@@ -80,7 +80,7 @@
 
               <div class="flyout-item-content">
                 <div class="flyout-item-top">
-                  <a [routerLink]="['/products', item.product.productId]" class="flyout-item-name" (click)="close()">
+                  <a [routerLink]="['/products', getProductSlug(item.product)]" class="flyout-item-name" (click)="close()">
                     {{ item.product.name }}
                   </a>
                   <button

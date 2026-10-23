@@ -6,6 +6,7 @@ import { ProductService } from '../../services/product.service';
 import { ReviewService } from '../../services/review.service';
 import { CouponService } from '../../services/coupon.service';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { InrPipe } from '../../pipes/inr.pipe';
@@ -54,6 +55,10 @@ export class AuthShowcase implements OnInit {
   featured = signal<FeaturedProduct | null>(null);
   review = signal<(Review & { productName: string }) | null>(null);
   offer = signal<PublicCoupon | null>(null);
+
+  getProductSlug(product: FeaturedProduct): string {
+    return getProductSlug(product);
+  }
 
   ngOnInit(): void {
     this.productService

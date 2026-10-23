@@ -41,10 +41,10 @@
                       >
                         ✕
                       </button>
-                      <a [routerLink]="['/products', p.productId]" class="product-head-img-link" (click)="close()">
+                      <a [routerLink]="['/products', getProductSlug(p)]" class="product-head-img-link" (click)="close()">
                         <img [src]="getImage(p)" [alt]="p.name" class="product-head-img" imgFallback />
                       </a>
-                      <a [routerLink]="['/products', p.productId]" class="product-head-name" (click)="close()">
+                      <a [routerLink]="['/products', getProductSlug(p)]" class="product-head-name" (click)="close()">
                         {{ p.name }}
                       </a>
                       <div class="product-head-price">

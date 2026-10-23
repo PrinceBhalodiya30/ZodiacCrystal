@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { Product } from '../../models/product';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { getStockLabel, getStockStatus } from '../../utils/stock-status.util';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
@@ -55,6 +56,10 @@ export class ProductCard implements OnInit {
 
   get discountPercent(): number | null {
     return getDiscountPercent(this.product.price, this.product.compareAtPrice);
+  }
+
+  get productSlug(): string {
+    return getProductSlug(this.product);
   }
 
   ngOnInit(): void {

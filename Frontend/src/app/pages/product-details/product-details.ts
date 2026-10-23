@@ -3,13 +3,14 @@ import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { PageTitleService, SITE_NAME } from '../../services/page-title.service';
 import { SeoService, absoluteUrl } from '../../services/seo.service';
 import { SITE_URL } from '../../services/api-config';
 import { Product } from '../../models/product';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getProductSlug, parseProductIdFromSlug } from '../../utils/product-slug.util';
 import { getStockLabel, getStockStatus } from '../../utils/stock-status.util';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
@@ -63,6 +64,7 @@ export class ProductDetails implements OnInit {
   readonly siteName = SITE_NAME;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
   private productService = inject(ProductService);
   private pageTitle = inject(PageTitleService);
   private seo = inject(SeoService);
@@ -104,6 +106,8 @@ export class ProductDetails implements OnInit {
   isLoading = signal(true);
   errorMessage = signal('');
   isLightboxOpen = signal(false);
+  isZooming = signal(false);
+  zoomTransformOrigin = signal('center center');
   relatedProducts = signal<Product[]>([]);
 
   reviews = signal<Review[]>([]);
@@ -150,7 +154,7 @@ export class ProductDetails implements OnInit {
     });
 
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      this.productId = Number(params.get('id'));
+      this.productId = parseProductIdFromSlug(params.get('id'));
       this.resetForNewProduct();
       this.loadProduct();
     });
@@ -162,6 +166,9 @@ export class ProductDetails implements OnInit {
     this.quantity.set(1);
     this.justAdded.set(false);
     this.isLightboxOpen.set(false);
+    this.isZooming.set(false);
+    this.zoomTransformOrigin.set('center center');
+    this.photoViewer.set(null);
     this.reviews.set([]);
     this.averageRating.set(0);
     this.reviewCount.set(0);
@@ -174,6 +181,13 @@ export class ProductDetails implements OnInit {
 
   loadProduct(): void {
     const id = this.productId;
+
+    if (isNaN(id) || id <= 0) {
+      this.product.set(null);
+      this.updateSeo(null, this.pageTitle.setPageTitle('Crystal Not Found'));
+      this.isLoading.set(false);
+      return;
+    }
 
     this.isLoading.set(true);
     this.errorMessage.set('');
@@ -192,6 +206,12 @@ export class ProductDetails implements OnInit {
         this.isLoading.set(false);
 
         if (activeProduct) {
+          const canonicalSlug = getProductSlug(activeProduct);
+          const currentParam = this.route.snapshot.paramMap.get('id');
+          if (canonicalSlug && currentParam !== canonicalSlug) {
+            this.location.replaceState(`/products/${canonicalSlug}`);
+          }
+
           this.loadRelatedProducts(activeProduct);
           this.loadReviews(activeProduct.productId);
           this.recentlyViewedService.record(activeProduct.productId);
@@ -223,7 +243,8 @@ export class ProductDetails implements OnInit {
 
     const images = product.images.map(image => absoluteUrl(image.imageUrl));
     const primaryImage = getPrimaryImageUrl(product);
-    const url = `${SITE_URL}/products/${product.productId}`;
+    const canonicalSlug = getProductSlug(product);
+    const url = `${SITE_URL}/products/${canonicalSlug}`;
 
     this.seo.update({
       title: fullTitle,
@@ -455,17 +476,49 @@ export class ProductDetails implements OnInit {
     });
   }
 
+  onImageMouseMove(event: MouseEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+    this.zoomTransformOrigin.set(`${x}% ${y}%`);
+    this.isZooming.set(true);
+  }
+
+  onImageMouseLeave(): void {
+    this.isZooming.set(false);
+    this.zoomTransformOrigin.set('center center');
+  }
+
   selectImage(imageUrl: string): void {
     this.selectedImageUrl.set(imageUrl);
   }
 
   openLightbox(): void {
-    if (this.selectedImageUrl()) {
-      this.isLightboxOpen.set(true);
-    }
+    const p = this.product();
+    if (!p) return;
+    const currentUrl = this.selectedImageUrl();
+    const urls = p.images && p.images.length > 0
+      ? p.images.map(img => img.imageUrl)
+      : (currentUrl ? [currentUrl] : []);
+    if (!urls.length) return;
+
+    const activeIndex = currentUrl ? urls.indexOf(currentUrl) : 0;
+    this.photoViewer.set({
+      urls,
+      index: activeIndex >= 0 ? activeIndex : 0,
+      caption: p.name
+    });
+    this.isLightboxOpen.set(true);
   }
 
   closeLightbox(): void {
+    const viewer = this.photoViewer();
+    if (viewer && viewer.urls[viewer.index]) {
+      this.selectedImageUrl.set(viewer.urls[viewer.index]);
+    }
+    this.photoViewer.set(null);
     this.isLightboxOpen.set(false);
   }
 

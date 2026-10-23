@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { CANCELLATION_REASONS, OrderSummary, OrderSummaryItem } from '../../models/order';
+import { getProductSlug } from '../../utils/product-slug.util';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ToastService } from '../../services/toast.service';
 import { NotificationService } from '../../services/notification.service';
@@ -60,6 +61,10 @@ export class Orders implements OnInit {
 
   orderItems(order: OrderSummary): OrderSummaryItem[] {
     return order.items ?? [];
+  }
+
+  itemSlug(item: OrderSummaryItem): string {
+    return getProductSlug({ productId: item.productId, name: item.productName });
   }
 
   // Like the big stores: first few products listed, the rest behind "+N more".

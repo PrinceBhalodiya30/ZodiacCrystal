@@ -121,7 +121,7 @@
         } @else if (attunedCrystals().length > 0) {
           <div class="crystals-mini-grid">
             @for (product of attunedCrystals(); track product.productId) {
-              <a [routerLink]="['/products', product.productId]" class="crystal-mini-card">
+              <a [routerLink]="['/products', getProductSlug(product)]" class="crystal-mini-card">
                 <div class="mini-card-image">
                   @if (product.images && product.images.length > 0) {
                     <img [src]="product.images[0].imageUrl" [alt]="product.name" imgFallback />
