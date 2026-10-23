@@ -165,25 +165,25 @@ export class Consultation implements OnInit {
   selectIntention(intent: QuizIntention): void {
     this.selectedIntention.set(intent);
     this.currentStep.set(2);
-    this.scrollToTop();
+    this.scrollToQuiz();
   }
 
   selectZodiac(sign: string): void {
     this.selectedZodiac.set(sign);
     this.currentStep.set(3);
-    this.scrollToTop();
+    this.scrollToQuiz();
   }
 
   selectForm(form: QuizForm): void {
     this.selectedForm.set(form);
     this.calculateMatches();
-    this.scrollToTop();
+    this.scrollToQuiz();
   }
 
   goToStep(step: number): void {
     if (step >= 1 && step <= 4) {
       this.currentStep.set(step);
-      this.scrollToTop();
+      this.scrollToQuiz();
     }
   }
 
@@ -193,13 +193,32 @@ export class Consultation implements OnInit {
     this.selectedForm.set(null);
     this.matchedCrystals.set([]);
     this.currentStep.set(1);
-    this.scrollToTop();
+    this.scrollToQuiz(true);
   }
 
-  private scrollToTop(): void {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  private scrollToQuiz(force: boolean = false): void {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
     }
+    const target = document.querySelector('.consultation-stepper') || document.querySelector('.consultation-card-wrapper');
+    if (!target) {
+      return;
+    }
+
+    const rect = target.getBoundingClientRect();
+    const navbarOffset = 90; // comfortable breathing room below sticky header
+
+    // If the stepper/quiz header is already nicely visible in the upper viewport, don't jump/scroll
+    const isComfortablyInView = rect.top >= 40 && rect.top <= window.innerHeight * 0.45;
+    if (!force && isComfortablyInView) {
+      return;
+    }
+
+    const targetY = window.scrollY + rect.top - navbarOffset;
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: 'smooth'
+    });
   }
 
   getImage(product: Product): string | null {
