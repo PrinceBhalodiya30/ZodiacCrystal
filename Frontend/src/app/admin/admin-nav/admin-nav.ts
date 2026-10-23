@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, afterNextRender, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AdminNavCountsService } from './admin-nav-counts.service';
@@ -35,11 +35,37 @@ const ICONS = ADMIN_NAV_ICONS;
   styleUrl: './admin-nav.css'
 })
 export class AdminNav implements OnInit {
+  private static lastNavScrollTop = 0;
+  private static lastNavScrollLeft = 0;
+  private el = inject(ElementRef);
+
   @ViewChild(AdminCommandPalette) commandPalette?: AdminCommandPalette;
   readonly siteName = SITE_NAME;
   private authService = inject(AuthService);
   private router = inject(Router);
   private counts = inject(AdminNavCountsService);
+
+  constructor() {
+    afterNextRender(() => {
+      const container = this.el.nativeElement.querySelector('.admin-nav-links') as HTMLElement | null;
+      if (!container) return;
+
+      if (AdminNav.lastNavScrollTop > 0 || AdminNav.lastNavScrollLeft > 0) {
+        container.scrollTop = AdminNav.lastNavScrollTop;
+        container.scrollLeft = AdminNav.lastNavScrollLeft;
+      }
+      const activeEl = container.querySelector('a.active') as HTMLElement | null;
+      activeEl?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  }
+
+  onNavScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target) {
+      AdminNav.lastNavScrollTop = target.scrollTop;
+      AdminNav.lastNavScrollLeft = target.scrollLeft;
+    }
+  }
 
   openCommandPalette(): void {
     this.commandPalette?.open();

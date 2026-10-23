@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 export interface ConsultationRecord {
   id: string;
@@ -41,8 +41,11 @@ const ZODIAC_SYMBOLS: Record<string, string> = {
   'All Signs': '✦'
 };
 
+import { Router } from '@angular/router';
+
 @Injectable({ providedIn: 'root' })
 export class QuizService {
+  private router = inject(Router);
   isOpen = signal(false);
 
   private consultations: ConsultationRecord[] = [];
@@ -52,7 +55,8 @@ export class QuizService {
   }
 
   open(): void {
-    this.isOpen.set(true);
+    this.isOpen.set(false);
+    this.router.navigate(['/consultation']);
   }
 
   close(): void {

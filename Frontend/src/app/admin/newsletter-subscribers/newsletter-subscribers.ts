@@ -1,5 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NewsletterService } from '../../services/newsletter.service';
@@ -33,6 +33,16 @@ export class AdminNewsletterSubscribers implements OnInit {
   subscribers = signal<NewsletterSubscriber[]>([]);
   isLoading = signal(true);
   errorMessage = signal('');
+
+  // Multi-select & Bulk toolbar state
+  selectedIds = signal<Set<number>>(new Set());
+  selectedCount = computed(() => this.selectedIds().size);
+  pageAllSelected = computed(() => {
+    const items = this.subscribers();
+    return items.length > 0 && items.every(s => this.selectedIds().has(s.newsletterSubscriberId));
+  });
+  bulkAction = signal<'unsubscribe'>('unsubscribe');
+  isBulkUpdating = signal(false);
 
   page = signal(1);
   totalPages = signal(1);
@@ -78,12 +88,14 @@ export class AdminNewsletterSubscribers implements OnInit {
   }
 
   clearFilters(): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set('');
     this.onStatusChange('active');
   }
 
   onStatusChange(status: NewsletterStatusFilter): void {
+    this.clearSelection();
     this.statusFilter.set(status);
     this.page.set(1);
     this.loadSubscribers();
@@ -114,6 +126,7 @@ export class AdminNewsletterSubscribers implements OnInit {
   }
 
   onSearchChange(term: string): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set(term);
     this.page.set(1);
@@ -121,6 +134,7 @@ export class AdminNewsletterSubscribers implements OnInit {
   }
 
   onPageChange(page: number): void {
+    this.clearSelection();
     this.page.set(page);
     this.loadSubscribers();
   }
@@ -171,5 +185,78 @@ export class AdminNewsletterSubscribers implements OnInit {
         blobErrorMessage(err, 'Unable to export subscribers.').then(message => this.toast.error(message));
       }
     });
+  }
+
+  toggleSelectSubscriber(subscriberId: number): void {
+    this.selectedIds.update(current => {
+      const next = new Set(current);
+      if (next.has(subscriberId)) {
+        next.delete(subscriberId);
+      } else {
+        next.add(subscriberId);
+      }
+      return next;
+    });
+  }
+
+  toggleSelectAllPage(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      const pageIds = this.subscribers().map(s => s.newsletterSubscriberId);
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.add(id);
+        return next;
+      });
+    } else {
+      const pageIds = new Set(this.subscribers().map(s => s.newsletterSubscriberId));
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.delete(id);
+        return next;
+      });
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  async applyBulkAction(): Promise<void> {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0 || this.isBulkUpdating()) return;
+
+    const count = ids.length;
+    const confirmed = await this.confirmDialog.confirm(
+      `Remove ${count} selected subscriber(s) from the newsletter? They'll be marked as unsubscribed and left out of future exports.`,
+      { confirmLabel: 'Remove Selected', cancelLabel: 'Cancel', danger: true }
+    );
+    if (!confirmed) return;
+
+    this.isBulkUpdating.set(true);
+    let successCount = 0;
+    let failedCount = 0;
+
+    for (const id of ids) {
+      try {
+        await firstValueFrom(this.newsletterService.unsubscribeAdmin(id));
+        successCount++;
+      } catch {
+        failedCount++;
+      }
+    }
+
+    this.isBulkUpdating.set(false);
+    this.clearSelection();
+    this.loadSubscribers();
+    this.loadStats();
+
+    if (successCount > 0 && failedCount === 0) {
+      this.toast.success(`Successfully removed ${successCount} subscriber(s) from the newsletter.`);
+    } else if (successCount > 0 && failedCount > 0) {
+      this.toast.success(`Removed ${successCount} subscriber(s); ${failedCount} could not be updated.`);
+    } else if (failedCount > 0) {
+      this.toast.error(`Unable to remove ${failedCount} subscriber(s).`);
+    }
   }
 }

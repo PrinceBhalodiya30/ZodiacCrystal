@@ -34,3 +34,31 @@
 .low-stock-toggle input {
   accent-color: var(--color-brand);
 }
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.btn-save-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background-color: var(--color-brand);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s ease;
+}
+
+.btn-save-all:hover {
+  background-color: var(--color-brand-hover, #142e22);
+  transform: translateY(-1px);
+}
+
+tr.is-selected {
+  background-color: rgba(27, 58, 43, 0.04);
+}
+

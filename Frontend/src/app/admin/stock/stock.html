@@ -3,11 +3,28 @@
 <section class="container admin-stock-page">
   <div class="page-header">
     <h1>Manage Stock</h1>
-    <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
-    [title]="'Exports the ' + totalCount() + ' row(s) matching the current filters'"
-    (click)="exportCsv()">
-      {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
-    </button>
+    <div class="page-header-actions">
+      @if (changedCount() > 0) {
+        <button
+          type="button"
+          class="btn btn-save-all"
+          [disabled]="isSavingAll()"
+          (click)="saveAllChanged()"
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          {{ isSavingAll() ? 'Saving All...' : 'Save All Changes (' + changedCount() + ')' }}
+        </button>
+      }
+      <button type="button" class="btn btn-outline" [disabled]="isExporting() || totalCount() === 0"
+      [title]="'Exports the ' + totalCount() + ' row(s) matching the current filters'"
+      (click)="exportCsv()">
+        {{ isExporting() ? 'Exporting...' : 'Export (' + totalCount() + ')' }}
+      </button>
+    </div>
   </div>
 
   <div class="filter-bar">
@@ -33,6 +50,44 @@
     }
   </div>
 
+  @if (selectedCount() > 0) {
+    <div class="bulk-bar" role="region" aria-label="Bulk stock actions">
+      <div class="bulk-bar-info">
+        <span class="bulk-badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <strong>{{ selectedCount() }}</strong> product{{ selectedCount() === 1 ? '' : 's' }} selected
+        </span>
+        <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear</button>
+      </div>
+      <div class="bulk-bar-controls">
+        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" name="bulkAction" aria-label="Bulk stock action">
+          <option value="add">Add stock (+)</option>
+          <option value="subtract">Reduce stock (-)</option>
+          <option value="set">Set exact stock</option>
+          <option value="outOfStock">Mark as Out of Stock (0)</option>
+        </select>
+        @if (bulkAction() !== 'outOfStock') {
+          <input
+            type="number"
+            class="bulk-input"
+            min="0"
+            step="1"
+            [ngModel]="bulkQuantity()"
+            (ngModelChange)="bulkQuantity.set($event)"
+            name="bulkQuantity"
+            aria-label="Stock quantity"
+            placeholder="Qty"
+          />
+        }
+        <button type="button" class="btn btn-bulk-apply" [disabled]="isBulkUpdating()" (click)="applyBulkAction()">
+          {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
+        </button>
+      </div>
+    </div>
+  }
+
   @if (isLoading() && products().length === 0) {
     <app-spinner label="Loading products..."></app-spinner>
   } @else if (errorMessage()) {
@@ -52,6 +107,14 @@
       <table class="stack-table">
         <thead>
           <tr>
+            <th class="cb-col" style="width: 44px">
+              <input
+                type="checkbox"
+                [checked]="pageAllSelected()"
+                (change)="toggleSelectAllPage($event)"
+                aria-label="Select all products on this page"
+              />
+            </th>
             <th>SKU</th>
             <th>Name</th>
             <th>Category</th>
@@ -62,7 +125,15 @@
         </thead>
         <tbody>
           @for (product of products(); track product.productId) {
-            <tr>
+            <tr [class.is-selected]="selectedIds().has(product.productId)">
+              <td class="cb-col" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [checked]="selectedIds().has(product.productId)"
+                  (change)="toggleSelectProduct(product.productId)"
+                  [attr.aria-label]="'Select ' + product.name"
+                />
+              </td>
               <td data-label="SKU">{{ product.sku }}</td>
               <td data-label="Name">{{ product.name }}</td>
               <td data-label="Category">{{ product.categoryName || 'Uncategorized' }}</td>

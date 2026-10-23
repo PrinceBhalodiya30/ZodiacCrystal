@@ -35,6 +35,30 @@
     }
   </div>
 
+  @if (selectedCount() > 0) {
+    <div class="bulk-bar" role="region" aria-label="Bulk user actions">
+      <div class="bulk-bar-info">
+        <span class="bulk-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <strong>{{ selectedCount() }}</strong> user{{ selectedCount() === 1 ? '' : 's' }} selected
+        </span>
+        <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear selection</button>
+      </div>
+      <div class="bulk-bar-controls">
+        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" aria-label="Bulk action">
+          <option value="activate">Activate Selected</option>
+          <option value="deactivate">Deactivate Selected</option>
+          <option value="delete">Delete Selected</option>
+        </select>
+        <button type="button" class="btn btn-bulk-apply" [disabled]="isBulkUpdating()" (click)="applyBulkAction()">
+          {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
+        </button>
+      </div>
+    </div>
+  }
+
   @if (isLoading() && users().length === 0) {
     <app-spinner label="Loading users..."></app-spinner>
   } @else if (errorMessage()) {
@@ -54,6 +78,14 @@
       <table class="stack-table">
         <thead>
           <tr>
+            <th class="cb-col" style="width: 44px">
+              <input
+                type="checkbox"
+                aria-label="Select all users on this page"
+                [checked]="pageAllSelected()"
+                (change)="toggleSelectAllPage($event)"
+              />
+            </th>
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
@@ -64,7 +96,17 @@
         </thead>
         <tbody>
           @for (user of users(); track user.userId) {
-            <tr>
+            <tr [class.is-selected]="selectedIds().has(user.userId)">
+              <td class="cb-col" (click)="$event.stopPropagation()">
+                @if (user.userId !== currentUserId) {
+                  <input
+                    type="checkbox"
+                    [attr.aria-label]="'Select user ' + user.name"
+                    [checked]="selectedIds().has(user.userId)"
+                    (change)="toggleSelectUser(user.userId)"
+                  />
+                }
+              </td>
               <td data-label="Name">{{ user.name }}</td>
               <td data-label="Email">{{ user.email }}</td>
               <td data-label="Role">

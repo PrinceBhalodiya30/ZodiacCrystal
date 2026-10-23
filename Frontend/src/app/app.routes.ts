@@ -45,6 +45,12 @@ export const routes: Routes = [
   { path: 'zodiac', title: 'Shop by Zodiac Sign', component: ZodiacPage, data: { description: 'Find the crystals for your zodiac sign, from Aries to Pisces, and the qualities each stone supports.' } },
   { path: 'zodiac/:id', title: 'Zodiac Sign', component: ZodiacProducts },
   { path: 'categories', title: 'Categories', component: Categories, data: { description: 'Shop crystals by type: tumbled stones, raw crystals, towers, spheres, jewellery and more.' } },
+  {
+    path: 'consultation',
+    title: 'Crystal Consultation',
+    data: { description: 'Complete our guided crystal consultation to discover the specimens attuned to your astrological blueprint and intentions.' },
+    loadComponent: () => import('./pages/consultation/consultation').then(m => m.Consultation)
+  },
   { path: 'login', title: 'Login', component: Login, data: { noindex: true } },
   { path: 'register', title: 'Create Account', component: Register, data: { noindex: true } },
   { path: 'forgot-password', title: 'Forgot Password', component: ForgotPassword, data: { noindex: true } },

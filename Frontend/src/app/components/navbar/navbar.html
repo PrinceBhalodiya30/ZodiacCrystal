@@ -37,9 +37,7 @@
       <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">Zodiac Signs</a>
       <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">Categories</a>
       <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
-      <button type="button" class="navbar-quiz-btn" (click)="openQuiz(); closeMenu()" aria-label="Open crystal consultation">
-        Crystal Consultation
-      </button>
+      <a routerLink="/consultation" routerLinkActive="active" (click)="closeMenu()">Crystal Consultation</a>
 
       @if (authService.isLoggedIn()) {
         @if (authService.isAdmin()) {

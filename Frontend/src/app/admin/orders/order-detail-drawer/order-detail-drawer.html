@@ -201,20 +201,20 @@
       </div>
 
       <footer class="drawer-footer">
-        <button type="button" class="btn btn-outline" (click)="printPackingSlip()" title="Print packing slip with barcode and checklist">
-          🖨️ Print Slip &amp; Invoice
+        <button type="button" class="btn btn-outline" (click)="printPackingSlip()" title="Print warehouse packing slip with item checklist">
+          🖨️ Packing Slip
         </button>
-        <button type="button" class="btn btn-outline" [disabled]="isDownloadingInvoice()" (click)="downloadInvoice()">
+        <button type="button" class="btn btn-outline" [disabled]="isDownloadingInvoice()" (click)="downloadInvoice()" title="Download tax invoice PDF">
           @if (isDownloadingInvoice()) {
             <span class="btn-spinner" aria-hidden="true"></span> Preparing...
           } @else {
-            PDF Invoice
+            📄 Invoice (PDF)
           }
         </button>
         <button type="button" class="btn btn-outline" (click)="close()">Close</button>
       </footer>
 
-      <!-- Printable Packing Slip & Invoice (Visible in Print Mode or Preview) -->
+      <!-- Printable Packing Slip (Visible in Print Mode or Preview) -->
       @if (isPrintingSlip()) {
         <div class="print-preview-modal" (click)="closePrintSlip()">
           <div class="print-preview-dialog" (click)="$event.stopPropagation()">
@@ -234,7 +234,7 @@
                   <div class="slip-brand-contact">support@zodiaccrystals.com · www.zodiaccrystals.com</div>
                 </div>
                 <div class="slip-doc-meta">
-                  <h1 class="slip-title">PACKING SLIP &amp; INVOICE</h1>
+                  <h1 class="slip-title">WAREHOUSE PACKING SLIP</h1>
                   <div class="slip-order-num">Order #{{ d.order.orderId }}</div>
                   <div class="slip-order-date">Date: {{ d.order.orderDate | date:'dd MMM yyyy' }}</div>
                   <div class="slip-order-status">Payment: {{ d.order.paymentMethod }} · {{ d.order.paymentStatus }}</div>

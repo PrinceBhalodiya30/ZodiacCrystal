@@ -25,9 +25,11 @@ export class Customer360Drawer implements OnChanges {
   @Input() customerName?: string;
   @Input() customerRole?: string;
   @Input() customerSince?: string;
+  @Input() backToOrderId?: number;
 
   @Output() closed = new EventEmitter<void>();
   @Output() viewOrder = new EventEmitter<number>();
+  @Output() backToOrder = new EventEmitter<number>();
 
   isLoading = signal(true);
   orders = signal<AdminOrder[]>([]);

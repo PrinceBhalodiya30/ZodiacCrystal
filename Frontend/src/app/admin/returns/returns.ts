@@ -13,7 +13,8 @@ import { ReturnRequest } from '../../models/return-request';
 import { scrollBehavior } from '../../utils/motion.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { Pager } from '../../components/pager/pager';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 
 const PAGE_SIZE = 20;
 
@@ -31,6 +32,7 @@ import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
 })
 export class AdminReturns implements OnInit {
   private returnService = inject(ReturnService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   isExporting = signal(false);
   private toast = inject(ToastService);
@@ -46,6 +48,16 @@ export class AdminReturns implements OnInit {
   errorMessage = signal('');
   // Defaults to what needs attention; a link can pick another one (?status=Approved, or ?status= for all).
   statusFilter = signal(this.initialStatus());
+
+  // Multi-select & Bulk toolbar state
+  selectedIds = signal<Set<number>>(new Set());
+  selectedCount = computed(() => this.selectedIds().size);
+  pageAllSelected = computed(() => {
+    const items = this.returns();
+    return items.length > 0 && items.every(r => this.selectedIds().has(r.returnRequestId));
+  });
+  bulkAction = signal<'approve' | 'reject'>('approve');
+  isBulkUpdating = signal(false);
 
   page = signal(1);
   totalPages = signal(1);
@@ -84,6 +96,7 @@ export class AdminReturns implements OnInit {
   }
 
   onStatusFilterChange(status: string): void {
+    this.clearSelection();
     this.statusFilter.set(status);
     this.page.set(1);
     this.active.set(null);
@@ -99,6 +112,7 @@ export class AdminReturns implements OnInit {
   onSearchInput = debounced((term: string) => this.onSearchChange(term));
 
   onSearchChange(term: string): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set(term);
     this.page.set(1);
@@ -107,12 +121,14 @@ export class AdminReturns implements OnInit {
   }
 
   clearFilters(): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set('');
     this.onStatusFilterChange(this.defaultStatus);
   }
 
   onPageChange(page: number): void {
+    this.clearSelection();
     this.page.set(page);
     this.active.set(null);
     this.loadReturns();
@@ -240,5 +256,84 @@ export class AdminReturns implements OnInit {
         blobErrorMessage(err, 'Unable to export returns.').then(message => this.toast.error(message));
       }
     });
+  }
+
+  toggleSelectReturn(returnId: number): void {
+    this.selectedIds.update(current => {
+      const next = new Set(current);
+      if (next.has(returnId)) {
+        next.delete(returnId);
+      } else {
+        next.add(returnId);
+      }
+      return next;
+    });
+  }
+
+  toggleSelectAllPage(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      const pageIds = this.returns().map(r => r.returnRequestId);
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.add(id);
+        return next;
+      });
+    } else {
+      const pageIds = new Set(this.returns().map(r => r.returnRequestId));
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.delete(id);
+        return next;
+      });
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  async applyBulkAction(): Promise<void> {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0 || this.isBulkUpdating()) return;
+
+    const action = this.bulkAction();
+    if (action === 'reject') {
+      const confirmed = await this.confirmDialog.confirm(
+        `Are you sure you want to reject ${ids.length} selected return request(s)?`,
+        { confirmLabel: 'Reject Returns', cancelLabel: 'Cancel', danger: true }
+      );
+      if (!confirmed) return;
+    }
+
+    this.isBulkUpdating.set(true);
+    let successCount = 0;
+    let failedCount = 0;
+
+    for (const id of ids) {
+      try {
+        if (action === 'approve') {
+          await firstValueFrom(this.returnService.approve(id));
+        } else {
+          await firstValueFrom(this.returnService.reject(id, 'Bulk rejected by administrator'));
+        }
+        successCount++;
+      } catch {
+        failedCount++;
+      }
+    }
+
+    this.isBulkUpdating.set(false);
+    this.clearSelection();
+    this.loadReturns();
+    this.navCounts.refresh();
+
+    if (successCount > 0 && failedCount === 0) {
+      this.toast.success(`Successfully ${action === 'approve' ? 'approved' : 'rejected'} ${successCount} return request(s).`);
+    } else if (successCount > 0 && failedCount > 0) {
+      this.toast.success(`Updated ${successCount} return(s); ${failedCount} could not be updated.`);
+    } else if (failedCount > 0) {
+      this.toast.error(`Unable to update ${failedCount} return request(s).`);
+    }
   }
 }

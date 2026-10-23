@@ -24,7 +24,7 @@ namespace Zodiac_Crystal.Services
         private static byte[]? GetLogoBytes()
         {
             if (_logoBytes != null) return _logoBytes;
-            string[] files = ["logo.png", "logo-invoice.png"];
+            string[] files = ["logo-invoice.png", "logo.png"];
             foreach (var f in files)
             {
                 try

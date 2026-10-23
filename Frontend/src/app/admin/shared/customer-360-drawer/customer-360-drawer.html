@@ -7,14 +7,23 @@
     (click)="$event.stopPropagation()"
   >
     <header class="drawer-header">
-      <div class="customer-badge-head">
-        <div class="customer-avatar" aria-hidden="true">{{ avatarInitials() }}</div>
-        <div>
-          <h2 id="customer360Title">{{ displayName() }}</h2>
-          <p class="drawer-subtitle">
-            <a [href]="'mailto:' + customerEmail">{{ customerEmail }}</a>
-            @if (customerRole) { · <span class="role-pill">{{ customerRole }}</span> }
-          </p>
+      <div class="drawer-header-left">
+        @if (backToOrderId) {
+          <div class="drawer-header-actions">
+            <button type="button" class="btn btn-sm btn-outline back-order-btn" (click)="backToOrder.emit(backToOrderId)" title="Return to Order #{{ backToOrderId }}">
+              ← Back to Order #{{ backToOrderId }}
+            </button>
+          </div>
+        }
+        <div class="customer-badge-head">
+          <div class="customer-avatar" aria-hidden="true">{{ avatarInitials() }}</div>
+          <div>
+            <h2 id="customer360Title">{{ displayName() }}</h2>
+            <p class="drawer-subtitle">
+              <a [href]="'mailto:' + customerEmail">{{ customerEmail }}</a>
+              @if (customerRole) { · <span class="role-pill">{{ customerRole }}</span> }
+            </p>
+          </div>
         </div>
       </div>
       <button type="button" class="drawer-close" aria-label="Close customer 360" (click)="close()">

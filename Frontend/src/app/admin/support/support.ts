@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { AdminNav } from '../admin-nav/admin-nav';
 import { AdminNavCountsService } from '../admin-nav/admin-nav-counts.service';
 import { Spinner } from '../../components/spinner/spinner';
@@ -88,6 +88,16 @@ export class AdminSupport implements OnInit {
   onSearchInput = debounced((term: string) => this.onSearchChange(term));
   private loadSubscription?: Subscription;
 
+  // Multi-select & Bulk toolbar state
+  selectedIds = signal<Set<number>>(new Set());
+  selectedCount = computed(() => this.selectedIds().size);
+  pageAllSelected = computed(() => {
+    const items = this.tickets();
+    return items.length > 0 && items.every(t => this.selectedIds().has(t.supportTicketId));
+  });
+  bulkAction = signal<'Resolved' | 'Closed' | 'Open'>('Resolved');
+  isBulkUpdating = signal(false);
+
   // Open conversation
   selected = signal<SupportTicket | null>(null);
   isLoadingTicket = signal(false);
@@ -121,18 +131,21 @@ export class AdminSupport implements OnInit {
   }
 
   onStatusFilterChange(status: string): void {
+    this.clearSelection();
     this.statusFilter.set(status);
     this.page.set(1);
     this.loadTickets();
   }
 
   onCategoryFilterChange(category: string): void {
+    this.clearSelection();
     this.categoryFilter.set(category);
     this.page.set(1);
     this.loadTickets();
   }
 
   onSearchChange(term: string): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set(term);
     this.page.set(1);
@@ -140,6 +153,8 @@ export class AdminSupport implements OnInit {
   }
 
   clearFilters(): void {
+    this.clearSelection();
+    this.closePanel();
     this.onSearchInput.cancel();
     this.searchTerm.set('');
     this.categoryFilter.set('');
@@ -147,6 +162,7 @@ export class AdminSupport implements OnInit {
   }
 
   onPageChange(page: number): void {
+    this.clearSelection();
     this.page.set(page);
     this.loadTickets();
   }
@@ -328,5 +344,80 @@ export class AdminSupport implements OnInit {
       },
       error: (error: HttpErrorResponse) => this.toast.error(error.error?.message || 'Unable to update the ticket.')
     });
+  }
+
+  toggleSelectTicket(ticketId: number): void {
+    this.selectedIds.update(current => {
+      const next = new Set(current);
+      if (next.has(ticketId)) {
+        next.delete(ticketId);
+      } else {
+        next.add(ticketId);
+      }
+      return next;
+    });
+  }
+
+  toggleSelectAllPage(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      const pageIds = this.tickets().map(t => t.supportTicketId);
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.add(id);
+        return next;
+      });
+    } else {
+      const pageIds = new Set(this.tickets().map(t => t.supportTicketId));
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.delete(id);
+        return next;
+      });
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  async applyBulkAction(): Promise<void> {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0 || this.isBulkUpdating()) return;
+
+    const action = this.bulkAction();
+    if (action === 'Closed') {
+      const confirmed = await this.confirmDialog.confirm(
+        `Are you sure you want to close ${ids.length} selected ticket(s)?`,
+        { confirmLabel: 'Close Tickets', cancelLabel: 'Keep Open', danger: true }
+      );
+      if (!confirmed) return;
+    }
+
+    this.isBulkUpdating.set(true);
+    let successCount = 0;
+    let failedCount = 0;
+
+    for (const id of ids) {
+      try {
+        await firstValueFrom(this.supportService.updateStatusAdmin(id, action));
+        successCount++;
+      } catch {
+        failedCount++;
+      }
+    }
+
+    this.isBulkUpdating.set(false);
+    this.clearSelection();
+    this.loadTickets(true);
+    this.navCounts.refresh();
+
+    if (successCount > 0 && failedCount === 0) {
+      this.toast.success(`Updated status to ${action} for ${successCount} ticket(s).`);
+    } else if (successCount > 0 && failedCount > 0) {
+      this.toast.success(`Updated ${successCount} ticket(s); ${failedCount} could not be updated.`);
+    } else if (failedCount > 0) {
+      this.toast.error(`Unable to update ${failedCount} ticket(s).`);
+    }
   }
 }

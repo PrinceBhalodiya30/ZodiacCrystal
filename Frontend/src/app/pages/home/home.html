@@ -11,10 +11,10 @@
       </p>
       <div class="hero-actions">
         <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
-        <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openQuiz()">
+        <a class="btn btn-outline hero-btn-secondary" routerLink="/consultation">
           <span class="btn-sparkle" aria-hidden="true">✦</span>
           <span>Crystal Consultation</span>
-        </button>
+        </a>
       </div>
       <ul class="hero-trust">
         <li class="trust-badge">
@@ -104,9 +104,9 @@
         Every natural specimen carries a distinct crystalline geometry that harmonizes with your natal sign.
         Complete our 3-step consultation to discover the specimens attuned to your astrological blueprint.
       </p>
-      <button type="button" class="btn btn-accent consultation-cta" (click)="openQuiz()">
+      <a class="btn btn-accent consultation-cta" routerLink="/consultation">
         Begin Consultation →
-      </button>
+      </a>
     </div>
     <div class="consultation-callout-visual" aria-hidden="true">
       <div class="astrolabe-art">

@@ -36,6 +36,29 @@
     }
   </div>
 
+  @if (selectedCount() > 0) {
+    <div class="bulk-bar" role="region" aria-label="Bulk return actions">
+      <div class="bulk-bar-info">
+        <span class="bulk-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <strong>{{ selectedCount() }}</strong> return{{ selectedCount() === 1 ? '' : 's' }} selected
+        </span>
+        <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear selection</button>
+      </div>
+      <div class="bulk-bar-controls">
+        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" aria-label="Bulk action">
+          <option value="approve">Approve Selected</option>
+          <option value="reject">Reject Selected</option>
+        </select>
+        <button type="button" class="btn btn-bulk-apply" [disabled]="isBulkUpdating()" (click)="applyBulkAction()">
+          {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
+        </button>
+      </div>
+    </div>
+  }
+
   @if (active(); as a) {
     <div #actionPanel class="action-panel" [class.danger]="a.action === 'reject'" animate.leave="reveal-out">
       <h2>{{ actionTitle(a.action) }} · Order #{{ a.request.orderId }}</h2>
@@ -94,6 +117,14 @@
       <table class="stack-table">
         <thead>
           <tr>
+            <th class="cb-col" style="width: 44px">
+              <input
+                type="checkbox"
+                aria-label="Select all returns on this page"
+                [checked]="pageAllSelected()"
+                (change)="toggleSelectAllPage($event)"
+              />
+            </th>
             <th>Order</th>
             <th>Customer</th>
             <th>Reason</th>
@@ -105,7 +136,15 @@
         </thead>
         <tbody>
           @for (r of returns(); track r.returnRequestId) {
-            <tr [class.is-active]="active()?.request?.returnRequestId === r.returnRequestId">
+            <tr [class.is-active]="active()?.request?.returnRequestId === r.returnRequestId" [class.is-selected]="selectedIds().has(r.returnRequestId)">
+              <td class="cb-col" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [attr.aria-label]="'Select return for order #' + r.orderId"
+                  [checked]="selectedIds().has(r.returnRequestId)"
+                  (change)="toggleSelectReturn(r.returnRequestId)"
+                />
+              </td>
               <td data-label="Order">#{{ r.orderId }}</td>
               <td data-label="Customer">
                 <div class="customer-name">{{ r.customerName }}</div>

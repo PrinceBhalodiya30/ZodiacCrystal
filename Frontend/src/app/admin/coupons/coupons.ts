@@ -1,5 +1,5 @@
-﻿import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -45,6 +45,16 @@ export class AdminCoupons implements OnInit {
   updatingCouponId = signal<number | null>(null);
   notifyingCouponId = signal<number | null>(null);
 
+  // Multi-select & Bulk toolbar state
+  selectedIds = signal<Set<number>>(new Set());
+  selectedCount = computed(() => this.selectedIds().size);
+  pageAllSelected = computed(() => {
+    const items = this.coupons();
+    return items.length > 0 && items.every(c => this.selectedIds().has(c.couponId));
+  });
+  bulkAction = signal<'activate' | 'deactivate' | 'delete'>('activate');
+  isBulkUpdating = signal(false);
+
   page = signal(1);
   totalPages = signal(1);
   // Rows matching the current filters - shown on the Export button.
@@ -86,6 +96,7 @@ export class AdminCoupons implements OnInit {
   }
 
   onSearchChange(term: string): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set(term);
     this.page.set(1);
@@ -93,11 +104,13 @@ export class AdminCoupons implements OnInit {
   }
 
   onFilterChange(): void {
+    this.clearSelection();
     this.page.set(1);
     this.loadCoupons();
   }
 
   clearFilters(): void {
+    this.clearSelection();
     this.onSearchInput.cancel();
     this.searchTerm.set('');
     this.statusFilter.set('');
@@ -125,6 +138,7 @@ export class AdminCoupons implements OnInit {
   };
 
   onPageChange(page: number): void {
+    this.clearSelection();
     this.page.set(page);
     this.loadCoupons();
   }
@@ -396,5 +410,109 @@ export class AdminCoupons implements OnInit {
         blobErrorMessage(err, 'Unable to export coupons.').then(message => this.toast.error(message));
       }
     });
+  }
+
+  toggleSelectCoupon(couponId: number): void {
+    this.selectedIds.update(current => {
+      const next = new Set(current);
+      if (next.has(couponId)) {
+        next.delete(couponId);
+      } else {
+        next.add(couponId);
+      }
+      return next;
+    });
+  }
+
+  toggleSelectAllPage(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      const pageIds = this.coupons().map(c => c.couponId);
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.add(id);
+        return next;
+      });
+    } else {
+      const pageIds = new Set(this.coupons().map(c => c.couponId));
+      this.selectedIds.update(current => {
+        const next = new Set(current);
+        for (const id of pageIds) next.delete(id);
+        return next;
+      });
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  async applyBulkAction(): Promise<void> {
+    const ids = Array.from(this.selectedIds());
+    if (ids.length === 0 || this.isBulkUpdating()) return;
+
+    const action = this.bulkAction();
+    const count = ids.length;
+
+    if (action === 'delete') {
+      const confirmed = await this.confirmDialog.confirm(
+        `Are you sure you want to delete ${count} selected coupon(s)? This cannot be undone.`,
+        { confirmLabel: 'Delete Coupons', cancelLabel: 'Cancel', danger: true }
+      );
+      if (!confirmed) return;
+    } else if (action === 'deactivate') {
+      const confirmed = await this.confirmDialog.confirm(
+        `Are you sure you want to deactivate ${count} selected coupon(s)? Customers will not be able to use them anymore.`,
+        { confirmLabel: 'Deactivate', cancelLabel: 'Cancel', danger: true }
+      );
+      if (!confirmed) return;
+    }
+
+    this.isBulkUpdating.set(true);
+    let successCount = 0;
+    let failedCount = 0;
+
+    for (const id of ids) {
+      const coupon = this.coupons().find(c => c.couponId === id);
+      try {
+        if (action === 'delete') {
+          await firstValueFrom(this.couponService.deleteCoupon(id));
+        } else {
+          if (!coupon) {
+            failedCount++;
+            continue;
+          }
+          const request = {
+            code: coupon.code,
+            description: coupon.description,
+            discountType: coupon.discountType,
+            discountValue: coupon.discountValue,
+            minimumOrderAmount: coupon.minimumOrderAmount,
+            startDate: coupon.startDate,
+            endDate: coupon.endDate,
+            usageLimit: coupon.usageLimit,
+            maxUsesPerUser: coupon.maxUsesPerUser ?? null,
+            isActive: action === 'activate'
+          };
+          await firstValueFrom(this.couponService.updateCoupon(id, request));
+        }
+        successCount++;
+      } catch {
+        failedCount++;
+      }
+    }
+
+    this.isBulkUpdating.set(false);
+    this.clearSelection();
+    this.loadCoupons();
+
+    const actionVerb = action === 'delete' ? 'deleted' : action === 'activate' ? 'activated' : 'deactivated';
+    if (successCount > 0 && failedCount === 0) {
+      this.toast.success(`Successfully ${actionVerb} ${successCount} coupon(s).`);
+    } else if (successCount > 0 && failedCount > 0) {
+      this.toast.success(`Updated ${successCount} coupon(s); ${failedCount} could not be updated.`);
+    } else if (failedCount > 0) {
+      this.toast.error(`Unable to update ${failedCount} coupon(s).`);
+    }
   }
 }

@@ -139,7 +139,7 @@
                     class="chip-btn"
                     style="font-size: 0.7rem; padding: 0.1rem 0.4rem; height: auto"
                     title="View Customer 360"
-                    (click)="$event.stopPropagation(); customer360Email.set(order.customerEmail)"
+                    (click)="$event.stopPropagation(); openCustomer360(order.customerEmail)"
                   >
                     👤 360
                   </button>
@@ -186,15 +186,17 @@
       [orderId]="id"
       (closed)="closeOrder()"
       (orderChanged)="onOrderChanged($event)"
-      (viewCustomer)="customer360Email.set($event)"
+      (viewCustomer)="openCustomer360($event, id)"
     ></app-order-detail-drawer>
   }
 
   @if (customer360Email(); as email) {
     <app-customer-360-drawer
       [customerEmail]="email"
-      (closed)="customer360Email.set(null)"
-      (viewOrder)="customer360Email.set(null); openOrderId.set($event)"
+      [backToOrderId]="previousOrderForCustomer360() ?? undefined"
+      (closed)="closeCustomer360()"
+      (backToOrder)="returnToPreviousOrder($event)"
+      (viewOrder)="closeCustomer360(); openOrderId.set($event)"
     ></app-customer-360-drawer>
   }
 </section>

@@ -15,6 +15,74 @@
   to { transform: translateX(0); }
 }
 
+.drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border, #ded7c8);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.drawer-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.drawer-header-actions {
+  width: 100%;
+}
+
+.back-order-btn {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  color: var(--color-brand, #244132);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: transparent;
+  border: 1px solid var(--color-border, #ded7c8);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.back-order-btn:hover {
+  background-color: var(--color-brand-light, #eaf1ed);
+}
+
+.drawer-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-border, #ded7c8);
+  background-color: transparent;
+  color: var(--color-muted, #524c43);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.drawer-close:hover {
+  background-color: var(--color-surface-tint, #f2eee6);
+  border-color: var(--color-border-hover, #c9c1b0);
+  color: var(--color-ink, #1c1a17);
+}
+
+.drawer-close svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
 .customer-badge-head {
   display: flex;
   align-items: center;
@@ -219,4 +287,15 @@
 .status-cancelled, .status-rejected, .status-closed {
   background: #fce8e6;
   color: #c5221f;
+}
+
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.95rem 1.5rem;
+  border-top: 1px solid var(--color-border, #ded7c8);
+  background-color: #ffffff;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }

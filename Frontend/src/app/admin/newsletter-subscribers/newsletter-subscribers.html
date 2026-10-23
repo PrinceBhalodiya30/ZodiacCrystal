@@ -62,6 +62,25 @@
     }
   </div>
 
+  @if (selectedCount() > 0) {
+    <div class="bulk-bar" role="region" aria-label="Bulk newsletter subscriber actions">
+      <div class="bulk-bar-info">
+        <span class="bulk-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <strong>{{ selectedCount() }}</strong> subscriber{{ selectedCount() === 1 ? '' : 's' }} selected
+        </span>
+        <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear selection</button>
+      </div>
+      <div class="bulk-bar-controls">
+        <button type="button" class="btn btn-bulk-apply" [disabled]="isBulkUpdating()" (click)="applyBulkAction()">
+          {{ isBulkUpdating() ? 'Removing...' : 'Remove Selected' }}
+        </button>
+      </div>
+    </div>
+  }
+
   @if (isLoading() && subscribers().length === 0) {
     <app-spinner label="Loading subscribers..."></app-spinner>
   } @else if (errorMessage()) {
@@ -83,6 +102,14 @@
       <table class="stack-table">
         <thead>
           <tr>
+            <th class="cb-col" style="width: 44px">
+              <input
+                type="checkbox"
+                aria-label="Select all subscribers on this page"
+                [checked]="pageAllSelected()"
+                (change)="toggleSelectAllPage($event)"
+              />
+            </th>
             <th>Email</th>
             <th>Status</th>
             <th>Customer</th>
@@ -92,7 +119,15 @@
         </thead>
         <tbody>
           @for (subscriber of subscribers(); track subscriber.newsletterSubscriberId) {
-            <tr>
+            <tr [class.is-selected]="selectedIds().has(subscriber.newsletterSubscriberId)">
+              <td class="cb-col" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [attr.aria-label]="'Select subscriber ' + subscriber.email"
+                  [checked]="selectedIds().has(subscriber.newsletterSubscriberId)"
+                  (change)="toggleSelectSubscriber(subscriber.newsletterSubscriberId)"
+                />
+              </td>
               <td data-label="Email">{{ subscriber.email }}</td>
               <td data-label="Status">
                 @if (subscriber.isActive) {

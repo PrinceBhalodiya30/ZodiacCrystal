@@ -21,7 +21,7 @@
     </button>
   </div>
 
-  <div class="admin-nav-links">
+  <div class="admin-nav-links" (scroll)="onNavScroll($event)">
     @for (group of groups; track group.title) {
       <div class="admin-nav-group">
         @if (group.title) {

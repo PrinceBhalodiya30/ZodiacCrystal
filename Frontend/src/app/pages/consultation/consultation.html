@@ -1,0 +1,365 @@
+<div class="consultation-page">
+  <div class="container">
+    <app-breadcrumbs [items]="breadcrumbs"></app-breadcrumbs>
+
+    <header class="consultation-hero">
+      <span class="consultation-kicker">✦ Atelier Astrological Curation</span>
+      <h1 class="consultation-title">The Crystal Consultation</h1>
+      <p class="consultation-subtitle">
+        Discover the exact specimens harmonically aligned with your astrological blueprint and current energetic intentions.
+      </p>
+
+      <!-- Step Stepper -->
+      <nav class="consultation-stepper" aria-label="Consultation steps">
+        <button
+          type="button"
+          class="stepper-item"
+          [class.active]="currentStep() === 1"
+          [class.completed]="currentStep() > 1"
+          (click)="goToStep(1)"
+        >
+          <span class="stepper-num">01</span>
+          <span class="stepper-label">Intention</span>
+        </button>
+        <span class="stepper-divider" [class.filled]="currentStep() > 1" aria-hidden="true"></span>
+        <button
+          type="button"
+          class="stepper-item"
+          [class.active]="currentStep() === 2"
+          [class.completed]="currentStep() > 2"
+          [disabled]="currentStep() < 2"
+          (click)="goToStep(2)"
+        >
+          <span class="stepper-num">02</span>
+          <span class="stepper-label">Zodiac</span>
+        </button>
+        <span class="stepper-divider" [class.filled]="currentStep() > 2" aria-hidden="true"></span>
+        <button
+          type="button"
+          class="stepper-item"
+          [class.active]="currentStep() === 3"
+          [class.completed]="currentStep() > 3"
+          [disabled]="currentStep() < 3"
+          (click)="goToStep(3)"
+        >
+          <span class="stepper-num">03</span>
+          <span class="stepper-label">Form</span>
+        </button>
+        <span class="stepper-divider" [class.filled]="currentStep() > 3" aria-hidden="true"></span>
+        <div class="stepper-item" [class.active]="currentStep() === 4">
+          <span class="stepper-num">04</span>
+          <span class="stepper-label">Resonance</span>
+        </div>
+      </nav>
+    </header>
+
+    <div class="consultation-card-wrapper">
+      <!-- Step 1: Intention -->
+      @if (currentStep() === 1) {
+        <section class="consultation-step animate-fade-in" aria-label="Step 1: Select intention">
+          <div class="step-intro">
+            <span class="step-indicator">Step 01 of 03</span>
+            <h2>Select Your Core Intention</h2>
+            <p>Choose the energetic frequency you wish to cultivate or restore in your daily life.</p>
+          </div>
+
+          <div class="intentions-grid">
+            @for (intent of intentions; track intent.id) {
+              <button
+                type="button"
+                class="intention-tile"
+                [class.selected]="selectedIntention()?.id === intent.id"
+                (click)="selectIntention(intent)"
+              >
+                <div class="intention-icon-wrap">
+                  @switch (intent.icon) {
+                    @case ('calm') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2.5c0 5-6 8-6 12a6 6 0 0 0 12 0c0-4-6-7-6-12Z"/>
+                        <path d="M12 9v5.5"/>
+                      </svg>
+                    }
+                    @case ('love') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
+                      </svg>
+                    }
+                    @case ('protect') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2 3.5 5.8v6.4c0 5.4 3.6 10.4 8.5 11.8 4.9-1.4 8.5-6.4 8.5-11.8V5.8L12 2Z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                    }
+                    @case ('focus') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M2 12c2.5-4.5 6-7 10-7s7.5 2.5 10 7c-2.5 4.5-6 7-10 7s-7.5-2.5-10-7Z"/>
+                        <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
+                      </svg>
+                    }
+                    @case ('abundance') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 6v12M15 9.5c0-1.5-1.3-2.5-3-2.5s-3 1-3 2.5 1.5 2 3 2.5 3 1 3 2.5-1.3 2.5-3 2.5-3-1-3-2.5"/>
+                      </svg>
+                    }
+                    @case ('energy') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      </svg>
+                    }
+                  }
+                </div>
+                <div class="intention-body">
+                  <h3 class="intention-title">{{ intent.label }}</h3>
+                  <p class="intention-desc">{{ intent.desc }}</p>
+                </div>
+              </button>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Step 2: Zodiac Sign -->
+      @if (currentStep() === 2) {
+        <section class="consultation-step animate-fade-in" aria-label="Step 2: Align with Zodiac">
+          <div class="step-intro">
+            <span class="step-indicator">Step 02 of 03</span>
+            <h2>Align with Your Astrological Sign</h2>
+            <p>Select your sun, moon, or rising sign — or opt for universal intuitive resonance.</p>
+          </div>
+
+          <div class="zodiac-options-grid">
+            @for (zod of zodiacSigns; track zod.name) {
+              <button
+                type="button"
+                class="zodiac-tile"
+                [class.selected]="selectedZodiac() === zod.name"
+                (click)="selectZodiac(zod.name)"
+              >
+                <div class="zodiac-medallion">
+                  <app-zodiac-icon class="zodiac-glyph" [sign]="zod.name"></app-zodiac-icon>
+                </div>
+                <span class="zodiac-name">{{ zod.name }}</span>
+                <span class="zodiac-element">{{ zod.element }}</span>
+                <span class="zodiac-dates">{{ zod.dates }}</span>
+              </button>
+            }
+
+            <button
+              type="button"
+              class="zodiac-tile zodiac-tile-universal"
+              [class.selected]="selectedZodiac() === 'any'"
+              (click)="selectZodiac('any')"
+            >
+              <div class="zodiac-medallion universal-medallion">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/>
+                  <path d="M12 3v18M3 12h18"/>
+                  <path d="m6 6 12 12M18 6 6 18"/>
+                </svg>
+              </div>
+              <div class="universal-meta">
+                <span class="zodiac-name">Intuitive Alignment</span>
+                <span class="zodiac-element">All Zodiac Signs · Universal Blueprint</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="consultation-nav-bar">
+            <button type="button" class="btn btn-outline" (click)="goToStep(1)">
+              ← Return to Intentions
+            </button>
+          </div>
+        </section>
+      }
+
+      <!-- Step 3: Crystal Form -->
+      @if (currentStep() === 3) {
+        <section class="consultation-step animate-fade-in" aria-label="Step 3: Preferred form">
+          <div class="step-intro">
+            <span class="step-indicator">Step 03 of 03</span>
+            <h2>Preferred Mineral Form</h2>
+            <p>How do you envision experiencing your crystal's tangible presence?</p>
+          </div>
+
+          <div class="forms-grid">
+            @for (form of forms; track form.id) {
+              <button
+                type="button"
+                class="form-tile"
+                [class.selected]="selectedForm()?.id === form.id"
+                (click)="selectForm(form)"
+              >
+                <div class="form-icon-wrap">
+                  @switch (form.icon) {
+                    @case ('raw') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3 8 9v11l4 2 4-2V9l-4-6Z"/>
+                        <path d="m8 9 4 2 4-2"/>
+                        <path d="M12 3v19"/>
+                        <path d="M4 14l4-3v9l-4-2v-4Z"/>
+                        <path d="M20 14l-4-3v9l4-2v-4Z"/>
+                      </svg>
+                    }
+                    @case ('polished') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m12 2-5 5v14l5 2 5-2V7l-5-5Z"/>
+                        <path d="M12 2v21"/>
+                        <path d="m7 7 5 3 5-3"/>
+                        <path d="m19 13-7 3-7-3"/>
+                      </svg>
+                    }
+                    @case ('jewelry') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <ellipse cx="12" cy="11" rx="8" ry="6"/>
+                        <circle cx="12" cy="5" r="1.4" fill="currentColor"/>
+                        <circle cx="17.5" cy="7.5" r="1.4" fill="currentColor"/>
+                        <circle cx="19.5" cy="11.5" r="1.4" fill="currentColor"/>
+                        <circle cx="16.5" cy="15.5" r="1.4" fill="currentColor"/>
+                        <circle cx="12" cy="17" r="1.8"/>
+                        <circle cx="7.5" cy="15.5" r="1.4" fill="currentColor"/>
+                        <circle cx="4.5" cy="11.5" r="1.4" fill="currentColor"/>
+                        <circle cx="6.5" cy="7.5" r="1.4" fill="currentColor"/>
+                        <path d="M12 18.8v2.5M10.5 22.5h3"/>
+                      </svg>
+                    }
+                    @case ('any') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" stroke-dasharray="2 3"/>
+                        <path d="M12 3v18M3 12h18"/>
+                        <polygon points="12 7 15 12 12 17 9 12" fill="currentColor" fill-opacity="0.15"/>
+                      </svg>
+                    }
+                  }
+                </div>
+                <div class="form-body">
+                  <h3 class="form-title">{{ form.label }}</h3>
+                  <p class="form-desc">{{ form.desc }}</p>
+                </div>
+              </button>
+            }
+          </div>
+
+          <div class="consultation-nav-bar">
+            <button type="button" class="btn btn-outline" (click)="goToStep(2)">
+              ← Return to Zodiac
+            </button>
+          </div>
+        </section>
+      }
+
+      <!-- Step 4: Results (Resonance) -->
+      @if (currentStep() === 4) {
+        <section class="consultation-step animate-fade-in" aria-label="Step 4: Astrological Resonance Results">
+          @if (isLoading()) {
+            <div class="consultation-loader">
+              <div class="crystal-silhouette">
+                <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 19 7 17 21 7 21 5 7 12 2"/>
+                  <line x1="12" y1="2" x2="12" y2="21"/>
+                  <line x1="5" y1="7" x2="19" y2="7"/>
+                </svg>
+              </div>
+              <h2 class="loader-title">Synthesizing Astrological Resonance</h2>
+              <p class="loader-subtitle">Evaluating natural mineral structures against your celestial blueprint...</p>
+            </div>
+          } @else {
+            <div class="results-header">
+              <span class="results-kicker">Curated Pairing</span>
+              <h2>Your Resonant Crystals</h2>
+              <p class="results-context">
+                Specially paired for
+                <span class="context-highlight">{{ selectedZodiac() === 'any' ? 'Universal Energetics' : selectedZodiac() }}</span>
+                centering upon
+                <span class="context-highlight">{{ selectedIntention()?.label }}</span>.
+              </p>
+            </div>
+
+            @if (matchedCrystals().length === 0) {
+              <div class="no-matches-state">
+                <p>No specimens currently matched this exact combination in our active collection.</p>
+                <button type="button" class="btn" (click)="startOver()">Adjust Consultation Criteria</button>
+              </div>
+            } @else {
+              <div class="matches-grid">
+                @for (match of matchedCrystals(); track match.product.productId) {
+                  <article class="specimen-card">
+                    <div class="specimen-resonance-tag">
+                      <span class="tag-dot"></span>
+                      {{ match.matchScore }}% Astrological Affinity
+                    </div>
+
+                    <div
+                      class="specimen-image-container"
+                      (click)="navigateToProduct(match.product.productId)"
+                      (keydown.enter)="navigateToProduct(match.product.productId)"
+                      role="button"
+                      tabindex="0"
+                      [attr.aria-label]="'View details of ' + match.product.name"
+                    >
+                      @if (getImage(match.product); as url) {
+                        <img [imgSrc]="url" [alt]="match.product.name" imgFallback loading="lazy" />
+                      } @else {
+                        <div class="specimen-fallback-box">
+                          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <polygon points="12 2 19 8 16 20 8 20 5 8 12 2"/>
+                          </svg>
+                        </div>
+                      }
+                    </div>
+
+                    <div class="specimen-body">
+                      <h3 class="specimen-title">
+                        <a (click)="navigateToProduct(match.product.productId)" (keydown.enter)="navigateToProduct(match.product.productId)" tabindex="0">
+                          {{ match.product.name }}
+                        </a>
+                      </h3>
+
+                      <div class="specimen-price">
+                        {{ match.product.price | inr }}
+                      </div>
+
+                      <blockquote class="specimen-reason">
+                        {{ match.reason }}
+                      </blockquote>
+
+                      <div class="specimen-actions">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          [class.btn-added]="addedProductId() === match.product.productId"
+                          [disabled]="match.product.stockQuantity <= 0"
+                          (click)="addToCart(match.product)"
+                        >
+                          {{ addedProductId() === match.product.productId ? 'Added to Bag ✓' : 'Add to Bag' }}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-compare"
+                          [class.active]="isCompared(match.product)"
+                          (click)="toggleCompare(match.product)"
+                        >
+                          {{ isCompared(match.product) ? 'In Compare ✓' : 'Compare' }}
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                }
+              </div>
+            }
+
+            <footer class="results-actions">
+              <button type="button" class="btn btn-outline" (click)="startOver()">
+                ↺ Retake Consultation
+              </button>
+              <a routerLink="/products" class="btn btn-primary">
+                Browse Full Catalog →
+              </a>
+            </footer>
+          }
+        </section>
+      }
+    </div>
+  </div>
+</div>
