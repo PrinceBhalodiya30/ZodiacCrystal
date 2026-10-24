@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -164,6 +164,10 @@ namespace Zodiac_Crystal.Controllers
                     CategoryName = p.Category.Name,
                     IsActive = p.IsActive,
                     CreatedAt = p.CreatedAt,
+                    WaterSafe = p.WaterSafe,
+                    SunlightExposure = p.SunlightExposure,
+                    Chakra = p.Chakra,
+                    Element = p.Element,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -269,6 +273,10 @@ namespace Zodiac_Crystal.Controllers
                     CategoryName = p.Category.Name,
                     IsActive = p.IsActive,
                     CreatedAt = p.CreatedAt,
+                    WaterSafe = p.WaterSafe,
+                    SunlightExposure = p.SunlightExposure,
+                    Chakra = p.Chakra,
+                    Element = p.Element,
 
                     AverageRating = _context.ProductReviews
                         .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved")
@@ -341,17 +349,22 @@ namespace Zodiac_Crystal.Controllers
                     p.Price,
                     p.CompareAtPrice,
                     p.StockQuantity,
+                    p.WaterSafe,
+                    p.SunlightExposure,
+                    p.Chakra,
+                    p.Element,
                     p.IsActive,
                     p.CreatedAt,
                     Zodiacs = p.Zodiacs.Select(z => z.Name).ToList()
                 })
                 .ToListAsync();
 
-            var headers = new[] { "ProductId", "SKU", "Name", "Category", "Price", "CompareAtPrice", "StockQuantity", "ZodiacSigns", "IsActive", "CreatedAt" };
+            var headers = new[] { "ProductId", "SKU", "Name", "Category", "Price", "CompareAtPrice", "StockQuantity", "WaterSafe", "SunlightExposure", "Chakra", "Element", "ZodiacSigns", "IsActive", "CreatedAt" };
 
             var rows = products.Select(p => new object?[]
             {
                 p.ProductId, p.SKU, p.Name, p.CategoryName, p.Price, p.CompareAtPrice, p.StockQuantity,
+                p.WaterSafe, p.SunlightExposure, p.Chakra, p.Element,
                 string.Join("; ", p.Zodiacs.OrderBy(z => z)), p.IsActive, p.CreatedAt
             });
 
@@ -440,6 +453,10 @@ namespace Zodiac_Crystal.Controllers
                     CategoryName = p.Category.Name,
                     IsActive = p.IsActive,
                     CreatedAt = p.CreatedAt,
+                    WaterSafe = p.WaterSafe,
+                    SunlightExposure = p.SunlightExposure,
+                    Chakra = p.Chakra,
+                    Element = p.Element,
 
                     // Approved, not-deleted reviews only (same as the list endpoints);
                     // the product page's JSON-LD rating comes from these.
@@ -566,6 +583,10 @@ namespace Zodiac_Crystal.Controllers
                     CategoryName = p.Category.Name,
                     IsActive = p.IsActive,
                     CreatedAt = p.CreatedAt,
+                    WaterSafe = p.WaterSafe,
+                    SunlightExposure = p.SunlightExposure,
+                    Chakra = p.Chakra,
+                    Element = p.Element,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -658,6 +679,10 @@ namespace Zodiac_Crystal.Controllers
                 StockQuantity = dto.StockQuantity,
                 CategoryId = dto.CategoryId,
                 IsActive = dto.IsActive,
+                WaterSafe = dto.WaterSafe,
+                SunlightExposure = dto.SunlightExposure,
+                Chakra = dto.Chakra,
+                Element = dto.Element,
                 Zodiacs = zodiacs
             };
 
@@ -768,6 +793,10 @@ namespace Zodiac_Crystal.Controllers
             product.CompareAtPrice = dto.CompareAtPrice;
             product.CategoryId = dto.CategoryId;
             product.IsActive = dto.IsActive;
+            product.WaterSafe = dto.WaterSafe;
+            product.SunlightExposure = dto.SunlightExposure;
+            product.Chakra = dto.Chakra;
+            product.Element = dto.Element;
 
             product.Zodiacs.Clear();
             foreach (var zodiac in zodiacs)

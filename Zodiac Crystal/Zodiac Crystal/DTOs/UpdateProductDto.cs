@@ -21,6 +21,18 @@ namespace Zodiac_Crystal.DTOs
         [Range(0.01, double.MaxValue, ErrorMessage = "Compare-at price must be greater than 0")]
         public decimal? CompareAtPrice { get; set; }
 
+        [StringLength(200)]
+        public string? WaterSafe { get; set; }
+
+        [StringLength(200)]
+        public string? SunlightExposure { get; set; }
+
+        [StringLength(150)]
+        public string? Chakra { get; set; }
+
+        [StringLength(100)]
+        public string? Element { get; set; }
+
         // No StockQuantity: saving a stock number read when the form opened would
         // erase any orders placed since. Stock changes go through adjust-stock,
         // which applies a delta to the current value instead.

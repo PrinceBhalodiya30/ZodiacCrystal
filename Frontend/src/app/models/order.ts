@@ -26,6 +26,9 @@ export interface CreateOrderRequest extends PaymentDetails {
   latitude?: number;
   longitude?: number;
   couponCode?: string;
+  isGiftWrap?: boolean;
+  giftRecipient?: string;
+  giftMessage?: string;
   // One per checkout attempt; a retry with the same key returns the order already placed.
   idempotencyKey?: string;
 }
@@ -57,6 +60,10 @@ export interface Order {
   couponCode?: string | null;
   discountAmount?: number;
   shippingFee: number;
+  isGiftWrap?: boolean;
+  giftFee?: number;
+  giftRecipient?: string | null;
+  giftMessage?: string | null;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
   paidAt?: string | null;
@@ -124,6 +131,7 @@ export interface AdminOrder {
   shippingFee?: number;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
+  isGiftWrap?: boolean;
 }
 
 // Admin order drawer: the order (same shape the customer sees) plus who placed

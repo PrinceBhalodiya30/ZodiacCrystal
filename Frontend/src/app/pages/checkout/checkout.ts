@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, shippingFeeFor } from '../../services/cart.service';
+import { CartService, GIFT_PACKAGING_FEE, shippingFeeFor } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { CouponService } from '../../services/coupon.service';
@@ -27,7 +27,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
   styleUrl: './checkout.css'
 })
 export class Checkout implements OnInit {
-  private cartService = inject(CartService);
+  readonly cartService = inject(CartService);
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
   private couponService = inject(CouponService);
@@ -97,7 +97,24 @@ export class Checkout implements OnInit {
 
   remainingAfterCoupon = computed(() => Math.max(0, this.total() - this.appliedDiscountAmount()));
 
-  orderTotal = computed(() => this.remainingAfterCoupon() + this.shippingFee());
+  readonly giftPackagingFee = GIFT_PACKAGING_FEE;
+
+  orderTotal = computed(() => this.remainingAfterCoupon() + this.shippingFee() + this.cartService.giftFee());
+
+  toggleGiftWrap(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.cartService.setGiftWrap(checked);
+  }
+
+  onRecipientChange(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.cartService.setGiftWrap(this.cartService.isGiftWrap(), val, this.cartService.giftMessage());
+  }
+
+  onMessageChange(event: Event): void {
+    const val = (event.target as HTMLTextAreaElement).value;
+    this.cartService.setGiftWrap(this.cartService.isGiftWrap(), this.cartService.giftRecipient(), val);
+  }
 
   // Saved addresses
   savedAddresses = signal<Address[]>([]);
@@ -366,7 +383,10 @@ export class Checkout implements OnInit {
       phone: this.phone,
       latitude: this.latitude ?? undefined,
       longitude: this.longitude ?? undefined,
-      couponCode: this.appliedCouponCode() || undefined
+      couponCode: this.appliedCouponCode() || undefined,
+      isGiftWrap: this.cartService.isGiftWrap(),
+      giftRecipient: this.cartService.giftRecipient() || undefined,
+      giftMessage: this.cartService.giftMessage() || undefined
     };
     // The payment nonce is single-use, so it's left out of "what's being ordered".
     const idempotencyKey = this.idempotencyKeyForOrder(
@@ -379,6 +399,9 @@ export class Checkout implements OnInit {
         next: order => {
           this.isSubmitting.set(false);
           this.idempotencyKey = null;
+
+          // Clear gift wrap selections upon order completion
+          this.cartService.clearGiftWrap();
 
           // Only clear the cart if this was a cart checkout, not a Buy Now.
           if (this.cartService.buyNowItem()) {

@@ -21,6 +21,18 @@ namespace Zodiac_Crystal.DTOs
         [Range(0.01, double.MaxValue, ErrorMessage = "Compare-at price must be greater than 0")]
         public decimal? CompareAtPrice { get; set; }
 
+        [StringLength(200)]
+        public string? WaterSafe { get; set; }
+
+        [StringLength(200)]
+        public string? SunlightExposure { get; set; }
+
+        [StringLength(150)]
+        public string? Chakra { get; set; }
+
+        [StringLength(100)]
+        public string? Element { get; set; }
+
         [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; }
 

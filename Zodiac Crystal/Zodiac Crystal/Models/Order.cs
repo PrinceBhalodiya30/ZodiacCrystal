@@ -60,6 +60,17 @@ public partial class Order
     [Column(TypeName = "decimal(10, 2)")]
     public decimal ShippingFee { get; set; }
 
+    public bool IsGiftWrap { get; set; } = false;
+
+    [Column(TypeName = "decimal(10, 2)")]
+    public decimal GiftFee { get; set; } = 0;
+
+    [StringLength(100)]
+    public string? GiftRecipient { get; set; }
+
+    [StringLength(500)]
+    public string? GiftMessage { get; set; }
+
     // 'Card' (Braintree) or 'COD'. See PaymentMethods / PaymentStatuses.
     [StringLength(20)]
     public string PaymentMethod { get; set; } = "COD";

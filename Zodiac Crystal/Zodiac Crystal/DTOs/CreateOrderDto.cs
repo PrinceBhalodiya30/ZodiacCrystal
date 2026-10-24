@@ -49,6 +49,14 @@ namespace Zodiac_Crystal.DTOs
         [StringLength(50)]
         public string? CouponCode { get; set; }
 
+        public bool IsGiftWrap { get; set; } = false;
+
+        [StringLength(100)]
+        public string? GiftRecipient { get; set; }
+
+        [StringLength(500)]
+        public string? GiftMessage { get; set; }
+
         // "Card" (Braintree) or "COD". Defaults to COD so older clients keep working.
         [RegularExpression("^(Card|COD)$", ErrorMessage = "Payment method must be Card or COD.")]
         public string PaymentMethod { get; set; } = "COD";

@@ -369,3 +369,60 @@
     font-size: 1.45rem;
   }
 }
+
+/* Luxury Gift Order Styling */
+.gift-wrap-row {
+  color: #8c6721;
+  font-weight: 600;
+}
+
+.gift-order-customer-card {
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.35rem;
+  background: linear-gradient(135deg, rgba(251, 248, 242, 0.95) 0%, rgba(246, 240, 228, 0.6) 100%);
+  border: 1.5px solid rgba(184, 150, 92, 0.35);
+  border-radius: var(--radius-md, 8px);
+}
+
+.gift-customer-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--color-ink);
+  margin-bottom: 0.6rem;
+}
+
+.gift-recipient-line {
+  margin: 0.35rem 0;
+  font-size: 0.9rem;
+  color: var(--color-ink);
+}
+
+.gift-card-message-box {
+  margin-top: 0.65rem;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  border-radius: var(--radius-sm, 6px);
+  border-left: 3px solid var(--color-brass, #ab7a24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.gift-msg-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted, #7d776e);
+}
+
+.gift-msg-quote {
+  margin: 0.3rem 0 0;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--color-ink, #2c2825);
+  line-height: 1.45;
+}
+

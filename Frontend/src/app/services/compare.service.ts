@@ -26,7 +26,6 @@ export class CompareService {
   toggle(product: Product): void {
     if (this.isComparing(product.productId)) {
       this.remove(product.productId);
-      this.toast.success(`Removed "${product.name}" from comparison`);
       return;
     }
 

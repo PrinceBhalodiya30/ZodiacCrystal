@@ -16,6 +16,10 @@
 .product-gallery {
   display: flex;
   flex-direction: column;
+  gap: 1.25rem;
+  align-self: start;
+  position: sticky;
+  top: 1.5rem;
 }
 
 .product-image {
@@ -1407,5 +1411,205 @@
   .btn-bundle-submit {
     width: 100%;
   }
+}
+
+/* ==========================================================================
+   Crystal Healing & Care Specs Accordion
+   ========================================================================== */
+.crystal-specs-accordion {
+  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-radius: var(--radius-md, 10px);
+}
+
+.specs-accordion-item {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e0d8);
+  border-radius: var(--radius-md, 10px);
+  overflow: hidden;
+  transition: border-color var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease);
+}
+
+.specs-accordion-item:hover {
+  border-color: rgba(184, 150, 92, 0.45);
+}
+
+.specs-accordion-item.is-open {
+  border-color: rgba(184, 150, 92, 0.6);
+  box-shadow: 0 4px 16px rgba(44, 40, 37, 0.04);
+}
+
+.specs-accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.95rem 1.15rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background-color var(--transition-fast, 0.15s ease);
+}
+
+.specs-accordion-header:hover {
+  background-color: var(--color-surface-tint, #fcfbf9);
+}
+
+.specs-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--color-text, #2c2825);
+  letter-spacing: -0.01em;
+}
+
+.specs-header-icon {
+  color: var(--color-accent, #b8965c);
+  flex-shrink: 0;
+}
+
+.specs-chevron {
+  color: var(--color-subtle, #888279);
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+  flex-shrink: 0;
+}
+
+.specs-accordion-item.is-open .specs-chevron {
+  transform: rotate(180deg);
+  color: var(--color-accent, #b8965c);
+}
+
+.specs-accordion-body {
+  padding: 0 1.15rem 1.1rem;
+  border-top: 1px dashed rgba(229, 224, 216, 0.7);
+  background: var(--color-surface-tint, #fcfbf9);
+  animation: specs-expand 0.2s ease-out;
+}
+
+@keyframes specs-expand {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding-top: 0.85rem;
+}
+
+.spec-prop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.spec-prop-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-xs, 0.75rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--color-subtle, #7d776e);
+}
+
+.spec-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.chakra-bullet {
+  background: #9b59b6;
+  box-shadow: 0 0 6px rgba(155, 89, 182, 0.4);
+}
+
+.element-bullet {
+  background: #3498db;
+  box-shadow: 0 0 6px rgba(52, 152, 219, 0.4);
+}
+
+.water-bullet {
+  background: #1abc9c;
+  box-shadow: 0 0 6px rgba(26, 188, 156, 0.4);
+}
+
+.sun-bullet {
+  background: #f39c12;
+  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+}
+
+.spec-prop-value {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text, #2c2825);
+  line-height: 1.45;
+  padding-left: 0.85rem;
+}
+
+.spec-prop-value.spec-warning {
+  color: #c0392b;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Luxury Authenticity & Crystal Ritual Guarantee Card
+   ========================================================================== */
+.crystal-authenticity-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.15rem 1.25rem;
+  background: linear-gradient(145deg, rgba(251, 249, 245, 0.95) 0%, rgba(246, 241, 232, 0.55) 100%);
+  border: 1px solid rgba(184, 150, 92, 0.28);
+  border-radius: var(--radius-md, 10px);
+  box-shadow: 0 2px 8px rgba(44, 40, 37, 0.03);
+}
+
+.authenticity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.authenticity-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-accent, #b8965c);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.authenticity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.authenticity-text strong {
+  font-size: var(--text-xs, 0.8125rem);
+  font-weight: 700;
+  color: var(--color-text, #2c2825);
+  letter-spacing: -0.01em;
+}
+
+.authenticity-text span {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-subtle, #7d776e);
+  line-height: 1.35;
 }
 

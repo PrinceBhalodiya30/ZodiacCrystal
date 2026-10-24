@@ -128,6 +128,15 @@ export class Navbar {
     this.closeMenu();
   }
 
+  onCartClick(): void {
+    this.closeMenu();
+    if (this.cartService.totalQuantity() === 0) {
+      this.router.navigate(['/cart']);
+    } else {
+      this.cartService.toggleDrawer();
+    }
+  }
+
   logout(): void {
     this.authService.logout();
     this.wishlistService.clear();

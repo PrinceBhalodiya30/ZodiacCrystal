@@ -74,6 +74,13 @@ export class CartDrawer {
 
   remove(item: CartItem): void {
     this.cartService.removeFromCart(item.product.productId);
+    if (this.cartService.items().length === 0) {
+      setTimeout(() => {
+        if (this.cartService.items().length === 0 && this.isOpen()) {
+          this.close();
+        }
+      }, 1000);
+    }
   }
 
   proceedToCheckout(): void {

@@ -1,12 +1,11 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, FREE_SHIPPING_THRESHOLD, shippingFeeFor } from '../../services/cart.service';
+import { CartService, FREE_SHIPPING_THRESHOLD, GIFT_PACKAGING_FEE, shippingFeeFor } from '../../services/cart.service';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { getProductSlug } from '../../utils/product-slug.util';
 import { CartItem } from '../../models/cart';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
-import { ToastService } from '../../services/toast.service';
 
 import { InrPipe } from '../../pipes/inr.pipe';
 @Component({
@@ -20,17 +19,33 @@ export class Cart implements OnInit {
   cartService = inject(CartService);
   private router = inject(Router);
   private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+
+  readonly giftPackagingFee = GIFT_PACKAGING_FEE;
 
   // Notes from re-checking prices/availability when the page opened.
   changeNotes = signal<string[]>([]);
 
   shippingFee = computed(() => shippingFeeFor(this.cartService.total()));
-  grandTotal = computed(() => this.cartService.total() + this.shippingFee());
+  grandTotal = computed(() => this.cartService.total() + this.shippingFee() + this.cartService.giftFee());
   amountToFreeShipping = computed(() => Math.max(0, FREE_SHIPPING_THRESHOLD - this.cartService.total()));
   freeShippingProgress = computed(() =>
     Math.min(100, Math.round((this.cartService.total() / FREE_SHIPPING_THRESHOLD) * 100))
   );
+
+  toggleGiftWrap(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.cartService.setGiftWrap(checked);
+  }
+
+  onRecipientChange(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.cartService.setGiftWrap(this.cartService.isGiftWrap(), val, this.cartService.giftMessage());
+  }
+
+  onMessageChange(event: Event): void {
+    const val = (event.target as HTMLTextAreaElement).value;
+    this.cartService.setGiftWrap(this.cartService.isGiftWrap(), this.cartService.giftRecipient(), val);
+  }
 
   ngOnInit(): void {
     // The saved cart is a snapshot; pull today's prices and stock before the customer decides.
@@ -63,7 +78,6 @@ export class Cart implements OnInit {
 
   remove(item: CartItem): void {
     this.cartService.removeFromCart(item.product.productId);
-    this.toast.success(`${item.product.name} removed from your cart.`);
   }
 
   async clearCart(): Promise<void> {
@@ -77,7 +91,6 @@ export class Cart implements OnInit {
     }
 
     this.cartService.clearCart();
-    this.toast.success('Your cart has been cleared.');
   }
 
   checkout(): void {

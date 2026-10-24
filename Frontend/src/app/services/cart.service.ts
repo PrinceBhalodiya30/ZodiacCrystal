@@ -20,8 +20,11 @@ const MERGE_NOTICE_KEY = 'cart_merge_notice';
 // otherwise. Display only - the backend computes the fee it actually charges.
 export const FREE_SHIPPING_THRESHOLD = 999;
 export const FLAT_SHIPPING_FEE = 50;
+export const GIFT_PACKAGING_FEE = 99;
 export const shippingFeeFor = (subtotal: number) =>
   subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING_FEE;
+
+const GIFT_WRAP_KEY = 'cart_gift_wrap';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -37,20 +40,84 @@ export class CartService {
   isDrawerOpen = signal(false);
   lastAddedProduct = signal<Product | null>(null);
 
-  private autoCloseTimer?: ReturnType<typeof setTimeout>;
+  // Luxury Gift Wrap & Zodiac Note state
+  isGiftWrap = signal<boolean>(this.loadStoredGiftWrap());
+  giftRecipient = signal<string>(this.loadStoredGiftRecipient());
+  giftMessage = signal<string>(this.loadStoredGiftMessage());
+  giftFee = computed(() => this.isGiftWrap() ? GIFT_PACKAGING_FEE : 0);
 
-  openDrawer(autoDismissMs = 4500): void {
+  setGiftWrap(enabled: boolean, recipient?: string, message?: string): void {
+    this.isGiftWrap.set(enabled);
+    if (recipient !== undefined) this.giftRecipient.set(recipient);
+    if (message !== undefined) this.giftMessage.set(message);
+    this.saveGiftWrapState();
+  }
+
+  clearGiftWrap(): void {
+    this.isGiftWrap.set(false);
+    this.giftRecipient.set('');
+    this.giftMessage.set('');
+    try {
+      sessionStorage.removeItem(GIFT_WRAP_KEY);
+    } catch {}
+  }
+
+  private saveGiftWrapState(): void {
+    try {
+      sessionStorage.setItem(GIFT_WRAP_KEY, JSON.stringify({
+        enabled: this.isGiftWrap(),
+        recipient: this.giftRecipient(),
+        message: this.giftMessage()
+      }));
+    } catch {}
+  }
+
+  private loadStoredGiftWrap(): boolean {
+    try {
+      const data = sessionStorage.getItem(GIFT_WRAP_KEY);
+      return data ? JSON.parse(data).enabled ?? false : false;
+    } catch {
+      return false;
+    }
+  }
+
+  private loadStoredGiftRecipient(): string {
+    try {
+      const data = sessionStorage.getItem(GIFT_WRAP_KEY);
+      return data ? JSON.parse(data).recipient ?? '' : '';
+    } catch {
+      return '';
+    }
+  }
+
+  private loadStoredGiftMessage(): string {
+    try {
+      const data = sessionStorage.getItem(GIFT_WRAP_KEY);
+      return data ? JSON.parse(data).message ?? '' : '';
+    } catch {
+      return '';
+    }
+  }
+
+  private autoCloseTimer?: ReturnType<typeof setTimeout>;
+  readonly isAutoDismissing = signal(false);
+
+  openDrawer(autoDismissMs = 3500): void {
     this.isDrawerOpen.set(true);
     this.pauseAutoClose();
     if (autoDismissMs > 0) {
+      this.isAutoDismissing.set(true);
       this.autoCloseTimer = setTimeout(() => {
         this.closeDrawer();
       }, autoDismissMs);
+    } else {
+      this.isAutoDismissing.set(false);
     }
   }
 
   closeDrawer(): void {
     this.pauseAutoClose();
+    this.isAutoDismissing.set(false);
     this.isDrawerOpen.set(false);
   }
 
@@ -69,9 +136,9 @@ export class CartService {
     }
   }
 
-  resumeAutoClose(ms = 2500): void {
+  resumeAutoClose(ms = 2200): void {
     this.pauseAutoClose();
-    if (this.isDrawerOpen()) {
+    if (this.isDrawerOpen() && this.isAutoDismissing()) {
       this.autoCloseTimer = setTimeout(() => {
         this.closeDrawer();
       }, ms);
@@ -299,7 +366,7 @@ export class CartService {
     if (added > 0) {
       this.lastAddedProduct.set(product);
       if (openDrawer) {
-        this.openDrawer(4500);
+        this.openDrawer(3500);
       }
     }
     return added;

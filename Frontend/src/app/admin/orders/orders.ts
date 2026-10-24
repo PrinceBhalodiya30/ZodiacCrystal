@@ -56,6 +56,7 @@ export class AdminOrders implements OnInit {
   // The order open in the detail drawer (also deep-linkable as ?order=123).
   openOrderId = signal<number | null>(validOrderId(inject(ActivatedRoute).snapshot.queryParamMap.get('order')));
   isExporting = signal(false);
+  downloadingInvoiceId = signal<number | null>(null);
 
   // Bulk order selection & actions
   selectedIds = signal<Set<number>>(new Set());
@@ -215,6 +216,25 @@ export class AdminOrders implements OnInit {
           blobErrorMessage(err, 'Unable to export orders.').then(message => this.toast.error(message));
         }
       });
+  }
+
+  downloadInvoice(orderId: number, event: Event): void {
+    event.stopPropagation();
+    if (this.downloadingInvoiceId() !== null) {
+      return;
+    }
+
+    this.downloadingInvoiceId.set(orderId);
+    this.orderService.getInvoiceAdmin(orderId).subscribe({
+      next: blob => {
+        this.downloadingInvoiceId.set(null);
+        downloadBlob(blob, `invoice-${orderId}.pdf`);
+      },
+      error: (err: unknown) => {
+        this.downloadingInvoiceId.set(null);
+        blobErrorMessage(err, `Unable to download the invoice for order #${orderId}.`).then(message => this.toast.error(message));
+      }
+    });
   }
 
   openOrder(order: AdminOrder): void {

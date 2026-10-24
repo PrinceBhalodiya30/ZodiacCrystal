@@ -124,6 +124,56 @@
             }
           </div>
 
+          <!-- Luxury Gift Box & Handwritten Zodiac Note Card -->
+          <div class="cart-gift-box-card checkout-gift-box" [class.active]="cartService.isGiftWrap()">
+            <label class="gift-box-toggle-label">
+              <input
+                type="checkbox"
+                class="gift-box-checkbox"
+                [checked]="cartService.isGiftWrap()"
+                (change)="toggleGiftWrap($event)"
+              />
+              <div class="gift-box-label-content">
+                <div class="gift-box-title-row">
+                  <span class="gift-icon">🎁</span>
+                  <strong>Add Luxury Gift Wrap &amp; Zodiac Note</strong>
+                  <span class="gift-tag">+ {{ giftPackagingFee | inr }}</span>
+                </div>
+                <p class="gift-box-desc">
+                  Cosmic embossed gift box, velvet keepsake pouch, and your message handwritten on botanical celestial cardstock.
+                </p>
+              </div>
+            </label>
+
+            @if (cartService.isGiftWrap()) {
+              <div class="gift-details-expanded">
+                <div class="gift-field">
+                  <label for="checkoutGiftRecipient">Recipient's Name (Optional)</label>
+                  <input
+                    id="checkoutGiftRecipient"
+                    type="text"
+                    maxlength="100"
+                    placeholder="e.g. For Dearest Maya"
+                    [value]="cartService.giftRecipient()"
+                    (input)="onRecipientChange($event)"
+                  />
+                </div>
+                <div class="gift-field">
+                  <label for="checkoutGiftMessage">Handwritten Personal Note</label>
+                  <textarea
+                    id="checkoutGiftMessage"
+                    rows="2"
+                    maxlength="250"
+                    placeholder="Write your blessing or personal wishes here..."
+                    [value]="cartService.giftMessage()"
+                    (input)="onMessageChange($event)"
+                  ></textarea>
+                  <span class="char-count">{{ cartService.giftMessage().length }}/250</span>
+                </div>
+              </div>
+            }
+          </div>
+
           <div class="summary-subtotal-row">
             <span>Subtotal</span>
             <span>{{ total() | inr }}</span>
@@ -144,6 +194,15 @@
               <span class="shipping-free">FREE</span>
             }
           </div>
+
+          @if (cartService.isGiftWrap()) {
+            <div class="summary-subtotal-row gift-summary-row">
+              <span class="gift-row-label">
+                <span class="gift-icon">🎁</span> Luxury Gift Packaging
+              </span>
+              <span>+ {{ giftPackagingFee | inr }}</span>
+            </div>
+          }
 
           <div class="summary-total">
             <span>Total</span>

@@ -106,7 +106,6 @@ export class ProductCard implements OnInit {
       this.toast.error(CartService.shortfallMessage(this.product, 1, 0)!);
       return;
     }
-    this.toast.success(`${this.product.name} added to cart`);
     this.flashAdded();
   }
 

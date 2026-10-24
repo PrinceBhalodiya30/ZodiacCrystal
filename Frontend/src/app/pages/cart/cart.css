@@ -664,3 +664,158 @@
     white-space: nowrap;
   }
 }
+
+/* ==========================================================================
+   Luxury Gift Wrap & Zodiac Note Card
+   ========================================================================== */
+.cart-gift-box-card {
+  margin: 1.15rem 0;
+  padding: 1rem 1.15rem;
+  background: linear-gradient(135deg, rgba(251, 249, 245, 0.95) 0%, rgba(246, 241, 232, 0.55) 100%);
+  border: 1.5px solid rgba(184, 150, 92, 0.32);
+  border-radius: var(--radius-md, 10px);
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.cart-gift-box-card:hover {
+  border-color: rgba(184, 150, 92, 0.6);
+}
+
+.cart-gift-box-card.active {
+  background: linear-gradient(135deg, rgba(253, 251, 247, 1) 0%, rgba(248, 243, 233, 0.85) 100%);
+  border-color: rgba(184, 150, 92, 0.85);
+  box-shadow: 0 4px 16px rgba(184, 150, 92, 0.12);
+}
+
+.gift-box-toggle-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.gift-box-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-brand, #244132);
+}
+
+.gift-box-label-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.gift-box-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.gift-box-title-row strong {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  color: var(--color-text, #2c2825);
+  letter-spacing: -0.01em;
+}
+
+.gift-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.gift-tag {
+  background: rgba(184, 150, 92, 0.15);
+  color: #8f6e30;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 150, 92, 0.25);
+}
+
+.gift-box-desc {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-subtle, #7d776e);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.gift-details-expanded {
+  margin-top: 0.95rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed rgba(184, 150, 92, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: gift-expand 0.25s ease-out;
+}
+
+@keyframes gift-expand {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gift-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+}
+
+.gift-field label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-subtle, #7d776e);
+}
+
+.gift-field input,
+.gift-field textarea {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-family: inherit;
+  font-size: var(--text-xs, 0.8125rem);
+  color: var(--color-text, #2c2825);
+  background: #ffffff;
+  border: 1px solid var(--color-border, #e5e0d8);
+  border-radius: var(--radius-sm, 6px);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.gift-field input:focus,
+.gift-field textarea:focus {
+  outline: none;
+  border-color: var(--color-accent, #b8965c);
+  box-shadow: 0 0 0 3px rgba(184, 150, 92, 0.15);
+}
+
+.gift-field .char-count {
+  align-self: flex-end;
+  font-size: 0.65rem;
+  color: var(--color-subtle, #9a9892);
+}
+
+.cart-gift-row {
+  color: #8f6e30;
+  font-weight: 600;
+}
+
+.gift-row-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}

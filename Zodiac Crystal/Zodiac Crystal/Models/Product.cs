@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -29,6 +29,18 @@ public partial class Product
     // discount calculations (coupons/loyalty points still apply off Price).
     [Column(TypeName = "decimal(10, 2)")]
     public decimal? CompareAtPrice { get; set; }
+
+    [StringLength(200)]
+    public string? WaterSafe { get; set; }
+
+    [StringLength(200)]
+    public string? SunlightExposure { get; set; }
+
+    [StringLength(150)]
+    public string? Chakra { get; set; }
+
+    [StringLength(100)]
+    public string? Element { get; set; }
 
     public int StockQuantity { get; set; }
 

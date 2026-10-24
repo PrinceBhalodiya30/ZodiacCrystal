@@ -122,10 +122,42 @@
             @if (d.order.discountAmount) {
               <div><dt>Discount{{ d.order.couponCode ? ' (' + d.order.couponCode + ')' : '' }}</dt><dd>−{{ d.order.discountAmount | inr }}</dd></div>
             }
-            <div><dt>Shipping</dt><dd>{{ d.order.shippingFee ? (d.order.shippingFee | inr) : 'Free' }}</dd></div>
+            @if (d.order.shippingFee) {
+              <div><dt>Shipping</dt><dd>{{ d.order.shippingFee | inr }}</dd></div>
+            } @else {
+              <div><dt>Shipping</dt><dd>Free</dd></div>
+            }
+            @if (d.order.isGiftWrap) {
+              <div class="gift-drawer-total-row"><dt>🎁 Gift Wrap &amp; Zodiac Note</dt><dd>+{{ (d.order.giftFee || 99) | inr }}</dd></div>
+            }
             <div class="grand-total"><dt>Total</dt><dd>{{ d.order.totalAmount | inr }}</dd></div>
           </dl>
         </section>
+
+        <!-- Luxury Gift Packaging & Handwritten Note Banner -->
+        @if (d.order.isGiftWrap) {
+          <section class="drawer-section gift-admin-card">
+            <div class="gift-admin-header">
+              <span class="gift-icon">🎁</span>
+              <div class="gift-admin-title">
+                <strong>Luxury Gift Wrap &amp; Zodiac Note Requested</strong>
+                <span class="gift-fee-badge">+{{ (d.order.giftFee || 99) | inr }}</span>
+              </div>
+            </div>
+            @if (d.order.giftRecipient) {
+              <div class="gift-admin-field">
+                <span class="gift-admin-label">To Recipient:</span>
+                <span class="gift-admin-val">{{ d.order.giftRecipient }}</span>
+              </div>
+            }
+            @if (d.order.giftMessage) {
+              <div class="gift-admin-note-box">
+                <span class="gift-admin-label">Handwritten Message for Gift Card:</span>
+                <blockquote class="gift-admin-quote">“{{ d.order.giftMessage }}”</blockquote>
+              </div>
+            }
+          </section>
+        }
 
         <!-- Customer + shipping -->
         <section class="drawer-section two-col">
@@ -258,6 +290,22 @@
                 </div>
               </div>
 
+              @if (d.order.isGiftWrap) {
+                <div class="slip-gift-box">
+                  <div class="slip-gift-header">
+                    <span class="slip-gift-icon">🎁</span>
+                    <strong>LUXURY GIFT PACKAGING REQUIRED (+{{ (d.order.giftFee || 99) | inr }})</strong>
+                  </div>
+                  @if (d.order.giftRecipient) {
+                    <div class="slip-gift-line"><strong>Recipient:</strong> {{ d.order.giftRecipient }}</div>
+                  }
+                  <div class="slip-gift-note">
+                    <span class="slip-gift-note-title">Handwrite on Gold Zodiac Cardstock:</span>
+                    <p class="slip-gift-quote">“{{ d.order.giftMessage || 'Warmest wishes and celestial blessings!' }}”</p>
+                  </div>
+                </div>
+              }
+
               <table class="slip-table">
                 <thead>
                   <tr>
@@ -289,6 +337,9 @@
                     <li>[ ] All crystals verified against order items</li>
                     <li>[ ] Protective bubble wrap &amp; pouch applied</li>
                     <li>[ ] Zodiac authenticity &amp; cleansing card enclosed</li>
+                    @if (d.order.isGiftWrap) {
+                      <li class="slip-gift-checklist-item"><strong>[ ] 🎁 Luxury velvet box &amp; handwritten Zodiac card enclosed</strong></li>
+                    }
                     <li>[ ] Package sealed with security tamper tape</li>
                   </ul>
                 </div>
@@ -298,6 +349,9 @@
                     <div class="slip-total-row"><span>Discount:</span> <strong>−{{ d.order.discountAmount | inr }}</strong></div>
                   }
                   <div class="slip-total-row"><span>Shipping:</span> <strong>{{ d.order.shippingFee ? (d.order.shippingFee | inr) : 'FREE' }}</strong></div>
+                  @if (d.order.isGiftWrap) {
+                    <div class="slip-total-row slip-gift-total"><span>Gift Wrap:</span> <strong>+{{ (d.order.giftFee || 99) | inr }}</strong></div>
+                  }
                   <div class="slip-total-row grand"><span>Total:</span> <strong>{{ d.order.totalAmount | inr }}</strong></div>
                 </div>
               </div>

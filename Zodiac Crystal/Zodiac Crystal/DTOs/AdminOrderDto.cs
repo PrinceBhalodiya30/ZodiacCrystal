@@ -23,5 +23,6 @@ namespace Zodiac_Crystal.DTOs
         public string PaymentMethod { get; set; } = null!;
 
         public string PaymentStatus { get; set; } = null!;
+        public bool IsGiftWrap { get; set; }
     }
 }

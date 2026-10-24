@@ -6,6 +6,9 @@
       </div>
       <h1>Thank you, your order is placed!</h1>
       <p>Order <strong>#{{ o.orderId }}</strong> · {{ o.totalAmount | inr }} · paid by card</p>
+      @if (o.isGiftWrap) {
+        <p class="op-gift-badge">🎁 <strong>Luxury Gift Packaging &amp; Handwritten Zodiac Note</strong> is included with this order.</p>
+      }
       <p class="op-muted">
         We've emailed your confirmation{{ email ? ' to ' + email : '' }} with a private link to track your order.
       </p>

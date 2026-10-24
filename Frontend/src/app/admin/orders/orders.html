@@ -130,6 +130,9 @@
                 @if (newOrderIds().has(order.orderId)) {
                   <span class="new-tag">New</span>
                 }
+                @if (order.isGiftWrap) {
+                  <span class="gift-order-badge" title="Luxury Gift Wrap &amp; Zodiac Note">🎁 Gift</span>
+                }
               </td>
               <td data-label="Customer">
                 <div class="customer-name-row" style="display: flex; align-items: center; gap: 0.4rem">
@@ -161,6 +164,20 @@
               </td>
               <td class="cell-actions">
                 <div class="row-actions">
+                  <button
+                    type="button"
+                    class="chip-btn invoice-chip-btn"
+                    title="Download Tax Invoice PDF"
+                    [disabled]="downloadingInvoiceId() === order.orderId"
+                    (click)="downloadInvoice(order.orderId, $event)"
+                  >
+                    @if (downloadingInvoiceId() === order.orderId) {
+                      <span class="btn-spinner" aria-hidden="true"></span>
+                    } @else {
+                      📄
+                    }
+                    Invoice
+                  </button>
                   <button
                     type="button"
                     class="chip-btn"

@@ -244,6 +244,10 @@ export class AdminProducts implements OnInit {
   formCategoryId: number | null = null;
   formIsActive = true;
   formZodiacIds: number[] = [];
+  formWaterSafe = '';
+  formSunlightExposure = '';
+  formChakra = '';
+  formElement = '';
 
   constructor() {
     // Live stock (SignalR): orders, cancellations and restocks update the Stock column.
@@ -374,6 +378,10 @@ export class AdminProducts implements OnInit {
     this.formCategoryId = this.categories()[0]?.categoryId ?? null;
     this.formIsActive = true;
     this.formZodiacIds = [];
+    this.formWaterSafe = '';
+    this.formSunlightExposure = '';
+    this.formChakra = '';
+    this.formElement = '';
     this.formError.set('');
   }
 
@@ -390,6 +398,10 @@ export class AdminProducts implements OnInit {
     this.formCategoryId = product.categoryId;
     this.formIsActive = product.isActive;
     this.formZodiacIds = product.zodiacs.map(z => z.zodiacId);
+    this.formWaterSafe = product.waterSafe ?? '';
+    this.formSunlightExposure = product.sunlightExposure ?? '';
+    this.formChakra = product.chakra ?? '';
+    this.formElement = product.element ?? '';
     this.formError.set('');
   }
 
@@ -453,7 +465,11 @@ export class AdminProducts implements OnInit {
       stockQuantity: this.formStock!,
       categoryId: this.formCategoryId!,
       isActive: this.formIsActive,
-      zodiacIds: this.formZodiacIds
+      zodiacIds: this.formZodiacIds,
+      waterSafe: this.formWaterSafe?.trim() || null,
+      sunlightExposure: this.formSunlightExposure?.trim() || null,
+      chakra: this.formChakra?.trim() || null,
+      element: this.formElement?.trim() || null
     };
 
     const editingId = this.editingProductId();

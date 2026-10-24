@@ -17,6 +17,10 @@ export interface Product {
   reviewCount?: number;
   images: ProductImage[];
   zodiacs: Zodiac[];
+  waterSafe?: string | null;
+  sunlightExposure?: string | null;
+  chakra?: string | null;
+  element?: string | null;
 }
 
 export interface ProductRequest {
@@ -29,4 +33,8 @@ export interface ProductRequest {
   categoryId: number;
   isActive: boolean;
   zodiacIds: number[];
+  waterSafe?: string | null;
+  sunlightExposure?: string | null;
+  chakra?: string | null;
+  element?: string | null;
 }

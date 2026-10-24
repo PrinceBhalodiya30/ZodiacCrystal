@@ -20,3 +20,4 @@ export class OrderPlaced {
   order: Order | null = this.state?.order ?? null;
   email: string = this.state?.email ?? '';
 }
+

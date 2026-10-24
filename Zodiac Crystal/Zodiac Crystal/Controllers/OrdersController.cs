@@ -224,13 +224,20 @@ namespace Zodiac_Crystal.Controllers
                     appliedCouponCode = coupon!.Code;
                 }
 
+                const decimal GiftPackagingFee = 99m;
+                var giftFee = dto.IsGiftWrap ? GiftPackagingFee : 0m;
+
                 order = new Order
                 {
                     UserId = userId,
-                    TotalAmount = total - discountAmount + shippingFee,
+                    TotalAmount = total - discountAmount + shippingFee + giftFee,
                     CouponCode = appliedCouponCode,
                     DiscountAmount = discountAmount,
                     ShippingFee = shippingFee,
+                    IsGiftWrap = dto.IsGiftWrap,
+                    GiftFee = giftFee,
+                    GiftRecipient = dto.IsGiftWrap ? dto.GiftRecipient?.Trim() : null,
+                    GiftMessage = dto.IsGiftWrap ? dto.GiftMessage?.Trim() : null,
                     Status = "Pending",
                     ShippingName = dto.ShippingName,
                     ShippingEmail = dto.ShippingEmail,
@@ -806,6 +813,10 @@ namespace Zodiac_Crystal.Controllers
                 CouponCode = order.CouponCode,
                 DiscountAmount = order.DiscountAmount,
                 ShippingFee = order.ShippingFee,
+                IsGiftWrap = order.IsGiftWrap,
+                GiftFee = order.GiftFee,
+                GiftRecipient = order.GiftRecipient,
+                GiftMessage = order.GiftMessage,
                 PaymentMethod = order.PaymentMethod,
                 PaymentStatus = order.PaymentStatus,
                 PaidAt = order.PaidAt,

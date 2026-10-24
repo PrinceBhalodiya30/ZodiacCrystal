@@ -11,6 +11,12 @@
     (mouseenter)="pauseAutoClose()"
     (mouseleave)="resumeAutoClose()"
   >
+    @if (cartService.isAutoDismissing()) {
+      <div class="flyout-autoclose-indicator" aria-hidden="true">
+        <div class="flyout-autoclose-bar"></div>
+      </div>
+    }
+
     <!-- Header -->
     <header class="cart-flyout-header">
       <div class="cart-flyout-title-wrap">

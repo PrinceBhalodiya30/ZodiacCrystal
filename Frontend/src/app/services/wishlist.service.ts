@@ -92,7 +92,6 @@ export class WishlistService {
     this.http.post(`${this.baseUrl}/${product.productId}`, {}).subscribe({
       next: () => {
         this.hasLoaded = true;
-        this.toast.success(`${product.name} added to wishlist`);
       },
       error: () => {
         this.items.set(previous);
@@ -111,9 +110,7 @@ export class WishlistService {
 
     this.http.delete(`${this.baseUrl}/${productId}`).subscribe({
       next: () => {
-        if (!silent) {
-          this.toast.success(`${productName} removed from wishlist`);
-        }
+        // Optimistic UI updated cleanly without popping notification
       },
       error: () => {
         this.items.set(previous);

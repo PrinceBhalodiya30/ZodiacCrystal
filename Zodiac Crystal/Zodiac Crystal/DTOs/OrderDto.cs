@@ -33,6 +33,10 @@ namespace Zodiac_Crystal.DTOs
         public decimal DiscountAmount { get; set; }
 
         public decimal ShippingFee { get; set; }
+        public bool IsGiftWrap { get; set; }
+        public decimal GiftFee { get; set; }
+        public string? GiftRecipient { get; set; }
+        public string? GiftMessage { get; set; }
 
         public string PaymentMethod { get; set; } = null!;
 

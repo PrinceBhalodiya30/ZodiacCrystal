@@ -36,6 +36,35 @@
   }
 }
 
+/* Auto-close Progress Indicator */
+.flyout-autoclose-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background-color: transparent;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.flyout-autoclose-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--color-brand, #244132);
+  transform-origin: left;
+  animation: flyout-countdown 3500ms linear forwards;
+}
+
+.cart-flyout:hover .flyout-autoclose-bar {
+  animation-play-state: paused;
+}
+
+@keyframes flyout-countdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
 /* Header */
 .cart-flyout-header {
   display: flex;

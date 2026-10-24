@@ -166,6 +166,13 @@
         }
       </div>
 
+      @if (o.isGiftWrap) {
+        <div class="order-total-row gift-wrap-row">
+          <span>🎁 Luxury Gift Packaging &amp; Note</span>
+          <span>+{{ (o.giftFee || 99) | inr }}</span>
+        </div>
+      }
+
       <div class="order-total-row">
         <span>Total</span>
         <span>{{ o.totalAmount | inr }}</span>
@@ -188,6 +195,24 @@
         <p>{{ o.city }}, {{ o.state }} {{ o.postalCode }}</p>
         <p>{{ o.phone }}</p>
       </div>
+
+      @if (o.isGiftWrap) {
+        <div class="gift-order-customer-card">
+          <div class="gift-customer-header">
+            <span class="gift-icon">🎁</span>
+            <strong>Luxury Gift Wrap &amp; Zodiac Note Included</strong>
+          </div>
+          @if (o.giftRecipient) {
+            <p class="gift-recipient-line"><strong>Recipient:</strong> {{ o.giftRecipient }}</p>
+          }
+          @if (o.giftMessage) {
+            <div class="gift-card-message-box">
+              <span class="gift-msg-label">Handwritten Blessing:</span>
+              <p class="gift-msg-quote">“{{ o.giftMessage }}”</p>
+            </div>
+          }
+        </div>
+      }
 
       @if (!isGuestView) {
         <app-return-request-panel [order]="o" (returnRequested)="loadOrder()" />

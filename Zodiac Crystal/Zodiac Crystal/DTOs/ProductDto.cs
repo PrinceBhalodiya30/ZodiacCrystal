@@ -1,4 +1,4 @@
-﻿namespace Zodiac_Crystal.DTOs
+namespace Zodiac_Crystal.DTOs
 {
     public class ProductDto
     {
@@ -13,6 +13,14 @@
         public decimal Price { get; set; }
 
         public decimal? CompareAtPrice { get; set; }
+
+        public string? WaterSafe { get; set; }
+
+        public string? SunlightExposure { get; set; }
+
+        public string? Chakra { get; set; }
+
+        public string? Element { get; set; }
 
         public int StockQuantity { get; set; }
 

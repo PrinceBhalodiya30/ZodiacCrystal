@@ -115,12 +115,6 @@
   background-color: var(--color-surface-tint, #faf8f5);
 }
 
-.finder-controls-bar select option,
-.finder-select option {
-  background-color: var(--color-surface, #ffffff);
-  color: var(--color-ink);
-}
-
 /* Control Buttons matching site .btn style and .filter-bar buttons */
 .finder-controls-bar .btn-find-sign {
   height: 42px;

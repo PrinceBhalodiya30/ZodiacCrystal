@@ -42,6 +42,7 @@ import { CouponService } from '../../services/coupon.service';
 import { PublicCoupon } from '../../models/coupon';
 import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
 import { checkDeliveryPincode, getSavedPincode, savePincode, PincodeDeliveryInfo } from '../../utils/pincode.util';
+import { getProductCrystalSpecs, CrystalSpecs } from '../../utils/crystal-specs.util';
 
 export interface BundleItem {
   product: Product;
@@ -165,6 +166,19 @@ export class ProductDetails implements OnInit {
     return Math.round(this.bundleOriginalTotal() * 0.10); // 10% bundle savings
   });
   bundleFinalPrice = computed(() => this.bundleOriginalTotal() - this.bundleSavings());
+
+  // Crystal Healing & Care Specs Accordion
+  crystalSpecs = computed<CrystalSpecs | null>(() => getProductCrystalSpecs(this.product()));
+  isHealingOpen = signal(true);
+  isCareOpen = signal(false);
+
+  toggleHealingAccordion(): void {
+    this.isHealingOpen.update(v => !v);
+  }
+
+  toggleCareAccordion(): void {
+    this.isCareOpen.update(v => !v);
+  }
 
   ngOnInit(): void {
     const savedPin = getSavedPincode();
@@ -712,8 +726,6 @@ export class ProductDetails implements OnInit {
     }
     if (shortfall) {
       this.toast.error(shortfall);
-    } else {
-      this.toast.success(`${product.name} added to cart`);
     }
     this.justAdded.set(true);
     setTimeout(() => this.justAdded.set(false), 1100);

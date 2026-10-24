@@ -106,9 +106,67 @@
             <span>Subtotal</span>
             <span>{{ cartService.total() | inr }}</span>
           </div>
+          @if (cartService.isGiftWrap()) {
+            <div class="cart-total-row cart-gift-row">
+              <span class="gift-row-label">
+                <span class="gift-icon">🎁</span> Luxury Gift Packaging
+              </span>
+              <span>+ {{ giftPackagingFee | inr }}</span>
+            </div>
+          }
           <div class="cart-total-row">
             <span>Shipping</span>
             <span>{{ shippingFee() === 0 ? 'Free' : (shippingFee() | inr) }}</span>
+          </div>
+
+          <!-- Luxury Gift Box & Handwritten Zodiac Note Card -->
+          <div class="cart-gift-box-card" [class.active]="cartService.isGiftWrap()">
+            <label class="gift-box-toggle-label">
+              <input
+                type="checkbox"
+                class="gift-box-checkbox"
+                [checked]="cartService.isGiftWrap()"
+                (change)="toggleGiftWrap($event)"
+              />
+              <div class="gift-box-label-content">
+                <div class="gift-box-title-row">
+                  <span class="gift-icon">🎁</span>
+                  <strong>Add Luxury Gift Wrap &amp; Zodiac Note</strong>
+                  <span class="gift-tag">+ {{ giftPackagingFee | inr }}</span>
+                </div>
+                <p class="gift-box-desc">
+                  Gold-foiled velvet pouch, satin-ribbon box &amp; personalized astrological note card.
+                </p>
+              </div>
+            </label>
+
+            @if (cartService.isGiftWrap()) {
+              <div class="gift-details-expanded">
+                <div class="gift-field">
+                  <label for="cartGiftRecipient">Recipient's Name (Optional)</label>
+                  <input
+                    id="cartGiftRecipient"
+                    type="text"
+                    placeholder="e.g. Ananya Sharma"
+                    [value]="cartService.giftRecipient()"
+                    (input)="onRecipientChange($event)"
+                    maxlength="100"
+                  />
+                </div>
+                <div class="gift-field">
+                  <label for="cartGiftMessage">Handwritten Personal Note</label>
+                  <textarea
+                    id="cartGiftMessage"
+                    rows="2"
+                    placeholder="Wishing you abundance, positive energy and alignment..."
+                    [value]="cartService.giftMessage()"
+                    (input)="onMessageChange($event)"
+                    maxlength="250"
+                  ></textarea>
+                  <span class="char-count">{{ cartService.giftMessage().length }}/250</span>
+                </div>
+              </div>
+            }
           </div>
 
           <div class="cart-total-row cart-total-final">

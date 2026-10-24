@@ -170,6 +170,36 @@ namespace Zodiac_Crystal.Services
                                 });
                         }
 
+                        if (order.IsGiftWrap)
+                        {
+                            var giftFee = order.GiftFee > 0 ? order.GiftFee : 99m;
+                            column.Item().PaddingTop(12).Background("#faf7f0").Border(1).BorderColor("#dfc79b")
+                                .Padding(10).Column(gc =>
+                                {
+                                    gc.Item().Row(gr =>
+                                    {
+                                        gr.RelativeItem().Text(text =>
+                                        {
+                                            text.Span("LUXURY GIFT PACKAGING & HANDWRITTEN ZODIAC NOTE").Bold().FontSize(9).FontColor("#8c6721");
+                                            if (!string.IsNullOrEmpty(order.GiftRecipient))
+                                            {
+                                                text.Span($"  •  To: {order.GiftRecipient}").Bold().FontSize(9).FontColor(Ink);
+                                            }
+                                        });
+                                        gr.ConstantItem(80).AlignRight().Text($"₹{giftFee:0.00}").Bold().FontSize(9).FontColor("#8c6721");
+                                    });
+
+                                    if (!string.IsNullOrEmpty(order.GiftMessage))
+                                    {
+                                        gc.Item().PaddingTop(4).Text(text =>
+                                        {
+                                            text.Span("Handwritten Note: ").SemiBold().FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                                            text.Span($"“{order.GiftMessage}”").Italic().FontSize(8.5f).FontColor(Ink);
+                                        });
+                                    }
+                                });
+                        }
+
                         column.Item().PaddingTop(20).Table(table =>
                         {
                             table.ColumnsDefinition(columns =>
@@ -248,6 +278,16 @@ namespace Zodiac_Crystal.Services
                                     r.ConstantItem(100).AlignRight().Text("FREE").FontColor(Colors.Green.Darken2).Bold();
                                 }
                             });
+
+                            if (order.IsGiftWrap)
+                            {
+                                var giftFee = order.GiftFee > 0 ? order.GiftFee : 99m;
+                                c.Item().Row(r =>
+                                {
+                                    r.RelativeItem().Text("Luxury Gift Wrap & Zodiac Note");
+                                    r.ConstantItem(100).AlignRight().Text($"₹{giftFee:0.00}");
+                                });
+                            }
 
                             c.Item().PaddingTop(6).BorderTop(1).BorderColor(BrandGreen);
 

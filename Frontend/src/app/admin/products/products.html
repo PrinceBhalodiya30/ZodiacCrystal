@@ -271,6 +271,58 @@
         </div>
       </div>
 
+      <div class="form-section">
+        <h3 class="form-section-title">Crystal Healing &amp; Care Specs (Optional)</h3>
+        <p class="field-hint" style="margin-bottom: 0.75rem;">
+          Leave blank to use automatic mineral defaults, or enter custom care &amp; chakra specs.
+        </p>
+        <div class="form-grid">
+          <div>
+            <label for="waterSafe">Water Safe</label>
+            <input
+              id="waterSafe"
+              name="waterSafe"
+              type="text"
+              placeholder="e.g. Yes (Rinse gently under running water)"
+              [(ngModel)]="formWaterSafe"
+            />
+          </div>
+
+          <div>
+            <label for="sunlightExposure">Sunlight Exposure</label>
+            <input
+              id="sunlightExposure"
+              name="sunlightExposure"
+              type="text"
+              placeholder="e.g. Avoid direct sun (may fade color)"
+              [(ngModel)]="formSunlightExposure"
+            />
+          </div>
+
+          <div>
+            <label for="chakra">Chakra</label>
+            <input
+              id="chakra"
+              name="chakra"
+              type="text"
+              placeholder="e.g. Third Eye & Crown Chakra"
+              [(ngModel)]="formChakra"
+            />
+          </div>
+
+          <div>
+            <label for="element">Element</label>
+            <input
+              id="element"
+              name="element"
+              type="text"
+              placeholder="e.g. Air & Water"
+              [(ngModel)]="formElement"
+            />
+          </div>
+        </div>
+      </div>
+
       @if (editingProduct(); as ep) {
         <div class="form-section">
           <h3 class="form-section-title">Images</h3>

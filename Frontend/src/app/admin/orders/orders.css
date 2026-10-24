@@ -248,3 +248,18 @@
   font-weight: 600;
 }
 
+.gift-order-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 0.4rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: #fbf5e8;
+  border: 1px solid #dfc79b;
+  color: #8c6721;
+  font-size: 0.72rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+

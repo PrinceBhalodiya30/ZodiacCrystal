@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -117,7 +117,8 @@ namespace Zodiac_Crystal.Controllers
                     ShippingFee = o.ShippingFee,
                     Status = o.Status,
                     PaymentMethod = o.PaymentMethod,
-                    PaymentStatus = o.PaymentStatus
+                    PaymentStatus = o.PaymentStatus,
+                    IsGiftWrap = o.IsGiftWrap
                 })
                 .ToListAsync();
 
