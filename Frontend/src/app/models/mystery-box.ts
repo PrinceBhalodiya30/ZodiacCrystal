@@ -14,6 +14,7 @@ export interface CreateMysteryBoxOrderRequest extends PaymentDetails {
   state: string;
   postalCode: string;
   phone: string;
+  deliveryInstructions?: string | null;
   latitude?: number;
   longitude?: number;
   // Astrological sign used to personalize crystal selection in the mystery box

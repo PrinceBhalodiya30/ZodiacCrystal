@@ -35,6 +35,9 @@ namespace Zodiac_Crystal.DTOs
         [RegularExpression(@"^(\+91[\s-]?|0)?[6-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit Indian mobile number.")]
         public string Phone { get; set; } = null!;
 
+        [StringLength(300)]
+        public string? DeliveryInstructions { get; set; }
+
         // Optional pin from the checkout map.
         [Range(-90, 90)]
         public decimal? Latitude { get; set; }

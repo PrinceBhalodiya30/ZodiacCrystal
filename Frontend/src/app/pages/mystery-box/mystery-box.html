@@ -133,6 +133,11 @@
               <strong>{{ shippingName }}</strong>,
               {{ shippingAddress }}, {{ city }}, {{ state }} {{ postalCode }}
               <span class="step-summary-meta">{{ phone }} · {{ shippingEmail }}</span>
+              @if (deliveryInstructions.trim()) {
+                <span class="step-summary-instructions">
+                  <strong>Delivery Note:</strong> {{ deliveryInstructions.trim() }}
+                </span>
+              }
             </div>
           </div>
         } @else {
@@ -215,6 +220,34 @@
 
             <app-phone-input [(phone)]="phone" />
           }
+
+          <div class="delivery-instructions-box">
+            <label for="deliveryInstructions" class="delivery-instructions-label">
+              <span>Delivery Instructions / Landmark</span>
+              <span class="optional-tag">Optional</span>
+            </label>
+            <input
+              id="deliveryInstructions"
+              name="deliveryInstructions"
+              type="text"
+              maxlength="300"
+              placeholder="e.g. Leave with building security, call before arrival, landmark..."
+              [(ngModel)]="deliveryInstructions"
+              class="delivery-instructions-input"
+            />
+            <div class="instruction-chips" role="group" aria-label="Suggested delivery instructions">
+              @for (chip of instructionChips; track chip) {
+                <button
+                  type="button"
+                  class="instruction-chip"
+                  [class.active]="deliveryInstructions === chip"
+                  (click)="setInstructionChip(chip)"
+                >
+                  {{ chip }}
+                </button>
+              }
+            </div>
+          </div>
 
           <button type="submit" class="btn place-order-btn">Continue to Payment</button>
         }

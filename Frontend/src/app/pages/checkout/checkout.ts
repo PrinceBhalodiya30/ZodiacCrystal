@@ -134,9 +134,25 @@ export class Checkout implements OnInit {
   state = '';
   postalCode = '';
   phone = '';
+  deliveryInstructions = '';
   // Pin from the map, if the customer used it; cleared whenever the address comes from elsewhere.
   latitude: number | null | undefined = null;
   longitude: number | null | undefined = null;
+
+  readonly instructionChips = [
+    'Leave with building security',
+    'Call before arrival',
+    'Leave at front door / reception',
+    'Ring bell and leave with neighbor'
+  ];
+
+  setInstructionChip(note: string): void {
+    if (this.deliveryInstructions.trim() === note) {
+      this.deliveryInstructions = '';
+    } else {
+      this.deliveryInstructions = note;
+    }
+  }
 
   // Step 1 (address) folds into a summary line once confirmed, opening step 2 (payment).
   addressConfirmed = signal(false);
@@ -381,6 +397,7 @@ export class Checkout implements OnInit {
       state: this.state,
       postalCode: this.postalCode,
       phone: this.phone,
+      deliveryInstructions: this.deliveryInstructions.trim() || undefined,
       latitude: this.latitude ?? undefined,
       longitude: this.longitude ?? undefined,
       couponCode: this.appliedCouponCode() || undefined,

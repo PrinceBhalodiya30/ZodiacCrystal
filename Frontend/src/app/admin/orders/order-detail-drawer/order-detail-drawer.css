@@ -841,3 +841,40 @@
   }
 }
 
+/* Drawer Delivery Note */
+.drawer-delivery-note {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--color-surface-sunken, #f9f8f5);
+  border: 1px solid var(--color-border-subtle, #e8e4dc);
+  border-left: 3px solid var(--color-brand);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.drawer-delivery-note .delivery-note-tag {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-brand);
+  margin-bottom: 0.2rem;
+}
+
+.drawer-delivery-note p {
+  margin: 0;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--color-ink);
+  line-height: 1.35;
+}
+
+.slip-delivery-instructions {
+  margin-top: 0.35rem !important;
+  padding-top: 0.35rem;
+  border-top: 1px dashed #d5d0c7;
+  font-size: 0.82rem !important;
+  font-style: italic;
+  color: #333333;
+}
+

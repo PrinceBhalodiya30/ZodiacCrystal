@@ -194,6 +194,12 @@
         <p>{{ o.shippingAddress }}</p>
         <p>{{ o.city }}, {{ o.state }} {{ o.postalCode }}</p>
         <p>{{ o.phone }}</p>
+        @if (o.deliveryInstructions) {
+          <div class="order-delivery-note">
+            <span class="delivery-note-badge">Delivery Note</span>
+            <p class="delivery-note-text">“{{ o.deliveryInstructions }}”</p>
+          </div>
+        }
       </div>
 
       @if (o.isGiftWrap) {

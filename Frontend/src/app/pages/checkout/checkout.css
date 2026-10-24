@@ -216,6 +216,20 @@
   margin-top: 0.35rem;
 }
 
+.step-summary-instructions {
+  display: block;
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed var(--color-border-subtle);
+  font-size: 0.88rem;
+  color: var(--color-brand);
+}
+
+.step-summary-instructions strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
 /* Form Controls */
 .checkout-form label {
   font-size: 0.85rem;
@@ -753,5 +767,92 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+/* Delivery Instructions / Landmark Input */
+.delivery-instructions-box {
+  margin: 1.25rem 0 1.5rem;
+  padding: 1rem 1.15rem;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.delivery-instructions-label {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 !important;
+  font-size: 0.88rem !important;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.delivery-instructions-label .optional-tag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.delivery-instructions-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.9rem !important;
+  background: #ffffff !important;
+  color: var(--color-ink) !important;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.delivery-instructions-input:focus {
+  outline: none;
+  border-color: var(--color-brand) !important;
+  box-shadow: 0 0 0 3px rgba(34, 76, 56, 0.12) !important;
+}
+
+.instruction-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+}
+
+.instruction-chip {
+  appearance: none;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1.3;
+}
+
+.instruction-chip:hover {
+  border-color: var(--color-brand);
+  background: var(--color-cream-light);
+  color: var(--color-brand);
+}
+
+.instruction-chip.active {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 

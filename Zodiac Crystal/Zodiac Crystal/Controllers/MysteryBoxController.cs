@@ -153,6 +153,7 @@ namespace Zodiac_Crystal.Controllers
                     State = dto.State,
                     PostalCode = dto.PostalCode,
                     Phone = dto.Phone,
+                    DeliveryInstructions = string.IsNullOrWhiteSpace(dto.DeliveryInstructions) ? null : dto.DeliveryInstructions.Trim(),
                     // Only keep a complete pin; half a coordinate is useless.
                     Latitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Latitude.Value, 6) : null,
                     Longitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Longitude.Value, 6) : null,
@@ -500,6 +501,7 @@ namespace Zodiac_Crystal.Controllers
                 State = order.State,
                 PostalCode = order.PostalCode,
                 Phone = order.Phone,
+                DeliveryInstructions = order.DeliveryInstructions,
                 Latitude = order.Latitude,
                 Longitude = order.Longitude,
                 Items = order.OrderItems.Select(oi => new OrderItemDto

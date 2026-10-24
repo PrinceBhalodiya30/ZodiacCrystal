@@ -23,6 +23,7 @@ export interface CreateOrderRequest extends PaymentDetails {
   state: string;
   postalCode: string;
   phone: string;
+  deliveryInstructions?: string | null;
   latitude?: number;
   longitude?: number;
   couponCode?: string;
@@ -54,6 +55,7 @@ export interface Order {
   state: string;
   postalCode: string;
   phone: string;
+  deliveryInstructions?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   items: OrderItem[];

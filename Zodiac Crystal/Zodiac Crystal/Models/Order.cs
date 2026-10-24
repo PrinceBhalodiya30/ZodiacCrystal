@@ -41,6 +41,9 @@ public partial class Order
     [StringLength(20)]
     public string Phone { get; set; } = null!;
 
+    [StringLength(300)]
+    public string? DeliveryInstructions { get; set; }
+
     [Column(TypeName = "decimal(9, 6)")]
     public decimal? Latitude { get; set; }
 

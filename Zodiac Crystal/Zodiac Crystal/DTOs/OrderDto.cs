@@ -23,6 +23,7 @@ namespace Zodiac_Crystal.DTOs
         public string PostalCode { get; set; } = null!;
 
         public string Phone { get; set; } = null!;
+        public string? DeliveryInstructions { get; set; }
 
         public decimal? Latitude { get; set; }
 

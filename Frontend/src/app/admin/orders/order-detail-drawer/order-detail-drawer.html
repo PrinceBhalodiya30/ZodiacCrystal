@@ -177,6 +177,12 @@
             <p>{{ d.order.shippingAddress }}</p>
             <p>{{ d.order.city }}, {{ d.order.state }} {{ d.order.postalCode }}</p>
             <p><a [href]="'tel:' + d.order.phone">{{ d.order.phone }}</a></p>
+            @if (d.order.deliveryInstructions) {
+              <div class="drawer-delivery-note">
+                <span class="delivery-note-tag">Delivery Note</span>
+                <p>“{{ d.order.deliveryInstructions }}”</p>
+              </div>
+            }
             <!-- Only orders where the customer used the checkout map have a pin. -->
             @if (d.order.latitude != null && d.order.longitude != null) {
               <p>
@@ -287,6 +293,11 @@
                   <p>{{ d.order.shippingAddress }}</p>
                   <p>{{ d.order.city }}, {{ d.order.state }} {{ d.order.postalCode }}</p>
                   <p>Phone: {{ d.order.phone }}</p>
+                  @if (d.order.deliveryInstructions) {
+                    <p class="slip-delivery-instructions">
+                      <strong>Note:</strong> {{ d.order.deliveryInstructions }}
+                    </p>
+                  }
                 </div>
               </div>
 

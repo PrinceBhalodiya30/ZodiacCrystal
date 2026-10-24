@@ -107,6 +107,15 @@ namespace Zodiac_Crystal.Services
                                 c.Item().Text("Shipping Address").Bold().FontColor(BrandGreen);
                                 c.Item().Text(order.ShippingAddress);
                                 c.Item().Text($"{order.City}, {order.State} {order.PostalCode}");
+
+                                if (!string.IsNullOrEmpty(order.DeliveryInstructions))
+                                {
+                                    c.Item().PaddingTop(3).Text(t =>
+                                    {
+                                        t.Span("Note: ").Bold().FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                                        t.Span(order.DeliveryInstructions).Italic().FontSize(8.5f).FontColor(Ink);
+                                    });
+                                }
                             });
 
                             row.RelativeItem().Column(c =>
