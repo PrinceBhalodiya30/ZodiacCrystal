@@ -29,228 +29,92 @@
   <!-- Splash loader: inline so it paints before any JS or CSS bundle arrives.
        App removes it after the first page has rendered. -->
   <style>
+    /* Industry-Standard Top-of-Page Progress Bar (YouTube / GitHub / Shopify style) */
     #app-splash {
       position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 22px;
-      background: radial-gradient(circle at 50% 48%, #ffffff 0%, #faf7f2 60%, #eee8dd 100%);
-      transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 99999;
+      pointer-events: none;
+      background: transparent;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
     #app-splash.is-hidden {
       opacity: 0;
       visibility: hidden;
-      pointer-events: none;
     }
 
-    /* 3D Celestial Gyroscope (Astrolabe) */
-    .astrolabe-stage {
-      position: relative;
-      width: 74px;
-      height: 74px;
-      perspective: 700px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .astrolabe-sphere {
+    .top-progress-track {
       position: relative;
       width: 100%;
       height: 100%;
-      transform-style: preserve-3d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
     }
 
-    .astrolabe-ring {
+    .top-progress-fill {
       position: absolute;
-      border-radius: 50%;
-      transform-style: preserve-3d;
-      pointer-events: none;
-      box-sizing: border-box;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2f4a3a 0%, #c5a059 50%, #dfbe7a 100%);
+      box-shadow: 0 0 10px rgba(197, 160, 89, 0.7), 0 0 4px rgba(223, 190, 122, 0.9);
+      animation: top-bar-trickle 2s cubic-bezier(0.12, 0.65, 0.35, 1) forwards;
+      transition: width 0.2s ease-out;
     }
 
-    /* Ring 1: Celestial Meridian (Gold) */
-    .ring-outer {
-      width: 70px;
-      height: 70px;
-      border: 1.5px solid rgba(197, 160, 89, 0.4);
-      border-top-color: #c5a059;
-      border-bottom-color: #dfbe7a;
-      box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
-      animation: gyro-outer 5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
-    }
-
-    /* Ring 2: Equatorial Zodiac Orbit (Emerald & Bronze dashed track) */
-    .ring-middle {
-      width: 52px;
-      height: 52px;
-      border: 1.5px dashed rgba(47, 74, 58, 0.55);
-      border-left-color: #2f4a3a;
-      border-right-color: #3d624c;
-      animation: gyro-middle 3.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite reverse;
-    }
-
-    /* Ring 3: Inner Ecliptic (Champagne gold) */
-    .ring-inner {
-      width: 34px;
-      height: 34px;
-      border: 1.5px solid rgba(197, 160, 89, 0.65);
-      border-top-color: #f4e5be;
-      border-left-color: #dfbe7a;
-      animation: gyro-inner 2.6s linear infinite;
-    }
-
-    /* Orbiting Star Pip */
-    .astrolabe-pip {
+    /* Radiant light beam head at the edge of the bar */
+    .top-progress-fill::after {
+      content: "";
       position: absolute;
-      top: -3px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 5px;
+      right: 0;
+      top: -1px;
+      width: 80px;
       height: 5px;
-      border-radius: 50%;
-      background: #dfbe7a;
-      box-shadow: 0 0 6px #f4e5be, 0 0 10px rgba(223, 190, 122, 0.8);
+      background: radial-gradient(ellipse at center, rgba(244, 229, 190, 1) 0%, rgba(223, 190, 122, 0.4) 60%, transparent 100%);
+      box-shadow: 0 0 12px #dfbe7a, 0 0 6px #ffffff;
+      opacity: 0.9;
     }
 
-    /* Luminous Center Polaris Core */
-    .astrolabe-core {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 0 8px #f4e5be, 0 0 16px rgba(197, 160, 89, 0.85);
-      animation: core-pulse 2s ease-in-out infinite;
+    /* When Angular is ready, shoot to 100% and fade out */
+    #app-splash.is-hidden .top-progress-fill {
+      width: 100% !important;
+      animation: none;
     }
 
-    /* Floor Reflection Shadow */
-    .astrolabe-shadow {
-      position: absolute;
-      bottom: -10px;
-      width: 44px;
-      height: 8px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(47, 74, 58, 0.22) 0%, rgba(47, 74, 58, 0.04) 60%, transparent 80%);
-      animation: shadow-pulse 3.8s ease-in-out infinite;
-    }
-
-    /* Subtitle Caption */
-    .astrolabe-caption {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-      font-size: 9.5px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: #8c8577;
-      font-weight: 500;
-      opacity: 0.8;
-      animation: caption-fade 2.4s ease-in-out infinite alternate;
-    }
-
-    /* 3D Orbital Keyframe Animations */
-    @keyframes gyro-outer {
+    @keyframes top-bar-trickle {
       0% {
-        transform: rotateX(68deg) rotateY(0deg) rotateZ(0deg);
+        width: 0%;
+      }
+      20% {
+        width: 32%;
       }
       50% {
-        transform: rotateX(80deg) rotateY(180deg) rotateZ(20deg);
+        width: 62%;
+      }
+      80% {
+        width: 82%;
       }
       100% {
-        transform: rotateX(68deg) rotateY(360deg) rotateZ(0deg);
-      }
-    }
-
-    @keyframes gyro-middle {
-      0% {
-        transform: rotateY(72deg) rotateX(15deg) rotateZ(0deg);
-      }
-      50% {
-        transform: rotateY(82deg) rotateX(-25deg) rotateZ(180deg);
-      }
-      100% {
-        transform: rotateY(72deg) rotateX(15deg) rotateZ(360deg);
-      }
-    }
-
-    @keyframes gyro-inner {
-      0% {
-        transform: rotateZ(45deg) rotateX(0deg) rotateY(35deg);
-      }
-      50% {
-        transform: rotateZ(225deg) rotateX(180deg) rotateY(55deg);
-      }
-      100% {
-        transform: rotateZ(405deg) rotateX(360deg) rotateY(35deg);
-      }
-    }
-
-    @keyframes core-pulse {
-      0%, 100% {
-        transform: scale(0.85);
-        opacity: 0.75;
-      }
-      50% {
-        transform: scale(1.35);
-        opacity: 1;
-        box-shadow: 0 0 12px #ffffff, 0 0 22px rgba(223, 190, 122, 1);
-      }
-    }
-
-    @keyframes shadow-pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.7;
-      }
-      50% {
-        transform: scale(0.72);
-        opacity: 0.35;
-      }
-    }
-
-    @keyframes caption-fade {
-      0% {
-        opacity: 0.55;
-      }
-      100% {
-        opacity: 0.95;
+        width: 90%;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .ring-outer,
-      .ring-middle,
-      .ring-inner,
-      .astrolabe-core,
-      .astrolabe-shadow,
-      .astrolabe-caption {
-        animation: none !important;
+      .top-progress-fill {
+        animation: none;
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <div id="app-splash" role="status" aria-label="Loading Zodiac Crystal">
-    <div class="astrolabe-stage">
-      <div class="astrolabe-shadow"></div>
-      <div class="astrolabe-sphere">
-        <div class="astrolabe-ring ring-outer">
-          <div class="astrolabe-pip"></div>
-        </div>
-        <div class="astrolabe-ring ring-middle">
-          <div class="astrolabe-pip"></div>
-        </div>
-        <div class="astrolabe-ring ring-inner"></div>
-        <div class="astrolabe-core"></div>
-      </div>
+  <div id="app-splash" role="progressbar" aria-label="Page loading">
+    <div class="top-progress-track">
+      <div class="top-progress-fill"></div>
     </div>
-    <span class="astrolabe-caption">Aligning energies</span>
   </div>
   <app-root></app-root>
 </body>

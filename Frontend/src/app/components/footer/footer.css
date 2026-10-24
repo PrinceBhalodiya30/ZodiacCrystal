@@ -36,13 +36,25 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
+.footer-form-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .footer-newsletter-form {
   display: flex;
   gap: 0.65rem;
   flex-wrap: wrap;
 }
 
-.footer-newsletter-form input {
+.honeypot-field {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+.footer-newsletter-form input:not(.honeypot-field) {
   min-width: 260px;
   padding: 0.65rem 1.15rem;
   border-radius: var(--radius-pill);
@@ -54,11 +66,11 @@
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
-.footer-newsletter-form input::placeholder {
+.footer-newsletter-form input:not(.honeypot-field)::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.footer-newsletter-form input:focus {
+.footer-newsletter-form input:not(.honeypot-field):focus {
   outline: none;
   border-color: #ffffff;
   background: rgba(255, 255, 255, 0.2);
@@ -77,17 +89,78 @@
   color: var(--color-brand, #244132);
 }
 
+.footer-newsletter-success-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
 .footer-newsletter-success {
   margin: 0;
   font-size: var(--text-sm);
   font-weight: 600;
-  color: #a6d8b5;
+  color: #c9e8d2;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.newsletter-status-icon {
+  flex-shrink: 0;
+}
+
+.footer-coupon-box {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.coupon-label {
+  font-weight: 500;
+}
+
+.coupon-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px dashed #dfbe7a;
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.25rem 0.65rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.coupon-code-badge:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.coupon-code-badge code {
+  font-family: monospace;
+  font-weight: 700;
+  color: #dfbe7a;
+  letter-spacing: 0.06em;
+}
+
+.coupon-code-badge .copy-status {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
 }
 
 .footer-newsletter-error {
   margin: 0.5rem 0 0;
-  color: #f0b5af;
+  color: #ffc9c4;
   font-size: var(--text-xs);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   width: 100%;
 }
 

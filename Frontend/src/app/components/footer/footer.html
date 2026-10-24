@@ -5,26 +5,56 @@
       <p>Zodiac insights, crystal guides, and offers — delivered monthly.</p>
     </div>
     @if (newsletterSubmitted()) {
-      <p class="footer-newsletter-success">You're subscribed. We'll email you about new stones and restocks.</p>
+      <div class="footer-newsletter-success-card">
+        <p class="footer-newsletter-success">
+          <svg class="newsletter-status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Welcome to the Celestial Circle!</span>
+        </p>
+        @if (welcomeCoupon(); as code) {
+          <div class="footer-coupon-box">
+            <span class="coupon-label">10% Welcome Gift:</span>
+            <button type="button" class="coupon-code-badge" (click)="copyCoupon(code)" title="Click to copy coupon code">
+              <code>{{ code }}</code>
+              <span class="copy-status">{{ copiedCoupon() ? '✓ Copied' : 'Copy' }}</span>
+            </button>
+          </div>
+        }
+      </div>
     } @else {
-      <form class="footer-newsletter-form" (ngSubmit)="subscribeNewsletter()">
-        <input
-          type="email"
-          name="newsletterEmail"
-          placeholder="Enter your email"
-          required
-          [ngModel]="newsletterEmail()"
-          (ngModelChange)="newsletterEmail.set($event)"
-          [disabled]="isSubscribing()"
-          aria-label="Email address"
-        />
-        <button type="submit" class="btn btn-outline" [disabled]="isSubscribing()">
-          {{ isSubscribing() ? 'Subscribing...' : 'Subscribe' }}
-        </button>
-      </form>
-      @if (newsletterError()) {
-        <p class="footer-newsletter-error">{{ newsletterError() }}</p>
-      }
+      <div class="footer-form-wrapper">
+        <form class="footer-newsletter-form" (ngSubmit)="subscribeNewsletter()">
+          <!-- Honeypot Bot Trap -->
+          <input
+            type="text"
+            name="b_website"
+            class="honeypot-field"
+            tabindex="-1"
+            autocomplete="off"
+            [ngModel]="newsletterHoneypot()"
+            (ngModelChange)="newsletterHoneypot.set($event)"
+            aria-hidden="true"
+          />
+          <input
+            type="email"
+            name="newsletterEmail"
+            placeholder="Enter your email"
+            required
+            [ngModel]="newsletterEmail()"
+            (ngModelChange)="newsletterEmail.set($event)"
+            [disabled]="isSubscribing()"
+            aria-label="Email address"
+          />
+          <button type="submit" class="btn btn-outline" [disabled]="isSubscribing()">
+            {{ isSubscribing() ? 'Subscribing...' : 'Subscribe' }}
+          </button>
+        </form>
+        @if (newsletterError()) {
+          <p class="footer-newsletter-error">
+            <svg class="newsletter-status-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>{{ newsletterError() }}</span>
+          </p>
+        }
+      </div>
     }
   </div>
 

@@ -27,14 +27,26 @@ namespace Zodiac_Crystal.Controllers
         [EnableRateLimiting(RateLimitPolicies.EmailSend)]
         public async Task<IActionResult> Subscribe(SubscribeNewsletterDto dto)
         {
+            var validation = NewsletterEmailValidator.Validate(dto.Email, dto.Website);
+            if (!validation.IsValid)
+            {
+                return BadRequest(new { message = validation.Reason });
+            }
+
             var email = dto.Email.Trim().ToLowerInvariant();
+            const string welcomeCoupon = "CRYSTAL-010";
 
             var existing = await _context.NewsletterSubscribers
                 .FirstOrDefaultAsync(s => s.Email == email);
 
             if (existing is { IsActive: true })
             {
-                return Ok(new { message = "You're already subscribed." });
+                return Ok(new
+                {
+                    message = "You're already subscribed! Your 10% coupon is still active.",
+                    couponCode = welcomeCoupon,
+                    discount = "10%"
+                });
             }
 
             if (existing != null)
@@ -45,7 +57,12 @@ namespace Zodiac_Crystal.Controllers
                 existing.SubscribedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 await _notificationService.BroadcastAdminChangeAsync("subscriber", existing.NewsletterSubscriberId, "resubscribed");
-                return Ok(new { message = "Subscribed successfully." });
+                return Ok(new
+                {
+                    message = "Welcome back! Use code CRYSTAL-010 for 10% off your next crystal.",
+                    couponCode = welcomeCoupon,
+                    discount = "10%"
+                });
             }
 
             var subscriber = new NewsletterSubscriber
@@ -60,7 +77,12 @@ namespace Zodiac_Crystal.Controllers
 
             await _notificationService.BroadcastAdminChangeAsync("subscriber", subscriber.NewsletterSubscriberId, "subscribed");
 
-            return Ok(new { message = "Subscribed successfully." });
+            return Ok(new
+            {
+                message = "Welcome to the Celestial Circle! Use code CRYSTAL-010 for 10% off your order.",
+                couponCode = welcomeCoupon,
+                discount = "10%"
+            });
         }
 
         // POST: api/newsletter/unsubscribe

@@ -5,14 +5,20 @@ import { NewsletterStats, NewsletterStatusFilter, NewsletterSubscriber } from '.
 import { PagedResult } from '../models/paged-result';
 import { API_BASE_URL } from './api-config';
 
+export interface SubscribeResponse {
+  message: string;
+  couponCode?: string;
+  discount?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NewsletterService {
   private http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/newsletter`;
   private adminBaseUrl = `${API_BASE_URL}/Admin/Newsletter-Subscribers`;
 
-  subscribe(email: string): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.baseUrl}/subscribe`, { email });
+  subscribe(email: string, website?: string): Observable<SubscribeResponse> {
+    return this.http.post<SubscribeResponse>(`${this.baseUrl}/subscribe`, { email, website });
   }
 
   // From the token in a subscriber's unsubscribe link.

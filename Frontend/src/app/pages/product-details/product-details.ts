@@ -37,9 +37,11 @@ const RELATED_PRODUCT_LIMIT = 4;
 
 import { InrPipe, formatInr } from '../../pipes/inr.pipe';
 import { CompareService } from '../../services/compare.service';
+import { FormsModule } from '@angular/forms';
 import { CouponService } from '../../services/coupon.service';
 import { PublicCoupon } from '../../models/coupon';
 import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
+import { checkDeliveryPincode, getSavedPincode, savePincode, PincodeDeliveryInfo } from '../../utils/pincode.util';
 @Component({
   selector: 'app-product-details',
   standalone: true,
@@ -55,7 +57,8 @@ import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.
     ZodiacIcon,
     ReviewPhotoPicker,
     ReviewPhotoThumbs,
-    PhotoLightbox
+    PhotoLightbox,
+    FormsModule
   ],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
@@ -134,7 +137,19 @@ export class ProductDetails implements OnInit {
   );
   photoViewer = signal<{ urls: string[]; index: number; caption: string } | null>(null);
 
+  // Simulated Pincode Delivery Checker
+  pincodeInput = signal('');
+  pincodeResult = signal<PincodeDeliveryInfo | null>(null);
+  isCheckingPincode = signal(false);
+  pincodeError = signal('');
+
   ngOnInit(): void {
+    const savedPin = getSavedPincode();
+    if (savedPin) {
+      this.pincodeInput.set(savedPin);
+      this.pincodeResult.set(checkDeliveryPincode(savedPin));
+    }
+
     // Same list checkout offers; a failure just hides the coupon line.
     this.couponService.getActiveCoupons().subscribe({
       next: coupons => this.activeCoupons.set(coupons),
@@ -543,6 +558,43 @@ export class ProductDetails implements OnInit {
   increaseQuantity(): void {
     const max = this.product()?.stockQuantity ?? 1;
     this.quantity.update(qty => Math.min(max, qty + 1));
+  }
+
+  onPincodeChange(value: string): void {
+    const digits = (value || '').replace(/\D/g, '').slice(0, 6);
+    this.pincodeInput.set(digits);
+    this.pincodeError.set('');
+    if (digits.length === 6 && !this.pincodeResult()) {
+      this.checkPincode();
+    }
+  }
+
+  checkPincode(): void {
+    const pin = this.pincodeInput().trim();
+    if (pin.length !== 6) {
+      this.pincodeError.set('Please enter a valid 6-digit Indian postal pincode.');
+      return;
+    }
+
+    this.isCheckingPincode.set(true);
+    this.pincodeError.set('');
+
+    setTimeout(() => {
+      const result = checkDeliveryPincode(pin);
+      this.isCheckingPincode.set(false);
+      if (result) {
+        this.pincodeResult.set(result);
+        savePincode(pin);
+      } else {
+        this.pincodeError.set('Invalid pincode. Please check your 6 digits.');
+      }
+    }, 200);
+  }
+
+  resetPincode(): void {
+    this.pincodeResult.set(null);
+    this.pincodeInput.set('');
+    this.pincodeError.set('');
   }
 
   addToCart(): void {

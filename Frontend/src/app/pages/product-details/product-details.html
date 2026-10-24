@@ -114,6 +114,65 @@
           }
         </ul>
 
+        <!-- Simulated Pincode Delivery Checker -->
+        <div class="delivery-pincode-card" aria-label="Delivery pincode checker">
+          <div class="pincode-title-row">
+            <svg class="pincode-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="1" y="6" width="13" height="11"/>
+              <path d="M14 9h4l4 4v4h-8V9Z"/>
+              <circle cx="6" cy="19" r="1.6"/>
+              <circle cx="17.5" cy="19" r="1.6"/>
+            </svg>
+            <span class="pincode-label">Estimated Delivery & Services</span>
+          </div>
+
+          @if (pincodeResult(); as res) {
+            <div class="pincode-result-box">
+              <div class="pincode-result-content">
+                <span class="pincode-check-mark" aria-hidden="true">✓</span>
+                <div class="pincode-result-text">
+                  <span class="pincode-main-line">
+                    Delivery to <strong>{{ res.location }}</strong> ({{ res.pincode }}) by <strong>{{ res.deliveryDate }}</strong> · <span class="pincode-perk">{{ res.shippingType }}</span> · <span class="pincode-perk">{{ res.codAvailable ? 'Cash on Delivery Available' : 'Prepaid Only' }}</span>
+                  </span>
+                </div>
+                <button type="button" class="btn-pincode-change" (click)="resetPincode()" aria-label="Change delivery pincode">
+                  Change
+                </button>
+              </div>
+            </div>
+          } @else {
+            <form class="pincode-form" (ngSubmit)="checkPincode()">
+              <div class="pincode-input-row">
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  maxlength="6"
+                  class="pincode-input"
+                  placeholder="Enter 6-digit Pincode"
+                  [ngModel]="pincodeInput()"
+                  (ngModelChange)="onPincodeChange($event)"
+                  name="deliveryPincode"
+                  aria-label="Enter 6-digit Indian Pincode"
+                />
+                <button
+                  type="submit"
+                  class="btn-pincode-submit"
+                  [disabled]="isCheckingPincode() || pincodeInput().length !== 6"
+                >
+                  {{ isCheckingPincode() ? 'Checking...' : 'Check' }}
+                </button>
+              </div>
+              @if (pincodeError()) {
+                <p class="pincode-error" role="alert">
+                  {{ pincodeError() }}
+                </p>
+              }
+            </form>
+          }
+        </div>
+
+
         @if (!reviewsLoading() && reviewCount() > 0) {
           <p class="rating-summary">
             <span class="stars">{{ getStars(averageRating()) }}</span>

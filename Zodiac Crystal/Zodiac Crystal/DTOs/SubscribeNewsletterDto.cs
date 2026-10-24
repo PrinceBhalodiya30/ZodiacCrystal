@@ -8,5 +8,9 @@ namespace Zodiac_Crystal.DTOs
         [EmailAddress]
         [StringLength(256)]
         public string Email { get; set; } = null!;
+
+        // Optional honeypot field (hidden in UI) to reject automated spam bots
+        [StringLength(100)]
+        public string? Website { get; set; }
     }
 }
