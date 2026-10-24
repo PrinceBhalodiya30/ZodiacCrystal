@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Data;
 using Zodiac_Crystal.DTOs;
 using Zodiac_Crystal.Models;
@@ -92,16 +92,52 @@ namespace Zodiac_Crystal.Services
         // lockRows: at checkout, called inside the order transaction with UPDLOCK +
         // HOLDLOCK so a second simultaneous checkout by the same customer with the
         // same coupon waits for the first to finish, then counts its order.
-        public static async Task<int> CountUsesByUserAsync(CrystalsDbContext context, int userId, string code, bool lockRows = false)
+        public static async Task<int> CountUsesByUserAsync(
+            CrystalsDbContext context,
+            int userId,
+            string code,
+            string? email = null,
+            bool lockRows = false)
         {
+            var cleanEmail = email?.Trim().ToLowerInvariant();
+
             if (!lockRows)
             {
-                return await context.Orders.CountAsync(o => o.UserId == userId && o.CouponCode == code);
+                if (!string.IsNullOrEmpty(cleanEmail) && userId > 0)
+                {
+                    return await context.Orders.CountAsync(o =>
+                        o.CouponCode == code && (o.UserId == userId || o.ShippingEmail.ToLower() == cleanEmail));
+                }
+                else if (!string.IsNullOrEmpty(cleanEmail))
+                {
+                    return await context.Orders.CountAsync(o =>
+                        o.CouponCode == code && o.ShippingEmail.ToLower() == cleanEmail);
+                }
+                else
+                {
+                    return await context.Orders.CountAsync(o =>
+                        o.CouponCode == code && o.UserId == userId);
+                }
             }
 
-            return await context.Database
-                .SqlQuery<int>($"SELECT COUNT(*) AS [Value] FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK) WHERE UserId = {userId} AND CouponCode = {code}")
-                .SingleAsync();
+            if (!string.IsNullOrEmpty(cleanEmail) && userId > 0)
+            {
+                return await context.Database
+                    .SqlQuery<int>($"SELECT COUNT(*) AS [Value] FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK) WHERE CouponCode = {code} AND (UserId = {userId} OR LOWER(ShippingEmail) = {cleanEmail})")
+                    .SingleAsync();
+            }
+            else if (!string.IsNullOrEmpty(cleanEmail))
+            {
+                return await context.Database
+                    .SqlQuery<int>($"SELECT COUNT(*) AS [Value] FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK) WHERE CouponCode = {code} AND LOWER(ShippingEmail) = {cleanEmail}")
+                    .SingleAsync();
+            }
+            else
+            {
+                return await context.Database
+                    .SqlQuery<int>($"SELECT COUNT(*) AS [Value] FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK) WHERE CouponCode = {code} AND UserId = {userId}")
+                    .SingleAsync();
+            }
         }
 
         private static CouponValidationResultDto Invalid(string message)

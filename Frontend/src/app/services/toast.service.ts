@@ -20,12 +20,12 @@ export class ToastService {
   private readonly queuedToasts: Toast[] = [];
   private readonly dismissTimers = new Map<number, ReturnType<typeof setTimeout>>();
 
-  success(message: string): void {
-    this.show(message, 'success');
+  success(message: string, durationMs?: number): void {
+    this.show(message, 'success', durationMs);
   }
 
-  error(message: string): void {
-    this.show(message, 'error');
+  error(message: string, durationMs?: number): void {
+    this.show(message, 'error', durationMs);
   }
 
   dismiss(id: number): void {
@@ -39,12 +39,13 @@ export class ToastService {
     this.showNextQueuedToast();
   }
 
-  private show(message: string, type: ToastType): void {
+  private show(message: string, type: ToastType, customDurationMs?: number): void {
+    const defaultDuration = type === 'error' ? ERROR_DISMISS_MS : SUCCESS_DISMISS_MS;
     const toast: Toast = {
       id: this.nextId++,
       message,
       type,
-      durationMs: type === 'error' ? ERROR_DISMISS_MS : SUCCESS_DISMISS_MS
+      durationMs: customDurationMs ?? defaultDuration
     };
 
     if (this.toasts().length >= MAX_VISIBLE_TOASTS) {

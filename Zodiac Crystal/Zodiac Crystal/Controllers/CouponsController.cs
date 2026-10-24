@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -315,9 +315,10 @@ namespace Zodiac_Crystal.Controllers
 
             var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.Code == code);
 
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
             // Preview only - checkout repeats this count under a lock (see CreateOrder).
             var userUses = coupon?.MaxUsesPerUser != null
-                ? await CouponValidationService.CountUsesByUserAsync(_context, GetCurrentUserId(), coupon.Code)
+                ? await CouponValidationService.CountUsesByUserAsync(_context, GetCurrentUserId(), coupon.Code, userEmail)
                 : 0;
 
             var result = _validationService.Validate(coupon, dto.OrderAmount, userUses);

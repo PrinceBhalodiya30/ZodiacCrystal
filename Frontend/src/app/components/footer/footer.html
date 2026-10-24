@@ -12,7 +12,7 @@
         </p>
         @if (welcomeCoupon(); as code) {
           <div class="footer-coupon-box">
-            <span class="coupon-label">10% Welcome Gift:</span>
+            <span class="coupon-label">{{ welcomeDiscount() ? (welcomeDiscount() + ' Welcome Gift:') : 'Welcome Gift:' }}</span>
             <button type="button" class="coupon-code-badge" (click)="copyCoupon(code)" title="Click to copy coupon code">
               <code>{{ code }}</code>
               <span class="copy-status">{{ copiedCoupon() ? '✓ Copied' : 'Copy' }}</span>

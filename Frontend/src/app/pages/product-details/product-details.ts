@@ -42,6 +42,15 @@ import { CouponService } from '../../services/coupon.service';
 import { PublicCoupon } from '../../models/coupon';
 import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
 import { checkDeliveryPincode, getSavedPincode, savePincode, PincodeDeliveryInfo } from '../../utils/pincode.util';
+
+export interface BundleItem {
+  product: Product;
+  selected: boolean;
+  isMain: boolean;
+  slug: string;
+  imageUrl: string | null;
+}
+
 @Component({
   selector: 'app-product-details',
   standalone: true,
@@ -143,6 +152,20 @@ export class ProductDetails implements OnInit {
   isCheckingPincode = signal(false);
   pincodeError = signal('');
 
+  // Frequently Bought Together Bundle
+  bundleItems = signal<BundleItem[]>([]);
+  bundleJustAdded = signal(false);
+
+  bundleSelectedItems = computed(() => this.bundleItems().filter(i => i.selected));
+  bundleSelectedCount = computed(() => this.bundleSelectedItems().length);
+  bundleOriginalTotal = computed(() => this.bundleSelectedItems().reduce((sum, i) => sum + i.product.price, 0));
+  bundleSavings = computed(() => {
+    const count = this.bundleSelectedCount();
+    if (count < 2) return 0;
+    return Math.round(this.bundleOriginalTotal() * 0.10); // 10% bundle savings
+  });
+  bundleFinalPrice = computed(() => this.bundleOriginalTotal() - this.bundleSavings());
+
   ngOnInit(): void {
     const savedPin = getSavedPincode();
     if (savedPin) {
@@ -192,6 +215,8 @@ export class ProductDetails implements OnInit {
     this.stockAlertSubscribed.set(false);
     this.photoEligibility.set(null);
     this.clearReviewPhotos();
+    this.bundleItems.set([]);
+    this.bundleJustAdded.set(false);
   }
 
   loadProduct(): void {
@@ -483,12 +508,88 @@ export class ProductDetails implements OnInit {
       next: related => {
         if (product.productId === this.productId) {
           this.relatedProducts.set(related);
+          if (related.length > 0) {
+            this.initBundleItems(product, related);
+          } else {
+            // Fallback: fetch top catalog products so the bundle pairing always works
+            this.productService.getProducts().subscribe({
+              next: catalog => {
+                if (product.productId === this.productId) {
+                  this.initBundleItems(product, catalog);
+                }
+              }
+            });
+          }
         }
       },
       error: () => {
         // "You may also like" is a nice-to-have; not fatal if it fails to load.
       }
     });
+  }
+
+  private initBundleItems(mainProduct: Product, candidates: Product[]): void {
+    if (!mainProduct || mainProduct.stockQuantity <= 0) {
+      this.bundleItems.set([]);
+      return;
+    }
+
+    const complementary = candidates
+      .filter(p => p.productId !== mainProduct.productId && p.isActive && p.stockQuantity > 0)
+      .slice(0, 2);
+
+    if (complementary.length === 0) {
+      this.bundleItems.set([]);
+      return;
+    }
+
+    const items: BundleItem[] = [
+      {
+        product: mainProduct,
+        selected: true,
+        isMain: true,
+        slug: getProductSlug(mainProduct),
+        imageUrl: getPrimaryImageUrl(mainProduct)
+      },
+      ...complementary.map(p => ({
+        product: p,
+        selected: true,
+        isMain: false,
+        slug: getProductSlug(p),
+        imageUrl: getPrimaryImageUrl(p)
+      }))
+    ];
+
+    this.bundleItems.set(items);
+  }
+
+  toggleBundleItem(productId: number): void {
+    this.bundleItems.update(items =>
+      items.map(item =>
+        item.product.productId === productId ? { ...item, selected: !item.selected } : item
+      )
+    );
+  }
+
+  addBundleToCart(): void {
+    const selected = this.bundleSelectedItems();
+    if (selected.length === 0) return;
+
+    selected.forEach((item, index) => {
+      const isLast = index === selected.length - 1;
+      this.cartService.addToCart(item.product, 1, isLast);
+    });
+
+    this.bundleJustAdded.set(true);
+    setTimeout(() => this.bundleJustAdded.set(false), 2500);
+
+    const count = selected.length;
+    const savings = this.bundleSavings();
+    if (savings > 0) {
+      this.toast.success(`Bundle added! Saved ${formatInr(savings, 0)} on ${count} items.`, 5000);
+    } else {
+      this.toast.success(`Added ${count} item${count > 1 ? 's' : ''} to your bag.`, 5000);
+    }
   }
 
   onImageMouseMove(event: MouseEvent): void {

@@ -188,7 +188,7 @@ namespace Zodiac_Crystal.Controllers
                     // Per-customer limit: counted under a lock, so two simultaneous
                     // checkouts by this customer can't both see room for one more use.
                     var userUses = coupon?.MaxUsesPerUser != null
-                        ? await CouponValidationService.CountUsesByUserAsync(_context, userId, coupon.Code, lockRows: true)
+                        ? await CouponValidationService.CountUsesByUserAsync(_context, userId, coupon.Code, dto.ShippingEmail, lockRows: true)
                         : 0;
 
                     var validation = _couponValidationService.Validate(coupon, total, userUses);

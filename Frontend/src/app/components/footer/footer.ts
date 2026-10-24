@@ -23,6 +23,7 @@ export class Footer {
   newsletterHoneypot = signal('');
   newsletterSubmitted = signal(false);
   welcomeCoupon = signal<string | null>(null);
+  welcomeDiscount = signal<string | null>(null);
   copiedCoupon = signal(false);
   isSubscribing = signal(false);
   newsletterError = signal('');
@@ -40,7 +41,8 @@ export class Footer {
       next: (res) => {
         this.isSubscribing.set(false);
         this.newsletterSubmitted.set(true);
-        this.welcomeCoupon.set(res.couponCode ?? 'CRYSTAL-010');
+        this.welcomeCoupon.set(res.couponCode || null);
+        this.welcomeDiscount.set(res.discount || null);
         this.newsletterEmail.set('');
       },
       error: (error: HttpErrorResponse) => {

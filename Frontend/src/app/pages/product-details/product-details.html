@@ -344,6 +344,130 @@
       </section>
     }
 
+    @if (bundleItems().length > 1) {
+      <section class="bundle-section" aria-label="Frequently Bought Together">
+        <div class="bundle-card">
+          <div class="bundle-header">
+            <div class="bundle-badge">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span>Pair & Save 10%</span>
+            </div>
+            <h2 class="bundle-title">Frequently Bought Together</h2>
+            <p class="bundle-subtitle">Carefully curated crystal pairings to amplify your energy & intentions</p>
+          </div>
+
+          <div class="bundle-content">
+            <!-- Visual chain of product cards -->
+            <div class="bundle-visual-chain">
+              @for (item of bundleItems(); track item.product.productId; let idx = $index; let last = $last) {
+                <div class="bundle-item-card" [class.unselected]="!item.selected">
+                  <a [routerLink]="['/products', item.slug]" class="bundle-img-link" [attr.aria-label]="item.product.name">
+                    @if (item.imageUrl) {
+                      <img [src]="item.imageUrl" [alt]="item.product.name" class="bundle-img" loading="lazy" />
+                    } @else {
+                      <div class="bundle-img-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <path d="M8 3h8l4 5-10 13L2 8Z"/>
+                        </svg>
+                      </div>
+                    }
+                    @if (item.isMain) {
+                      <span class="bundle-this-item-badge">This Item</span>
+                    }
+                  </a>
+                  <div class="bundle-item-meta">
+                    <a [routerLink]="['/products', item.slug]" class="bundle-item-name">{{ item.product.name }}</a>
+                    <span class="bundle-item-price">{{ item.product.price | inr }}</span>
+                  </div>
+                </div>
+
+                @if (!last) {
+                  <div class="bundle-operator-sign" aria-hidden="true">+</div>
+                }
+              }
+            </div>
+
+            <!-- Checkbox List & Action Box -->
+            <div class="bundle-summary-panel">
+              <ul class="bundle-checklist">
+                @for (item of bundleItems(); track item.product.productId) {
+                  <li class="bundle-check-row">
+                    <label class="bundle-checkbox-label">
+                      <input
+                        type="checkbox"
+                        class="bundle-checkbox"
+                        [checked]="item.selected"
+                        (change)="toggleBundleItem(item.product.productId)"
+                      />
+                      <span class="bundle-item-name-text">
+                        <strong>{{ item.isMain ? 'This item: ' : '' }}</strong>{{ item.product.name }}
+                        <span class="bundle-item-price-tag">({{ item.product.price | inr }})</span>
+                      </span>
+                    </label>
+                  </li>
+                }
+              </ul>
+
+              <div class="bundle-total-box">
+                <div class="bundle-price-row">
+                  <span class="bundle-price-caption">Bundle Price:</span>
+                  <span class="bundle-final-amount">{{ bundleFinalPrice() | inr }}</span>
+                  @if (bundleSavings() > 0) {
+                    <span class="bundle-strikethrough">{{ bundleOriginalTotal() | inr }}</span>
+                    <span class="bundle-save-badge">Save {{ bundleSavings() | inr:0 }}</span>
+                  }
+                </div>
+
+                @if (bundleSavings() > 0) {
+                  <p class="bundle-perk-note">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <span>10% bundle savings applied for multi-crystal pairing</span>
+                  </p>
+                }
+
+                <button
+                  type="button"
+                  class="btn btn-bundle-submit"
+                  [class.btn-added]="bundleJustAdded()"
+                  [disabled]="bundleSelectedCount() === 0"
+                  (click)="addBundleToCart()"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    @if (bundleJustAdded()) {
+                      <polyline points="20 6 9 17 4 12"/>
+                    } @else {
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                      <path d="M3 6h18"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    }
+                  </svg>
+                  <span>
+                    {{ bundleJustAdded() ? 'Bundle Added to Bag ✓' : ('Add ' + bundleSelectedCount() + (bundleSelectedCount() === 1 ? ' Item' : ' Items') + ' to Bag') }}
+                  </span>
+                </button>
+
+                @if (bundleJustAdded()) {
+                  <div class="bundle-inline-feedback" role="status">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9"/>
+                      <path d="m8 12.5 2.5 2.5L16 9.5"/>
+                    </svg>
+                    <span>
+                      Bundle added! @if (bundleSavings() > 0) { Saved {{ bundleSavings() | inr:0 }} on {{ bundleSelectedCount() }} items. } @else { Added to your bag. }
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
     <section class="reviews-section">
       <h2>Reviews & Ratings</h2>
 

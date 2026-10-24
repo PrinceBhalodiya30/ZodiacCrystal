@@ -34,18 +34,40 @@ namespace Zodiac_Crystal.Controllers
             }
 
             var email = dto.Email.Trim().ToLowerInvariant();
-            const string welcomeCoupon = "CRYSTAL-010";
+
+            // Look up the active welcome coupon dynamically from the database
+            var now = DateTime.UtcNow;
+            var welcomeCoupon = await _context.Coupons
+                .AsNoTracking()
+                .Where(c => c.IsActive
+                    && c.StartDate <= now
+                    && c.EndDate >= now
+                    && c.UsedCount < c.UsageLimit
+                    && (c.Code == "CRYSTAL-010" || c.Code.StartsWith("WELCOME")))
+                .OrderByDescending(c => c.DiscountValue)
+                .FirstOrDefaultAsync();
+
+            string? activeCouponCode = welcomeCoupon?.Code;
+            string? activeDiscountText = welcomeCoupon != null
+                ? (string.Equals(welcomeCoupon.DiscountType, "Percentage", StringComparison.OrdinalIgnoreCase)
+                    ? $"{welcomeCoupon.DiscountValue:0}%"
+                    : $"₹{welcomeCoupon.DiscountValue:0}")
+                : null;
 
             var existing = await _context.NewsletterSubscribers
                 .FirstOrDefaultAsync(s => s.Email == email);
 
             if (existing is { IsActive: true })
             {
+                var msg = activeCouponCode != null
+                    ? $"You're already subscribed! Your {activeDiscountText} coupon ({activeCouponCode}) is still active."
+                    : "You're already subscribed to the Celestial Circle newsletter.";
+
                 return Ok(new
                 {
-                    message = "You're already subscribed! Your 10% coupon is still active.",
-                    couponCode = welcomeCoupon,
-                    discount = "10%"
+                    message = msg,
+                    couponCode = activeCouponCode,
+                    discount = activeDiscountText
                 });
             }
 
@@ -57,11 +79,16 @@ namespace Zodiac_Crystal.Controllers
                 existing.SubscribedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 await _notificationService.BroadcastAdminChangeAsync("subscriber", existing.NewsletterSubscriberId, "resubscribed");
+
+                var msg = activeCouponCode != null
+                    ? $"Welcome back! Use code {activeCouponCode} for {activeDiscountText} off your next crystal."
+                    : "Welcome back! You are now subscribed to our crystal updates.";
+
                 return Ok(new
                 {
-                    message = "Welcome back! Use code CRYSTAL-010 for 10% off your next crystal.",
-                    couponCode = welcomeCoupon,
-                    discount = "10%"
+                    message = msg,
+                    couponCode = activeCouponCode,
+                    discount = activeDiscountText
                 });
             }
 
@@ -77,11 +104,15 @@ namespace Zodiac_Crystal.Controllers
 
             await _notificationService.BroadcastAdminChangeAsync("subscriber", subscriber.NewsletterSubscriberId, "subscribed");
 
+            var welcomeMessage = activeCouponCode != null
+                ? $"Welcome to the Celestial Circle! Use code {activeCouponCode} for {activeDiscountText} off your order."
+                : "Welcome to the Celestial Circle! You'll receive our weekly crystal guides and exclusive member offers.";
+
             return Ok(new
             {
-                message = "Welcome to the Celestial Circle! Use code CRYSTAL-010 for 10% off your order.",
-                couponCode = welcomeCoupon,
-                discount = "10%"
+                message = welcomeMessage,
+                couponCode = activeCouponCode,
+                discount = activeDiscountText
             });
         }
 
