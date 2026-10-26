@@ -14,7 +14,17 @@ import { ToastService } from './toast.service';
 const GUEST_CART_KEY = 'cart_items';
 const cartKey = (userId: number | null) => (userId ? `cart_items_${userId}` : GUEST_CART_KEY);
 const BUY_NOW_KEY = 'buy_now_item';
+const BUY_NOW_MYSTERY_BOX_KEY = 'buy_now_mystery_box';
 const MERGE_NOTICE_KEY = 'cart_merge_notice';
+
+export interface MysteryBoxBuyNow {
+  zodiacId?: number;
+  zodiacName?: string;
+  zodiacImageUrl?: string | null;
+  price: number;
+  itemCount: number;
+  minimumValue: number;
+}
 
 // Mirrors OrdersController.CreateOrder: free at/above ₹999 item subtotal, flat ₹50
 // otherwise. Display only - the backend computes the fee it actually charges.
@@ -172,6 +182,7 @@ export class CartService {
   // memory) so refreshing Checkout doesn't lose it and silently fall back to
   // the regular cart; sessionStorage is per-tab and gone when the tab closes.
   buyNowItem = signal<CartItem | null>(this.loadStoredBuyNowItem());
+  buyNowMysteryBox = signal<MysteryBoxBuyNow | null>(this.loadStoredBuyNowMysteryBox());
 
   constructor() {
     // Live stock (SignalR): keep the stock shown in the cart current, so an item
@@ -407,6 +418,7 @@ export class CartService {
   }
 
   setBuyNowItem(product: Product, quantity: number): void {
+    this.clearBuyNowMysteryBox();
     const item = { product, quantity: Math.min(quantity, product.stockQuantity) };
     this.buyNowItem.set(item);
     sessionStorage.setItem(BUY_NOW_KEY, JSON.stringify(item));
@@ -415,6 +427,29 @@ export class CartService {
   clearBuyNowItem(): void {
     this.buyNowItem.set(null);
     sessionStorage.removeItem(BUY_NOW_KEY);
+  }
+
+  setBuyNowMysteryBox(item: MysteryBoxBuyNow): void {
+    this.clearBuyNowItem();
+    this.buyNowMysteryBox.set(item);
+    sessionStorage.setItem(BUY_NOW_MYSTERY_BOX_KEY, JSON.stringify(item));
+  }
+
+  clearBuyNowMysteryBox(): void {
+    this.buyNowMysteryBox.set(null);
+    sessionStorage.removeItem(BUY_NOW_MYSTERY_BOX_KEY);
+  }
+
+  private loadStoredBuyNowMysteryBox(): MysteryBoxBuyNow | null {
+    const raw = sessionStorage.getItem(BUY_NOW_MYSTERY_BOX_KEY);
+    if (!raw) {
+      return null;
+    }
+    try {
+      return JSON.parse(raw) as MysteryBoxBuyNow;
+    } catch {
+      return null;
+    }
   }
 
   private loadStoredBuyNowItem(): CartItem | null {

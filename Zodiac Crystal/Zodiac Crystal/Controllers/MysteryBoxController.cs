@@ -66,12 +66,24 @@ namespace Zodiac_Crystal.Controllers
         }
 
         // POST: api/mysterybox/purchase
-        [Authorize(Roles = "User")]
+        [AllowGuest]
         [EnableRateLimiting(RateLimitPolicies.Checkout)]
         [HttpPost("purchase")]
         public async Task<ActionResult<OrderDto>> Purchase(CreateMysteryBoxOrderDto dto)
         {
             var userId = GetCurrentUserId();
+
+            if (User.IsGuest())
+            {
+                // Guest order emails go to the verified address, never a typed one.
+                dto.ShippingEmail = User.FindFirstValue(ClaimTypes.Email)!;
+
+                // Guest Cash on Delivery comes later, with fraud limits.
+                if (dto.PaymentMethod != PaymentMethods.Card)
+                {
+                    return BadRequest(new { message = "Guest orders are paid by card. Log in or create an account to use Cash on Delivery." });
+                }
+            }
 
             // Same as OrdersController.CreateOrder: a repeat of an attempt that
             // already placed its box gets that order back, without a new charge.

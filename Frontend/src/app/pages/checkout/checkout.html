@@ -1,5 +1,7 @@
 <section class="container checkout-page">
-  @if (items().length > 0) {
+  @if (mysteryBox()) {
+    <a class="back-link" routerLink="/mystery-box" (click)="leaveBuyNow()">← Back to Mystery Box</a>
+  } @else if (items().length > 0) {
     @if (buyNowProductId(); as productId) {
       <a class="back-link" [routerLink]="['/products', productId]" (click)="leaveBuyNow()">← Back to product</a>
     } @else {
@@ -8,7 +10,7 @@
   }
   <h1>Checkout</h1>
 
-  @if (items().length === 0) {
+  @if (items().length === 0 && !mysteryBox()) {
     <div class="state-message state-message--empty">
       <p>There's nothing to check out.</p>
       <a routerLink="/products" class="btn">Browse Products</a>
@@ -32,12 +34,35 @@
         }
 
         <div class="summary-list">
-          @for (item of items(); track item.product.productId) {
-            <div class="summary-row">
-              <div class="summary-image">
-                @if (itemImage(item)) {
-                  <img [imgSrc]="itemImage(item)" imgSizes="120px" [alt]="item.product.name" width="120" height="120" loading="lazy" decoding="async" imgFallback />
+          @if (mysteryBox(); as box) {
+            <div class="summary-row mystery-box-summary-row">
+              <div class="summary-image mystery-box-summary-image">
+                @if (box.zodiacImageUrl) {
+                  <img [imgSrc]="box.zodiacImageUrl" imgSizes="52px" [alt]="box.zodiacName || 'Zodiac Sign'" width="52" height="52" loading="lazy" decoding="async" imgFallback />
                 } @else {
+                  <span class="mystery-box-emblem-icon">✨</span>
+                }
+              </div>
+
+              <div class="summary-info">
+                <span class="summary-name">Mystery Crystal Box</span>
+                <span class="summary-meta">
+                  {{ box.itemCount }} Curated Crystals · {{ box.zodiacName ? 'Attuned to ' + box.zodiacName : 'All Signs' }}
+                </span>
+                <span class="summary-guarantee-tag">
+                  Guaranteed min. value {{ box.minimumValue | inr:0 }}
+                </span>
+              </div>
+
+              <span class="summary-subtotal">{{ box.price | inr }}</span>
+            </div>
+          } @else {
+            @for (item of items(); track item.product.productId) {
+              <div class="summary-row">
+                <div class="summary-image">
+                  @if (itemImage(item)) {
+                    <img [imgSrc]="itemImage(item)" imgSizes="120px" [alt]="item.product.name" width="120" height="120" loading="lazy" decoding="async" imgFallback />
+                  } @else {
                     <svg class="thumb-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
                       <path d="M8 3h8l4 5-10 13L2 8Z"/>
                     </svg>
@@ -59,8 +84,10 @@
                 <span class="summary-subtotal">{{ itemSubtotal(item) | inr }}</span>
               </div>
             }
-          </div>
+          }
+        </div>
 
+        @if (!mysteryBox()) {
           <div class="coupon-box">
             <h3 class="coupon-box-heading">Have a coupon?</h3>
             @if (!appliedCouponCode()) {
@@ -173,38 +200,39 @@
               </div>
             }
           </div>
+        }
 
-          <div class="summary-subtotal-row">
-            <span>Subtotal</span>
-            <span>{{ total() | inr }}</span>
+        <div class="summary-subtotal-row">
+          <span>Subtotal</span>
+          <span>{{ total() | inr }}</span>
+        </div>
+
+        @if (!mysteryBox() && appliedDiscountAmount() > 0) {
+          <div class="summary-subtotal-row discount-row">
+            <span>Discount</span>
+            <span>-{{ appliedDiscountAmount() | inr }}</span>
           </div>
+        }
 
-          @if (appliedDiscountAmount() > 0) {
-            <div class="summary-subtotal-row discount-row">
-              <span>Discount</span>
-              <span>-{{ appliedDiscountAmount() | inr }}</span>
-            </div>
+        <div class="summary-subtotal-row">
+          <span>Shipping</span>
+          @if (shippingFee() > 0) {
+            <span>{{ shippingFee() | inr }}</span>
+          } @else {
+            <span class="shipping-free">FREE</span>
           }
+        </div>
 
-          <div class="summary-subtotal-row">
-            <span>Shipping</span>
-            @if (shippingFee() > 0) {
-              <span>{{ shippingFee() | inr }}</span>
-            } @else {
-              <span class="shipping-free">FREE</span>
-            }
+        @if (!mysteryBox() && cartService.isGiftWrap()) {
+          <div class="summary-subtotal-row gift-summary-row">
+            <span class="gift-row-label">
+              <span class="gift-icon">🎁</span> Luxury Gift Packaging
+            </span>
+            <span>+ {{ giftPackagingFee | inr }}</span>
           </div>
+        }
 
-          @if (cartService.isGiftWrap()) {
-            <div class="summary-subtotal-row gift-summary-row">
-              <span class="gift-row-label">
-                <span class="gift-icon">🎁</span> Luxury Gift Packaging
-              </span>
-              <span>+ {{ giftPackagingFee | inr }}</span>
-            </div>
-          }
-
-          <div class="summary-total">
+        <div class="summary-total">
             <span>Total</span>
             <span>{{ orderTotal() | inr }}</span>
           </div>

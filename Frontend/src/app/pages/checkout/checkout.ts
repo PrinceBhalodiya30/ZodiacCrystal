@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CartService, GIFT_PACKAGING_FEE, shippingFeeFor } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
+import { MysteryBoxService } from '../../services/mystery-box.service';
 import { CouponService } from '../../services/coupon.service';
 import { AddressService } from '../../services/address.service';
 import { CartItem } from '../../models/cart';
@@ -30,6 +31,7 @@ export class Checkout implements OnInit {
   readonly cartService = inject(CartService);
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
+  private mysteryBoxService = inject(MysteryBoxService);
   private couponService = inject(CouponService);
   private addressService = inject(AddressService);
   private guestSession = inject(GuestSessionService);
@@ -38,8 +40,13 @@ export class Checkout implements OnInit {
   paymentMethod = signal<PaymentMethod>('COD');
   paymentSelect = viewChild(PaymentMethodSelect);
 
+  mysteryBox = computed(() => this.cartService.buyNowMysteryBox());
+
   // A Buy Now purchase checks out just that one item; otherwise, the whole cart.
   items = computed<CartItem[]>(() => {
+    if (this.cartService.buyNowMysteryBox()) {
+      return [];
+    }
     const buyNowItem = this.cartService.buyNowItem();
     return buyNowItem ? [buyNowItem] : this.cartService.items();
   });
@@ -51,18 +58,23 @@ export class Checkout implements OnInit {
   // replace the cart the next time the shopper reaches checkout.
   leaveBuyNow(): void {
     this.cartService.clearBuyNowItem();
+    this.cartService.clearBuyNowMysteryBox();
   }
 
-  total = computed(() =>
-    this.items().reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-  );
+  total = computed(() => {
+    const box = this.mysteryBox();
+    if (box) {
+      return box.price;
+    }
+    return this.items().reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  });
 
   // Display estimate only - the backend computes the fee it actually charges.
   shippingFee = computed(() => shippingFeeFor(this.total()));
 
   // Lines asking for more than is in stock (or sold out). Payment is blocked until fixed.
   stockProblems = computed(() =>
-    this.items().filter(i => i.product.stockQuantity <= 0 || i.quantity > i.product.stockQuantity)
+    this.mysteryBox() ? [] : this.items().filter(i => i.product.stockQuantity <= 0 || i.quantity > i.product.stockQuantity)
   );
 
   // Notes from re-checking prices/availability when checkout opened.
@@ -99,7 +111,12 @@ export class Checkout implements OnInit {
 
   readonly giftPackagingFee = GIFT_PACKAGING_FEE;
 
-  orderTotal = computed(() => this.remainingAfterCoupon() + this.shippingFee() + this.cartService.giftFee());
+  orderTotal = computed(() => {
+    if (this.mysteryBox()) {
+      return this.total() + this.shippingFee();
+    }
+    return this.remainingAfterCoupon() + this.shippingFee() + this.cartService.giftFee();
+  });
 
   toggleGiftWrap(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
@@ -176,14 +193,18 @@ export class Checkout implements OnInit {
   }
 
   ngOnInit(): void {
-    // The cart is a saved snapshot; show today's prices before the customer pays.
-    const refresh$ = this.cartService.buyNowItem() ? this.cartService.refreshBuyNow() : this.cartService.refresh();
-    refresh$.subscribe(notes => this.changeNotes.set(notes));
+    if (this.mysteryBox()) {
+      this.isLoadingCoupons.set(false);
+    } else {
+      // The cart is a saved snapshot; show today's prices before the customer pays.
+      const refresh$ = this.cartService.buyNowItem() ? this.cartService.refreshBuyNow() : this.cartService.refresh();
+      refresh$.subscribe(notes => this.changeNotes.set(notes));
+      this.loadAvailableCoupons();
+    }
     // Guests have no address book.
     if (!this.isGuest()) {
       this.loadAddresses();
     }
-    this.loadAvailableCoupons();
   }
 
   onGuestVerified(): void {
@@ -365,11 +386,12 @@ export class Checkout implements OnInit {
   }
 
   async placeOrder(): Promise<void> {
+    const box = this.mysteryBox();
     const items = this.items();
     const paymentSelect = this.paymentSelect();
 
     // Guard against a second submit while the first is still awaiting payment details.
-    if (this.isSubmitting() || items.length === 0 || !paymentSelect || this.stockProblems().length > 0) {
+    if (this.isSubmitting() || (!box && items.length === 0) || !paymentSelect || this.stockProblems().length > 0) {
       return;
     }
 
@@ -382,6 +404,55 @@ export class Checkout implements OnInit {
     } catch (error: any) {
       this.isSubmitting.set(false);
       this.errorMessage.set(error?.message || 'Please check your payment details.');
+      return;
+    }
+
+    if (box) {
+      const shipping = {
+        zodiacId: box.zodiacId,
+        shippingName: this.shippingName,
+        shippingEmail: this.shippingEmail,
+        shippingAddress: this.shippingAddress,
+        city: this.city,
+        state: this.state,
+        postalCode: this.postalCode,
+        phone: this.phone,
+        deliveryInstructions: this.deliveryInstructions.trim() || undefined,
+        latitude: this.latitude ?? undefined,
+        longitude: this.longitude ?? undefined
+      };
+      const idempotencyKey = this.idempotencyKeyForOrder(
+        JSON.stringify({ ...shipping, paymentMethod: payment.paymentMethod })
+      );
+
+      this.mysteryBoxService
+        .purchase({ ...payment, ...shipping, idempotencyKey })
+        .subscribe({
+          next: order => {
+            this.isSubmitting.set(false);
+            this.idempotencyKey = null;
+            this.cartService.clearBuyNowMysteryBox();
+
+            if (this.isGuest()) {
+              // Guests have no My Orders page; show the confirmation from the response.
+              this.router.navigate(['/order-placed'], { state: { order, email: this.shippingEmail } });
+              return;
+            }
+
+            this.router.navigate(['/orders', order.orderId], {
+              state: { justPlaced: true }
+            });
+          },
+          error: error => {
+            this.isSubmitting.set(false);
+            if (payment.paymentMethod === 'Card') {
+              paymentSelect.resetAfterFailure();
+            }
+            this.errorMessage.set(
+              error.error?.message || 'Your Mystery Crystal Box could not be created. Please try again.'
+            );
+          }
+        });
       return;
     }
 

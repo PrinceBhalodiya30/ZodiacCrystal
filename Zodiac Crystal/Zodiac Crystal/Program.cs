@@ -51,7 +51,8 @@ builder.Services.AddHttpLogging(options =>
 
 builder.Services.AddDbContext<CrystalsDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("CrystalsDb")
+        builder.Configuration.GetConnectionString("CrystalsDb"),
+        sqlServerOptions => sqlServerOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     ));
 
 builder.Services.AddScoped<TokenService>();

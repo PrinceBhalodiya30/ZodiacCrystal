@@ -178,21 +178,31 @@ export class NotificationBell {
   }
 
   timeAgo(createdAt: string): string {
-    const seconds = Math.max(0, Math.floor((this.now() - new Date(createdAt).getTime()) / 1000));
+    const created = new Date(createdAt);
+    if (isNaN(created.getTime())) {
+      return '';
+    }
 
-    if (seconds < 60) return 'Just now';
+    const now = new Date(this.now());
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const createdMidnight = new Date(created.getFullYear(), created.getMonth(), created.getDate()).getTime();
+    const calendarDays = Math.round((todayMidnight - createdMidnight) / (1000 * 60 * 60 * 24));
 
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} min ago`;
+    if (calendarDays <= 0) {
+      const seconds = Math.max(0, Math.floor((now.getTime() - created.getTime()) / 1000));
+      if (seconds < 60) return 'Just now';
 
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hr${hours === 1 ? '' : 's'} ago`;
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes} min ago`;
 
-    const days = Math.floor(hours / 24);
-    if (days === 1) return 'Yesterday';
-    if (days < 7) return `${days} days ago`;
+      const hours = Math.floor(minutes / 60);
+      return `${hours} hr${hours === 1 ? '' : 's'} ago`;
+    }
 
-    return new Date(createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    if (calendarDays === 1) return 'Yesterday';
+    if (calendarDays < 7) return `${calendarDays} days ago`;
+
+    return created.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
   private copyCouponCode(code: string | null | undefined): void {
