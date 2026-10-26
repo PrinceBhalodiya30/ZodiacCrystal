@@ -353,7 +353,8 @@ BEGIN
     (
         [ZodiacId] int IDENTITY(1,1) NOT NULL,
         [Name] nvarchar(50) NOT NULL,
-        [Symbol] nvarchar(10) NULL,
+        [RashiName] nvarchar(100) NULL,
+        [Symbol] nvarchar(255) NULL,
         [Description] nvarchar(500) NULL,
         [ImageUrl] nvarchar(500) NULL,
         CONSTRAINT [PK__ZodiacSi__A7EE3D9EC16415CB] PRIMARY KEY CLUSTERED ([ZodiacId]),

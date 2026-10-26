@@ -11,8 +11,8 @@
 .spinner {
   width: 34px;
   height: 34px;
-  border: 2.5px solid var(--color-surface-bone, #ece6da);
-  border-top-color: var(--color-brand, #244132);
+  border: 2.5px solid var(--color-surface-bone, #EAE3D6);
+  border-top-color: var(--color-copper, #985E38);
   border-radius: 50%;
   animation: spin 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }

@@ -263,7 +263,4 @@ app.UseMiddleware<GuestAccessMiddleware>();
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
 
-// Ensure default welcome coupon exists in the database
-await DatabaseSeeder.SeedAsync(app.Services);
-
 app.Run();

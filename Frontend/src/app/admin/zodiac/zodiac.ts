@@ -8,10 +8,15 @@ import { Spinner } from '../../components/spinner/spinner';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ToastService } from '../../services/toast.service';
 
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
+import { getRashiWithDevanagari } from '../../utils/zodiac-names.util';
+
+import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
+
 @Component({
   selector: 'app-admin-zodiac',
   standalone: true,
-  imports: [Spinner, FormsModule, AdminNav],
+  imports: [Spinner, FormsModule, AdminNav, VedicZodiacPipe, ZodiacIcon],
   templateUrl: './zodiac.html',
   styleUrls: ['../admin-shared.css', './zodiac.css']
 })
@@ -30,6 +35,7 @@ export class AdminZodiac implements OnInit {
   formError = signal('');
 
   formName = '';
+  formRashiName = '';
   formSymbol = '';
   formDescription = '';
   formImageUrl = '';
@@ -58,6 +64,7 @@ export class AdminZodiac implements OnInit {
     this.formMode.set('create');
     this.editingZodiacId.set(null);
     this.formName = '';
+    this.formRashiName = '';
     this.formSymbol = '';
     this.formDescription = '';
     this.formImageUrl = '';
@@ -68,10 +75,26 @@ export class AdminZodiac implements OnInit {
     this.formMode.set('edit');
     this.editingZodiacId.set(zodiac.zodiacId);
     this.formName = zodiac.name;
-    this.formSymbol = zodiac.symbol ?? '';
+    this.formRashiName = zodiac.rashiName || getRashiWithDevanagari(zodiac.name) || '';
+    this.formSymbol = zodiac.symbol || zodiac.imageUrl || '';
     this.formDescription = zodiac.description ?? '';
     this.formImageUrl = zodiac.imageUrl ?? '';
     this.formError.set('');
+  }
+
+  onNameChange(): void {
+    if (this.formMode() === 'create') {
+      if (!this.formRashiName.trim()) {
+        const suggested = getRashiWithDevanagari(this.formName);
+        if (suggested) {
+          this.formRashiName = suggested;
+        }
+      }
+      if (!this.formSymbol.trim() && this.formName.trim()) {
+        const key = this.formName.trim().toLowerCase();
+        this.formSymbol = `/zodiac/${key}.svg`;
+      }
+    }
   }
 
   cancelForm(): void {
@@ -83,11 +106,14 @@ export class AdminZodiac implements OnInit {
     this.isSubmitting.set(true);
     this.formError.set('');
 
+    const iconValue = this.formSymbol?.trim() || undefined;
+
     const request = {
-      name: this.formName,
-      symbol: this.formSymbol || undefined,
-      description: this.formDescription || undefined,
-      imageUrl: this.formImageUrl || undefined
+      name: this.formName.trim(),
+      rashiName: this.formRashiName.trim() || undefined,
+      symbol: iconValue,
+      description: this.formDescription?.trim() || undefined,
+      imageUrl: iconValue
     };
 
     const editingId = this.editingZodiacId();

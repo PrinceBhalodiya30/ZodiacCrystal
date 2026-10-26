@@ -230,8 +230,8 @@ namespace Zodiac_Crystal.Controllers
 
             builder.AppendLine("Sales by Zodiac Sign (a product linked to several signs counts for each)");
             builder.Append(_csvExportService.BuildCsvSection(
-                new[] { "Zodiac", "QuantitySold", "Revenue" },
-                zodiacSales.Select(z => new object?[] { z.ZodiacName, z.QuantitySold, z.Revenue })));
+                new[] { "ZodiacSign", "VedicRashi", "DisplayName", "QuantitySold", "Revenue" },
+                zodiacSales.Select(z => new object?[] { z.ZodiacName, z.VedicRashi, z.DisplayName, z.QuantitySold, z.Revenue })));
             builder.AppendLine();
 
             builder.AppendLine("Coupon Performance");

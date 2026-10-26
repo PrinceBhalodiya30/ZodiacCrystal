@@ -1,1 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#2f4a3a" d="M36 32c0 2.209-1.791 4-4 4H4c-2.209 0-4-1.791-4-4V4c0-2.209 1.791-4 4-4h28c2.209 0 4 1.791 4 4v28z"/><g fill="#FFF"><path d="M18 29.5c-4.687 0-8.5-3.813-8.5-8.5 0-4.687 3.813-8.5 8.5-8.5 4.687 0 8.5 3.813 8.5 8.5 0 4.687-3.813 8.5-8.5 8.5zm0-14c-3.033 0-5.5 2.467-5.5 5.5 0 3.032 2.467 5.5 5.5 5.5 3.032 0 5.5-2.468 5.5-5.5 0-3.033-2.468-5.5-5.5-5.5z"/><path d="M18 15.5c-5.109 0-7.58-2.79-8.131-3.507C9.388 11.543 8.053 10.5 7 10.5c-1.297 0-1.94.563-1.967.587-.604.543-1.547.519-2.106-.07-.559-.59-.562-1.503.013-2.077C3.086 8.792 4.452 7.5 7 7.5s4.811 2.189 5.061 2.439c.07.07.133.146.188.229.057.08 1.69 2.332 5.752 2.332 4.083 0 5.736-2.309 5.752-2.332.055-.082.117-.159.188-.229C24.19 9.689 26.452 7.5 29 7.5s3.913 1.292 4.061 1.439c.586.585.586 1.536 0 2.121-.586.586-1.535.586-2.121 0-.002 0-.645-.561-1.94-.561-1.052 0-2.384 1.04-2.869 1.494-.552.718-3.024 3.507-8.131 3.507z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" aria-label="Taurus">
+  <defs>
+    <!-- Deep emerald jewelry medallion background -->
+    <radialGradient id="medallionBg_taurus" cx="50%" cy="38%" r="62%">
+      <stop offset="0%" stop-color="#2a5240" />
+      <stop offset="60%" stop-color="#142c21" />
+      <stop offset="100%" stop-color="#0a1711" />
+    </radialGradient>
+
+    <!-- Metallic champagne & antique gold border gradient -->
+    <linearGradient id="goldGradient_taurus" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4db" />
+      <stop offset="25%" stop-color="#eac775" />
+      <stop offset="50%" stop-color="#fff0c4" />
+      <stop offset="75%" stop-color="#c6952d" />
+      <stop offset="100%" stop-color="#7e5714" />
+    </linearGradient>
+
+    <!-- Polished gold core glyph gradient -->
+    <linearGradient id="goldCore_taurus" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8e7" />
+      <stop offset="50%" stop-color="#edd28b" />
+      <stop offset="100%" stop-color="#c39229" />
+    </linearGradient>
+
+    <!-- Subtle warm glow filter -->
+    <filter id="goldGlow_taurus" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#ffd56b" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Outer drop shadow ring for depth -->
+  <circle cx="60" cy="61.5" r="56.5" fill="#000000" opacity="0.3" />
+
+  <!-- Base Medallion Disc -->
+  <circle cx="60" cy="60" r="56.5" fill="url(#medallionBg_taurus)" stroke="url(#goldGradient_taurus)" stroke-width="1.8" />
+
+  <!-- Celestial Stippled Orbit Ring -->
+  <circle cx="60" cy="60" r="50.5" fill="none" stroke="url(#goldGradient_taurus)" stroke-width="1.2" stroke-dasharray="1.2 4.2" opacity="0.55" />
+
+  <!-- Inner Hairline Bevel Ring -->
+  <circle cx="60" cy="60" r="45" fill="none" stroke="url(#goldGradient_taurus)" stroke-width="0.8" opacity="0.4" />
+
+  <!-- Cardinal Diamond Stars (Top, Right, Bottom, Left) -->
+  <polygon points="60,9 61.4,12.5 60,14 58.6,12.5" fill="url(#goldGradient_taurus)" opacity="0.9" />
+  <polygon points="111,60 107.5,61.4 106,60 107.5,58.6" fill="url(#goldGradient_taurus)" opacity="0.9" />
+  <polygon points="60,111 61.4,107.5 60,106 58.6,107.5" fill="url(#goldGradient_taurus)" opacity="0.9" />
+  <polygon points="9,60 12.5,61.4 14,60 12.5,58.6" fill="url(#goldGradient_taurus)" opacity="0.9" />
+
+  <!-- Diagonal Celestial Accent Dots -->
+  <circle cx="25" cy="25" r="1.2" fill="url(#goldGradient_taurus)" opacity="0.6" />
+  <circle cx="95" cy="25" r="1.2" fill="url(#goldGradient_taurus)" opacity="0.6" />
+  <circle cx="95" cy="95" r="1.2" fill="url(#goldGradient_taurus)" opacity="0.6" />
+  <circle cx="25" cy="95" r="1.2" fill="url(#goldGradient_taurus)" opacity="0.6" />
+
+  <!-- Central Engraved Zodiac Glyph -->
+  <g transform="translate(30, 30) scale(2.5)" filter="url(#goldGlow_taurus)">
+    <path d="M 5.5,5 C 6.5,8.5 9,10.5 12,10.5 C 15,10.5 17.5,8.5 18.5,5 M 12,10.5 A 5.5,5.5 0 1,0 12,21.5 A 5.5,5.5 0 1,0 12,10.5"
+          fill="none"
+          stroke="url(#goldCore_taurus)"
+          stroke-width="1.85"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+  </g>
+</svg>

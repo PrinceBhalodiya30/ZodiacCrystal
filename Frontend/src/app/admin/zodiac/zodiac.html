@@ -11,30 +11,69 @@
   @if (formMode() !== 'closed') {
     <div class="admin-modal-overlay" animate.leave="is-leaving" (click)="cancelForm()">
     <form class="zodiac-form" id="adminForm" (ngSubmit)="submitForm()" #zodiacForm="ngForm" (click)="$event.stopPropagation()">
-      <h2>{{ formMode() === 'create' ? 'Add Zodiac Sign' : 'Edit Zodiac Sign' }}</h2>
+      <h2>
+        @if (formMode() === 'create') {
+          Add Zodiac Sign
+        } @else {
+          Edit Zodiac Sign: {{ formName }}
+          @if (formRashiName || (formName | vedicZodiac:'rashi'); as rashi) {
+            <span class="admin-rashi-tag">· {{ rashi }}</span>
+          }
+        }
+      </h2>
 
       <div class="form-grid">
         <div>
-          <label for="name">Name *</label>
-          <input id="name" name="name" type="text" [(ngModel)]="formName" required #nameField="ngModel" />
+          <label for="name">Western Name *</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            [(ngModel)]="formName"
+            (ngModelChange)="onNameChange()"
+            required
+            placeholder="e.g. Aries"
+            #nameField="ngModel"
+          />
           @if (nameField.invalid && (nameField.dirty || nameField.touched)) {
             <span class="field-error">Name is required.</span>
           }
         </div>
 
         <div>
-          <label for="symbol">Symbol</label>
-          <input id="symbol" name="symbol" type="text" [(ngModel)]="formSymbol" placeholder="♈" />
+          <label for="rashiName">Indian Vedic Rashi Name</label>
+          <input
+            id="rashiName"
+            name="rashiName"
+            type="text"
+            [(ngModel)]="formRashiName"
+            placeholder="e.g. Mesha (मेष)"
+          />
+          <span class="field-hint">Indian zodiac / Vedic Rashi name (customizable by admin)</span>
+        </div>
+
+        <div class="span-2">
+          <label for="symbol">Zodiac Symbol / Icon</label>
+          <div class="symbol-input-group">
+            <input
+              id="symbol"
+              name="symbol"
+              type="text"
+              [(ngModel)]="formSymbol"
+              placeholder="/zodiac/aries.svg"
+            />
+            <app-zodiac-icon
+              [sign]="formSymbol || formName"
+              class="admin-input-icon-preview"
+              title="Live icon preview"
+            ></app-zodiac-icon>
+          </div>
+          <span class="field-hint">Icon path (e.g. /zodiac/aries.svg) or sign name</span>
         </div>
 
         <div class="span-2">
           <label for="description">Description</label>
           <textarea id="description" name="description" [(ngModel)]="formDescription" rows="2"></textarea>
-        </div>
-
-        <div class="span-2">
-          <label for="imageUrl">Image URL</label>
-          <input id="imageUrl" name="imageUrl" type="text" [(ngModel)]="formImageUrl" placeholder="https://..." />
         </div>
       </div>
 
@@ -70,7 +109,7 @@
         <thead>
           <tr>
             <th>Symbol</th>
-            <th>Name</th>
+            <th>Name (Vedic Rashi)</th>
             <th>Description</th>
             <th></th>
           </tr>
@@ -78,8 +117,17 @@
         <tbody>
           @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
             <tr>
-              <td data-label="Symbol">{{ zodiac.symbol || '—' }}</td>
-              <td data-label="Name">{{ zodiac.name }}</td>
+              <td data-label="Symbol" class="cell-symbol">
+                <span class="admin-symbol-preview">
+                  <app-zodiac-icon [sign]="zodiac.symbol || zodiac.name" class="admin-table-icon"></app-zodiac-icon>
+                </span>
+              </td>
+              <td data-label="Name">
+                <strong>{{ zodiac.name }}</strong>
+                @if (zodiac.rashiName || (zodiac.name | vedicZodiac:'rashi'); as rashi) {
+                  <span class="admin-rashi-tag">· {{ rashi }}</span>
+                }
+              </td>
               <td data-label="Description">{{ zodiac.description || '—' }}</td>
               <td class="cell-actions">
                 <div class="row-actions">

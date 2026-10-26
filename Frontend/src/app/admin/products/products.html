@@ -263,7 +263,8 @@
                   [class.selected]="isZodiacSelected(zodiac.zodiacId)"
                   (click)="toggleZodiac(zodiac.zodiacId, !isZodiacSelected(zodiac.zodiacId))"
                 >
-                  {{ zodiac.symbol }} {{ zodiac.name }}
+                  <app-zodiac-icon [sign]="zodiac.symbol || zodiac.name" class="chip-zodiac-icon"></app-zodiac-icon>
+                  <span>{{ zodiac.name }}</span>
                 </button>
               }
             </div>

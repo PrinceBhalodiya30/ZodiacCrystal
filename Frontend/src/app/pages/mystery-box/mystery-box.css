@@ -9,7 +9,7 @@
   font-size: 2.3rem;
   font-weight: 500;
   letter-spacing: -0.02em;
-  color: var(--color-ink);
+  color: var(--color-ink, #1D2739);
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -17,9 +17,9 @@
 .mystery-box-card {
   position: relative;
   overflow: hidden;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  border-radius: var(--radius-sm, 4px);
   padding: 2.75rem 2.25rem;
   text-align: center;
   box-shadow: var(--shadow-md);
@@ -32,7 +32,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--color-brand);
+  background: var(--color-copper, #985E38);
 }
 
 .mystery-box-icon {
@@ -42,9 +42,9 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: var(--color-cream-light);
-  color: var(--color-brass-text, #7d5918);
-  box-shadow: 0 0 0 6px rgba(184, 134, 45, 0.1);
+  background: var(--color-surface-tint, #F4EFE5);
+  color: var(--color-copper, #985E38);
+  box-shadow: 0 0 0 6px rgba(152, 94, 56, 0.12);
   margin-bottom: 1.25rem;
 }
 
@@ -57,7 +57,7 @@
   font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 500;
-  color: var(--color-ink);
+  color: var(--color-ink, #1D2739);
   margin: 0 0 1.5rem;
 }
 
@@ -76,25 +76,25 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.15rem;
-  border-radius: 999px;
-  background: var(--color-surface-sunken);
-  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-tint, #F4EFE5);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
   font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-ink);
+  font-weight: 500;
+  color: var(--color-ink, #1D2739);
 }
 
 .mystery-box-facts svg {
   width: 1.2rem;
   height: 1.2rem;
-  color: var(--color-brand);
+  color: var(--color-copper, #985E38);
   flex-shrink: 0;
 }
 
 .mystery-box-note {
   margin: 0 auto 2rem;
   max-width: 540px;
-  color: var(--color-muted);
+  color: var(--color-subtle, #4E5A70);
   font-size: 0.95rem;
   line-height: 1.6;
 }
@@ -104,24 +104,30 @@
   align-items: center;
   justify-content: center;
   padding: 0.95rem 2.5rem;
-  border-radius: 999px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  box-shadow: 0 4px 16px rgba(45, 90, 69, 0.28);
+  border-radius: var(--radius-sm, 4px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background-color: var(--color-primary-cta, #1D2739);
+  color: #ffffff;
+  border: 1px solid var(--color-primary-cta, #1D2739);
+  box-shadow: 0 4px 16px rgba(29, 39, 57, 0.22);
   transition: all var(--transition-fast);
   cursor: pointer;
 }
 
 .mystery-box-cta:hover {
+  background-color: var(--color-copper, #985E38);
+  border-color: var(--color-copper, #985E38);
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(45, 90, 69, 0.38);
+  box-shadow: 0 8px 24px rgba(152, 94, 56, 0.35);
 }
 
 /* Zodiac Picker in Promo Card */
 .zodiac-picker-section {
   margin: 1.75rem auto 2.25rem;
-  max-width: 620px;
+  max-width: 680px;
   text-align: center;
 }
 
@@ -129,145 +135,152 @@
   display: block;
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-ink);
+  font-weight: 500;
+  color: var(--color-ink, #1D2739);
   margin-bottom: 0.35rem;
   letter-spacing: -0.01em;
 }
 
 .zodiac-picker-subtext {
-  margin: 0 auto 1.25rem;
+  margin: 0 auto 1.35rem;
   font-size: 0.9rem;
-  color: var(--color-muted);
+  color: var(--color-subtle, #4E5A70);
   max-width: 480px;
   line-height: 1.45;
 }
 
-.zodiac-pill-grid {
+.zodiac-tile-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0.65rem;
   justify-content: center;
 }
 
-.zodiac-pill {
+.zodiac-tile {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.5rem 0.65rem;
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-ink);
+  justify-content: center;
+  padding: 0.75rem 0.35rem 0.65rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--color-border, #E4DCCB);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-ink, #1D2739);
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   transition: all var(--transition-fast);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.zodiac-pill:hover {
-  border-color: var(--color-brand);
-  background-color: var(--color-surface-sunken);
+.zodiac-tile:hover {
+  border-color: var(--color-copper, #985E38);
+  background-color: var(--color-surface-tint, #F4EFE5);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(45, 90, 69, 0.12);
+  box-shadow: 0 6px 14px rgba(152, 94, 56, 0.16);
 }
 
-.zodiac-pill.selected {
-  border-color: var(--color-brass);
-  background: var(--color-cream-light);
-  box-shadow: 0 0 0 2px rgba(184, 134, 45, 0.35), 0 4px 14px rgba(184, 134, 45, 0.14);
+.zodiac-tile.selected {
+  border-color: var(--color-copper, #985E38);
+  background: var(--color-surface-tint, #F4EFE5);
+  box-shadow: 0 0 0 2px rgba(152, 94, 56, 0.35), 0 6px 16px rgba(152, 94, 56, 0.18);
   transform: translateY(-2px);
 }
 
-.zodiac-pill-emblem {
+.zodiac-tile-emblem {
   position: relative;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  overflow: hidden;
   flex-shrink: 0;
-  background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(36, 65, 50, 0.22);
+  margin-bottom: 0.4rem;
   transition: transform var(--transition-fast);
+  filter: drop-shadow(0 3px 6px rgba(29, 39, 57, 0.15));
 }
 
-.zodiac-pill.selected .zodiac-pill-emblem {
-  box-shadow: 0 0 0 2px var(--color-brass);
-  transform: scale(1.05);
+.zodiac-tile:hover .zodiac-tile-emblem {
+  transform: scale(1.06);
+}
+
+.zodiac-tile.selected .zodiac-tile-emblem {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 10px rgba(152, 94, 56, 0.35));
 }
 
 .zodiac-emblem-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
   display: block;
 }
 
 .zodiac-glyph-fallback {
-  font-size: 0.85rem;
-  color: #ffffff;
-  line-height: 1;
+  width: 24px;
+  height: 24px;
+  color: var(--color-copper, #985E38);
 }
 
-.zodiac-pill-name {
-  font-size: 0.9rem;
+.zodiac-tile-name {
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2;
+  color: var(--color-ink, #1D2739);
+  line-height: 1.15;
+  margin-bottom: 0.15rem;
 }
 
-.zodiac-pill.selected .zodiac-pill-name {
-  color: var(--color-brand);
+.zodiac-tile.selected .zodiac-tile-name {
+  color: var(--color-copper, #985E38);
+}
+
+.zodiac-tile-rashi {
+  font-size: 0.7rem;
+  color: var(--color-copper, #985E38);
+  font-weight: 500;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 /* Selected Zodiac Affinity Card */
 .zodiac-affinity-card {
   margin-top: 1.5rem;
-  padding: 1.15rem 1.4rem;
-  background: linear-gradient(135deg, rgba(253, 250, 243, 0.95) 0%, rgba(246, 240, 227, 0.9) 100%);
-  border: 1px solid rgba(184, 134, 45, 0.35);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 18px rgba(184, 134, 45, 0.09);
+  padding: 1.25rem 1.5rem;
+  background: var(--color-surface-tint, #F4EFE5);
+  border: 1px solid var(--color-copper-light, #D8B092);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: 0 4px 18px rgba(152, 94, 56, 0.08);
   display: flex;
   align-items: center;
-  gap: 1.15rem;
+  gap: 1.25rem;
   text-align: left;
   animation: fadeIn 0.25s ease-out;
 }
 
 .affinity-emblem-wrapper {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  overflow: hidden;
   flex-shrink: 0;
-  background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
-  border: 2.5px solid var(--color-brass);
-  box-shadow: 0 4px 12px rgba(36, 65, 50, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 4px 12px rgba(29, 39, 57, 0.15));
 }
 
 .affinity-emblem-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
   display: block;
 }
 
 .affinity-symbol {
-  font-size: 1.5rem;
-  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  color: var(--color-copper, #985E38);
 }
 
 .affinity-details {
@@ -286,27 +299,27 @@
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 600;
-  color: var(--color-ink);
+  color: var(--color-ink, #1D2739);
 }
 
 .affinity-traits {
   margin: 0 0 0.35rem;
   font-size: 0.85rem;
-  color: var(--color-muted);
+  color: var(--color-subtle, #4E5A70);
   line-height: 1.4;
 }
 
 .affinity-promise {
   margin: 0;
   font-size: 0.88rem;
-  color: var(--color-brand);
+  color: var(--color-copper, #985E38);
   font-weight: 600;
   line-height: 1.4;
 }
 
 .affinity-bullet {
   margin-right: 0.35rem;
-  color: var(--color-brand);
+  color: var(--color-copper, #985E38);
 }
 
 @keyframes fadeIn {
@@ -321,8 +334,8 @@
 }
 
 @media (max-width: 700px) {
-  .zodiac-pill-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .zodiac-tile-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -340,8 +353,8 @@
     align-items: stretch;
   }
 
-  .zodiac-pill-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .zodiac-tile-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .zodiac-affinity-card {

@@ -1,1 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#2f4a3a" d="M36 32c0 2.209-1.791 4-4 4H4c-2.209 0-4-1.791-4-4V4c0-2.209 1.791-4 4-4h28c2.209 0 4 1.791 4 4v28z"/><path fill="#FFF" d="M28.5 6H17c-.829 0-1.5.671-1.5 1.5S16.171 9 17 9h7.879L13 20.879 9.061 16.94c-.586-.586-1.535-.586-2.121 0-.586.585-.586 1.536 0 2.121L10.879 23 5.94 27.94c-.586.586-.586 1.535 0 2.121.292.293.676.439 1.06.439s.768-.146 1.061-.44L13 25.121l3.94 3.939c.293.293.677.44 1.06.44s.768-.146 1.06-.44c.586-.586.586-1.535 0-2.121L15.121 23 27 11.121V19c0 .828.672 1.5 1.5 1.5S30 19.828 30 19V7.5c0-.829-.672-1.5-1.5-1.5z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" aria-label="Sagittarius">
+  <defs>
+    <!-- Deep emerald jewelry medallion background -->
+    <radialGradient id="medallionBg_sagittarius" cx="50%" cy="38%" r="62%">
+      <stop offset="0%" stop-color="#2a5240" />
+      <stop offset="60%" stop-color="#142c21" />
+      <stop offset="100%" stop-color="#0a1711" />
+    </radialGradient>
+
+    <!-- Metallic champagne & antique gold border gradient -->
+    <linearGradient id="goldGradient_sagittarius" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4db" />
+      <stop offset="25%" stop-color="#eac775" />
+      <stop offset="50%" stop-color="#fff0c4" />
+      <stop offset="75%" stop-color="#c6952d" />
+      <stop offset="100%" stop-color="#7e5714" />
+    </linearGradient>
+
+    <!-- Polished gold core glyph gradient -->
+    <linearGradient id="goldCore_sagittarius" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8e7" />
+      <stop offset="50%" stop-color="#edd28b" />
+      <stop offset="100%" stop-color="#c39229" />
+    </linearGradient>
+
+    <!-- Subtle warm glow filter -->
+    <filter id="goldGlow_sagittarius" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#ffd56b" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Outer drop shadow ring for depth -->
+  <circle cx="60" cy="61.5" r="56.5" fill="#000000" opacity="0.3" />
+
+  <!-- Base Medallion Disc -->
+  <circle cx="60" cy="60" r="56.5" fill="url(#medallionBg_sagittarius)" stroke="url(#goldGradient_sagittarius)" stroke-width="1.8" />
+
+  <!-- Celestial Stippled Orbit Ring -->
+  <circle cx="60" cy="60" r="50.5" fill="none" stroke="url(#goldGradient_sagittarius)" stroke-width="1.2" stroke-dasharray="1.2 4.2" opacity="0.55" />
+
+  <!-- Inner Hairline Bevel Ring -->
+  <circle cx="60" cy="60" r="45" fill="none" stroke="url(#goldGradient_sagittarius)" stroke-width="0.8" opacity="0.4" />
+
+  <!-- Cardinal Diamond Stars (Top, Right, Bottom, Left) -->
+  <polygon points="60,9 61.4,12.5 60,14 58.6,12.5" fill="url(#goldGradient_sagittarius)" opacity="0.9" />
+  <polygon points="111,60 107.5,61.4 106,60 107.5,58.6" fill="url(#goldGradient_sagittarius)" opacity="0.9" />
+  <polygon points="60,111 61.4,107.5 60,106 58.6,107.5" fill="url(#goldGradient_sagittarius)" opacity="0.9" />
+  <polygon points="9,60 12.5,61.4 14,60 12.5,58.6" fill="url(#goldGradient_sagittarius)" opacity="0.9" />
+
+  <!-- Diagonal Celestial Accent Dots -->
+  <circle cx="25" cy="25" r="1.2" fill="url(#goldGradient_sagittarius)" opacity="0.6" />
+  <circle cx="95" cy="25" r="1.2" fill="url(#goldGradient_sagittarius)" opacity="0.6" />
+  <circle cx="95" cy="95" r="1.2" fill="url(#goldGradient_sagittarius)" opacity="0.6" />
+  <circle cx="25" cy="95" r="1.2" fill="url(#goldGradient_sagittarius)" opacity="0.6" />
+
+  <!-- Central Engraved Zodiac Glyph -->
+  <g transform="translate(30, 30) scale(2.5)" filter="url(#goldGlow_sagittarius)">
+    <path d="M 5.5,18.5 L 18.5,5.5 M 13.5,5.5 L 18.5,5.5 L 18.5,10.5 M 8.5,11.5 L 12.5,15.5"
+          fill="none"
+          stroke="url(#goldCore_sagittarius)"
+          stroke-width="1.85"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+  </g>
+</svg>

@@ -10,11 +10,13 @@ import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardSkeleton } from '../../components/product-card-skeleton/product-card-skeleton';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
+import { formatZodiacDual } from '../../utils/zodiac-names.util';
 
 @Component({
   selector: 'app-zodiac-products',
   standalone: true,
-  imports: [Breadcrumbs, ProductCardSkeleton, ProductCard, ImgFallbackDirective, ZodiacIcon],
+  imports: [Breadcrumbs, ProductCardSkeleton, ProductCard, ImgFallbackDirective, ZodiacIcon, VedicZodiacPipe],
   templateUrl: './zodiac-products.html',
   styleUrl: './zodiac-products.css'
 })
@@ -42,9 +44,10 @@ export class ZodiacProducts implements OnInit {
     this.zodiacService.getZodiac(id).subscribe({
       next: zodiac => {
         this.zodiac.set(zodiac);
+        const dualName = formatZodiacDual(zodiac.name);
         this.seo.update({
-          title: this.pageTitle.setPageTitle(`${zodiac.name} Crystals`),
-          description: zodiac.description || `Healing crystals for ${zodiac.name}, hand-picked to match the sign.`,
+          title: this.pageTitle.setPageTitle(`${dualName} Crystals`),
+          description: zodiac.description ? `${dualName} - ${zodiac.description}` : `Authentic healing crystals attuned to ${dualName}.`,
           image: zodiac.imageUrl
         });
         this.loadProducts(id);

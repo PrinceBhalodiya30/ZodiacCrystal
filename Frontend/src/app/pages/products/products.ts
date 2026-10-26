@@ -18,10 +18,11 @@ const PAGE_SIZE = 12;
 const SKELETON_ROWS = Array.from({ length: PAGE_SIZE });
 
 import { InrPipe } from '../../pipes/inr.pipe';
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [InrPipe, FormsModule, ProductCard, ProductCardSkeleton, Pager],
+  imports: [InrPipe, FormsModule, ProductCard, ProductCardSkeleton, Pager, VedicZodiacPipe],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })

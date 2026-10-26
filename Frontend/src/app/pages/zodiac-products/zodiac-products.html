@@ -1,5 +1,5 @@
 <section class="container zodiac-products-page">
-  <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Shop by Zodiac', link: '/zodiac' }, { label: zodiac()?.name ?? 'Zodiac Sign' }]"></app-breadcrumbs>
+  <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Shop by Zodiac', link: '/zodiac' }, { label: (zodiac()?.name | vedicZodiac:'compact') || 'Zodiac Sign' }]"></app-breadcrumbs>
 
   @if (isLoading()) {
     <span class="visually-hidden" role="status">Loading crystals...</span>
@@ -23,14 +23,17 @@
         }
       </div>
       <div>
-        <h1>{{ z.name }}</h1>
+        <h1>
+          {{ z.name }}
+          <span class="rashi-subname">· {{ z.name | vedicZodiac:'rashi' }}</span>
+        </h1>
         @if (z.description) {
           <p class="zodiac-description">{{ z.description }}</p>
         }
       </div>
     </div>
 
-    <h2>Crystals for {{ z.name }}</h2>
+    <h2>Crystals for {{ z.name }} · {{ z.name | vedicZodiac:'rashi' }}</h2>
 
     @if (products().length === 0) {
       <div class="state-message state-message--empty"><p>No products found for this zodiac sign.</p></div>

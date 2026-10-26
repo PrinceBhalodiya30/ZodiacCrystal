@@ -54,10 +54,10 @@
 
 .order-summary,
 .checkout-form {
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow: var(--shadow-md);
+  background: var(--color-surface, #ffffff);
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  box-shadow: var(--shadow-card);
   padding: 1.75rem;
   overflow: visible;
 }
@@ -70,9 +70,9 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--color-brand);
-  border-top-left-radius: var(--radius-lg);
-  border-top-right-radius: var(--radius-lg);
+  background: var(--color-copper, #985E38);
+  border-top-left-radius: var(--radius-sm, 4px);
+  border-top-right-radius: var(--radius-sm, 4px);
 }
 
 .order-summary h2,
@@ -135,30 +135,30 @@
   display: flex;
   gap: 0.9rem;
   align-items: flex-start;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border, #E4DCCB);
+  border-radius: var(--radius-sm, 4px);
   padding: 1rem 1.15rem;
-  background: var(--color-surface);
+  background: var(--color-surface, #ffffff);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .saved-address-option:hover {
-  border-color: var(--color-brand);
-  background-color: var(--color-surface-sunken);
+  border-color: var(--color-copper, #985E38);
+  background-color: var(--color-surface-tint, #F4EFE5);
 }
 
 .saved-address-option.selected {
-  border-color: var(--color-brand);
-  background-color: var(--color-cream-light);
-  box-shadow: 0 0 0 1px var(--color-brand);
+  border-color: var(--color-copper, #985E38);
+  background-color: var(--color-surface-tint, #F4EFE5);
+  box-shadow: 0 0 0 1px var(--color-copper, #985E38);
 }
 
 .saved-address-option input[type='radio'] {
   width: 18px;
   height: 18px;
   margin-top: 0.2rem;
-  accent-color: var(--color-brand);
+  accent-color: var(--color-copper, #985E38);
   flex-shrink: 0;
 }
 
@@ -565,17 +565,24 @@
 .place-order-btn {
   margin-top: 1.75rem;
   width: 100%;
-  padding: 0.9rem 1.25rem;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  box-shadow: 0 4px 14px rgba(45, 90, 69, 0.25);
+  padding: 0.95rem 1.25rem;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: var(--radius-sm, 4px);
+  background-color: var(--color-primary-cta, #1D2739);
+  color: #ffffff;
+  border: 1px solid var(--color-primary-cta, #1D2739);
+  box-shadow: 0 4px 14px rgba(29, 39, 57, 0.25);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .place-order-btn:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(45, 90, 69, 0.35);
+  background-color: var(--color-copper, #985E38);
+  border-color: var(--color-copper, #985E38);
+  box-shadow: 0 8px 24px rgba(152, 94, 56, 0.35);
   transform: translateY(-1px);
 }
 
@@ -844,30 +851,32 @@
 
 .instruction-chip {
   appearance: none;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-ink);
+  border: 1px solid var(--color-border, #E4DCCB);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-subtle, #4E5A70);
   font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 500;
-  padding: 0.3rem 0.65rem;
-  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all var(--transition-fast);
   line-height: 1.3;
 }
 
 .instruction-chip:hover {
-  border-color: var(--color-brand);
-  background: var(--color-cream-light);
-  color: var(--color-brand);
+  border-color: var(--color-copper, #985E38);
+  background: var(--color-surface-tint, #F4EFE5);
+  color: var(--color-copper, #985E38);
 }
 
 .instruction-chip.active {
-  background: var(--color-brand);
-  border-color: var(--color-brand);
+  background: var(--color-primary-cta, #1D2739);
+  border-color: var(--color-primary-cta, #1D2739);
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(29, 39, 57, 0.2);
 }
 

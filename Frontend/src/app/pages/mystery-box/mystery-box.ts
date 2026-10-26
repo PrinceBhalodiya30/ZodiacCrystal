@@ -9,11 +9,13 @@ import { MysteryBoxInfo } from '../../models/mystery-box';
 import { Zodiac } from '../../models/zodiac';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { InrPipe } from '../../pipes/inr.pipe';
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
+import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
 
 @Component({
   selector: 'app-mystery-box',
   standalone: true,
-  imports: [InrPipe, Spinner, ImgFallbackDirective],
+  imports: [InrPipe, Spinner, ImgFallbackDirective, VedicZodiacPipe, ZodiacIcon],
   templateUrl: './mystery-box.html',
   styleUrl: './mystery-box.css'
 })

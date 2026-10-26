@@ -54,6 +54,28 @@
   margin: 0;
 }
 
+.finder-astrology-note {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background-color: var(--color-surface-tint, #faf8f5);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
+  border-radius: var(--radius-pill, 9999px);
+  padding: 0.45rem 1.15rem;
+  font-size: 0.8rem;
+  color: var(--color-muted, #6a6256);
+  margin-top: 0.9rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.finder-astrology-note .note-icon {
+  color: var(--color-brass, #ab7a24);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
 /* Standardized Control Bar - Matches site .filter-bar style */
 .finder-controls-bar {
   display: flex;
@@ -68,7 +90,8 @@
 /* Custom styled selects - Identical to .filter-bar select in products.css */
 .finder-controls-bar select,
 .finder-select {
-  height: 42px;
+  height: 44px;
+  min-height: 44px;
   min-width: 150px;
   padding: 0 2.2rem 0 1.1rem;
   border: 1px solid var(--color-border, #ded7c8);
@@ -240,7 +263,7 @@
 .result-glyph {
   font-size: 2.4rem;
   line-height: 1;
-  color: var(--color-brand, #244132);
+  color: var(--color-copper, #985E38);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -248,7 +271,7 @@
   height: 58px;
   border-radius: 50%;
   background: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
   box-shadow: var(--shadow-sm);
 }
 
@@ -258,20 +281,28 @@
 }
 
 .result-date-span {
-  font-size: var(--text-xs, 0.75rem);
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-brass, #ab7a24);
+  letter-spacing: 0.12em;
+  color: var(--color-copper, #985E38);
 }
 
 .result-sign-name {
   font-family: var(--font-heading);
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--color-ink);
+  color: var(--color-ink, #1D2739);
   margin: 0;
   letter-spacing: -0.01em;
+}
+
+.rashi-subname {
+  font-weight: 500;
+  font-size: 0.88em;
+  color: var(--color-copper, #985E38);
+  margin-left: 0.35rem;
+  letter-spacing: 0;
 }
 
 .result-meta {
@@ -286,12 +317,12 @@
   align-items: center;
   padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: var(--color-brand-light, #eaf1ed);
-  color: var(--color-brand, #244132);
+  background-color: var(--color-surface-tint, #F4EFE5);
+  color: var(--color-copper-dark, #8F5330);
 }
 
 .element-badge[data-element='water'] {
@@ -532,6 +563,13 @@
 
   .result-head {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .finder-astrology-note {
+    border-radius: var(--radius-sm, 8px);
+    padding: 0.65rem 0.85rem;
+    text-align: left;
     align-items: flex-start;
   }
 }

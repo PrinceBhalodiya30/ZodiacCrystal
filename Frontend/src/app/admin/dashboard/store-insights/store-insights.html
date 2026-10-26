@@ -127,7 +127,7 @@
         <div class="ins-panel-head">
           <h3>Sales by zodiac sign</h3>
           @if (topZodiac(); as best) {
-            <span class="ins-total">Top sign: <strong>{{ best.name }}</strong></span>
+            <span class="ins-total">Top sign: <strong>{{ best.name | vedicZodiac:'compact' }}</strong></span>
           }
         </div>
         @if (zodiacTiles().length === 0) {
@@ -139,10 +139,10 @@
                 class="zodiac-tile"
                 [class.is-empty]="tile.revenue === 0"
                 [style.--intensity]="tile.intensity"
-                [title]="tile.name + ': ' + tile.units + ' sold'"
+                [title]="(tile.name | vedicZodiac:'dual') + ': ' + tile.units + ' sold'"
               >
                 <app-zodiac-icon class="zodiac-glyph" [sign]="tile.name"></app-zodiac-icon>
-                <span class="zodiac-name">{{ tile.name }}</span>
+                <span class="zodiac-name">{{ tile.name | vedicZodiac:'compact' }}</span>
                 <span class="zodiac-rev">{{ tile.revenue > 0 ? (tile.revenue | inr) : '—' }}</span>
               </li>
             }

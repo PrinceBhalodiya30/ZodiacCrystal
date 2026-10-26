@@ -7,40 +7,44 @@
      tactile materials, accessible contrast (WCAG AA).
      ========================================================================== */
 
-  /* --- Canvas & Neutrals (Stone, Bone, Sand, Alabaster) --- */
-  --color-canvas: #f7f4ee;
+  /* --- Canvas & Neutrals (Energy Muse Ivory Parchment & Sand Line) --- */
+  --color-canvas: #fbf8f2;
   --color-surface: #ffffff;
-  --color-surface-raised: #fbf9f5;
-  --color-surface-tint: #f2eee6;
-  --color-surface-bone: #ece6da;
-  --color-border: #ded7c8;
-  --color-border-subtle: #eae4d8;
-  --color-border-hover: #c9c1b0;
-  --color-cream: #f3efe7;
-  --color-cream-light: #f9f5ed;
-  --color-border-light: #efe9dd;
+  --color-surface-raised: #ffffff;
+  --color-surface-tint: #f4efe5;
+  --color-surface-bone: #f4efe5;
+  --color-border: #eae3d6;
+  --color-border-subtle: #f0eae0;
+  --color-border-hover: #d4cbbc;
+  --color-cream: #f4efe5;
+  --color-cream-light: #fbf8f2;
+  --color-border-light: #eae3d6;
 
-  /* --- Text & Ink Scale (High contrast, earthy espresso tone) --- */
-  --color-ink: #1c1a17;
-  --color-muted: #524c43;
-  --color-subtle: #6e675b;
-  --color-tint: #f2eee6;
+  /* --- Text & Ink Scale (Energy Muse Deep Obsidian Slate & Flint) --- */
+  --color-ink: #1d2739;
+  --color-muted: #4e5a70;
+  --color-subtle: #6d695d;
+  --color-tint: #f4efe5;
 
-  /* --- Mineral Accents --- */
-  /* Primary Action: Deep Malachite Forest Green */
-  --color-brand: #244132;
-  --color-brand-hover: #1c3427;
-  --color-brand-dark: #15271d;
-  --color-brand-darker: #0e1b13;
-  --color-brand-light: #eaf1ed;
+  /* --- Energy Muse Mineral Accents --- */
+  /* Primary Action: Deep Obsidian Slate */
+  --color-brand: #1d2739;
+  /* Hover Action: Transitions to Energy Muse Glowing Copper */
+  --color-brand-hover: #985e38;
+  --color-brand-dark: #111c2e;
+  --color-brand-darker: #0b1320;
+  --color-brand-light: #f4efe5;
 
-  /* Secondary Accents: Muted Brass, Deep Amethyst, Slate */
-  --color-accent-gold: #ab7a24;
-  --color-accent-gold-light: #fbf5e8;
-  --color-brass: #ab7a24;
-  --color-brass-text: #7d5918;
-  --color-brass-light: #fbf5e8;
-  --color-brass-border: #dcc28b;
+  /* Secondary Accents: Energy Muse Burnished Copper & Warm Terracotta */
+  --color-accent-gold: #985e38;
+  --color-accent-gold-light: #faf5ee;
+  --color-copper: #985e38;
+  --color-copper-lo: #8f5330;
+  --color-copper-hi: #b87a4b;
+  --color-brass: #985e38;
+  --color-brass-text: #8f5330;
+  --color-brass-light: #faf5ee;
+  --color-brass-border: #d8b092;
   --color-amethyst: #4a3656;
   --color-amethyst-light: #f3eff5;
   --color-slate: #3b464f;
@@ -96,20 +100,21 @@
   --space-3xl: 4.5rem;    /* 72px */
   --container-max: 1400px;
 
-  /* --- Border Radius --- */
-  --radius-xs: 3px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-pill: 9999px;
-  --radius-card: var(--radius-sm);
+  /* --- Border Radius (Energy Muse 4px architectural luxury) --- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 100px;
+  --radius-card: 4px;
 
-  /* --- Shadows & Elevation --- */
-  --shadow-sm: 0 1px 2px rgba(28, 26, 23, 0.05);
-  --shadow-card: 0 1px 3px rgba(28, 26, 23, 0.05), 0 0 0 1px var(--color-border-subtle);
-  --shadow-card-hover: 0 8px 20px -3px rgba(28, 26, 23, 0.08), 0 0 0 1px var(--color-border);
-  --shadow-dropdown: 0 10px 24px -4px rgba(28, 26, 23, 0.12), 0 0 0 1px var(--color-border);
-  --shadow-modal: 0 20px 40px -8px rgba(28, 26, 23, 0.2), 0 0 0 1px var(--color-border);
+  /* --- Shadows & Elevation (Energy Muse copper aura shadows) --- */
+  --shadow-sm: 0 1px 2px rgba(61, 41, 23, 0.05), 0 4px 10px rgba(61, 41, 23, 0.05);
+  --shadow-card: 0 2px 5px rgba(61, 41, 23, 0.05), 0 14px 34px rgba(61, 41, 23, 0.08), 0 0 0 1px var(--color-border);
+  --shadow-card-hover: 0 6px 18px rgba(61, 41, 23, 0.09), 0 26px 54px rgba(61, 41, 23, 0.12), 0 0 0 1px var(--color-copper);
+  --shadow-dropdown: 0 14px 38px rgba(11, 19, 32, 0.14), 0 0 0 1px var(--color-border);
+  --shadow-modal: 0 28px 60px rgba(11, 19, 32, 0.24), 0 0 0 1px var(--color-border);
+  --shadow-copper: 0 10px 24px rgba(152, 94, 56, 0.28);
 
   /* --- Breakpoints (Reference for media queries) --- */
   --bp-mobile: 600px;
@@ -129,8 +134,10 @@
 
   /* --- Transitions --- */
   --ease-out-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast: 0.15s var(--ease-out-smooth);
-  --transition-base: 0.25s var(--ease-out-smooth);
+  --ease-spring: cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-fast: 0.18s var(--ease-out-smooth);
+  --transition-base: 0.28s var(--ease-out-smooth);
+  --transition-spring: 0.36s var(--ease-spring);
 }
 
 * {
@@ -190,63 +197,71 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   background-color: var(--color-brand);
-  color: #ffffff;
+  color: #fbf8f2;
   border: 1px solid transparent;
   text-decoration: none;
-  padding: 0.65rem 1.35rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.9rem;
+  padding: 0.72rem 1.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
   font-weight: 600;
+  letter-spacing: 0.03em;
   font-family: inherit;
   cursor: pointer;
   text-align: center;
-  box-shadow: var(--shadow-sm);
-  transition: background-color var(--transition-fast),
-              color var(--transition-fast),
-              border-color var(--transition-fast),
-              box-shadow var(--transition-fast),
-              transform 0.1s ease;
+  box-shadow: 0 1px 2px rgba(15, 22, 35, 0.1), 0 6px 16px rgba(15, 22, 35, 0.12);
+  transition: transform 0.22s var(--ease-spring),
+              background-color 0.25s ease,
+              color 0.25s ease,
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
   white-space: nowrap;
 }
 
 .btn:hover:not(:disabled) {
-  background-color: var(--color-brand-hover);
-  box-shadow: 0 2px 6px rgba(28, 26, 23, 0.12);
+  background-color: var(--color-copper);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(15, 22, 35, 0.1), 0 12px 24px rgba(152, 94, 56, 0.32);
 }
 
 .btn:active:not(:disabled) {
-  transform: scale(0.99);
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 1px 3px rgba(15, 22, 35, 0.15);
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .btn-outline {
-  background-color: var(--color-surface);
-  color: var(--color-brand);
-  border: 1px solid var(--color-brand);
+  background-color: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
 }
 
 .btn-outline:hover:not(:disabled) {
   background-color: var(--color-surface-tint);
-  border-color: var(--color-brand-hover);
-  color: var(--color-brand-hover);
+  border-color: var(--color-copper);
+  color: var(--color-copper);
+  transform: translateY(-1px);
 }
 
 .btn-accent {
-  background-color: var(--color-accent-gold);
+  background-color: var(--color-copper);
   color: #ffffff;
   border: 1px solid transparent;
 }
 
 .btn-accent:hover:not(:disabled) {
-  background-color: #93681d;
+  background-color: var(--color-copper-lo);
   color: #ffffff;
+  box-shadow: var(--shadow-copper);
+  transform: translateY(-2px);
 }
 
 /* Shared inline field-validation hint - used by every form page */

@@ -37,10 +37,12 @@ interface ZodiacTile {
 // Dashboard section below the daily panels: how the store has done over a
 // chosen range - order outcomes and why customers cancel, best sellers,
 // sales by zodiac sign, and how customers pay.
+import { VedicZodiacPipe } from '../../../pipes/vedic-zodiac.pipe';
+
 @Component({
   selector: 'app-store-insights',
   standalone: true,
-  imports: [RouterLink, RankedBars, ZodiacIcon, InrPipe],
+  imports: [RouterLink, RankedBars, ZodiacIcon, InrPipe, VedicZodiacPipe],
   templateUrl: './store-insights.html',
   styleUrl: './store-insights.css'
 })

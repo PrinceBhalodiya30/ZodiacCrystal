@@ -306,22 +306,22 @@
 }
 
 .zodiac-tile.selected {
-  border-color: var(--color-brand);
-  background-color: #f7f9f7;
-  box-shadow: 0 0 0 2px var(--color-brand);
+  border-color: var(--color-copper, #985E38);
+  background-color: var(--color-surface-tint, #F4EFE5);
+  box-shadow: 0 0 0 2px var(--color-copper, #985E38);
 }
 
 .zodiac-medallion {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-brand, #244132) 0%, #15271d 100%);
+  background: linear-gradient(135deg, #1D2739 0%, #111827 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #f7d88b; /* refined warm gold */
+  color: #D8B092;
   margin-bottom: 0.65rem;
-  box-shadow: 0 2px 8px rgba(36, 65, 50, 0.22);
+  box-shadow: 0 2px 8px rgba(29, 39, 57, 0.22);
   transition: transform var(--transition-base);
 }
 

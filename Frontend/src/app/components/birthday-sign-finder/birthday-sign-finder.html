@@ -9,8 +9,14 @@
     </span>
     <h2 class="finder-title">Find Your Sign by Birthday</h2>
     <p class="finder-subtitle">
-      Select your birth date to reveal your astrological sign and its attuned healing stones.
+      Select your birth date to reveal your Vedic astrological sign and attuned healing stones.
     </p>
+    <div class="finder-astrology-note">
+      <span class="note-icon" aria-hidden="true">✦</span>
+      <span>
+        Calculated as per Indian Vedic calendar (Surya Sankranti). Already know your Janma Rashi (Moon Sign) from your Kundali? You can select it directly from the collection below.
+      </span>
+    </div>
   </div>
 
   <!-- Standardized Control Bar matching .filter-bar -->
@@ -81,16 +87,19 @@
         <div class="result-sign-badge">
           <app-zodiac-icon [sign]="result.signName" class="result-glyph"></app-zodiac-icon>
           <div class="result-sign-info">
-            <span class="result-date-span">{{ result.dateRange }}</span>
-            <h3 class="result-sign-name">{{ result.signName }}</h3>
+            <span class="result-date-span">{{ result.dateRange }} · Vedic Surya Sign</span>
+            <h3 class="result-sign-name">
+              {{ result.signName }}
+              <span class="rashi-subname">· {{ result.rashiName }}</span>
+            </h3>
           </div>
         </div>
 
         <div class="result-meta">
           <span class="element-badge" [attr.data-element]="result.element.toLowerCase()">
-            {{ result.element }} Sign
+            {{ result.vedicElement }}
           </span>
-          <span class="ruler-badge">Ruled by {{ result.rulingPlanet }}</span>
+          <span class="ruler-badge">Ruled by {{ result.vedicRuler }}</span>
         </div>
       </div>
 
@@ -105,7 +114,7 @@
       <!-- Attuned Crystals Preview -->
       <div class="attuned-crystals-section">
         <div class="attuned-heading">
-          <h4>Attuned Crystals for {{ result.signName }}</h4>
+          <h4>Attuned Crystals for {{ result.signName }} · {{ result.rashiName }}</h4>
           @if (matchedZodiac(); as z) {
             <a [routerLink]="['/zodiac', z.zodiacId]" class="link-view-all">
               View All {{ result.signName }} Stones &rarr;

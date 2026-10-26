@@ -15,12 +15,13 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { getStars } from '../../utils/rating.util';
 import { getDiscountPercent } from '../../utils/pricing.util';
 import { ZodiacIcon } from '../zodiac-icon/zodiac-icon';
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 
 import { InrPipe } from '../../pipes/inr.pipe';
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [InrPipe, RouterLink, ImgFallbackDirective, ZodiacIcon],
+  imports: [InrPipe, RouterLink, ImgFallbackDirective, ZodiacIcon, VedicZodiacPipe],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css'
 })

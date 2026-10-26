@@ -43,25 +43,26 @@
           <label class="zodiac-picker-label" id="zodiac-select-label">Choose Your Zodiac Sign</label>
           <p class="zodiac-picker-subtext">Each mystery box is curated with authentic crystals aligned with your cosmic sign.</p>
 
-          <div class="zodiac-pill-grid" role="radiogroup" aria-labelledby="zodiac-select-label">
+          <div class="zodiac-tile-grid" role="radiogroup" aria-labelledby="zodiac-select-label">
             @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
               <button
                 type="button"
-                class="zodiac-pill"
+                class="zodiac-tile"
                 [class.selected]="selectedZodiacId() === zodiac.zodiacId"
                 (click)="selectZodiac(zodiac.zodiacId)"
                 role="radio"
                 [attr.aria-checked]="selectedZodiacId() === zodiac.zodiacId"
                 [attr.title]="zodiac.name + (zodiac.description ? ' - ' + zodiac.description : '')"
               >
-                <span class="zodiac-pill-emblem">
+                <span class="zodiac-tile-emblem">
                   @if (zodiac.imageUrl) {
                     <img [src]="zodiac.imageUrl" [alt]="zodiac.name" class="zodiac-emblem-img" loading="lazy" decoding="async" imgFallback />
                   } @else {
-                    <span class="zodiac-glyph-fallback">✦</span>
+                    <app-zodiac-icon [sign]="zodiac.name" class="zodiac-glyph-fallback"></app-zodiac-icon>
                   }
                 </span>
-                <span class="zodiac-pill-name">{{ zodiac.name }}</span>
+                <span class="zodiac-tile-name">{{ zodiac.name }}</span>
+                <span class="zodiac-tile-rashi">{{ zodiac.rashiName || (zodiac.name | vedicZodiac:'rashi') }}</span>
               </button>
             }
           </div>
@@ -72,19 +73,19 @@
                 @if (currentZodiac.imageUrl) {
                   <img [src]="currentZodiac.imageUrl" [alt]="currentZodiac.name" class="affinity-emblem-img" />
                 } @else {
-                  <span class="affinity-symbol">✦</span>
+                  <app-zodiac-icon [sign]="currentZodiac.name" class="affinity-symbol"></app-zodiac-icon>
                 }
               </div>
               <div class="affinity-details">
                 <div class="affinity-header">
-                  <strong>{{ currentZodiac.name }}</strong>
+                  <strong>{{ currentZodiac.name }} · {{ currentZodiac.rashiName || (currentZodiac.name | vedicZodiac:'rashi') }}</strong>
                 </div>
                 @if (currentZodiac.description) {
                   <p class="affinity-traits">{{ currentZodiac.description }}</p>
                 }
                 <p class="affinity-promise">
                   <span class="affinity-bullet" aria-hidden="true">✦</span>
-                  Your mystery box will be specially curated with crystals attuned to <strong>{{ currentZodiac.name }}</strong> energy.
+                  Your mystery box will be specially curated with crystals attuned to <strong>{{ currentZodiac.name }} · {{ currentZodiac.rashiName || (currentZodiac.name | vedicZodiac:'rashi') }}</strong> energy.
                 </p>
               </div>
             </div>

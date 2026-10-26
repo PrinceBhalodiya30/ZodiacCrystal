@@ -20,13 +20,14 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../services/notification.service';
+import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
 
 const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [InrPipe, Spinner, FormsModule, AdminNav, ImageManagerModal, Pager, ImgFallbackDirective],
+  imports: [InrPipe, Spinner, FormsModule, AdminNav, ImageManagerModal, Pager, ImgFallbackDirective, ZodiacIcon],
   templateUrl: './products.html',
   styleUrls: ['../admin-shared.css', './products.css']
 })

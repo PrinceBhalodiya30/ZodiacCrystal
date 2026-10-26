@@ -111,18 +111,18 @@ export class Consultation implements OnInit {
   ];
 
   readonly zodiacSigns = [
-    { name: 'Aries', element: 'Fire', dates: 'Mar 21 – Apr 19' },
-    { name: 'Taurus', element: 'Earth', dates: 'Apr 20 – May 20' },
-    { name: 'Gemini', element: 'Air', dates: 'May 21 – Jun 20' },
-    { name: 'Cancer', element: 'Water', dates: 'Jun 21 – Jul 22' },
-    { name: 'Leo', element: 'Fire', dates: 'Jul 23 – Aug 22' },
-    { name: 'Virgo', element: 'Earth', dates: 'Aug 23 – Sep 22' },
-    { name: 'Libra', element: 'Air', dates: 'Sep 23 – Oct 22' },
-    { name: 'Scorpio', element: 'Water', dates: 'Oct 23 – Nov 21' },
-    { name: 'Sagittarius', element: 'Fire', dates: 'Nov 22 – Dec 21' },
-    { name: 'Capricorn', element: 'Earth', dates: 'Dec 22 – Jan 19' },
-    { name: 'Aquarius', element: 'Air', dates: 'Jan 20 – Feb 18' },
-    { name: 'Pisces', element: 'Water', dates: 'Feb 19 – Mar 20' }
+    { name: 'Aries', rashi: 'Mesha (मेष)', element: 'Agni (Fire)', dates: 'Apr 14 – May 14' },
+    { name: 'Taurus', rashi: 'Vrishabha (वृषभ)', element: 'Prithvi (Earth)', dates: 'May 15 – Jun 14' },
+    { name: 'Gemini', rashi: 'Mithuna (मिथुन)', element: 'Vayu (Air)', dates: 'Jun 15 – Jul 15' },
+    { name: 'Cancer', rashi: 'Karka (कर्क)', element: 'Jala (Water)', dates: 'Jul 16 – Aug 16' },
+    { name: 'Leo', rashi: 'Simha (सिंह)', element: 'Agni (Fire)', dates: 'Aug 17 – Sep 16' },
+    { name: 'Virgo', rashi: 'Kanya (कन्या)', element: 'Prithvi (Earth)', dates: 'Sep 17 – Oct 16' },
+    { name: 'Libra', rashi: 'Tula (तुला)', element: 'Vayu (Air)', dates: 'Oct 17 – Nov 15' },
+    { name: 'Scorpio', rashi: 'Vrishchika (वृश्चिक)', element: 'Jala (Water)', dates: 'Nov 16 – Dec 15' },
+    { name: 'Sagittarius', rashi: 'Dhanu (धनु)', element: 'Agni (Fire)', dates: 'Dec 16 – Jan 13' },
+    { name: 'Capricorn', rashi: 'Makara (मकर)', element: 'Prithvi (Earth)', dates: 'Jan 14 – Feb 12' },
+    { name: 'Aquarius', rashi: 'Kumbha (कुंभ)', element: 'Vayu (Air)', dates: 'Feb 13 – Mar 13' },
+    { name: 'Pisces', rashi: 'Meena (मीन)', element: 'Jala (Water)', dates: 'Mar 14 – Apr 13' }
   ];
 
   readonly forms: QuizForm[] = [

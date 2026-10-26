@@ -40,7 +40,7 @@
     <select [ngModel]="selectedZodiacId()" (ngModelChange)="onZodiacChange($event)" name="zodiacFilter">
       <option [ngValue]="null">All Zodiac Signs</option>
       @for (zodiac of zodiacs(); track zodiac.zodiacId) {
-        <option [ngValue]="zodiac.zodiacId">{{ zodiac.name }}</option>
+        <option [ngValue]="zodiac.zodiacId">{{ zodiac.name | vedicZodiac:'compact' }}</option>
       }
     </select>
     <select [ngModel]="minPrice() === null && maxPrice() === null ? '' : minPrice() + '-' + (maxPrice() ?? '')" (ngModelChange)="onPriceRangeChange($event)" name="priceRangeFilter">

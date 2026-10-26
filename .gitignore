@@ -34,3 +34,6 @@ Zodiac Crystal/Zodiac Crystal/appsettings.json
 # OS files
 .DS_Store
 Thumbs.db
+
+# Ignore documentation folder
+/docs/

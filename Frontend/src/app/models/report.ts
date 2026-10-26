@@ -33,6 +33,8 @@ export interface DailySales {
 export interface ZodiacSales {
   zodiacId: number;
   zodiacName: string;
+  vedicRashi?: string;
+  displayName?: string;
   symbol?: string | null;
   quantitySold: number;
   revenue: number;

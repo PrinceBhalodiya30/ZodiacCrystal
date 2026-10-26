@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +31,7 @@ namespace Zodiac_Crystal.Controllers
                 {
                     ZodiacId = z.ZodiacId,
                     Name = z.Name,
+                    RashiName = z.RashiName,
                     Symbol = z.Symbol,
                     Description = z.Description,
                     ImageUrl = z.ImageUrl
@@ -50,6 +51,7 @@ namespace Zodiac_Crystal.Controllers
                 {
                     ZodiacId = z.ZodiacId,
                     Name = z.Name,
+                    RashiName = z.RashiName,
                     Symbol = z.Symbol,
                     Description = z.Description,
                     ImageUrl = z.ImageUrl
@@ -135,6 +137,7 @@ namespace Zodiac_Crystal.Controllers
             var zodiac = new ZodiacSign
             {
                 Name = dto.Name,
+                RashiName = dto.RashiName,
                 Symbol = dto.Symbol,
                 Description = dto.Description,
                 ImageUrl = dto.ImageUrl
@@ -183,6 +186,7 @@ namespace Zodiac_Crystal.Controllers
             }
 
             zodiac.Name = dto.Name;
+            zodiac.RashiName = dto.RashiName;
             zodiac.Symbol = dto.Symbol;
             zodiac.Description = dto.Description;
             zodiac.ImageUrl = dto.ImageUrl;

@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { getRashiWithDevanagari } from '../utils/zodiac-names.util';
 
 export interface ConsultationRecord {
   id: string;
@@ -180,6 +181,7 @@ export class QuizService {
       'Date & Time (IST)',
       'Intention / Wellness Goal',
       'Zodiac Sign',
+      'Vedic Rashi',
       'Preferred Mineral Form',
       'Crystals Matched',
       'Added To Bag'
@@ -197,7 +199,8 @@ export class QuizService {
       escapeCsv(r.id),
       escapeCsv(new Date(r.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })),
       escapeCsv(r.intention),
-      escapeCsv(r.zodiacSign),
+      escapeCsv(r.zodiacSign === 'any' ? 'Universal' : r.zodiacSign),
+      escapeCsv(getRashiWithDevanagari(r.zodiacSign) || (r.zodiacSign === 'any' ? 'Universal' : '—')),
       escapeCsv(r.form),
       escapeCsv(r.matchesCount),
       escapeCsv(r.addedToCart ? 'Yes' : 'No')

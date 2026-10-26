@@ -241,11 +241,13 @@
   gap: 0.4rem;
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-xs, 4px);
-  background-color: var(--color-brand-light, #eaf1ed);
-  border: 1px solid rgba(36, 65, 50, 0.16);
-  font-size: 0.8rem;
+  background-color: var(--color-surface-tint, #F4EFE5);
+  border: 1px solid rgba(152, 94, 56, 0.25);
+  font-size: 11px;
   font-weight: 600;
-  color: var(--color-brand, #244132);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-copper-dark, #8F5330);
   line-height: 1.2;
 }
 
@@ -256,7 +258,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-brand, #244132);
+  color: var(--color-copper, #985E38);
 }
 
 .zodiac-pill-name {

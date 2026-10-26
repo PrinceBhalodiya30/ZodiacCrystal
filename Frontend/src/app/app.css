@@ -5,37 +5,41 @@
    ========================================================================== */
 
 :root {
-  /* --- Canvas & Neutrals (Stone, Bone, Sand, Alabaster) --- */
-  --color-canvas: #f7f4ee;
+  /* --- Canvas & Neutrals (Energy Muse Ivory Parchment & Sand Line) --- */
+  --color-canvas: #fbf8f2;
   --color-surface: #ffffff;
-  --color-surface-raised: #fbf9f5;
-  --color-surface-tint: #f2eee6;
-  --color-surface-bone: #ece6da;
-  --color-border: #ded7c8;
-  --color-border-subtle: #eae4d8;
-  --color-border-hover: #c9c1b0;
+  --color-surface-raised: #ffffff;
+  --color-surface-tint: #f4efe5;
+  --color-surface-bone: #f4efe5;
+  --color-border: #eae3d6;
+  --color-border-subtle: #f0eae0;
+  --color-border-hover: #d4cbbc;
 
-  /* --- Text & Ink Scale (High contrast, earthy espresso tone) --- */
-  --color-ink: #1c1a17;
-  --color-muted: #524c43;
-  --color-subtle: #6e675b;
-  --color-tint: #f2eee6;
+  /* --- Text & Ink Scale (Energy Muse Deep Obsidian Slate & Flint) --- */
+  --color-ink: #1d2739;
+  --color-muted: #4e5a70;
+  --color-subtle: #6d695d;
+  --color-tint: #f4efe5;
 
-  /* --- Mineral Accents --- */
-  /* Primary Action: Deep Malachite Forest Green */
-  --color-brand: #244132;
-  --color-brand-hover: #1c3427;
-  --color-brand-dark: #15271d;
-  --color-brand-darker: #0e1b13;
-  --color-brand-light: #eaf1ed;
+  /* --- Energy Muse Mineral Accents --- */
+  /* Primary Action: Deep Obsidian Slate */
+  --color-brand: #1d2739;
+  /* Hover Action: Transitions to Energy Muse Glowing Copper */
+  --color-brand-hover: #985e38;
+  --color-brand-dark: #111c2e;
+  --color-brand-darker: #0b1320;
+  --color-brand-light: #f4efe5;
 
-  /* Secondary Accents: Muted Brass, Deep Amethyst, Slate */
-  --color-accent-gold: #ab7a24;
-  --color-accent-gold-light: #fbf5e8;
-  --color-brass: #ab7a24;
-  --color-brass-text: #7d5918;
-  --color-brass-light: #fbf5e8;
-  --color-brass-border: #dcc28b;
+  /* Secondary Accents: Energy Muse Burnished Copper & Warm Terracotta */
+  --color-accent-gold: #985e38;
+  --color-accent-gold-light: #faf5ee;
+  --color-copper: #985e38;
+  --color-copper-lo: #8f5330;
+  --color-copper-hi: #b87a4b;
+  --color-brass: #985e38;
+  --color-brass-text: #8f5330;
+  --color-brass-light: #faf5ee;
+  --color-brass-border: #d8b092;
   --color-amethyst: #4a3656;
   --color-amethyst-light: #f3eff5;
   --color-slate: #3b464f;

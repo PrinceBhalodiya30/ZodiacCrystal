@@ -427,6 +427,9 @@
 }
 
 .zodiac-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   background-color: var(--color-cream);
   border: 1px solid transparent;
   border-radius: 4px;
@@ -435,6 +438,12 @@
   color: #555;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip-zodiac-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
 }
 
 .zodiac-chip:hover {

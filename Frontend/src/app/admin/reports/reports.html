@@ -168,7 +168,7 @@
           <ul class="zodiac-list">
             @for (z of zodiacRows(); track z.zodiacId) {
               <li [class.is-zero]="z.quantitySold === 0">
-                <span class="zodiac-symbol" aria-hidden="true">{{ z.symbol || '·' }}</span>
+                <app-zodiac-icon [sign]="z.symbol || z.zodiacName" class="zodiac-symbol-icon" aria-hidden="true"></app-zodiac-icon>
                 <span class="zodiac-name">{{ z.zodiacName }}</span>
                 <span class="zodiac-bar"><span [style.width.%]="z.width"></span></span>
                 <span class="zodiac-value">
@@ -320,7 +320,7 @@
                 <span class="c-kpi-label">Top Wellness Goal</span>
               </div>
               <div class="consultation-kpi-card">
-                <span class="c-kpi-num c-kpi-text">{{ ci.topZodiac }}</span>
+                <span class="c-kpi-num c-kpi-text">{{ ci.topZodiac | vedicZodiac:'compact' }}</span>
                 <span class="c-kpi-label">Top Zodiac Sign</span>
               </div>
             </div>
@@ -352,8 +352,11 @@
                     <li>
                       <div class="c-stat-meta">
                         <span class="c-stat-name">
-                          <span class="c-zodiac-symbol">{{ z.symbol }}</span>
+                          <app-zodiac-icon [sign]="z.symbol || z.name" class="c-zodiac-symbol-icon"></app-zodiac-icon>
                           {{ z.name }}
+                          @if (z.name | vedicZodiac:'rashi'; as rashi) {
+                            <small class="admin-rashi-sub">· {{ rashi }}</small>
+                          }
                         </span>
                         <span class="c-stat-counts">{{ z.count }} ({{ z.percent }}%)</span>
                       </div>

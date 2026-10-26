@@ -69,7 +69,7 @@
         @for (zodiac of product.zodiacs; track zodiac.zodiacId) {
           <span class="zodiac-tag">
             <app-zodiac-icon class="zodiac-tag-icon" [sign]="zodiac.name"></app-zodiac-icon>
-            {{ zodiac.name }}
+            {{ zodiac.name | vedicZodiac:'compact' }}
           </span>
         }
       </div>

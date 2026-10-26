@@ -67,10 +67,13 @@ export interface DonutSlice {
 
 const GRANULARITY_LABEL = { day: 'per day', week: 'per week', month: 'per month' } as const;
 
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
+import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
+
 @Component({
   selector: 'app-admin-reports',
   standalone: true,
-  imports: [InrPipe, Spinner, DecimalPipe, FormsModule, AdminNav, AreaChart, ReportKpis, ReportOperations],
+  imports: [InrPipe, Spinner, DecimalPipe, FormsModule, AdminNav, AreaChart, ReportKpis, ReportOperations, VedicZodiacPipe, ZodiacIcon],
   templateUrl: './reports.html',
   styleUrls: ['../admin-shared.css', './reports.css']
 })

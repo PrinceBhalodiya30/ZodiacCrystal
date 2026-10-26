@@ -7,6 +7,25 @@ namespace Zodiac_Crystal.DTOs
         public string? Symbol { get; set; }
         public int QuantitySold { get; set; }
         public decimal Revenue { get; set; }
+
+        public string VedicRashi => ZodiacName switch
+        {
+            "Aries" => "Mesha (मेष)",
+            "Taurus" => "Vrishabha (वृषभ)",
+            "Gemini" => "Mithuna (मिथुन)",
+            "Cancer" => "Karka (कर्क)",
+            "Leo" => "Simha (सिंह)",
+            "Virgo" => "Kanya (कन्या)",
+            "Libra" => "Tula (तुला)",
+            "Scorpio" => "Vrishchika (वृश्चिक)",
+            "Sagittarius" => "Dhanu (धनु)",
+            "Capricorn" => "Makara (मकर)",
+            "Aquarius" => "Kumbha (कुंभ)",
+            "Pisces" => "Meena (मीन)",
+            _ => string.Empty
+        };
+
+        public string DisplayName => string.IsNullOrEmpty(VedicRashi) ? ZodiacName : $"{ZodiacName} · {VedicRashi}";
     }
 
     public class CouponPerformanceDto

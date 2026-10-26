@@ -32,6 +32,7 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { getStars as getStarsUtil } from '../../utils/rating.util';
 import { getDiscountPercent as getDiscountPercentUtil } from '../../utils/pricing.util';
 import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 
 const RELATED_PRODUCT_LIMIT = 4;
 
@@ -68,7 +69,8 @@ export interface BundleItem {
     ReviewPhotoPicker,
     ReviewPhotoThumbs,
     PhotoLightbox,
-    FormsModule
+    FormsModule,
+    VedicZodiacPipe
   ],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
