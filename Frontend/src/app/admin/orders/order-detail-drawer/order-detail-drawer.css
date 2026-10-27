@@ -499,7 +499,7 @@
   font-family: var(--font-heading, serif);
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
 }
 
 .slip-brand-tag {
@@ -540,7 +540,7 @@
 
 .slip-divider {
   border: 0;
-  border-top: 2px solid #1b3a2b;
+  border-top: 2px solid var(--color-brand);
   margin: 1.25rem 0;
 }
 

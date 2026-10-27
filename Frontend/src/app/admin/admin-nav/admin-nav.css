@@ -266,7 +266,7 @@
 .admin-nav-search-btn .admin-search-icon {
   width: 14px;
   height: 14px;
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
   flex-shrink: 0;
 }
 

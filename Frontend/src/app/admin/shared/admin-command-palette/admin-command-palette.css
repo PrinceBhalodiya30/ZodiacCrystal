@@ -45,7 +45,7 @@
 .palette-search-icon {
   width: 20px;
   height: 20px;
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +119,7 @@
 }
 
 .palette-item.is-selected .palette-item-icon {
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
 }
 
 .palette-item-main {
@@ -140,7 +140,7 @@
 }
 
 .palette-item.is-selected .palette-item-title {
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
 }
 
 .palette-item-sub {

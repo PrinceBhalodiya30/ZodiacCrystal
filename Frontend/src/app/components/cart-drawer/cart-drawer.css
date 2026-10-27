@@ -162,13 +162,13 @@
 
 .shipping-progress-fill {
   height: 100%;
-  background: var(--color-copper, #985E38);
+  background: linear-gradient(90deg, #985E38, #b87a4b);
   border-radius: 999px;
   transition: width 0.35s ease;
 }
 
 .shipping-progress-fill.unlocked {
-  background: var(--color-success, #2e7d32);
+  background: linear-gradient(90deg, #1b6e37, #2f8a57);
 }
 
 /* Items List */
@@ -347,7 +347,7 @@
 
 /* Footer & Action Buttons */
 .cart-flyout-footer {
-  padding: 0.95rem 1.25rem 1.15rem;
+  padding: 0.95rem 1.25rem calc(1.15rem + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--color-border-subtle, #EAE3D6);
   background-color: var(--color-surface-tint, #F4EFE5);
 }

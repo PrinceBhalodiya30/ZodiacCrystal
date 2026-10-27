@@ -28,7 +28,7 @@
 .admin-orders-page .status-filter:focus-visible {
   outline: none;
   border-color: #cfc6b3;
-  box-shadow: 0 0 0 4px rgba(90, 122, 100, 0.14);
+  box-shadow: 0 0 0 4px rgba(152, 94, 56, 0.18);
 }
 
 .customer-name {
@@ -145,7 +145,7 @@
   padding: 0.75rem 1.15rem;
   background: linear-gradient(135deg, #fbf9f5 0%, #f6f0e6 100%);
   border: 1px solid #e5ded2;
-  border-left: 4px solid var(--color-brand, #1b3a2b);
+  border-left: 4px solid var(--color-brand);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   animation: bulk-bar-in 0.18s ease-out;
@@ -174,7 +174,7 @@
   gap: 0.45rem;
   font-weight: 600;
   font-size: 0.85rem;
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
   background: #ffffff;
   border: 1px solid #ded5c5;
   border-radius: 20px;
@@ -183,7 +183,7 @@
 }
 
 .bulk-badge svg {
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
 }
 
 .bulk-clear-btn {
@@ -201,7 +201,7 @@
 }
 
 .bulk-clear-btn:hover {
-  color: var(--color-brand, #1b3a2b);
+  color: var(--color-brand);
   background-color: rgba(0, 0, 0, 0.04);
 }
 
@@ -238,8 +238,8 @@
 .bulk-select:focus,
 .bulk-select:focus-visible {
   outline: none;
-  border-color: var(--color-brand, #1b3a2b);
-  box-shadow: 0 0 0 3px rgba(27, 58, 43, 0.12);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.16);
 }
 
 .btn-bulk-apply {

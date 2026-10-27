@@ -61,7 +61,7 @@
 
 .support-select-all input[type="checkbox"] {
   cursor: pointer;
-  accent-color: var(--color-brand, #1b3a2b);
+  accent-color: var(--color-brand);
 }
 
 .support-row-item {
@@ -83,8 +83,8 @@
 }
 
 .support-row-item.is-selected {
-  border-color: var(--color-brand, #1b3a2b);
-  background-color: #f7f9f8;
+  border-color: var(--color-brand);
+  background-color: var(--color-surface-tint);
 }
 
 .support-row-cb-wrap {
@@ -99,7 +99,7 @@
   width: 17px;
   height: 17px;
   cursor: pointer;
-  accent-color: var(--color-brand, #1b3a2b);
+  accent-color: var(--color-brand);
 }
 
 .support-row-item .support-row {

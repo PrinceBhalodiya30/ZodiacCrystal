@@ -47,3 +47,9 @@
   white-space: nowrap;
   max-width: 60vw;
 }
+
+@media (max-width: 600px) {
+  .breadcrumb-current {
+    max-width: 160px;
+  }
+}

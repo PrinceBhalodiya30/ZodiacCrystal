@@ -157,6 +157,7 @@
 *:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(152, 94, 56, 0.16);
 }
 
 html,
