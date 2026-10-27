@@ -823,6 +823,43 @@ export class ProductDetails implements OnInit {
     this.router.navigate(['/checkout']);
   }
 
+  shareOnWhatsApp(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const product = this.product();
+    const productName = product?.name ?? 'Healing Crystal';
+    const currentUrl = window.location.href;
+    const shareText = `Check out this authentic natural crystal: ${productName} on ${this.siteName} · ${currentUrl}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  async copyProductLink(): Promise<void> {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const currentUrl = window.location.href;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(currentUrl);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = currentUrl;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      this.toast.success('Product link copied to clipboard');
+    } catch {
+      this.toast.info('Link ready to copy: ' + currentUrl);
+    }
+  }
+
   private requireLogin(returnUrl: string = this.router.url, message = 'Please log in to continue.'): boolean {
     if (this.authService.isLoggedIn()) {
       return true;

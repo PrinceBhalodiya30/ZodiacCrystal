@@ -747,6 +747,71 @@
   line-height: var(--leading-normal);
 }
 
+/* Social Share Bar */
+.product-share-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border-subtle, #EAE3D6);
+}
+
+.share-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-subtle, #4E5A70);
+}
+
+.btn-share {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-sm, 4px);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+  text-decoration: none;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #E4DCCB);
+  color: var(--color-ink, #1D2739);
+}
+
+.btn-share svg {
+  flex-shrink: 0;
+}
+
+.btn-share:hover {
+  transform: translateY(-1px);
+}
+
+.btn-share-whatsapp {
+  background-color: rgba(37, 211, 102, 0.08);
+  border-color: rgba(37, 211, 102, 0.35);
+  color: #0b6848;
+}
+
+.btn-share-whatsapp:hover {
+  background-color: #25d366;
+  border-color: #25d366;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.28);
+}
+
+.btn-share-copy:hover {
+  border-color: var(--color-copper, #985E38);
+  color: var(--color-copper, #985E38);
+  background-color: var(--color-surface-tint, #F4EFE5);
+  box-shadow: 0 2px 8px rgba(152, 94, 56, 0.14);
+}
+
 .product-actions .btn.btn-added,
 .mobile-add-bar .btn.btn-added {
   background-color: var(--color-success);
