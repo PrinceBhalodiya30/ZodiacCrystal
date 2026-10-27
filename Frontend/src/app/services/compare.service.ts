@@ -35,7 +35,6 @@ export class CompareService {
     }
 
     this.items.update(list => [...list, product]);
-    this.toast.success(`Added "${product.name}" to comparison (${this.items().length}/${this.max})`);
   }
 
   remove(productId: number): void {

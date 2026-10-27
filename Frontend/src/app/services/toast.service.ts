@@ -10,11 +10,12 @@ export interface Toast {
   durationMs: number;
   remainingMs?: number;
   startedAt?: number;
+  isLeaving?: boolean;
 }
 
-const SUCCESS_DISMISS_MS = 4000;
-const ERROR_DISMISS_MS = 6500;
-const INFO_DISMISS_MS = 4000;
+const SUCCESS_DISMISS_MS = 3200;
+const ERROR_DISMISS_MS = 5000;
+const INFO_DISMISS_MS = 3200;
 const MAX_VISIBLE_TOASTS = 3;
 
 @Injectable({ providedIn: 'root' })
@@ -101,8 +102,21 @@ export class ToastService {
       this.dismissTimers.delete(id);
     }
 
-    this.toasts.update(items => items.filter(t => t.id !== id));
-    this.showNextQueuedToast();
+    const toast = this.toasts().find(t => t.id === id);
+    if (!toast || toast.isLeaving) {
+      return;
+    }
+
+    // Mark as leaving to trigger CSS slide-out animation
+    this.toasts.update(items =>
+      items.map(t => t.id === id ? { ...t, isLeaving: true } : t)
+    );
+
+    // Wait 220ms for exit animation before removing from state
+    setTimeout(() => {
+      this.toasts.update(items => items.filter(t => t.id !== id));
+      this.showNextQueuedToast();
+    }, 220);
   }
 
   private show(message: string, type: ToastType, customDurationMs?: number): void {

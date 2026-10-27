@@ -68,6 +68,7 @@ export class AdminOrders implements OnInit {
   // Customer 360 intelligence drawer
   customer360Email = signal<string | null>(null);
   previousOrderForCustomer360 = signal<number | null>(null);
+  previousCustomerEmailForOrder = signal<string | null>(null);
 
   page = signal(1);
   totalPages = signal(1);
@@ -253,6 +254,7 @@ export class AdminOrders implements OnInit {
 
   closeOrder(): void {
     this.openOrderId.set(null);
+    this.previousCustomerEmailForOrder.set(null);
   }
 
   openCustomer360(email: string, fromOrderId?: number): void {
@@ -276,7 +278,15 @@ export class AdminOrders implements OnInit {
     this.openOrderId.set(orderId);
   }
 
+  returnToCustomer360(email: string): void {
+    this.openOrderId.set(null);
+    this.previousCustomerEmailForOrder.set(null);
+    this.customer360Email.set(email);
+  }
+
   viewOrderFrom360(orderId: number): void {
+    const email = this.customer360Email();
+    this.previousCustomerEmailForOrder.set(email);
     this.customer360Email.set(null);
     this.previousOrderForCustomer360.set(null);
     this.openOrderId.set(orderId);

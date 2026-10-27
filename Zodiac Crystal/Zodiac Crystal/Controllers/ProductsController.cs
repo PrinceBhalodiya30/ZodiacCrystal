@@ -19,6 +19,15 @@ namespace Zodiac_Crystal.Controllers
         private readonly AuditLogService _auditLogService;
         private readonly NotificationService _notificationService;
 
+        private static readonly HashSet<string> AllowedMarketingBadges = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Bestseller",
+            "Rare Specimen",
+            "Trending",
+            "New Arrival",
+            "Staff Pick"
+        };
+
         public ProductsController(CrystalsDbContext context, CsvExportService csvExportService, AuditLogService auditLogService, NotificationService notificationService)
         {
             _context = context;
@@ -168,6 +177,7 @@ namespace Zodiac_Crystal.Controllers
                     SunlightExposure = p.SunlightExposure,
                     Chakra = p.Chakra,
                     Element = p.Element,
+                    MarketingBadge = p.MarketingBadge,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -277,6 +287,7 @@ namespace Zodiac_Crystal.Controllers
                     SunlightExposure = p.SunlightExposure,
                     Chakra = p.Chakra,
                     Element = p.Element,
+                    MarketingBadge = p.MarketingBadge,
 
                     AverageRating = _context.ProductReviews
                         .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved")
@@ -353,18 +364,19 @@ namespace Zodiac_Crystal.Controllers
                     p.SunlightExposure,
                     p.Chakra,
                     p.Element,
+                    p.MarketingBadge,
                     p.IsActive,
                     p.CreatedAt,
                     Zodiacs = p.Zodiacs.Select(z => z.Name).ToList()
                 })
                 .ToListAsync();
 
-            var headers = new[] { "ProductId", "SKU", "Name", "Category", "Price", "CompareAtPrice", "StockQuantity", "WaterSafe", "SunlightExposure", "Chakra", "Element", "ZodiacSigns", "IsActive", "CreatedAt" };
+            var headers = new[] { "ProductId", "SKU", "Name", "Category", "Price", "CompareAtPrice", "StockQuantity", "WaterSafe", "SunlightExposure", "Chakra", "Element", "MarketingBadge", "ZodiacSigns", "IsActive", "CreatedAt" };
 
             var rows = products.Select(p => new object?[]
             {
                 p.ProductId, p.SKU, p.Name, p.CategoryName, p.Price, p.CompareAtPrice, p.StockQuantity,
-                p.WaterSafe, p.SunlightExposure, p.Chakra, p.Element,
+                p.WaterSafe, p.SunlightExposure, p.Chakra, p.Element, p.MarketingBadge,
                 string.Join("; ", p.Zodiacs.OrderBy(z => z)), p.IsActive, p.CreatedAt
             });
 
@@ -457,6 +469,7 @@ namespace Zodiac_Crystal.Controllers
                     SunlightExposure = p.SunlightExposure,
                     Chakra = p.Chakra,
                     Element = p.Element,
+                    MarketingBadge = p.MarketingBadge,
 
                     // Approved, not-deleted reviews only (same as the list endpoints);
                     // the product page's JSON-LD rating comes from these.
@@ -587,6 +600,7 @@ namespace Zodiac_Crystal.Controllers
                     SunlightExposure = p.SunlightExposure,
                     Chakra = p.Chakra,
                     Element = p.Element,
+                    MarketingBadge = p.MarketingBadge,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -669,6 +683,14 @@ namespace Zodiac_Crystal.Controllers
                 });
             }
 
+            if (!string.IsNullOrWhiteSpace(dto.MarketingBadge) && !AllowedMarketingBadges.Contains(dto.MarketingBadge.Trim()))
+            {
+                return BadRequest(new
+                {
+                    message = $"Invalid marketing badge '{dto.MarketingBadge}'. Allowed values: {string.Join(", ", AllowedMarketingBadges)}"
+                });
+            }
+
             var product = new Product
             {
                 Sku = dto.SKU,
@@ -683,6 +705,7 @@ namespace Zodiac_Crystal.Controllers
                 SunlightExposure = dto.SunlightExposure,
                 Chakra = dto.Chakra,
                 Element = dto.Element,
+                MarketingBadge = dto.MarketingBadge?.Trim(),
                 Zodiacs = zodiacs
             };
 
@@ -771,6 +794,14 @@ namespace Zodiac_Crystal.Controllers
                 });
             }
 
+            if (!string.IsNullOrWhiteSpace(dto.MarketingBadge) && !AllowedMarketingBadges.Contains(dto.MarketingBadge.Trim()))
+            {
+                return BadRequest(new
+                {
+                    message = $"Invalid marketing badge '{dto.MarketingBadge}'. Allowed values: {string.Join(", ", AllowedMarketingBadges)}"
+                });
+            }
+
             // What changed, for the audit log (e.g. "Price ₹899.00 → ₹799.00").
             var changes = new List<string>();
             if (product.Name != dto.Name) changes.Add($"Name \"{product.Name}\" → \"{dto.Name}\"");
@@ -782,6 +813,8 @@ namespace Zodiac_Crystal.Controllers
             if (product.Description != dto.Description) changes.Add("Description edited");
             if (!product.Zodiacs.Select(z => z.ZodiacId).OrderBy(x => x).SequenceEqual(dto.ZodiacIds.Distinct().OrderBy(x => x)))
                 changes.Add("Zodiac signs changed");
+            if (product.MarketingBadge != (string.IsNullOrWhiteSpace(dto.MarketingBadge) ? null : dto.MarketingBadge.Trim()))
+                changes.Add($"Badge \"{product.MarketingBadge ?? "None"}\" → \"{(string.IsNullOrWhiteSpace(dto.MarketingBadge) ? "None" : dto.MarketingBadge.Trim())}\"");
 
             _auditLogService.Log(CurrentAdminId(), "ProductUpdated", "Product", product.ProductId,
                 $"{dto.Name}: " + (changes.Count > 0 ? string.Join("; ", changes) : "no changes"));
@@ -797,6 +830,7 @@ namespace Zodiac_Crystal.Controllers
             product.SunlightExposure = dto.SunlightExposure;
             product.Chakra = dto.Chakra;
             product.Element = dto.Element;
+            product.MarketingBadge = dto.MarketingBadge?.Trim();
 
             product.Zodiacs.Clear();
             foreach (var zodiac in zodiacs)

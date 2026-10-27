@@ -59,6 +59,29 @@ export class ProductCard implements OnInit {
     return getDiscountPercent(this.product.price, this.product.compareAtPrice);
   }
 
+  get marketingBadge(): string | null {
+    return this.product.marketingBadge?.trim() || null;
+  }
+
+  get marketingBadgeClass(): string {
+    const badge = this.marketingBadge;
+    if (!badge) return '';
+    return 'badge-' + badge.toLowerCase().replace(/\s+/g, '-');
+  }
+
+  get marketingBadgeLabel(): string {
+    const badge = this.marketingBadge;
+    if (!badge) return '';
+    switch (badge.toLowerCase()) {
+      case 'bestseller': return '★ Bestseller';
+      case 'rare specimen': return '✦ Rare Specimen';
+      case 'trending': return '🔥 Trending';
+      case 'new arrival': return '✨ New Arrival';
+      case 'staff pick': return '💎 Collector’s Pick';
+      default: return badge;
+    }
+  }
+
   get productSlug(): string {
     return getProductSlug(this.product);
   }

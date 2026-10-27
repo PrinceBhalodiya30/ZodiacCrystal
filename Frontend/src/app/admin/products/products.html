@@ -324,6 +324,30 @@
         </div>
       </div>
 
+      <div class="form-section">
+        <h3 class="form-section-title">Merchandising &amp; Marketing Ribbon (Optional)</h3>
+        <p class="field-hint" style="margin-bottom: 0.75rem;">
+          Displays a sleek ribbon badge on storefront product cards and product details (e.g. Bestseller, Rare Specimen, Trending).
+        </p>
+        <div class="form-grid">
+          <div>
+            <label for="marketingBadge">Marketing Ribbon Badge</label>
+            <select
+              id="marketingBadge"
+              name="marketingBadge"
+              [(ngModel)]="formMarketingBadge"
+            >
+              <option value="">None (Standard Product)</option>
+              <option value="Bestseller">Bestseller (Gold Ribbon)</option>
+              <option value="Rare Specimen">Rare Specimen (Royal Amethyst Ribbon)</option>
+              <option value="Trending">Trending (Warm Rose Ribbon)</option>
+              <option value="New Arrival">New Arrival (Emerald Mint Ribbon)</option>
+              <option value="Staff Pick">Collector's Pick (Celestial Indigo Ribbon)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       @if (editingProduct(); as ep) {
         <div class="form-section">
           <h3 class="form-section-title">Images</h3>
@@ -397,7 +421,50 @@
                 <input type="checkbox" [attr.aria-label]="'Select ' + product.name" [checked]="isSelected(product.productId)" (change)="toggleSelected(product.productId, $any($event.target).checked)" />
               </td>
               <td data-label="SKU">{{ product.sku }}</td>
-              <td data-label="Name">{{ product.name }}</td>
+              <td data-label="Name">
+                <div class="admin-prod-title">
+                  <span>{{ product.name }}</span>
+                  @if (product.marketingBadge; as badge) {
+                    <span class="admin-badge-tag" [class]="'badge-' + badge.toLowerCase().replace(' ', '-')">
+                      @switch (badge.toLowerCase()) {
+                        @case ('bestseller') {
+                          <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor" stroke="none" aria-hidden="true">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                          </svg>
+                          <span>Bestseller</span>
+                        }
+                        @case ('rare specimen') {
+                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M6 3h12l4 6-10 12L2 9l4-6z"/>
+                          </svg>
+                          <span>Rare Specimen</span>
+                        }
+                        @case ('trending') {
+                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                          </svg>
+                          <span>Trending</span>
+                        }
+                        @case ('new arrival') {
+                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
+                          </svg>
+                          <span>New Arrival</span>
+                        }
+                        @case ('staff pick') {
+                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
+                          </svg>
+                          <span>Collector's Pick</span>
+                        }
+                        @default {
+                          <span>{{ badge }}</span>
+                        }
+                      }
+                    </span>
+                  }
+                </div>
+              </td>
               <td data-label="Category">{{ product.categoryName || 'Uncategorized' }}</td>
               <td data-label="Price">{{ product.price | inr }}</td>
               <td data-label="Stock">{{ product.stockQuantity }}</td>

@@ -18,13 +18,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../services/notification.service';
 
 import { Customer360Drawer } from '../shared/customer-360-drawer/customer-360-drawer';
+import { OrderDetailDrawer } from '../orders/order-detail-drawer/order-detail-drawer';
 
 const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [Spinner, DatePipe, FormsModule, AdminNav, Pager, Customer360Drawer],
+  imports: [Spinner, DatePipe, FormsModule, AdminNav, Pager, Customer360Drawer, OrderDetailDrawer],
   templateUrl: './users.html',
   styleUrls: ['../admin-shared.css', './users.css']
 })
@@ -34,6 +35,8 @@ export class AdminUsers implements OnInit {
 
   isExporting = signal(false);
   selectedCustomerEmail = signal<string | null>(null);
+  selectedOrderId = signal<number | null>(null);
+  previousCustomerEmailForOrder = signal<string | null>(null);
   private authService = inject(AuthService);
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);
@@ -310,7 +313,20 @@ export class AdminUsers implements OnInit {
   }
 
   onViewOrder(orderId: number): void {
-    this.selectedCustomerEmail.set(null);
-    this.router.navigate(['/admin/orders'], { queryParams: { order: orderId } });
+    const currentEmail = this.selectedCustomerEmail();
+    this.previousCustomerEmailForOrder.set(currentEmail);
+    this.selectedCustomerEmail.set(null); // Cleanly transition to order drawer without stacking
+    this.selectedOrderId.set(orderId);
+  }
+
+  closeOrderDrawer(): void {
+    this.selectedOrderId.set(null);
+    this.previousCustomerEmailForOrder.set(null);
+  }
+
+  returnToCustomer360(customerEmail: string): void {
+    this.selectedOrderId.set(null);
+    this.previousCustomerEmailForOrder.set(null);
+    this.selectedCustomerEmail.set(customerEmail);
   }
 }

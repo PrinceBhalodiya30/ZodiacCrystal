@@ -221,13 +221,10 @@ export class CartService {
         }
         localStorage.removeItem(GUEST_CART_KEY);
 
-        // Notify user about merged items so they understand why both are in the cart
+        // Notify user about merged items via the inline cart banner so they understand why both are in the cart
         if (hadPreviousItems) {
           const msg = 'We combined the items from your browsing session with your saved cart.';
-          this.toast.success(msg);
           this.setMergeNotice(msg);
-        } else {
-          this.toast.success('Your cart items have been saved to your account.');
         }
       }
     } else {

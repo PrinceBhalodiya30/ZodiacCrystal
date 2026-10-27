@@ -7,11 +7,25 @@
     (click)="$event.stopPropagation()"
   >
     <header class="drawer-header">
-      <div>
-        <h2 id="orderDrawerTitle">Order #{{ orderId }}</h2>
-        @if (detail(); as d) {
-          <p class="drawer-subtitle">Placed {{ d.order.orderDate | date:'dd MMM yyyy, h:mm a' }}</p>
+      <div class="drawer-header-left">
+        @if (backToCustomerEmail) {
+          <div class="drawer-header-actions">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline back-customer-btn"
+              (click)="backToCustomer.emit(backToCustomerEmail)"
+              title="Return to Customer 360"
+            >
+              ← Back to Customer 360
+            </button>
+          </div>
         }
+        <div>
+          <h2 id="orderDrawerTitle">Order #{{ orderId }}</h2>
+          @if (detail(); as d) {
+            <p class="drawer-subtitle">Placed {{ d.order.orderDate | date:'dd MMM yyyy, h:mm a' }}</p>
+          }
+        </div>
       </div>
       <button type="button" class="drawer-close" aria-label="Close order details" (click)="close()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>

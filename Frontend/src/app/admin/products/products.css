@@ -70,3 +70,56 @@ tr.row-selected td { background: #faf6ec; }
   .bulk-bar-controls > * { flex: 1 1 100%; }
   .bulk-value { width: 100%; }
 }
+
+.admin-prod-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  width: fit-content;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.admin-badge-tag svg {
+  flex-shrink: 0;
+}
+
+.admin-badge-tag.badge-bestseller {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.admin-badge-tag.badge-rare-specimen {
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
+}
+
+.admin-badge-tag.badge-trending {
+  background: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+}
+
+.admin-badge-tag.badge-new-arrival {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.admin-badge-tag.badge-staff-pick {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}

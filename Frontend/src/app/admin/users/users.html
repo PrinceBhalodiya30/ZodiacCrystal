@@ -169,6 +169,16 @@
     <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
   }
 
+  @if (selectedOrderId(); as orderId) {
+    <app-order-detail-drawer
+      [orderId]="orderId"
+      [backToCustomerEmail]="previousCustomerEmailForOrder() ?? undefined"
+      (closed)="closeOrderDrawer()"
+      (backToCustomer)="returnToCustomer360($event)"
+      (viewCustomer)="returnToCustomer360($event)"
+    ></app-order-detail-drawer>
+  }
+
   @if (selectedCustomerEmail(); as email) {
     <app-customer-360-drawer
       [customerEmail]="email"

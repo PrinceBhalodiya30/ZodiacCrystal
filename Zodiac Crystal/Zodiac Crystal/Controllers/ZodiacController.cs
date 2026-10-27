@@ -96,11 +96,17 @@ namespace Zodiac_Crystal.Controllers
                     Name = p.Name,
                     Description = p.Description,
                     Price = p.Price,
+                    CompareAtPrice = p.CompareAtPrice,
                     StockQuantity = p.StockQuantity,
                     CategoryId = p.CategoryId,
                     CategoryName = p.Category.Name,
                     IsActive = p.IsActive,
                     CreatedAt = p.CreatedAt,
+                    WaterSafe = p.WaterSafe,
+                    SunlightExposure = p.SunlightExposure,
+                    Chakra = p.Chakra,
+                    Element = p.Element,
+                    MarketingBadge = p.MarketingBadge,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto

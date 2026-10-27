@@ -182,11 +182,9 @@ export class OrderDetails implements OnInit {
         return;
       }
 
-      this.toast.success(
-        skipped > 0
-          ? `Added ${added} item${added === 1 ? '' : 's'} to your cart. ${skipped} ${skipped === 1 ? 'is' : 'are'} no longer available.`
-          : 'Items added to your cart.'
-      );
+      if (skipped > 0) {
+        this.toast.info(`Added ${added} item${added === 1 ? '' : 's'} to your cart (${skipped} unavailable).`);
+      }
       this.router.navigate(['/cart']);
     });
   }

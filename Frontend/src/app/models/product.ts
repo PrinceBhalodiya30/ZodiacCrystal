@@ -21,6 +21,7 @@ export interface Product {
   sunlightExposure?: string | null;
   chakra?: string | null;
   element?: string | null;
+  marketingBadge?: string | null;
 }
 
 export interface ProductRequest {
@@ -37,4 +38,5 @@ export interface ProductRequest {
   sunlightExposure?: string | null;
   chakra?: string | null;
   element?: string | null;
+  marketingBadge?: string | null;
 }

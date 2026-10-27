@@ -496,6 +496,21 @@ export class ProductDetails implements OnInit {
     return getDiscountPercentUtil(product.price, product.compareAtPrice);
   }
 
+  getMarketingBadgeLabel(badge: string): string {
+    switch (badge.toLowerCase()) {
+      case 'bestseller': return '★ Bestseller';
+      case 'rare specimen': return '✦ Rare Specimen';
+      case 'trending': return '🔥 Trending';
+      case 'new arrival': return '✨ New Arrival';
+      case 'staff pick': return '💎 Collector’s Pick';
+      default: return badge;
+    }
+  }
+
+  getMarketingBadgeClass(badge: string): string {
+    return 'badge-' + badge.toLowerCase().replace(/\s+/g, '-');
+  }
+
   // "Coupon available" line: the coupon that saves most on this product alone,
   // or failing that the one with the lowest minimum order (shown with it).
   couponOffer(product: Product): string | null {
@@ -598,14 +613,6 @@ export class ProductDetails implements OnInit {
 
     this.bundleJustAdded.set(true);
     setTimeout(() => this.bundleJustAdded.set(false), 2500);
-
-    const count = selected.length;
-    const savings = this.bundleSavings();
-    if (savings > 0) {
-      this.toast.success(`Bundle added! Saved ${formatInr(savings, 0)} on ${count} items.`, 5000);
-    } else {
-      this.toast.success(`Added ${count} item${count > 1 ? 's' : ''} to your bag.`, 5000);
-    }
   }
 
   onImageMouseMove(event: MouseEvent): void {

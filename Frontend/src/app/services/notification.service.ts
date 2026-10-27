@@ -135,7 +135,7 @@ export class NotificationService {
       this.notifications.update(items => [notification, ...items]);
       this.unreadCount.update(count => count + 1);
       this.liveArrivals.update(n => n + 1);
-      this.toastService.success(notification.title);
+      this.toastService.info(notification.title);
 
       if (notification.orderId && (notification.type === 'OrderStatusChanged' || notification.type === 'ReturnUpdated')) {
         this.orderUpdated.next(notification.orderId);
@@ -146,12 +146,10 @@ export class NotificationService {
       }
     });
 
-    // A coupon was announced to all customers - the rows were written server
-    // side in bulk, so reload the list rather than receiving each one.
-    this.hubConnection.on('CouponAnnounced', (event: { title: string }) => {
+    // A coupon was announced to all customers - update the bell badge without popping an intrusive toast
+    this.hubConnection.on('CouponAnnounced', () => {
       this.loadInitial();
       this.liveArrivals.update(n => n + 1);
-      this.toastService.success(event.title);
     });
 
     this.hubConnection.on('AdminDataChanged', (event: AdminDataChangedEvent) => this.adminDataChanged.next(event));

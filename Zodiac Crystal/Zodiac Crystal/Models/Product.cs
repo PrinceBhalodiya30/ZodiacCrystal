@@ -42,6 +42,9 @@ public partial class Product
     [StringLength(100)]
     public string? Element { get; set; }
 
+    [StringLength(50)]
+    public string? MarketingBadge { get; set; }
+
     public int StockQuantity { get; set; }
 
     public int CategoryId { get; set; }

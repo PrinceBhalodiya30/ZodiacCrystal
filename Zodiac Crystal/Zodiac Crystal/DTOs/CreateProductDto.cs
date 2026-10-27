@@ -33,6 +33,9 @@ namespace Zodiac_Crystal.DTOs
         [StringLength(100)]
         public string? Element { get; set; }
 
+        [StringLength(50)]
+        public string? MarketingBadge { get; set; }
+
         [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; }
 

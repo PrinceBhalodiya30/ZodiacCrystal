@@ -33,6 +33,9 @@ namespace Zodiac_Crystal.DTOs
         [StringLength(100)]
         public string? Element { get; set; }
 
+        [StringLength(50)]
+        public string? MarketingBadge { get; set; }
+
         // No StockQuantity: saving a stock number read when the form opened would
         // erase any orders placed since. Stock changes go through adjust-stock,
         // which applies a delta to the current value instead.

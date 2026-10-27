@@ -71,6 +71,69 @@
   letter-spacing: 0.02em;
 }
 
+.marketing-badge-overlay {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.58rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.marketing-badge-overlay .badge-icon {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.marketing-badge-overlay.badge-bestseller {
+  background: linear-gradient(135deg, rgba(254, 248, 235, 0.96) 0%, rgba(250, 238, 210, 0.96) 100%);
+  color: #7d5415;
+  border: 1px solid rgba(190, 138, 42, 0.38);
+  box-shadow: 0 2px 8px rgba(190, 138, 42, 0.16);
+}
+
+.marketing-badge-overlay.badge-rare-specimen {
+  background: linear-gradient(135deg, rgba(247, 241, 253, 0.96) 0%, rgba(238, 226, 252, 0.96) 100%);
+  color: #5b289c;
+  border: 1px solid rgba(130, 65, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(130, 65, 235, 0.15);
+}
+
+.marketing-badge-overlay.badge-trending {
+  background: linear-gradient(135deg, rgba(254, 243, 242, 0.96) 0%, rgba(254, 227, 226, 0.96) 100%);
+  color: #9f1239;
+  border: 1px solid rgba(225, 29, 72, 0.35);
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
+}
+
+.marketing-badge-overlay.badge-new-arrival {
+  background: linear-gradient(135deg, rgba(240, 250, 244, 0.96) 0%, rgba(222, 246, 232, 0.96) 100%);
+  color: #116238;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.marketing-badge-overlay.badge-staff-pick {
+  background: linear-gradient(135deg, rgba(241, 244, 254, 0.96) 0%, rgba(226, 233, 253, 0.96) 100%);
+  color: #2e3b92;
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+}
+
 @media (max-width: 600px) {
   .stock-badge-overlay {
     top: 0.4rem;
@@ -98,6 +161,13 @@
     left: 0.4rem;
     font-size: 10px;
     padding: 0.15rem 0.45rem;
+  }
+
+  .marketing-badge-overlay {
+    bottom: 0.4rem;
+    right: 0.4rem;
+    font-size: 8.5px;
+    padding: 0.15rem 0.4rem;
   }
 }
 

@@ -188,6 +188,65 @@
   flex-direction: column;
 }
 
+.pdp-marketing-badge-wrap {
+  margin-bottom: 0.75rem;
+}
+
+.pdp-marketing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.85rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  line-height: 1;
+}
+
+.pdp-marketing-badge .badge-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.pdp-marketing-badge.badge-bestseller {
+  background: linear-gradient(135deg, rgba(254, 248, 235, 0.98) 0%, rgba(250, 238, 210, 0.98) 100%);
+  color: #7d5415;
+  border: 1px solid rgba(190, 138, 42, 0.38);
+  box-shadow: 0 2px 8px rgba(190, 138, 42, 0.16);
+}
+
+.pdp-marketing-badge.badge-rare-specimen {
+  background: linear-gradient(135deg, rgba(247, 241, 253, 0.98) 0%, rgba(238, 226, 252, 0.98) 100%);
+  color: #5b289c;
+  border: 1px solid rgba(130, 65, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(130, 65, 235, 0.15);
+}
+
+.pdp-marketing-badge.badge-trending {
+  background: linear-gradient(135deg, rgba(254, 243, 242, 0.98) 0%, rgba(254, 227, 226, 0.98) 100%);
+  color: #9f1239;
+  border: 1px solid rgba(225, 29, 72, 0.35);
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
+}
+
+.pdp-marketing-badge.badge-new-arrival {
+  background: linear-gradient(135deg, rgba(240, 250, 244, 0.98) 0%, rgba(222, 246, 232, 0.98) 100%);
+  color: #116238;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.pdp-marketing-badge.badge-staff-pick {
+  background: linear-gradient(135deg, rgba(241, 244, 254, 0.98) 0%, rgba(226, 233, 253, 0.98) 100%);
+  color: #2e3b92;
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
+}
+
 .product-info h1 {
   margin: 0 0 0.85rem;
   font-family: var(--font-heading);

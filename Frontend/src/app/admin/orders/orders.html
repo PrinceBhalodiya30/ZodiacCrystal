@@ -201,8 +201,10 @@
   @if (openOrderId(); as id) {
     <app-order-detail-drawer
       [orderId]="id"
+      [backToCustomerEmail]="previousCustomerEmailForOrder() ?? undefined"
       (closed)="closeOrder()"
       (orderChanged)="onOrderChanged($event)"
+      (backToCustomer)="returnToCustomer360($event)"
       (viewCustomer)="openCustomer360($event, id)"
     ></app-order-detail-drawer>
   }

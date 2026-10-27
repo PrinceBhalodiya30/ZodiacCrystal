@@ -58,8 +58,10 @@ export class OrderDetailDrawer implements OnInit {
   private navCounts = inject(AdminNavCountsService);
 
   @Input({ required: true }) orderId!: number;
+  @Input() backToCustomerEmail?: string;
   @Output() closed = new EventEmitter<void>();
   @Output() viewCustomer = new EventEmitter<string>();
+  @Output() backToCustomer = new EventEmitter<string>();
   // Tells the table to update its row after a status change.
   @Output() orderChanged = new EventEmitter<OrderRowUpdate>();
 
