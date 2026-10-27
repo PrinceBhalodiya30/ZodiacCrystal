@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CartService, GIFT_PACKAGING_FEE, shippingFeeFor } from '../../services/cart.service';
@@ -27,7 +27,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
-export class Checkout implements OnInit {
+export class Checkout implements OnInit, OnDestroy {
   readonly cartService = inject(CartService);
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
@@ -54,15 +54,15 @@ export class Checkout implements OnInit {
   // Buy Now checkouts go back to that product; cart checkouts go back to the cart.
   buyNowProductId = computed(() => this.cartService.buyNowItem()?.product.productId ?? null);
 
-  // Leaving a Buy Now checkout moves that item into the cart so the shopper
-  // can review it on the Cart page before continuing.
+  // Leaving a Buy Now checkout drops that one-off session so it never
+  // pollutes the shopper's persistent cart (Amazon/Shopify model).
   leaveBuyNow(): void {
-    const item = this.cartService.buyNowItem();
-    if (item) {
-      this.cartService.addToCart(item.product, item.quantity, false);
-    }
     this.cartService.clearBuyNowItem();
     this.cartService.clearBuyNowMysteryBox();
+  }
+
+  ngOnDestroy(): void {
+    this.leaveBuyNow();
   }
 
   total = computed(() => {
