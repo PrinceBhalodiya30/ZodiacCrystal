@@ -475,13 +475,10 @@
     align-items: center;
     box-sizing: border-box;
     text-align: left;
-    border-left: 3px solid transparent;
     font-size: 0.95rem;
     width: 100%;
     background: none;
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
+    border: none;
     border-radius: 0;
   }
 
@@ -494,9 +491,9 @@
   .navbar-links a.active,
   .navbar-links .navbar-logout:hover,
   .navbar-links .navbar-quiz-btn:hover {
-    border-left-color: var(--color-copper);
-    background-color: var(--color-surface-tint, #f4efe5);
-    color: var(--color-copper);
+    background-color: var(--color-sand-tint, #f4efe5);
+    color: var(--color-brand);
+    font-weight: 500;
   }
 
   .navbar-links a.navbar-cta {

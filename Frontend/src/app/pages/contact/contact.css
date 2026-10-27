@@ -42,18 +42,8 @@
   font-family: var(--font-heading);
   font-size: 2.3rem;
   font-weight: 600;
-  margin: 0 0 0.6rem;
+  margin: 0 0 1rem;
   color: var(--color-ink);
-}
-
-.contact-header h1::after {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  margin: 0.85rem 0 0.85rem;
-  background: var(--color-accent, #985e38);
-  border-radius: 999px;
 }
 
 .contact-lead {

@@ -133,10 +133,6 @@
   color: var(--color-brand-hover);
 }
 
-/* Latest order */
-.latest-order {
-  border-top: 3px solid var(--color-brand);
-}
 
 .latest-order-head {
   display: flex;

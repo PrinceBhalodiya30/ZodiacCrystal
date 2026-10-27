@@ -22,17 +22,7 @@ app-breadcrumbs {
   font-weight: 600;
   color: var(--color-ink);
   line-height: 1.25;
-  margin: 0 0 1rem;
-}
-
-.guide-article h1::after {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  background-color: var(--color-accent, #985e38);
-  border-radius: 999px;
-  margin-top: 1rem;
+  margin: 0 0 1.5rem;
 }
 
 .guide-intro {
@@ -40,9 +30,9 @@ app-breadcrumbs {
   color: var(--color-ink);
   line-height: 1.7;
   padding: 1.25rem 1.5rem;
-  background-color: var(--color-cream-light, #faf8f5);
-  border-left: 3px solid var(--color-brand);
-  border-radius: 0 8px 8px 0;
+  background-color: var(--color-sand-tint, #faf8f5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 6px);
   margin: 1.75rem 0 2.5rem;
 }
 

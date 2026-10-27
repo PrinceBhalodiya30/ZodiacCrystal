@@ -70,9 +70,6 @@ tbody tr.is-active td {
   transition: background-color 0.15s ease;
 }
 
-tbody tr.is-active td:first-child {
-  box-shadow: inset 3px 0 0 var(--color-brand);
-}
 
 /* Closing (animate.leave): the entrance played backwards. */
 .action-panel.reveal-out {

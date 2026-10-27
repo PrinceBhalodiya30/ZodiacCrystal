@@ -29,16 +29,6 @@
   box-shadow: 0 4px 16px rgba(29, 39, 57, 0.05);
 }
 
-.gate-option::before,
-.gate-form::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-accent, #985e38);
-}
 
 .gate-form {
   max-width: 500px;

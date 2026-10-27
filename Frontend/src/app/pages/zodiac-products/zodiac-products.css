@@ -18,15 +18,6 @@
   overflow: hidden;
 }
 
-.zodiac-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-copper, #985E38);
-}
 
 .zodiac-image {
   width: 104px;

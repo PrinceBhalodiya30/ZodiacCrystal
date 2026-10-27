@@ -100,8 +100,8 @@
 .account-nav-link.active {
   background-color: var(--color-sand-tint, #f4efe5);
   color: var(--color-brand, #1d2739);
-  font-weight: 700;
-  box-shadow: inset 3px 0 0 var(--color-accent, #985e38);
+  font-weight: 600;
+  border: 1px solid var(--color-border, #eae3d6);
 }
 
 .account-nav-icon {

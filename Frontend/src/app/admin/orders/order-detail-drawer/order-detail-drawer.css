@@ -6,7 +6,7 @@
   max-width: 560px;
   height: 100%;
   background-color: #ffffff;
-  border-left: 3px solid var(--color-brand);
+  border-left: 1px solid var(--color-border);
   box-shadow: -8px 0 28px rgba(0, 0, 0, 0.25);
   animation: drawer-in 0.22s ease;
 }
@@ -540,7 +540,7 @@
 
 .slip-divider {
   border: 0;
-  border-top: 2px solid var(--color-brand);
+  border-top: 1px solid var(--color-border, #e5ded2);
   margin: 1.25rem 0;
 }
 
@@ -645,7 +645,7 @@
 .slip-total-row.grand {
   padding-top: 0.6rem;
   margin-top: 0.4rem;
-  border-top: 2px solid #222;
+  border-top: 1px solid var(--color-ink, #222);
   font-size: 1.15rem;
   font-weight: 700;
   color: #111;
@@ -730,7 +730,6 @@
   padding: 0.75rem 0.85rem;
   background: #ffffff;
   border: 1px solid #ebd9b8;
-  border-left: 3px solid var(--color-accent, #985E38);
   border-radius: 4px;
 }
 
@@ -847,7 +846,6 @@
   padding: 0.5rem 0.65rem;
   background: var(--color-surface-sunken, #f9f8f5);
   border: 1px solid var(--color-border-subtle, #e8e4dc);
-  border-left: 3px solid var(--color-brand);
   border-radius: var(--radius-sm, 4px);
 }
 

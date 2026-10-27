@@ -83,9 +83,6 @@
   background-color: var(--color-cream-light, #faf8f5);
 }
 
-.clickable-row.is-open td:first-child {
-  box-shadow: inset 3px 0 0 var(--color-brand);
-}
 
 /* Orders that just arrived live over SignalR. */
 .row-new td {
@@ -145,7 +142,6 @@
   padding: 0.75rem 1.15rem;
   background: linear-gradient(135deg, #fbf9f5 0%, #f6f0e6 100%);
   border: 1px solid #e5ded2;
-  border-left: 4px solid var(--color-brand);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   animation: bulk-bar-in 0.18s ease-out;

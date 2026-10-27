@@ -25,18 +25,8 @@
   font-family: var(--font-heading);
   font-size: 2.3rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
   color: var(--color-ink);
-}
-
-.faq-page h1::after {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  margin: 0.85rem 0 2rem;
-  background: var(--color-accent, #985e38);
-  border-radius: 999px;
 }
 
 .faq-list {

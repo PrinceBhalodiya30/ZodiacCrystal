@@ -1047,8 +1047,8 @@
 .review-admin-reply {
   margin: 1rem 0 0;
   padding: 0.85rem 1.15rem;
-  background-color: var(--color-surface-tint, #F4EFE5);
-  border-left: 3px solid var(--color-copper, #985E38);
+  background-color: var(--color-sand-tint, #F4EFE5);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xs, 4px);
 }
 

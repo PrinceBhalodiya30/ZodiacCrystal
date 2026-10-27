@@ -62,18 +62,6 @@
   overflow: visible;
 }
 
-.order-summary::before,
-.checkout-form::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-copper, #985E38);
-  border-top-left-radius: var(--radius-sm, 4px);
-  border-top-right-radius: var(--radius-sm, 4px);
-}
 
 .order-summary h2,
 .checkout-form h2 {

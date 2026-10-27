@@ -55,7 +55,7 @@
 }
 
 .ticket-card.unread {
-  border-left: 3px solid var(--color-accent, #985e38);
+  background-color: var(--color-sand-tint);
 }
 
 .ticket-card-top {

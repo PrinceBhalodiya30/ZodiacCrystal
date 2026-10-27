@@ -654,9 +654,9 @@
   line-height: 1.45;
   margin: 0 0 1rem;
   padding: 0.65rem 0.75rem;
-  background-color: var(--color-surface-tint, #f4efe5);
+  background-color: var(--color-sand-tint, #f4efe5);
   border-radius: var(--radius-xs, 4px);
-  border-left: 2px solid var(--color-copper, #985e38);
+  border: 1px solid var(--color-border);
   font-style: normal;
   flex: 1;
 }

@@ -25,19 +25,9 @@
   font-family: var(--font-heading);
   font-size: 2.4rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
   color: var(--color-ink);
   line-height: 1.25;
-}
-
-.info-page h1::after {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  margin: 0.85rem 0 2rem;
-  background: var(--color-accent, #985e38);
-  border-radius: 999px;
 }
 
 .info-card {
@@ -88,9 +78,9 @@
 .info-note {
   font-size: 0.92rem;
   color: #555047;
-  background-color: var(--color-cream-light, #faf8f5);
-  border-left: 3px solid var(--color-accent, #985e38);
-  border-radius: 0 8px 8px 0;
+  background-color: var(--color-sand-tint, #faf8f5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 6px);
   padding: 1.1rem 1.4rem;
   margin-bottom: 2rem;
   line-height: 1.65;
