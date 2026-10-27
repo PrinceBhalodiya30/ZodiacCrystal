@@ -54,9 +54,13 @@ export class Checkout implements OnInit {
   // Buy Now checkouts go back to that product; cart checkouts go back to the cart.
   buyNowProductId = computed(() => this.cartService.buyNowItem()?.product.productId ?? null);
 
-  // Leaving a Buy Now checkout drops that one-off item so it can't linger and
-  // replace the cart the next time the shopper reaches checkout.
+  // Leaving a Buy Now checkout moves that item into the cart so the shopper
+  // can review it on the Cart page before continuing.
   leaveBuyNow(): void {
+    const item = this.cartService.buyNowItem();
+    if (item) {
+      this.cartService.addToCart(item.product, item.quantity, false);
+    }
     this.cartService.clearBuyNowItem();
     this.cartService.clearBuyNowMysteryBox();
   }

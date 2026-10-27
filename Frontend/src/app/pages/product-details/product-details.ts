@@ -819,7 +819,7 @@ export class ProductDetails implements OnInit {
 
     this.cartService.setBuyNowItem(product, this.quantity());
 
-    // Checkout itself offers log in or guest checkout.
+    // Buy Now is an isolated instant checkout (Amazon/Shopify model).
     this.router.navigate(['/checkout']);
   }
 

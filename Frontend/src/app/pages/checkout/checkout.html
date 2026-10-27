@@ -1,12 +1,6 @@
 <section class="container checkout-page">
-  @if (mysteryBox()) {
-    <a class="back-link" routerLink="/mystery-box" (click)="leaveBuyNow()">← Back to Mystery Box</a>
-  } @else if (items().length > 0) {
-    @if (buyNowProductId(); as productId) {
-      <a class="back-link" [routerLink]="['/products', productId]" (click)="leaveBuyNow()">← Back to product</a>
-    } @else {
-      <a class="back-link" routerLink="/cart">← Back to cart</a>
-    }
+  @if (mysteryBox() || items().length > 0) {
+    <a class="back-link" routerLink="/cart" (click)="leaveBuyNow()">← Back to cart</a>
   }
   <h1>Checkout</h1>
 
@@ -390,11 +384,7 @@
           @if (stockProblems().length > 0) {
             <p class="form-error" role="alert">
               Some items are no longer in stock.
-              @if (buyNowProductId(); as productId) {
-                <a [routerLink]="['/products', productId]" (click)="leaveBuyNow()">Back to product</a>
-              } @else {
-                <a routerLink="/cart">Update your cart</a>
-              }
+              <a routerLink="/cart" (click)="leaveBuyNow()">Update your cart</a>
               to continue.
             </p>
           }

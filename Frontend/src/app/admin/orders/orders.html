@@ -213,7 +213,7 @@
       [backToOrderId]="previousOrderForCustomer360() ?? undefined"
       (closed)="closeCustomer360()"
       (backToOrder)="returnToPreviousOrder($event)"
-      (viewOrder)="closeCustomer360(); openOrderId.set($event)"
+      (viewOrder)="viewOrderFrom360($event)"
     ></app-customer-360-drawer>
   }
 </section>

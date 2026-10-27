@@ -1,4 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +30,7 @@ const PAGE_SIZE = 20;
 })
 export class AdminUsers implements OnInit {
   private userService = inject(UserService);
+  private router = inject(Router);
 
   isExporting = signal(false);
   selectedCustomerEmail = signal<string | null>(null);
@@ -174,7 +176,7 @@ export class AdminUsers implements OnInit {
   async deleteUser(user: AdminUser): Promise<void> {
     const confirmed = await this.confirmDialog.confirm(
       `Are you sure you want to delete "${user.name}" (${user.email})? If this user has order history, ` +
-        `their account will be deactivated and retained to preserve business records. This action cannot be easily undone.`,
+      `their account will be deactivated and retained to preserve business records. This action cannot be easily undone.`,
       { confirmLabel: 'Delete', danger: true }
     );
 
@@ -305,5 +307,10 @@ export class AdminUsers implements OnInit {
     } else if (failedCount > 0) {
       this.toast.error(`Unable to update ${failedCount} user(s).`);
     }
+  }
+
+  onViewOrder(orderId: number): void {
+    this.selectedCustomerEmail.set(null);
+    this.router.navigate(['/admin/orders'], { queryParams: { order: orderId } });
   }
 }

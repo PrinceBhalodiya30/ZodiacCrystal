@@ -117,6 +117,16 @@ export class AdminOrders implements OnInit {
           this.loadOrders(true);
         }
       });
+
+    // Deep-link / cross-page navigation (?order=123) listener.
+    inject(ActivatedRoute).queryParamMap
+      .pipe(takeUntilDestroyed())
+      .subscribe(params => {
+        const orderId = validOrderId(params.get('order'));
+        if (orderId && this.openOrderId() !== orderId) {
+          this.openOrderId.set(orderId);
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -261,6 +271,12 @@ export class AdminOrders implements OnInit {
   }
 
   returnToPreviousOrder(orderId: number): void {
+    this.customer360Email.set(null);
+    this.previousOrderForCustomer360.set(null);
+    this.openOrderId.set(orderId);
+  }
+
+  viewOrderFrom360(orderId: number): void {
     this.customer360Email.set(null);
     this.previousOrderForCustomer360.set(null);
     this.openOrderId.set(orderId);

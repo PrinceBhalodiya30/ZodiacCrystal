@@ -173,6 +173,7 @@
     <app-customer-360-drawer
       [customerEmail]="email"
       (closed)="selectedCustomerEmail.set(null)"
+      (viewOrder)="onViewOrder($event)"
     ></app-customer-360-drawer>
   }
 </section>
