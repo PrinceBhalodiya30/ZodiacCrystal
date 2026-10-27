@@ -222,6 +222,64 @@ section h2 {
   padding: 4.5rem 1.5rem;
 }
 
+/* Quick Category / Collection Filter Pills */
+.quick-pills-section {
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.quick-pills-track {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem 0.75rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  justify-content: flex-start;
+}
+
+.quick-pills-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .quick-pills-track {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+.quick-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.15rem;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-ink, #1D2739);
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #E4DCCB);
+  border-radius: var(--radius-pill, 9999px);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.quick-pill:hover {
+  background-color: var(--color-surface-tint, #F4EFE5);
+  border-color: var(--color-copper, #985E38);
+  color: var(--color-copper, #985E38);
+  transform: translateY(-1px);
+}
+
+.quick-pill.active {
+  background-color: var(--color-ink, #1D2739);
+  border-color: var(--color-ink, #1D2739);
+  color: #ffffff;
+}
+
 /* Zodiac Section */
 .zodiac-grid {
   display: grid;

@@ -56,78 +56,23 @@
   </div>
 </section>
 
-<!-- Shop by Zodiac -->
-<section class="container zodiac-section" scrollReveal>
-  <div class="section-header">
-    <span class="section-tag">Astrological Harmony</span>
-    <h2>Shop by Zodiac Sign</h2>
-    <p class="section-subtitle">
-      Select your sun, moon, or rising sign to explore stones tuned to your cosmic qualities.
-    </p>
-  </div>
-
-  <app-birthday-sign-finder></app-birthday-sign-finder>
-
-  @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading zodiac signs...</span>
-    <div class="zodiac-grid" aria-hidden="true">
-      @for (n of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track n) {
-        <div class="zodiac-skeleton">
-          <span class="skeleton zodiac-skeleton-icon"></span>
-          <span class="skeleton skeleton-line zodiac-skeleton-name"></span>
-        </div>
+<!-- Quick Category / Collection Filter Pills -->
+@if (categoryTiles().length > 0) {
+  <section class="container quick-pills-section">
+    <div class="quick-pills-track">
+      <a class="quick-pill active" routerLink="/products">All Crystals</a>
+      @for (tile of categoryTiles(); track tile.category.categoryId) {
+        <a class="quick-pill" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
+          {{ tile.category.name }}
+        </a>
       }
+      <a class="quick-pill" routerLink="/mystery-box">Mystery Boxes</a>
+      <a class="quick-pill" routerLink="/zodiac">Zodiac Stones</a>
     </div>
-  } @else if (errorMessage()) {
-    <div class="state-message state-message--error">
-      <p>{{ errorMessage() }}</p>
-      <button type="button" class="btn" (click)="loadZodiacSigns()">Retry</button>
-    </div>
-  } @else if (zodiacSigns().length === 0) {
-    <div class="state-message state-message--empty"><p>No zodiac signs found.</p></div>
-  } @else {
-    <div class="zodiac-grid">
-      @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
-        <app-zodiac-card [zodiac]="zodiac"></app-zodiac-card>
-      }
-    </div>
-  }
-</section>
+  </section>
+}
 
-<!-- Astrological Crystal Consultation Section -->
-<section class="container consultation-callout-section" scrollReveal>
-  <div class="consultation-callout-card">
-    <div class="consultation-callout-content">
-      <span class="consultation-callout-tag">Astrological Consultation</span>
-      <h2>Find Your Resonant Mineral</h2>
-      <p>
-        Every natural specimen carries a distinct crystalline geometry that harmonizes with your natal sign.
-        Complete our 3-step consultation to discover the specimens attuned to your astrological blueprint.
-      </p>
-      <a class="btn btn-accent consultation-cta" routerLink="/consultation">
-        Begin Consultation →
-      </a>
-    </div>
-    <div class="consultation-callout-visual" aria-hidden="true">
-      <div class="astrolabe-art">
-        <svg viewBox="0 0 200 200" width="180" height="180" fill="none" stroke="currentColor">
-          <circle cx="100" cy="100" r="90" stroke="#dcc28b" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
-          <circle cx="100" cy="100" r="70" stroke="#dcc28b" stroke-width="1.2" opacity="0.75"/>
-          <circle cx="100" cy="100" r="48" stroke="#ffffff" stroke-width="0.8" opacity="0.4"/>
-          <line x1="100" y1="5" x2="100" y2="195" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
-          <line x1="5" y1="100" x2="195" y2="100" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
-          <!-- Central faceted gemstone outline -->
-          <polygon points="100 62 134 82 134 118 100 138 66 118 66 82" stroke="#f7d88b" stroke-width="1.6" fill="rgba(247, 216, 139, 0.08)"/>
-          <line x1="100" y1="62" x2="100" y2="138" stroke="#f7d88b" stroke-width="1" opacity="0.8"/>
-          <line x1="66" y1="82" x2="134" y2="82" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
-          <line x1="66" y1="118" x2="134" y2="118" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Featured Crystals -->
+<!-- Featured Crystals (Energy Muse Shoppable Front-and-Center Pattern) -->
 @if (productsLoading()) {
   <section class="container featured-section">
     <div class="section-header">
@@ -169,6 +114,44 @@
   </section>
 }
 
+<!-- Shop by Zodiac & Birthday Sign Finder -->
+<section class="container zodiac-section" scrollReveal>
+  <div class="section-header">
+    <span class="section-tag">Astrological Harmony</span>
+    <h2>Shop by Zodiac Sign</h2>
+    <p class="section-subtitle">
+      Select your sun, moon, or rising sign to explore stones tuned to your cosmic qualities.
+    </p>
+  </div>
+
+  <app-birthday-sign-finder></app-birthday-sign-finder>
+
+  @if (isLoading()) {
+    <span class="visually-hidden" role="status">Loading zodiac signs...</span>
+    <div class="zodiac-grid" aria-hidden="true">
+      @for (n of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track n) {
+        <div class="zodiac-skeleton">
+          <span class="skeleton zodiac-skeleton-icon"></span>
+          <span class="skeleton skeleton-line zodiac-skeleton-name"></span>
+        </div>
+      }
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state-message state-message--error">
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="btn" (click)="loadZodiacSigns()">Retry</button>
+    </div>
+  } @else if (zodiacSigns().length === 0) {
+    <div class="state-message state-message--empty"><p>No zodiac signs found.</p></div>
+  } @else {
+    <div class="zodiac-grid">
+      @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
+        <app-zodiac-card [zodiac]="zodiac"></app-zodiac-card>
+      }
+    </div>
+  }
+</section>
+
 <!-- Mystery Box Spotlight Banner -->
 <section class="container mystery-box-spotlight" scrollReveal>
   <div class="mystery-box-card">
@@ -195,7 +178,40 @@
   </div>
 </section>
 
-<!-- Shop by Category -->
+<!-- Astrological Crystal Consultation Section -->
+<section class="container consultation-callout-section" scrollReveal>
+  <div class="consultation-callout-card">
+    <div class="consultation-callout-content">
+      <span class="consultation-callout-tag">Astrological Consultation</span>
+      <h2>Find Your Resonant Mineral</h2>
+      <p>
+        Every natural specimen carries a distinct crystalline geometry that harmonizes with your natal sign.
+        Complete our 3-step consultation to discover the specimens attuned to your astrological blueprint.
+      </p>
+      <a class="btn btn-accent consultation-cta" routerLink="/consultation">
+        Begin Consultation →
+      </a>
+    </div>
+    <div class="consultation-callout-visual" aria-hidden="true">
+      <div class="astrolabe-art">
+        <svg viewBox="0 0 200 200" width="180" height="180" fill="none" stroke="currentColor">
+          <circle cx="100" cy="100" r="90" stroke="#dcc28b" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
+          <circle cx="100" cy="100" r="70" stroke="#dcc28b" stroke-width="1.2" opacity="0.75"/>
+          <circle cx="100" cy="100" r="48" stroke="#ffffff" stroke-width="0.8" opacity="0.4"/>
+          <line x1="100" y1="5" x2="100" y2="195" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
+          <line x1="5" y1="100" x2="195" y2="100" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
+          <!-- Central faceted gemstone outline -->
+          <polygon points="100 62 134 82 134 118 100 138 66 118 66 82" stroke="#f7d88b" stroke-width="1.6" fill="rgba(247, 216, 139, 0.08)"/>
+          <line x1="100" y1="62" x2="100" y2="138" stroke="#f7d88b" stroke-width="1" opacity="0.8"/>
+          <line x1="66" y1="82" x2="134" y2="82" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
+          <line x1="66" y1="118" x2="134" y2="118" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Shop by Category / Forms & Shapes -->
 @if (categoriesLoading()) {
   <section class="container category-section">
     <div class="section-header">
