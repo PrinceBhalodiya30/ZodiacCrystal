@@ -53,7 +53,7 @@
 
 .pager-btn:hover:not(:disabled):not(.active) {
   background-color: var(--color-surface-tint);
-  color: var(--color-brand);
+  color: var(--color-copper);
 }
 
 .pager-btn.active {
@@ -61,7 +61,7 @@
   color: #ffffff;
   font-weight: 700;
   cursor: default;
-  box-shadow: 0 2px 6px rgba(36, 65, 50, 0.25);
+  box-shadow: 0 2px 6px rgba(29, 39, 57, 0.25);
 }
 
 .pager-btn:disabled {
@@ -70,7 +70,7 @@
 }
 
 .pager-btn:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--color-copper);
   outline-offset: 1px;
 }
 

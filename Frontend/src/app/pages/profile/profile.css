@@ -33,9 +33,9 @@
 
 .profile-card {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: none;
   padding: 1.75rem 2rem;
   transition: all var(--transition-fast);
 }
@@ -123,7 +123,7 @@
   align-items: center;
   gap: 0.9rem;
   padding: 0.9rem 1.15rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm, 4px);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: inherit;

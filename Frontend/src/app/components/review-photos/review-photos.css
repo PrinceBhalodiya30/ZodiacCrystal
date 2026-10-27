@@ -32,7 +32,7 @@
   position: relative;
   width: 76px;
   height: 76px;
-  border-radius: var(--radius-sm, 6px);
+  border-radius: var(--radius-sm, 4px);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -58,7 +58,7 @@
 }
 
 .photo-thumb-button:hover {
-  border-color: var(--color-brand);
+  border-color: var(--color-copper, #985e38);
   transform: translateY(-2px);
 }
 
@@ -71,7 +71,7 @@
 }
 
 .photo-thumb-button:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--color-copper, #985e38);
   outline-offset: 2px;
 }
 

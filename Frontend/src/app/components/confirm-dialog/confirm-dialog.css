@@ -1,7 +1,7 @@
 .confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(14, 27, 19, 0.45);
+  background: rgba(17, 24, 39, 0.45);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   display: flex;
@@ -16,7 +16,7 @@
 .confirm-panel {
   background: var(--color-surface, #ffffff);
   border: 1px solid var(--color-border-subtle, #eae4d8);
-  border-radius: var(--radius-md, 10px);
+  border-radius: var(--radius-sm, 4px);
   padding: 1.75rem;
   width: 100%;
   max-width: 420px;
@@ -56,8 +56,8 @@
   height: 48px;
   margin: 0 auto 1.25rem;
   border-radius: var(--radius-pill);
-  background-color: var(--color-brand-light, #eaf1ed);
-  color: var(--color-brand, #244132);
+  background-color: var(--color-surface-tint, #f4efe5);
+  color: var(--color-copper, #985e38);
 }
 
 .confirm-icon svg {
@@ -116,6 +116,6 @@
 
 .confirm-reason select:focus {
   outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(36, 65, 50, 0.12);
+  border-color: var(--color-copper, #985e38);
+  box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.18);
 }

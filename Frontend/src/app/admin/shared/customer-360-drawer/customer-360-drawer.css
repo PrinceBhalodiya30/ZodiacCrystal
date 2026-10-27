@@ -42,7 +42,7 @@
   font-size: 0.78rem;
   padding: 0.25rem 0.65rem;
   border-radius: 4px;
-  color: var(--color-brand, #244132);
+  color: var(--color-brand, #1D2739);
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -75,7 +75,7 @@
 .drawer-close:hover {
   background-color: var(--color-surface-tint, #f2eee6);
   border-color: var(--color-border-hover, #c9c1b0);
-  color: var(--color-ink, #1c1a17);
+  color: var(--color-ink, #1D2739);
 }
 
 .drawer-close svg {

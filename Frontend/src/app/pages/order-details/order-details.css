@@ -6,7 +6,7 @@
 .confirmation-banner {
   background-color: var(--color-success-bg);
   border: 1px solid var(--color-success-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm, 4px);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -26,9 +26,9 @@
 
 .order-card {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: none;
   padding: 2rem 2.25rem;
   position: relative;
   overflow: hidden;
@@ -41,7 +41,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--color-brand);
+  background: var(--color-accent, #985e38);
 }
 
 .order-header {
@@ -379,9 +379,9 @@
 .gift-order-customer-card {
   margin-top: 1.5rem;
   padding: 1.15rem 1.35rem;
-  background: linear-gradient(135deg, rgba(251, 248, 242, 0.95) 0%, rgba(246, 240, 228, 0.6) 100%);
-  border: 1.5px solid rgba(184, 150, 92, 0.35);
-  border-radius: var(--radius-md, 8px);
+  background: var(--color-sand-tint, #f4efe5);
+  border: 1px solid var(--color-border, #eae3d6);
+  border-radius: var(--radius-sm, 4px);
 }
 
 .gift-customer-header {
@@ -403,8 +403,8 @@
   margin-top: 0.65rem;
   padding: 0.85rem 1rem;
   background: #ffffff;
-  border-radius: var(--radius-sm, 6px);
-  border-left: 3px solid var(--color-brass, #ab7a24);
+  border-radius: var(--radius-sm, 4px);
+  border-left: 3px solid var(--color-accent, #985e38);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 

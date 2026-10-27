@@ -20,16 +20,16 @@
 
 .order-card {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: none;
   transition: all var(--transition-fast);
   overflow: hidden;
 }
 
 .order-card:hover {
-  border-color: var(--color-border);
-  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent, #985e38);
+  box-shadow: 0 4px 14px rgba(29, 39, 57, 0.06);
 }
 
 /* Status on the left, total + order reference on the right. */

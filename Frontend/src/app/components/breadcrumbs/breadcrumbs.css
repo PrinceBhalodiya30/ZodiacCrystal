@@ -29,12 +29,12 @@
 }
 
 .breadcrumbs a:hover {
-  color: var(--color-brand);
+  color: var(--color-copper);
   text-decoration: underline;
 }
 
 .breadcrumbs a:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--color-copper);
   outline-offset: 2px;
   border-radius: var(--radius-xs);
 }

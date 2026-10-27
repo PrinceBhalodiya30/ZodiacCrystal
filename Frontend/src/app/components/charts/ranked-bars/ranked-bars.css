@@ -21,7 +21,7 @@
 }
 
 .ranked-row + .ranked-row {
-  border-top: 1px solid var(--color-cream);
+  border-top: 1px solid var(--color-border-subtle, #eae3d6);
 }
 
 .ranked-rank {
@@ -32,14 +32,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f4f0e8;
-  color: #445d4e;
+  background-color: var(--color-sand-tint, #f4efe5);
+  color: var(--color-muted, #4e5a70);
   font-size: 0.78rem;
   font-weight: 700;
 }
 
 .ranked-row.is-top .ranked-rank {
-  background-color: var(--color-brand);
+  background-color: var(--color-brand, #1d2739);
   color: #ffffff;
 }
 
@@ -79,7 +79,7 @@
 .ranked-track {
   height: 8px;
   border-radius: 999px;
-  background-color: #f4f0e8;
+  background-color: var(--color-sand-tint, #f4efe5);
   overflow: hidden;
 }
 
@@ -87,13 +87,13 @@
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: var(--color-brand);
+  background: var(--color-brand, #1d2739);
   transform-origin: left center;
   animation: ranked-grow 0.5s ease backwards;
 }
 
 .ranked-row:not(.is-top) .ranked-fill {
-  background: #a5b0a9;
+  background: #b8c1cc;
 }
 
 @keyframes ranked-grow {

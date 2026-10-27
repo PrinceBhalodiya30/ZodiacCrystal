@@ -26,33 +26,33 @@ legend {
   gap: 0.85rem;
   padding: 1rem 1.15rem;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm, 4px);
   background-color: var(--color-surface);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .payment-option:hover {
-  border-color: var(--color-brand);
+  border-color: var(--color-accent, #985e38);
   background-color: var(--color-surface-sunken);
 }
 
 .payment-option.selected {
-  border-color: var(--color-brand);
-  background-color: var(--color-cream-light);
-  box-shadow: 0 0 0 1px var(--color-brand);
+  border-color: var(--color-accent, #985e38);
+  background-color: var(--color-sand-tint, #f4efe5);
+  box-shadow: 0 0 0 1px var(--color-accent, #985e38);
 }
 
 .payment-option input[type='radio'] {
   width: 18px;
   height: 18px;
   margin: 0;
-  accent-color: var(--color-brand);
+  accent-color: var(--color-accent, #985e38);
   flex-shrink: 0;
 }
 
 .payment-option input[type='radio']:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--color-accent, #985e38);
   outline-offset: 2px;
 }
 
@@ -62,15 +62,15 @@ legend {
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 4px);
   background-color: var(--color-surface-sunken);
-  color: var(--color-brand);
+  color: var(--color-accent, #985e38);
   flex-shrink: 0;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .payment-option.selected .payment-option-icon {
-  background-color: var(--color-brand);
+  background-color: var(--color-brand, #1d2739);
   color: #ffffff;
 }
 
@@ -101,7 +101,7 @@ legend {
   padding: 1.25rem;
   background-color: var(--color-surface-sunken);
   border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm, 4px);
 }
 
 .dropin-container:empty {
@@ -124,7 +124,7 @@ legend {
   background: var(--color-surface);
   border: 1px solid var(--color-brand);
   color: var(--color-brand);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 4px);
   padding: 0.45rem 1rem;
   font: inherit;
   font-size: 0.85rem;

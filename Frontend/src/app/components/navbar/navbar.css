@@ -327,10 +327,22 @@
 
 /* Search Bar Dropdown */
 .navbar-search-bar {
-  border-top: 1px solid var(--color-border-subtle, #eae4d8);
-  background-color: var(--color-surface-raised, #fbf9f5);
+  border-top: 1px solid var(--color-border, #eae3d6);
+  background-color: #fbf8f2;
   padding: 0.85rem 0;
   box-shadow: var(--shadow-sm);
+  animation: search-slide-down var(--motion-duration-fast) var(--motion-ease-snappy);
+}
+
+@keyframes search-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .navbar-search-form {
@@ -349,12 +361,12 @@
 .navbar-search-form input {
   flex: 1;
   height: 44px;
-  padding: 0 1rem;
-  border: 1px solid var(--color-border, #ded7c8);
+  padding: 0 1.2rem;
+  border: 1px solid var(--color-border, #eae3d6);
   border-radius: var(--radius-pill);
   font-size: var(--text-sm);
   font-family: inherit;
-  background-color: var(--color-surface, #ffffff);
+  background-color: #ffffff;
   color: var(--color-ink);
   box-sizing: border-box;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -362,26 +374,37 @@
 
 .navbar-search-form input:focus {
   outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(36, 65, 50, 0.12);
+  border-color: var(--color-copper);
+  box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.18);
 }
 
 .navbar-search-form .btn {
   padding: 0.6rem 1.35rem;
   font-size: var(--text-sm);
+  background-color: var(--color-brand);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.navbar-search-form .btn:hover {
+  background-color: var(--color-copper);
+  box-shadow: var(--shadow-copper);
 }
 
 .navbar-search-close {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   flex-shrink: 0;
   border: none;
   background: none;
   color: var(--color-subtle);
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
   border-radius: var(--radius-pill);
   transition: background-color var(--transition-fast), color var(--transition-fast);
@@ -389,7 +412,7 @@
 
 .navbar-search-close:hover {
   background-color: var(--color-surface-tint);
-  color: var(--color-brand);
+  color: var(--color-copper);
 }
 
 /* Checkout mode indicator */
@@ -471,9 +494,9 @@
   .navbar-links a.active,
   .navbar-links .navbar-logout:hover,
   .navbar-links .navbar-quiz-btn:hover {
-    border-left-color: var(--color-brand);
-    background-color: var(--color-surface-tint, #f2eee6);
-    color: var(--color-brand);
+    border-left-color: var(--color-copper);
+    background-color: var(--color-surface-tint, #f4efe5);
+    color: var(--color-copper);
   }
 
   .navbar-links a.navbar-cta {

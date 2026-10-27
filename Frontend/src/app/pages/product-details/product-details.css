@@ -158,8 +158,8 @@
 }
 
 .image-thumb.active {
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 2px var(--color-brand-light);
+  border-color: var(--color-copper, #985E38);
+  box-shadow: 0 0 0 2px rgba(152, 94, 56, 0.25);
 }
 
 .image-thumb img {
@@ -845,7 +845,7 @@
 
 .reviews-score-meta .stars-lg {
   font-size: 1.35rem;
-  color: var(--color-brass, #ab7a24);
+  color: var(--color-accent, #985e38);
   letter-spacing: 2px;
 }
 
@@ -886,7 +886,7 @@
   border: none;
   font-size: 1.85rem;
   line-height: 1;
-  color: var(--color-brass, #ab7a24);
+  color: var(--color-accent, #985e38);
   cursor: pointer;
   padding: 0;
   transition: transform var(--transition-fast);
@@ -1088,7 +1088,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-brass, #ab7a24);
+  color: var(--color-accent, #985e38);
   background: rgba(171, 122, 36, 0.1);
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-pill, 999px);

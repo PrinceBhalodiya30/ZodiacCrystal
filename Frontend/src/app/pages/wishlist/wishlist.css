@@ -49,7 +49,7 @@
   padding: 4rem 2rem;
   background: var(--color-surface);
   border: 1px dashed var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm, 4px);
   margin: 2rem 0;
 }
 
@@ -57,8 +57,8 @@
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background: var(--color-rose-bg, #fcf0ee);
-  color: var(--color-rose, #c26d60);
+  background: var(--color-sand-tint, #f4efe5);
+  color: var(--color-accent, #985e38);
   display: flex;
   align-items: center;
   justify-content: center;

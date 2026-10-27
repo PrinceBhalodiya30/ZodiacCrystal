@@ -55,8 +55,8 @@ input:hover:not(:disabled) {
 
 input:focus {
   outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(36, 65, 50, 0.12);
+  border-color: var(--color-copper, #985E38);
+  box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.15);
   z-index: 1;
 }
 

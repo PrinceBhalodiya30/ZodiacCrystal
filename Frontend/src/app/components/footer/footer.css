@@ -316,12 +316,12 @@
 
 .footer-trust-badge svg {
   flex-shrink: 0;
-  color: var(--color-brand);
+  color: var(--color-copper, #985e38);
   transition: transform var(--transition-fast);
 }
 
 .footer-trust-badge:hover {
-  color: var(--color-brand);
+  color: var(--color-copper, #985e38);
 }
 
 .footer-trust-badge:hover svg {
@@ -356,7 +356,7 @@
 }
 
 .footer-copy-links a:hover {
-  color: var(--color-brand);
+  color: var(--color-copper, #985e38);
   text-decoration: underline;
 }
 

@@ -13,9 +13,8 @@
   position: sticky;
   top: 96px;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
   overflow: hidden;
 }
 
@@ -24,7 +23,7 @@
   align-items: center;
   gap: 0.9rem;
   padding: 1.5rem 1.25rem;
-  background: linear-gradient(135deg, var(--color-brand) 0%, #1e3d2f 100%);
+  background: linear-gradient(135deg, var(--color-brand, #1d2739) 0%, #2a364f 100%);
   color: #ffffff;
   position: relative;
 }
@@ -34,8 +33,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid var(--color-brass);
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid var(--color-accent, #985e38);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,7 +42,7 @@
   font-weight: 700;
   font-size: 1.15rem;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .account-identity-text {
@@ -81,7 +80,7 @@
   min-height: 44px;
   padding: 0.65rem 0.9rem;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 4px);
   background: none;
   font: inherit;
   font-size: 0.92rem;
@@ -95,14 +94,14 @@
 
 .account-nav-link:hover {
   background-color: var(--color-surface-sunken);
-  color: var(--color-brand);
+  color: var(--color-brand, #1d2739);
 }
 
 .account-nav-link.active {
-  background-color: var(--color-cream-light);
-  color: var(--color-brand);
+  background-color: var(--color-sand-tint, #f4efe5);
+  color: var(--color-brand, #1d2739);
   font-weight: 700;
-  box-shadow: inset 3px 0 0 var(--color-brand);
+  box-shadow: inset 3px 0 0 var(--color-accent, #985e38);
 }
 
 .account-nav-icon {
@@ -114,7 +113,7 @@
 
 .account-nav-link:hover .account-nav-icon,
 .account-nav-link.active .account-nav-icon {
-  color: var(--color-brand);
+  color: var(--color-accent, #985e38);
 }
 
 .account-nav-icon svg {
@@ -130,7 +129,7 @@
   min-width: 1.35rem;
   padding: 0.1rem 0.45rem;
   border-radius: 999px;
-  background-color: var(--color-brand);
+  background-color: var(--color-accent, #985e38);
   color: #ffffff;
   font-size: 0.72rem;
   font-weight: 700;

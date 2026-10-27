@@ -5,8 +5,8 @@
 
 .skeleton-card {
   background-color: var(--color-surface, #ffffff);
-  border-radius: var(--radius-sm, 6px);
-  border: 1px solid var(--color-border-subtle, #eae4d8);
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
   box-shadow: var(--shadow-card);
   overflow: hidden;
   display: flex;
@@ -15,10 +15,10 @@
 }
 
 .skeleton-block {
-  background: linear-gradient(90deg, #f2eee6 25%, #e5dfd2 37%, #f2eee6 63%);
+  background: linear-gradient(90deg, #F4EFE5 25%, #EAE3D6 37%, #F4EFE5 63%);
   background-size: 400% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;
-  border-radius: var(--radius-xs, 3px);
+  border-radius: var(--radius-xs, 2px);
 }
 
 .skeleton-image {

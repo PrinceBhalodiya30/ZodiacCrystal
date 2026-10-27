@@ -36,7 +36,7 @@
   width: 44px;
   height: 3px;
   margin: 0.85rem 0 2rem;
-  background: var(--color-accent-gold, #c4984f);
+  background: var(--color-accent, #985e38);
   border-radius: 999px;
 }
 
@@ -89,7 +89,7 @@
   font-size: 0.92rem;
   color: #555047;
   background-color: var(--color-cream-light, #faf8f5);
-  border-left: 3px solid var(--color-accent-gold, #c4984f);
+  border-left: 3px solid var(--color-accent, #985e38);
   border-radius: 0 8px 8px 0;
   padding: 1.1rem 1.4rem;
   margin-bottom: 2rem;

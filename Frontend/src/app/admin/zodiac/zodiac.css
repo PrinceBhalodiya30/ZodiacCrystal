@@ -4,14 +4,14 @@
   display: inline-block;
   margin-left: 0.35rem;
   font-weight: 500;
-  color: var(--color-brass-text, #7d5918);
+  color: var(--color-accent, #985e38);
   font-size: 0.88em;
 }
 
 .field-rashi-hint {
   display: block;
   font-size: 0.78rem;
-  color: var(--color-brass-text, #7d5918);
+  color: var(--color-accent, #985e38);
   margin-top: 0.35rem;
   font-weight: 500;
 }
@@ -25,7 +25,7 @@
 .admin-table-icon {
   width: 2rem;
   height: 2rem;
-  color: var(--color-brass, #ab7a24);
+  color: var(--color-accent, #985e38);
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -49,7 +49,7 @@
 .admin-input-icon-preview {
   width: 2.35rem;
   height: 2.35rem;
-  color: var(--color-brass, #ab7a24);
+  color: var(--color-accent, #985e38);
   flex-shrink: 0;
   padding: 0.25rem;
   border-radius: 6px;

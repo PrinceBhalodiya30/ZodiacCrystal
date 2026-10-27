@@ -13,10 +13,10 @@
 }
 
 .recently-viewed h2 {
-  font-family: var(--font-heading);
+  font-family: var(--font-display, var(--font-heading));
   color: var(--color-ink);
   font-size: var(--text-xl);
-  font-weight: 700;
+  font-weight: 500;
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -25,7 +25,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--color-brand);
+  color: var(--color-accent, #985e38);
   font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
@@ -33,14 +33,14 @@
 }
 
 .clear-history:hover {
-  color: var(--color-brand-hover);
+  color: var(--color-accent-hover, #7d4926);
   text-decoration: underline;
 }
 
 .clear-history:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--color-accent, #985e38);
   outline-offset: 2px;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-xs, 2px);
 }
 
 .recently-viewed-grid {

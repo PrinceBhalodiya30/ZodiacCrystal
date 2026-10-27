@@ -35,7 +35,7 @@
   width: 44px;
   height: 3px;
   margin: 0.85rem 0 2rem;
-  background: var(--color-accent-gold, #c4984f);
+  background: var(--color-accent, #985e38);
   border-radius: 999px;
 }
 
@@ -60,7 +60,7 @@
 
 .faq-item.open {
   border-color: var(--color-brand);
-  box-shadow: 0 4px 16px rgba(47, 74, 58, 0.06);
+  box-shadow: 0 4px 16px rgba(29, 39, 57, 0.06);
 }
 
 .faq-question-heading {

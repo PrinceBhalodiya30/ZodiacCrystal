@@ -1,6 +1,6 @@
 .danger-card {
   background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm, 4px);
   border: 1px solid var(--color-danger-border, #f3c7c7);
   box-shadow: var(--shadow-sm);
   padding: 1.75rem 2rem;
@@ -15,7 +15,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   background: var(--color-danger);
 }
 

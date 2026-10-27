@@ -49,7 +49,7 @@
 .about-badge-icon {
   width: 14px;
   height: 14px;
-  color: var(--color-accent-gold);
+  color: var(--color-accent, #985e38);
 }
 
 .about-hero h1 {

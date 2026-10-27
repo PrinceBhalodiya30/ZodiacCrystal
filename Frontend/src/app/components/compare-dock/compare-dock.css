@@ -26,12 +26,12 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.65rem 1rem 0.65rem 1.15rem;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(251, 248, 242, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(27, 58, 43, 0.15);
+  border: 1px solid var(--color-border, #eae3d6);
   border-radius: 999px;
-  box-shadow: 0 10px 32px rgba(27, 58, 43, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 32px rgba(29, 39, 57, 0.16), 0 2px 6px rgba(29, 39, 57, 0.06);
 }
 
 .compare-dock-header {
@@ -48,8 +48,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #f4ede2;
-  color: var(--color-brand, #1b3a2b);
+  background: var(--color-surface-tint, #f4efe5);
+  color: var(--color-copper, #985e38);
 }
 
 .compare-dock-title {
@@ -59,13 +59,13 @@
 
 .compare-dock-title strong {
   font-size: 0.88rem;
-  color: var(--color-ink, #23201c);
+  color: var(--color-ink, #1d2739);
   line-height: 1.2;
 }
 
 .compare-count-tag {
   font-size: 0.72rem;
-  color: var(--color-muted, #7a7265);
+  color: var(--color-muted, #4e5a70);
   font-weight: 600;
 }
 
@@ -131,14 +131,16 @@
   font-size: 0.84rem;
   font-weight: 600;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--color-brand, #1b3a2b) 0%, #152e22 100%);
+  background: var(--color-brand, #1d2739);
   color: #ffffff;
-  box-shadow: 0 3px 10px rgba(27, 58, 43, 0.25);
+  box-shadow: 0 3px 10px rgba(29, 39, 57, 0.25);
+  transition: all var(--transition-fast);
 }
 
 .btn-compare-open:hover {
+  background-color: var(--color-copper, #985e38);
   transform: translateY(-1px);
-  box-shadow: 0 5px 14px rgba(27, 58, 43, 0.32);
+  box-shadow: var(--shadow-copper);
 }
 
 .btn-compare-clear {

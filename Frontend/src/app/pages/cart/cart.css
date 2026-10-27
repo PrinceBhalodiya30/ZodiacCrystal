@@ -52,7 +52,7 @@
   height: 68px;
   border-radius: 50%;
   background: var(--color-surface-sunken);
-  color: var(--color-brass-text, #7d5918);
+  color: var(--color-accent, #985e38);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,7 +104,7 @@
 .cart-item {
   background: var(--color-surface);
   border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm, 4px);
   padding: 1.25rem;
   display: grid;
   grid-template-columns: 80px 1fr auto auto auto;
@@ -325,7 +325,7 @@
 .cart-totals {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm, 4px);
   padding: 1.75rem;
   box-shadow: var(--shadow-md);
   position: relative;
@@ -339,7 +339,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--color-brand);
+  background: var(--color-copper, #985E38);
 }
 
 .cart-totals-title {

@@ -89,7 +89,7 @@
 .filter-bar .search-input:focus-visible {
   outline: none;
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 4px rgba(47, 74, 58, 0.14);
+  box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.16);
 }
 
 /* Add/Edit form */
@@ -176,7 +176,7 @@
   border: none;
   border-left: 1px solid #f2eee6;
   overflow-y: auto;
-  box-shadow: -12px 0 40px rgba(47, 74, 58, 0.14);
+  box-shadow: -12px 0 40px rgba(29, 39, 57, 0.16);
   animation: drawer-in 0.22s ease;
 }
 
@@ -507,7 +507,7 @@
   background-color: var(--color-surface, #ffffff);
   border: 1px solid var(--color-border, #f2eee6);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(47, 74, 58, 0.04);
+  box-shadow: 0 1px 3px rgba(29, 39, 57, 0.04);
   overflow-x: auto;
 }
 
@@ -546,7 +546,7 @@ tbody tr {
 }
 
 tbody tr:hover td {
-  background-color: rgba(47, 74, 58, 0.025);
+  background-color: rgba(29, 39, 57, 0.025);
 }
 
 tbody tr:last-child td {

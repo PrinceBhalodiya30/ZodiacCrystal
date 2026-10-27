@@ -5,7 +5,7 @@
 .address-map-toggle {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-brand);
+  color: var(--color-accent, #985e38);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -16,7 +16,7 @@
 }
 
 .address-map-toggle:hover {
-  color: var(--color-brand-hover);
+  color: var(--color-accent-hover, #7d4926);
 }
 
 .address-map-search {
@@ -32,15 +32,15 @@
   margin: 0;
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, 4px);
   font: inherit;
   font-size: 0.92rem;
 }
 
 .address-map-search input:focus {
   outline: none;
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(45, 90, 69, 0.15);
+  border-color: var(--color-accent, #985e38);
+  box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.16);
 }
 
 .address-map-search .btn {
@@ -60,8 +60,8 @@
   list-style: none;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: 0 4px 16px rgba(29, 39, 57, 0.1);
   max-height: 260px;
   overflow-y: auto;
 }
@@ -82,16 +82,16 @@
 .address-map-results li:hover,
 .address-map-results li:focus {
   background: var(--color-surface-sunken);
-  color: var(--color-brand);
+  color: var(--color-accent, #985e38);
   outline: none;
 }
 
 .address-map-canvas {
   height: 280px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm, 4px);
   border: 1px solid var(--color-border);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   z-index: 0;
   margin: 0.5rem 0;
 }
@@ -100,7 +100,7 @@
 .address-map-pin {
   box-sizing: border-box;
   cursor: grab;
-  background: #50327c;
+  background: var(--color-accent, #985e38);
   border: 3px solid #ffffff;
   border-radius: 50% 50% 50% 0;
   /* `rotate`, not `transform`: Leaflet positions markers with an inline transform. */

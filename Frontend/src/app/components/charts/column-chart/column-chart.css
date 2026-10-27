@@ -22,12 +22,12 @@
 }
 
 .chart-gridline {
-  stroke: #f0ece4;
+  stroke: var(--color-border-subtle, #eae3d6);
   stroke-width: 1;
 }
 
 .chart-gridline.baseline {
-  stroke: #d9d5cd;
+  stroke: var(--color-border, #eae3d6);
 }
 
 .chart-axis-label {
@@ -43,21 +43,22 @@
 }
 
 .column-hit:focus-visible {
-  fill: rgba(47, 74, 58, 0.08);
+  fill: rgba(152, 94, 56, 0.08);
 }
 
 .column-bar {
-  fill: var(--color-brand);
-  opacity: 0.8;
+  fill: var(--color-brand, #1d2739);
+  opacity: 0.85;
   pointer-events: none;
   transform-box: fill-box;
   transform-origin: bottom;
-  transition: opacity 0.12s ease;
+  transition: opacity 0.12s ease, fill 0.12s ease;
   animation: column-grow 0.45s ease backwards;
 }
 
 .column-bar.is-hover {
   opacity: 1;
+  fill: var(--color-accent, #985e38);
 }
 
 @keyframes column-grow {
@@ -73,13 +74,13 @@
   flex-direction: column;
   gap: 0.1rem;
   padding: 0.4rem 0.65rem;
-  border-radius: 4px;
-  background-color: #1a2920;
+  border-radius: var(--radius-sm, 4px);
+  background-color: var(--color-brand, #1d2739);
   color: #ffffff;
   font-size: 0.78rem;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 6px 16px rgba(29, 27, 24, 0.28);
+  box-shadow: 0 4px 14px rgba(29, 39, 57, 0.2);
   z-index: 2;
 }
 

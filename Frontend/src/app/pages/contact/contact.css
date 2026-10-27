@@ -52,7 +52,7 @@
   width: 44px;
   height: 3px;
   margin: 0.85rem 0 0.85rem;
-  background: var(--color-accent-gold, #c4984f);
+  background: var(--color-accent, #985e38);
   border-radius: 999px;
 }
 

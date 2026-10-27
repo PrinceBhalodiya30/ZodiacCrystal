@@ -23,7 +23,7 @@
 .not-found-glyph {
   width: 72px;
   height: 72px;
-  color: var(--color-accent-gold, #c4984f);
+  color: var(--color-accent, #985e38);
   margin-bottom: 1.5rem;
 }
 

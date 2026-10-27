@@ -30,7 +30,7 @@ app-breadcrumbs {
   display: block;
   width: 44px;
   height: 3px;
-  background-color: var(--color-accent-gold, #c4984f);
+  background-color: var(--color-accent, #985e38);
   border-radius: 999px;
   margin-top: 1rem;
 }

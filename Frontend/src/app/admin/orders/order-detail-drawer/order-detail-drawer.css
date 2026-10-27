@@ -696,7 +696,7 @@
 
 .gift-fee-badge {
   background: #f0e1c2;
-  color: #7d5918;
+  color: var(--color-accent, #985E38);
   font-size: 0.72rem;
   font-weight: 700;
   padding: 0.1rem 0.45rem;
@@ -730,7 +730,7 @@
   padding: 0.75rem 0.85rem;
   background: #ffffff;
   border: 1px solid #ebd9b8;
-  border-left: 3px solid #ab7a24;
+  border-left: 3px solid var(--color-accent, #985E38);
   border-radius: 4px;
 }
 
