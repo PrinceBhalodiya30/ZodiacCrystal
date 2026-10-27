@@ -174,3 +174,11 @@
     font-size: 0.82rem;
   }
 }
+
+@media (max-width: 768px) {
+  :root:has(.mobile-add-bar) .compare-dock,
+  body:has(.mobile-add-bar) .compare-dock {
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+

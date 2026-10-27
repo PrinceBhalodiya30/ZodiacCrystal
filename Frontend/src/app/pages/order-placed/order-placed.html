@@ -7,7 +7,7 @@
       <h1>Thank you, your order is placed!</h1>
       <p>Order <strong>#{{ o.orderId }}</strong> · {{ o.totalAmount | inr }} · paid by card</p>
       @if (o.isGiftWrap) {
-        <p class="op-gift-badge">🎁 <strong>Luxury Gift Packaging &amp; Handwritten Zodiac Note</strong> is included with this order.</p>
+        <p class="op-gift-badge"><svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:5px" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg><strong>Luxury Gift Packaging &amp; Handwritten Zodiac Note</strong> is included with this order.</p>
       }
       <p class="op-muted">
         We've emailed your confirmation{{ email ? ' to ' + email : '' }} with a private link to track your order.

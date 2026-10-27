@@ -27,19 +27,19 @@ export interface ConsultationInsights {
 const STORAGE_KEY = 'zodiac_consultation_logs';
 
 const ZODIAC_SYMBOLS: Record<string, string> = {
-  Aries: '♈',
-  Taurus: '♉',
-  Gemini: '♊',
-  Cancer: '♋',
-  Leo: '♌',
-  Virgo: '♍',
-  Libra: '♎',
-  Scorpio: '♏',
-  Sagittarius: '♐',
-  Capricorn: '♑',
-  Aquarius: '♒',
-  Pisces: '♓',
-  'All Signs': '✦'
+  Aries: '\u2648\uFE0E',
+  Taurus: '\u2649\uFE0E',
+  Gemini: '\u264A\uFE0E',
+  Cancer: '\u264B\uFE0E',
+  Leo: '\u264C\uFE0E',
+  Virgo: '\u264D\uFE0E',
+  Libra: '\u264E\uFE0E',
+  Scorpio: '\u264F\uFE0E',
+  Sagittarius: '\u2650\uFE0E',
+  Capricorn: '\u2651\uFE0E',
+  Aquarius: '\u2652\uFE0E',
+  Pisces: '\u2653\uFE0E',
+  'All Signs': '\u2726'
 };
 
 import { Router } from '@angular/router';
@@ -155,7 +155,7 @@ export class QuizService {
       .sort((a, b) => b.count - a.count);
 
     const topIntention = intentions[0]?.name || 'Calm & Inner Peace';
-    const topZodiac = zodiacSigns[0]?.name ? `${zodiacSigns[0].name} ${zodiacSigns[0].symbol}` : 'Scorpio ♏';
+    const topZodiac = zodiacSigns[0]?.name ? `${zodiacSigns[0].name} ${zodiacSigns[0].symbol}` : 'Scorpio \u264F\uFE0E';
 
     return {
       totalCount,

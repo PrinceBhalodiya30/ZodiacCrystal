@@ -30,7 +30,7 @@
           </svg>
           <span>{{ notice }}</span>
         </div>
-        <button type="button" class="cart-notice-dismiss" (click)="cartService.dismissMergeNotice()" aria-label="Dismiss notice">✕</button>
+        <button type="button" class="cart-notice-dismiss" (click)="cartService.dismissMergeNotice()" aria-label="Dismiss notice"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
       </div>
     }
 
@@ -71,14 +71,14 @@
               </div>
 
               <div class="cart-item-qty">
-                <button type="button" [attr.aria-label]="'Decrease quantity of ' + item.product.name" (click)="decrease(item)" [disabled]="item.quantity <= 1">−</button>
+                <button type="button" [attr.aria-label]="'Decrease quantity of ' + item.product.name" (click)="decrease(item)" [disabled]="item.quantity <= 1"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
                 <span aria-live="polite" [attr.aria-label]="'Quantity ' + item.quantity">{{ item.quantity }}</span>
                 <button
                   type="button"
                   [attr.aria-label]="'Increase quantity of ' + item.product.name"
                   (click)="increase(item)"
                   [disabled]="item.quantity >= item.product.stockQuantity"
-                >+</button>
+                ><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
               </div>
 
               <div class="cart-item-subtotal">{{ itemSubtotal(item) | inr }}</div>
@@ -93,7 +93,7 @@
         </div>
 
         <div class="cart-actions-row">
-          <a routerLink="/products" class="continue-shopping">← Continue shopping</a>
+          <a routerLink="/products" class="continue-shopping"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Continue shopping</a>
           <button type="button" class="btn btn-cancel clear-cart" (click)="clearCart()">Clear Cart</button>
         </div>
       </div>
@@ -109,7 +109,7 @@
           @if (cartService.isGiftWrap()) {
             <div class="cart-total-row cart-gift-row">
               <span class="gift-row-label">
-                <span class="gift-icon">🎁</span> Luxury Gift Packaging
+                <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg> Luxury Gift Packaging
               </span>
               <span>+ {{ giftPackagingFee | inr }}</span>
             </div>
@@ -130,7 +130,7 @@
               />
               <div class="gift-box-label-content">
                 <div class="gift-box-title-row">
-                  <span class="gift-icon">🎁</span>
+                  <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>
                   <strong>Add Luxury Gift Wrap &amp; Zodiac Note</strong>
                   <span class="gift-tag">+ {{ giftPackagingFee | inr }}</span>
                 </div>

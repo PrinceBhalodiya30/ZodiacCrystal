@@ -45,17 +45,8 @@ export class BirthdaySignFinder implements OnInit {
     return Array.from({ length: maxDays }, (_, i) => i + 1);
   });
 
-  // Calculated astrological result
-  signResult = computed<BirthdaySignResult | null>(() => {
-    const m = this.selectedMonth();
-    const d = this.selectedDay();
-    if (!m || !d) return null;
-    try {
-      return getZodiacSignByBirthday(m, d);
-    } catch {
-      return null;
-    }
-  });
+  // Astrological result revealed on button click
+  signResult = signal<BirthdaySignResult | null>(null);
 
   // Matched DB Zodiac entity (with ID for routing)
   matchedZodiac = computed<Zodiac | null>(() => {
@@ -67,27 +58,37 @@ export class BirthdaySignFinder implements OnInit {
 
   ngOnInit(): void {
     this.zodiacService.getZodiacSigns().subscribe({
-      next: signs => this.zodiacSigns.set(signs),
+      next: signs => {
+        this.zodiacSigns.set(signs);
+        const res = this.signResult();
+        if (res) {
+          this.fetchAttunedCrystals(res);
+        }
+      },
       error: () => {}
     });
   }
 
   onMonthChange(m: number | null): void {
-    this.selectedMonth.set(m);
+    this.selectedMonth.set(m != null ? Number(m) : null);
     // Adjust day if current selection exceeds month limit (e.g., Feb 30)
     const currentDay = this.selectedDay();
     if (m && currentDay) {
-      const monthObj = this.months.find(x => x.value === m);
+      const monthObj = this.months.find(x => x.value === Number(m));
       if (monthObj && currentDay > monthObj.maxDays) {
         this.selectedDay.set(monthObj.maxDays);
       }
     }
-    this.fetchAttunedCrystalsIfReady();
+    // Result is only revealed when clicking "Find My Sign"
+    this.signResult.set(null);
+    this.attunedCrystals.set([]);
   }
 
   onDayChange(d: number | null): void {
-    this.selectedDay.set(d);
-    this.fetchAttunedCrystalsIfReady();
+    this.selectedDay.set(d != null ? Number(d) : null);
+    // Result is only revealed when clicking "Find My Sign"
+    this.signResult.set(null);
+    this.attunedCrystals.set([]);
   }
 
   get todayMonthName(): string {
@@ -103,22 +104,40 @@ export class BirthdaySignFinder implements OnInit {
     const today = new Date();
     this.selectedMonth.set(today.getMonth() + 1);
     this.selectedDay.set(today.getDate());
-    this.fetchAttunedCrystalsIfReady();
+    this.findMySign();
   }
 
   reset(): void {
     this.selectedMonth.set(null);
     this.selectedDay.set(null);
+    this.signResult.set(null);
     this.attunedCrystals.set([]);
   }
 
-  fetchAttunedCrystalsIfReady(): void {
-    const res = this.signResult();
-    if (!res) {
-      this.attunedCrystals.set([]);
-      return;
-    }
+  findMySign(): void {
+    const m = this.selectedMonth();
+    const d = this.selectedDay();
+    if (!m || !d) return;
 
+    try {
+      const monthNum = Number(m);
+      const dayNum = Number(d);
+      const res = getZodiacSignByBirthday(monthNum, dayNum);
+      this.signResult.set(res);
+      this.fetchAttunedCrystals(res);
+    } catch (err) {
+      console.error('Error finding zodiac sign:', err);
+      this.signResult.set(null);
+      this.attunedCrystals.set([]);
+    }
+  }
+
+  // Alias for backwards-compatibility with any cached templates
+  fetchAttunedCrystalsIfReady(): void {
+    this.findMySign();
+  }
+
+  private fetchAttunedCrystals(res: BirthdaySignResult): void {
     const signs = this.zodiacSigns();
     const matched = signs.find(s => s.name.toLowerCase() === res.signName.toLowerCase());
     if (matched) {
@@ -133,6 +152,8 @@ export class BirthdaySignFinder implements OnInit {
           this.isLoadingCrystals.set(false);
         }
       });
+    } else {
+      this.attunedCrystals.set([]);
     }
   }
 

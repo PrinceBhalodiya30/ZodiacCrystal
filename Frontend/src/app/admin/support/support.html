@@ -177,7 +177,7 @@
         @if (t.status !== 'Closed' || isInternal) {
           <form class="panel-reply" (ngSubmit)="send()">
             <div class="canned-dropdown-bar">
-              <label for="cannedSelect" class="canned-select-label">⚡ Canned reply:</label>
+              <label for="cannedSelect" class="canned-select-label"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Canned reply:</label>
               <select id="cannedSelect" class="canned-select" (change)="onSelectCanned($event)" aria-label="Insert canned reply template">
                 <option value="" selected>Choose ready-made response (tracking, damaged, crystal care...)</option>
                 @for (c of cannedReplies; track c.label) {

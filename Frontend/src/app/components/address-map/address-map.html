@@ -1,6 +1,10 @@
 <div class="address-map">
   <button type="button" class="link-btn address-map-toggle" (click)="toggle()">
-    {{ isOpen() ? 'Hide map' : '📍 Find my address on a map' }}
+    @if (isOpen()) {
+      Hide map
+    } @else {
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><path d="M20 10c0 5.5-8 12-8 12s-8-6.5-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Find my address on a map
+    }
   </button>
 
   @if (isOpen()) {

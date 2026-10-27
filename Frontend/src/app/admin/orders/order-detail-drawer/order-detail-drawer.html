@@ -128,7 +128,7 @@
               <div><dt>Shipping</dt><dd>Free</dd></div>
             }
             @if (d.order.isGiftWrap) {
-              <div class="gift-drawer-total-row"><dt>🎁 Gift Wrap &amp; Zodiac Note</dt><dd>+{{ (d.order.giftFee || 99) | inr }}</dd></div>
+              <div class="gift-drawer-total-row"><dt><svg class="gift-box-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>Gift Wrap &amp; Zodiac Note</dt><dd>+{{ (d.order.giftFee || 99) | inr }}</dd></div>
             }
             <div class="grand-total"><dt>Total</dt><dd>{{ d.order.totalAmount | inr }}</dd></div>
           </dl>
@@ -138,7 +138,7 @@
         @if (d.order.isGiftWrap) {
           <section class="drawer-section gift-admin-card">
             <div class="gift-admin-header">
-              <span class="gift-icon">🎁</span>
+              <svg class="gift-box-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>
               <div class="gift-admin-title">
                 <strong>Luxury Gift Wrap &amp; Zodiac Note Requested</strong>
                 <span class="gift-fee-badge">+{{ (d.order.giftFee || 99) | inr }}</span>
@@ -165,7 +165,7 @@
             <div class="section-title-row">
               <h3>Customer</h3>
               <button type="button" class="chip-btn c360-link" (click)="viewCustomer.emit(d.customerEmail)" title="Open Customer 360 Intelligence">
-                👤 360 View
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:2px" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>360 View
               </button>
             </div>
             <p class="strong">{{ d.customerName }}</p>
@@ -187,7 +187,11 @@
             @if (d.order.latitude != null && d.order.longitude != null) {
               <p>
                 <button type="button" class="map-toggle" [attr.aria-expanded]="isMapOpen()" (click)="isMapOpen.set(!isMapOpen())">
-                  📍 {{ isMapOpen() ? 'Hide map' : 'View on map' }}
+                  @if (isMapOpen()) {
+                    Hide map
+                  } @else {
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:3px" aria-hidden="true"><path d="M20 10c0 5.5-8 12-8 12s-8-6.5-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>View on map
+                  }
                 </button>
               </p>
               @if (isMapOpen()) {
@@ -240,13 +244,13 @@
 
       <footer class="drawer-footer">
         <button type="button" class="btn btn-outline" (click)="printPackingSlip()" title="Print warehouse packing slip with item checklist">
-          🖨️ Packing Slip
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Packing Slip
         </button>
         <button type="button" class="btn btn-outline" [disabled]="isDownloadingInvoice()" (click)="downloadInvoice()" title="Download tax invoice PDF">
           @if (isDownloadingInvoice()) {
             <span class="btn-spinner" aria-hidden="true"></span> Preparing...
           } @else {
-            📄 Invoice (PDF)
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Invoice (PDF)
           }
         </button>
         <button type="button" class="btn btn-outline" (click)="close()">Close</button>

@@ -12,7 +12,7 @@
       <div class="hero-actions">
         <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
         <a class="btn btn-outline hero-btn-secondary" routerLink="/consultation">
-          <span class="btn-sparkle" aria-hidden="true">✦</span>
+          <span class="btn-sparkle" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg></span>
           <span>Crystal Consultation</span>
         </a>
       </div>
@@ -189,7 +189,7 @@
         Complete our 3-step consultation to discover the specimens attuned to your astrological blueprint.
       </p>
       <a class="btn btn-accent consultation-cta" routerLink="/consultation">
-        Begin Consultation →
+        Begin Consultation <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-left:4px" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
     <div class="consultation-callout-visual" aria-hidden="true">
@@ -266,7 +266,7 @@
       }
     </div>
     @if (categories().length > categoryTiles().length) {
-      <a class="category-view-all" routerLink="/categories">View all categories →</a>
+      <a class="category-view-all" routerLink="/categories">View all categories <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-left:4px" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     }
   </section>
 }
@@ -287,11 +287,11 @@
           <span class="guide-card-tag">Guide</span>
           <h3>{{ guide.title }}</h3>
           <p>{{ guide.shortDescription }}</p>
-          <a class="guide-card-link" [routerLink]="['/guides', guide.slug]">Read Guide →</a>
+          <a class="guide-card-link" [routerLink]="['/guides', guide.slug]">Read Guide <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-left:3px" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </article>
       }
     </div>
-    <a class="guides-view-all" routerLink="/guides">Explore all crystal guides →</a>
+    <a class="guides-view-all" routerLink="/guides">Explore all crystal guides <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-left:4px" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
   </section>
 }
 
@@ -310,9 +310,10 @@
   <div class="why-us-grid">
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter" stroke-linecap="round" aria-hidden="true">
-          <path d="M8 3h8l4 5-10 13L2 8Z"/>
-          <path d="M2 8h18M8 3l2 5 0 13M16 3l-2 5 -4 13"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 3h12l4 6-10 13L2 9Z"/>
+          <path d="M11 3 8 9l4 13 4-13-3-6"/>
+          <path d="M2 9h20"/>
         </svg>
       </span>
       <h3>Natural Crystals & Minerals</h3>
@@ -320,9 +321,9 @@
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="4" y="10.5" width="16" height="10" rx="2"/>
-          <path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       </span>
       <h3>Secure Payments & COD</h3>
@@ -330,8 +331,9 @@
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 2 14 9.3 21 12 14 14.7 12 22 10 14.7 3 12 10 9.3Z"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m12 2 2.8 6.9L22 12l-7.2 3.1L12 22l-2.8-6.9L2 12l7.2-3.1Z"/>
+          <circle cx="12" cy="12" r="2.5"/>
         </svg>
       </span>
       <h3>Astrological Guidance</h3>
@@ -339,10 +341,11 @@
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="9" cy="21" r="1.3"/>
-          <circle cx="18" cy="21" r="1.3"/>
-          <path d="M2.5 3h2l2.2 11.4a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m7.5 4.27 9 5.15"/>
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+          <path d="m3.3 7 8.7 5 8.7-5"/>
+          <path d="M12 22V12"/>
         </svg>
       </span>
       <h3>Careful Protective Packaging</h3>

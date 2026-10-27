@@ -247,7 +247,7 @@
           @if (pincodeResult(); as res) {
             <div class="pincode-result-box">
               <div class="pincode-result-content">
-                <span class="pincode-check-mark" aria-hidden="true">✓</span>
+                <span class="pincode-check-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
                 <div class="pincode-result-text">
                   <span class="pincode-main-line">
                     Delivery to <strong>{{ res.location }}</strong> ({{ res.pincode }}) by <strong>{{ res.deliveryDate }}</strong> · <span class="pincode-perk">{{ res.shippingType }}</span> · <span class="pincode-perk">{{ res.codAvailable ? 'Cash on Delivery Available' : 'Prepaid Only' }}</span>
@@ -357,11 +357,15 @@
                 (click)="addToCart()"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-                  <path d="M3 6h18"/>
-                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                  @if (justAdded()) {
+                    <path d="M20 6 9 17l-5-5"/>
+                  } @else {
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                    <path d="M3 6h18"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                  }
                 </svg>
-                <span>{{ justAdded() ? 'Added to Bag ✓' : 'Add to Bag' }}</span>
+                <span>{{ justAdded() ? 'Added to Bag' : 'Add to Bag' }}</span>
               </button>
 
               <button
@@ -394,10 +398,8 @@
                 [title]="isCompared ? 'In Compare List' : 'Compare Crystal'"
                 (click)="toggleCompare()"
               >
-                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="18" y1="20" x2="18" y2="10"></line>
-                  <line x1="12" y1="20" x2="12" y2="4"></line>
-                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
                 </svg>
               </button>
             </div>
@@ -408,7 +410,7 @@
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
                 <span>{{ cartQuantity() }} already in your bag</span>
-                <a routerLink="/cart" class="view-cart-link">View Bag →</a>
+                <a routerLink="/cart" class="view-cart-link">View Bag <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-left:3px" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
               </div>
             }
           }
@@ -594,7 +596,7 @@
                     }
                   </svg>
                   <span>
-                    {{ bundleJustAdded() ? 'Bundle Added to Bag ✓' : ('Add ' + bundleSelectedCount() + (bundleSelectedCount() === 1 ? ' Item' : ' Items') + ' to Bag') }}
+                    {{ bundleJustAdded() ? 'Bundle Added to Bag' : ('Add ' + bundleSelectedCount() + (bundleSelectedCount() === 1 ? ' Item' : ' Items') + ' to Bag') }}
                   </span>
                 </button>
 
@@ -652,7 +654,7 @@
                     [attr.aria-pressed]="star <= reviewRating()"
                     [attr.aria-label]="star + ' star' + (star === 1 ? '' : 's')"
                     (click)="setReviewRating(star)"
-                  >{{ star <= reviewRating() ? '★' : '☆' }}</button>
+                  ><svg viewBox="0 0 24 24" width="18" height="18" [attr.fill]="star <= reviewRating() ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
                 }
               </div>
               <textarea
@@ -735,7 +737,13 @@
     @if (!isOutOfStock) {
       <div class="mobile-add-bar">
         <span class="mobile-add-bar-price">{{ p.price | inr }}</span>
-        <button type="button" class="btn" [class.btn-added]="justAdded()" (click)="addToCart()">{{ justAdded() ? 'Added ✓' : 'Add to Cart' }}</button>
+        <button type="button" class="btn" [class.btn-added]="justAdded()" (click)="addToCart()">
+          @if (justAdded()) {
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Added
+          } @else {
+            Add to Cart
+          }
+        </button>
         @if (cartQuantity() > 0) {
           <a routerLink="/cart" class="btn btn-outline">View Cart ({{ cartQuantity() }})</a>
         }

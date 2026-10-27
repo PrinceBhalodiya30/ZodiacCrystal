@@ -6,7 +6,7 @@
       class="announcement-close"
       aria-label="Dismiss announcement"
       (click)="dismissAnnouncement()"
-    >✕</button>
+    ><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   </div>
 }
 
@@ -91,10 +91,10 @@
           aria-label="Open cart bag"
           (click)="onCartClick()"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="9" cy="21" r="1.3"/>
-            <circle cx="18" cy="21" r="1.3"/>
-            <path d="M2.5 3h2l2.2 11.4a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <path d="M3 6h18"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
           @if (cartService.totalQuantity() > 0) {
             <span class="icon-badge" [class.bump]="cartBump()">{{ cartService.totalQuantity() }}</span>
@@ -144,7 +144,7 @@
           class="navbar-search-close"
           aria-label="Close search"
           (click)="toggleSearch()"
-        >✕</button>
+        ><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
       </form>
     </div>
   }

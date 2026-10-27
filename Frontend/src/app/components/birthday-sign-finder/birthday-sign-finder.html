@@ -52,7 +52,7 @@
     <button
       type="button"
       class="btn btn-find-sign"
-      (click)="fetchAttunedCrystalsIfReady()"
+      (click)="findMySign()"
       [disabled]="!selectedMonth() || !selectedDay()"
     >
       <span class="btn-sparkle" aria-hidden="true">✦</span>
@@ -75,7 +75,7 @@
         (click)="reset()"
         aria-label="Reset selection"
       >
-        ✕ Clear
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>Clear
       </button>
     }
   </div>

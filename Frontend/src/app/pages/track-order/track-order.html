@@ -1,6 +1,6 @@
 <section class="container track-page">
   @if (isGuestView) {
-    <a class="page-back-link" [routerLink]="['/order', orderId]">← Back to order #{{ orderId }}</a>
+    <a class="page-back-link" [routerLink]="['/order', orderId]"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to order #{{ orderId }}</a>
   } @else {
     <app-breadcrumbs [items]="[{ label: 'My Account', link: '/profile' }, { label: 'My Orders', link: '/orders' }, { label: 'Order #' + orderId, link: ['/orders', orderId] }, { label: 'Track Package' }]"></app-breadcrumbs>
   }
@@ -56,7 +56,9 @@
           @for (step of steps(); track step.title) {
             <li [class]="'track-step ' + step.state" [attr.aria-current]="step.state === 'current' ? 'step' : null">
               <span class="track-dot" aria-hidden="true">
-                @if (step.state === 'completed') { ✓ }
+                @if (step.state === 'completed') {
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                }
               </span>
               <div>
                 <p class="track-title">{{ step.title }}</p>

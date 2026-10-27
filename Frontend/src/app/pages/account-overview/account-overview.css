@@ -63,6 +63,7 @@
   height: 1.35rem;
 }
 
+.stat-tile-icon--blue { background-color: var(--color-blue-bg, #eff6ff); color: var(--color-brand); }
 .stat-tile-icon--gold { background-color: var(--color-amber-bg, #fdf3e2); color: var(--color-brass); }
 .stat-tile-icon--rose { background-color: var(--color-rose-bg, #fdebf0); color: var(--color-rose, #c2416b); }
 .stat-tile-icon--teal { background-color: var(--color-teal-bg, #e3f5f2); color: var(--color-teal, #1f7a6d); }

@@ -1,6 +1,6 @@
 <section class="container checkout-page">
   @if (mysteryBox() || items().length > 0) {
-    <a class="back-link" routerLink="/cart" (click)="leaveBuyNow()">← Back to cart</a>
+    <a class="back-link" routerLink="/cart" (click)="leaveBuyNow()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to cart</a>
   }
   <h1>Checkout</h1>
 
@@ -34,7 +34,7 @@
                 @if (box.zodiacImageUrl) {
                   <img [imgSrc]="box.zodiacImageUrl" imgSizes="52px" [alt]="box.zodiacName || 'Zodiac Sign'" width="52" height="52" loading="lazy" decoding="async" imgFallback />
                 } @else {
-                  <span class="mystery-box-emblem-icon">✨</span>
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="mystery-box-emblem-icon" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/><path d="m19 15-.8 2.2L16 18l2.2.8.8 2.2.8-2.2L22 18l-2.2-.8Z"/></svg>
                 }
               </div>
 
@@ -156,7 +156,7 @@
               />
               <div class="gift-box-label-content">
                 <div class="gift-box-title-row">
-                  <span class="gift-icon">🎁</span>
+                  <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>
                   <strong>Add Luxury Gift Wrap &amp; Zodiac Note</strong>
                   <span class="gift-tag">+ {{ giftPackagingFee | inr }}</span>
                 </div>
@@ -220,7 +220,7 @@
         @if (!mysteryBox() && cartService.isGiftWrap()) {
           <div class="summary-subtotal-row gift-summary-row">
             <span class="gift-row-label">
-              <span class="gift-icon">🎁</span> Luxury Gift Packaging
+              <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg> Luxury Gift Packaging
             </span>
             <span>+ {{ giftPackagingFee | inr }}</span>
           </div>

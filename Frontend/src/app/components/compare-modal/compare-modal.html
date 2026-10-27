@@ -39,7 +39,7 @@
                         [attr.aria-label]="'Remove ' + p.name + ' from comparison'"
                         (click)="remove(p)"
                       >
-                        ✕
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
                       </button>
                       <a [routerLink]="['/products', getProductSlug(p)]" class="product-head-img-link" (click)="close()">
                         <img [src]="getImage(p)" [alt]="p.name" class="product-head-img" imgFallback />

@@ -131,7 +131,7 @@
                   <span class="new-tag">New</span>
                 }
                 @if (order.isGiftWrap) {
-                  <span class="gift-order-badge" title="Luxury Gift Wrap &amp; Zodiac Note">🎁 Gift</span>
+                  <span class="gift-order-badge" title="Luxury Gift Wrap &amp; Zodiac Note"><svg class="gift-box-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>Gift</span>
                 }
               </td>
               <td data-label="Customer">
@@ -144,7 +144,7 @@
                     title="View Customer 360"
                     (click)="$event.stopPropagation(); openCustomer360(order.customerEmail)"
                   >
-                    👤 360
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:2px" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>360
                   </button>
                 </div>
                 <div class="customer-email">{{ order.customerEmail }}</div>
@@ -174,7 +174,7 @@
                     @if (downloadingInvoiceId() === order.orderId) {
                       <span class="btn-spinner" aria-hidden="true"></span>
                     } @else {
-                      📄
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     }
                     Invoice
                   </button>
