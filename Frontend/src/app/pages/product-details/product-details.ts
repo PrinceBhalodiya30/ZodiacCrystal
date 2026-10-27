@@ -171,7 +171,7 @@ export class ProductDetails implements OnInit {
 
   // Crystal Healing & Care Specs Accordion
   crystalSpecs = computed<CrystalSpecs | null>(() => getProductCrystalSpecs(this.product()));
-  isHealingOpen = signal(true);
+  isHealingOpen = signal(false);
   isCareOpen = signal(false);
 
   toggleHealingAccordion(): void {
