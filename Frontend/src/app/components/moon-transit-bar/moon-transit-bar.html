@@ -59,10 +59,16 @@
         @if (currentSlide() === 1) {
           <div class="ticker-slide ticker-slide--promo" role="region" aria-label="Store Announcement">
             <span class="promo-icon" aria-hidden="true">✨</span>
-            @if (announcementLink(); as link) {
-              <a [routerLink]="link" class="announcement-link">
-                <span class="announcement-text">{{ announcementText() }}</span>
-              </a>
+            @if (effectiveAnnouncementLink(); as link) {
+              @if (isAnnouncementLinkExternal()) {
+                <a [href]="link" target="_blank" rel="noopener noreferrer" class="announcement-link">
+                  <span class="announcement-text">{{ announcementText() }}</span>
+                </a>
+              } @else {
+                <a [routerLink]="link" class="announcement-link">
+                  <span class="announcement-text">{{ announcementText() }}</span>
+                </a>
+              }
             } @else {
               <span class="announcement-text">{{ announcementText() }}</span>
             }

@@ -68,6 +68,22 @@ export class MoonTransitBar implements OnInit {
       : null;
   });
 
+  readonly effectiveAnnouncementLink = computed(() => {
+    const raw = this.announcementLink();
+    if (!raw) return null;
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  });
+
+  readonly isAnnouncementLinkExternal = computed(() => {
+    const link = this.effectiveAnnouncementLink();
+    return Boolean(link && (link.startsWith('http://') || link.startsWith('https://')));
+  });
+
   readonly announcementStyle = computed(() => {
     return typeof this.storeSettings.announcementStyle === 'function'
       ? this.storeSettings.announcementStyle()

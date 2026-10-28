@@ -521,6 +521,12 @@
   .cosmic-modal-body {
     padding: 1.25rem 1rem 1.25rem;
   }
+
+  .ticker-slide--promo {
+    font-size: 11px;
+    gap: 0.4rem;
+    line-height: 1.35;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
