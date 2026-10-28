@@ -26,7 +26,10 @@
       <div class="container hero-inner">
         <div class="hero-copy">
           <span class="hero-eyebrow">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
+            </svg>
             {{ heroEyebrow() || 'Celestial Resonance & Zodiac Alignment' }}
           </span>
           <h1>{{ heroTitle() }}</h1>
@@ -34,7 +37,9 @@
           <div class="hero-actions">
             <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
             <a class="btn btn-outline hero-btn-secondary" routerLink="/zodiac">
-              <span class="btn-sparkle" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg></span>
+              <span class="btn-sparkle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
+              </span>
               <span>Explore 12 Zodiac Signs</span>
             </a>
           </div>
@@ -51,11 +56,19 @@
               </svg>
             }
             <div class="hero-floating-badge badge-top">
-              <span class="badge-dot"></span>
+              <span class="badge-dot" aria-hidden="true"></span>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span>100% Certified Earth-Mined</span>
             </div>
             <div class="hero-floating-badge badge-bottom">
-              <span>🪐 Vedic Astrology Attuned</span>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="7"/>
+                <ellipse cx="12" cy="12" rx="10" ry="3.5" transform="rotate(-28 12 12)"/>
+              </svg>
+              <span>Vedic Planetary Alignment</span>
             </div>
           </div>
         </div>
@@ -67,7 +80,10 @@
       <div class="container hero-inner">
         <div class="hero-copy">
           <span class="hero-eyebrow">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 3v18M3 12h18M6.5 6.5l11 11M6.5 17.5l11-11"/>
+            </svg>
             Sacred Intention Alchemy
           </span>
           <h1>Program Your Stones. <span class="hero-highlight">Awaken Your Reality.</span></h1>
@@ -75,28 +91,40 @@
           
           <!-- Energy Muse Intention Chips -->
           <div class="hero-intention-chips">
-            <a class="hero-intention-chip chip-wealth" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
-              <span class="chip-icon">💰</span>
-              <span class="chip-label">Wealth & Success</span>
+            <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
+              <svg class="chip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+                <polyline points="2 9 12 13 22 9"/>
+                <line x1="12" y1="22" x2="12" y2="13"/>
+              </svg>
+              <span>Wealth & Success</span>
             </a>
-            <a class="hero-intention-chip chip-protection" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
-              <span class="chip-icon">🛡️</span>
-              <span class="chip-label">Protection & Shield</span>
+            <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
+              <svg class="chip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>Protection & Shield</span>
             </a>
-            <a class="hero-intention-chip chip-love" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
-              <span class="chip-icon">💖</span>
-              <span class="chip-label">Love & Harmony</span>
+            <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
+              <svg class="chip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
+              <span>Love & Harmony</span>
             </a>
-            <a class="hero-intention-chip chip-peace" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
-              <span class="chip-icon">🧘</span>
-              <span class="chip-label">Peace & Serenity</span>
+            <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
+              <svg class="chip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+              </svg>
+              <span>Peace & Serenity</span>
             </a>
           </div>
 
           <div class="hero-actions">
             <a class="btn hero-btn-primary" routerLink="/products">Shop All Intentions</a>
             <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openCleansingGuide('ritual')">
-              <span class="btn-sparkle" aria-hidden="true">✦</span>
+              <span class="btn-sparkle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
+              </span>
               <span>3-Step Activation Ritual</span>
             </button>
           </div>
@@ -109,41 +137,63 @@
               <h4>The 4 Core Manifestation Pillars</h4>
             </div>
             <div class="intention-grid-tiles">
-              <a class="intention-tile tile-wealth" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
-                <span class="tile-icon">💰</span>
+              <a class="intention-tile" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
+                <span class="tile-icon-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+                    <polyline points="2 9 12 13 22 9"/>
+                    <line x1="12" y1="22" x2="12" y2="13"/>
+                  </svg>
+                </span>
                 <div class="tile-text">
                   <strong>Abundance Magnet</strong>
                   <small>Pyrite · Citrine · Jade</small>
                 </div>
-                <span class="tile-arrow">→</span>
+                <span class="tile-arrow" aria-hidden="true">→</span>
               </a>
-              <a class="intention-tile tile-protection" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
-                <span class="tile-icon">🛡️</span>
+              <a class="intention-tile" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
+                <span class="tile-icon-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                </span>
                 <div class="tile-text">
-                  <strong>Aura Armor</strong>
-                  <small>Black Tourmaline · Obsidian</small>
+                  <strong>Aura Shield</strong>
+                  <small>Tourmaline · Obsidian</small>
                 </div>
-                <span class="tile-arrow">→</span>
+                <span class="tile-arrow" aria-hidden="true">→</span>
               </a>
-              <a class="intention-tile tile-love" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
-                <span class="tile-icon">💖</span>
+              <a class="intention-tile" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
+                <span class="tile-icon-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                  </svg>
+                </span>
                 <div class="tile-text">
                   <strong>Heart Awakening</strong>
                   <small>Rose Quartz · Moonstone</small>
                 </div>
-                <span class="tile-arrow">→</span>
+                <span class="tile-arrow" aria-hidden="true">→</span>
               </a>
-              <a class="intention-tile tile-peace" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
-                <span class="tile-icon">🧘</span>
+              <a class="intention-tile" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
+                <span class="tile-icon-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                  </svg>
+                </span>
                 <div class="tile-text">
-                  <strong>Restorative Serenity</strong>
+                  <strong>Serene Calm</strong>
                   <small>Amethyst · Selenite</small>
                 </div>
-                <span class="tile-arrow">→</span>
+                <span class="tile-arrow" aria-hidden="true">→</span>
               </a>
             </div>
             <div class="intention-card-footer">
-              <span>✦ Consecrated With Vedic Mantra & Moon Frequency</span>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display:inline-block; vertical-align:-1px; margin-right:4px">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+              </svg>
+              <span>Consecrated with Vedic Mantra & Moon Frequency</span>
             </div>
           </div>
         </div>
@@ -155,7 +205,10 @@
       <div class="container hero-inner">
         <div class="hero-copy">
           <span class="hero-eyebrow">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
             Intuitive Energy Matcher
           </span>
           <h1>What Crystal Do You <span class="hero-highlight">Need Right Now?</span></h1>
@@ -163,15 +216,21 @@
 
           <ul class="hero-checklist">
             <li>
-              <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
               <span>3 Intuitive Energy Questions (Under 60 Seconds)</span>
             </li>
             <li>
-              <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
               <span>Harmonized with Your Zodiac & Current Planetary Transit</span>
             </li>
             <li>
-              <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
               <span>Includes Personalized 3-Step Crystal Activation Ritual</span>
             </li>
           </ul>
@@ -179,7 +238,7 @@
           <div class="hero-actions">
             <button type="button" class="btn hero-btn-primary" (click)="openQuiz()">
               <span>Take 60-Sec Crystal Quiz</span>
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </button>
             <a class="btn btn-outline hero-btn-secondary" routerLink="/consultation">
               <span>Personal Consultation</span>
@@ -189,21 +248,41 @@
 
         <div class="hero-image-wrap">
           <div class="quiz-preview-card" (click)="openQuiz()" role="button" tabindex="0" (keydown.enter)="openQuiz()" (keydown.space)="openQuiz()">
-            <div class="quiz-preview-badge">✦ Interactive Assessment</div>
+            <div class="quiz-preview-badge">
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+              <span>Interactive Assessment</span>
+            </div>
             <div class="quiz-preview-question">
               <span class="quiz-step">Step 1 of 3</span>
               <h3>What area of your life needs the strongest energetic shift?</h3>
             </div>
             <div class="quiz-sample-options">
               <div class="quiz-option-pill active">
-                <span>✨ Attracting Abundance & Success</span>
-                <span class="option-check">✓</span>
+                <span class="quiz-pill-left">
+                  <svg class="quiz-option-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+                    <polyline points="2 9 12 13 22 9"/>
+                    <line x1="12" y1="22" x2="12" y2="13"/>
+                  </svg>
+                  <span>Attracting Wealth & Expansion</span>
+                </span>
+                <svg class="option-check-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div class="quiz-option-pill">
-                <span>🛡️ Shielding My Aura & Boundaries</span>
+                <span class="quiz-pill-left">
+                  <svg class="quiz-option-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Shielding Aura & Emotional Boundaries</span>
+                </span>
               </div>
               <div class="quiz-option-pill">
-                <span>💖 Healing Emotional Heart Wounds</span>
+                <span class="quiz-pill-left">
+                  <svg class="quiz-option-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                  </svg>
+                  <span>Heart Awakening & Tender Compassion</span>
+                </span>
               </div>
             </div>
             <div class="quiz-preview-cta">
@@ -220,7 +299,11 @@
       <div class="container hero-inner">
         <div class="hero-copy">
           <span class="hero-eyebrow">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
             Sacred Care & Celestial Surprise
           </span>
           <h1>Celestial Mystery Boxes & <span class="hero-highlight">Sacred Cleansing.</span></h1>
@@ -228,14 +311,26 @@
 
           <div class="mystery-box-highlights">
             <div class="mb-highlight-item">
-              <span class="mb-icon">🎁</span>
+              <span class="mb-icon-wrap" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="8" width="18" height="13" rx="2"/>
+                  <path d="M12 8v13"/>
+                  <path d="M3 12h18"/>
+                  <path d="M7.5 8a2.5 2.5 0 0 1 0-5c1.5 0 2.5 1.5 4.5 5"/>
+                  <path d="M16.5 8a2.5 2.5 0 0 0 0-5c-1.5 0-2.5 1.5-4.5 5"/>
+                </svg>
+              </span>
               <div>
                 <strong>Curated Cosmic Mystery Box</strong>
                 <small>Guaranteed 1 rare geode + 3 attuned crystals</small>
               </div>
             </div>
             <div class="mb-highlight-item">
-              <span class="mb-icon">🌙</span>
+              <span class="mb-icon-wrap" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                </svg>
+              </span>
               <div>
                 <strong>Full Moon Cleansing Protocols</strong>
                 <small>Selenite plate, sound bowl & sage guidance</small>
@@ -246,7 +341,9 @@
           <div class="hero-actions">
             <a class="btn hero-btn-primary" routerLink="/mystery-box">Unbox Celestial Mystery Box</a>
             <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openCleansingGuide('cleansing')">
-              <span class="btn-sparkle" aria-hidden="true">✦</span>
+              <span class="btn-sparkle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
+              </span>
               <span>Interactive Cleansing Guide</span>
             </button>
           </div>
@@ -254,7 +351,12 @@
 
         <div class="hero-image-wrap">
           <div class="mystery-showcase-card">
-            <div class="mystery-badge-ribbon">⭐ Limited Lunar Edition</div>
+            <div class="mystery-badge-ribbon">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true" style="display:inline-block; vertical-align:-1px; margin-right:3px">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span>Limited Lunar Edition</span>
+            </div>
             <div class="mystery-card-content">
               <div class="mystery-box-icon-wrap">
                 <svg class="mystery-box-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -266,10 +368,22 @@
               <h4>The Celestial Mystery Vault</h4>
               <p class="mystery-tagline">Intuitive Selection Matched to Your Astrological Vibration</p>
               <ul class="mystery-perks-list">
-                <li>✦ 1 High-Vibration Raw Geode / Cluster</li>
-                <li>✦ 3 Attuned Tumbled Pocket Stones</li>
-                <li>✦ Consecrated White Sage & Selenite Wand</li>
-                <li>✦ Astrological Alignment Certificate</li>
+                <li>
+                  <svg class="perk-bullet-svg" viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true"><polygon points="12 2 19 12 12 22 5 12"/></svg>
+                  <span>1 High-Vibration Raw Geode / Cluster</span>
+                </li>
+                <li>
+                  <svg class="perk-bullet-svg" viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true"><polygon points="12 2 19 12 12 22 5 12"/></svg>
+                  <span>3 Attuned Tumbled Pocket Stones</span>
+                </li>
+                <li>
+                  <svg class="perk-bullet-svg" viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true"><polygon points="12 2 19 12 12 22 5 12"/></svg>
+                  <span>Consecrated White Sage & Selenite Wand</span>
+                </li>
+                <li>
+                  <svg class="perk-bullet-svg" viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true"><polygon points="12 2 19 12 12 22 5 12"/></svg>
+                  <span>Astrological Alignment Certificate</span>
+                </li>
               </ul>
               <a class="btn mystery-card-cta" routerLink="/mystery-box">
                 <span>Explore Mystery Boxes</span>
@@ -307,29 +421,30 @@
   <div class="container hero-trust-container">
     <ul class="hero-trust">
       <li class="trust-badge">
-        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          <polyline points="9 12 11 14 15 10"/>
-        </svg>
-        <span>100% Natural Minerals</span>
-      </li>
-      <li class="trust-badge">
-        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-        <span>12 Zodiac Attuned</span>
-      </li>
-      <li class="trust-badge">
-        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
           <polyline points="2 9 12 13 22 9"/>
           <line x1="12" y1="22" x2="12" y2="13"/>
         </svg>
+        <span>100% Natural Minerals</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
+        </svg>
+        <span>12 Zodiac Attuned</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m9 11 3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
         <span>Artisanal Hand-Selected</span>
       </li>
       <li class="trust-badge">
-        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
         </svg>
         <span>Full Moon Cleansed</span>
       </li>
