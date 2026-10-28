@@ -3,6 +3,8 @@
     class="moon-transit-bar unified-top-bar"
     role="complementary"
     aria-label="Daily Moon Phase and Store Announcements"
+    [attr.data-slide]="currentSlide()"
+    [attr.data-style]="announcementStyle()"
     (mouseenter)="pauseRotation()"
     (mouseleave)="resumeRotation()"
   >

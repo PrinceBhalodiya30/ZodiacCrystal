@@ -192,4 +192,18 @@ describe('MoonTransitBar', () => {
     expect(promoSlide).toBeTruthy();
     expect(promoSlide.textContent).toContain('Free Shipping on orders over ₹999!');
   });
+
+  it('applies data-style attribute reflecting current color palette and holiday theme', () => {
+    mockStoreSettings.announcementStyle.set('gold');
+    fixture.detectChanges();
+
+    const asideEl = fixture.nativeElement.querySelector('.moon-transit-bar');
+    expect(asideEl).toBeTruthy();
+    expect(asideEl.getAttribute('data-style')).toBe('gold');
+
+    // Switch to ruby
+    mockStoreSettings.announcementStyle.set('ruby');
+    fixture.detectChanges();
+    expect(asideEl.getAttribute('data-style')).toBe('ruby');
+  });
 });

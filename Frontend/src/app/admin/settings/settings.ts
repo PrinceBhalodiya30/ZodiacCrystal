@@ -53,7 +53,7 @@ export class AdminSettings implements OnInit {
   readonly moonBannerShowModal = signal(true);
 
   // Live Storefront Top Bar Preview Rotation Signals
-  readonly previewSlide = signal<0 | 1>(0);
+  readonly previewSlide = signal<0 | 1>(1);
   readonly hasMultiplePreviewSlides = computed(() => this.moonBannerEnabled() && this.announcementEnabled());
   readonly isTopBarPreviewVisible = computed(() => this.moonBannerEnabled() || this.announcementEnabled());
   readonly currentPreviewSlide = computed<0 | 1>(() => {
@@ -66,6 +66,20 @@ export class AdminSettings implements OnInit {
 
   setPreviewSlide(index: 0 | 1): void {
     this.previewSlide.set(index);
+  }
+
+  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero'): void {
+    this.activeTab.set(tab);
+    if (tab === 'announcement') {
+      this.previewSlide.set(1);
+    } else if (tab === 'moon') {
+      this.previewSlide.set(0);
+    }
+  }
+
+  setAnnouncementStyle(style: string): void {
+    this.announcementStyle.set(style);
+    this.previewSlide.set(1);
   }
 
   // Shipping & Rates Form State Signals
@@ -190,6 +204,7 @@ export class AdminSettings implements OnInit {
     this.announcementStyle.set(template.style);
     this.announcementLink.set(template.link);
     this.announcementEnabled.set(true);
+    this.previewSlide.set(1);
     this.toastService.info(`Applied "${template.name}" template. Click "Save Changes" to publish.`);
   }
 
@@ -200,6 +215,7 @@ export class AdminSettings implements OnInit {
     this.moonBannerCustomBenefit.set(preset.benefit);
     this.moonBannerCustomLink.set(preset.link);
     this.moonBannerEnabled.set(true);
+    this.previewSlide.set(0);
     this.toastService.info(`Applied "${preset.name}". Click "Save Changes" to publish.`);
   }
 
