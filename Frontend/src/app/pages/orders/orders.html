@@ -1,96 +1,220 @@
 <section class="container orders-page">
-  <h1>My Orders</h1>
+  <div class="orders-header-row">
+    <div>
+      <h1>My Orders</h1>
+      <p class="orders-subtitle">Track your packages, re-order sacred crystals in 1 click, and view mineral care
+        rituals.</p>
+    </div>
+  </div>
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading orders...</span>
-    <div class="order-list" aria-hidden="true">
-      @for (n of [1, 2, 3]; track n) {
-        <div class="order-card order-card-skeleton">
-          <div class="order-info">
-            <span class="skeleton skeleton-line" style="width: 7rem"></span>
-            <span class="skeleton skeleton-line" style="width: 5rem"></span>
-          </div>
-          <span class="skeleton skeleton-line order-skeleton-meta"></span>
-          <span class="skeleton order-skeleton-btn"></span>
-        </div>
-      }
+  <span class="visually-hidden" role="status">Loading orders...</span>
+  <div class="order-list" aria-hidden="true">
+    @for (n of [1, 2, 3]; track n) {
+    <div class="order-card order-card-skeleton">
+      <div class="order-info">
+        <span class="skeleton skeleton-line" style="width: 7rem"></span>
+        <span class="skeleton skeleton-line" style="width: 5rem"></span>
+      </div>
+      <span class="skeleton skeleton-line order-skeleton-meta"></span>
+      <span class="skeleton order-skeleton-btn"></span>
     </div>
-  } @else if (errorMessage()) {
-    <div class="state-message state-message--error">
-      <p>{{ errorMessage() }}</p>
-      <button type="button" class="btn" (click)="loadOrders()">Retry</button>
-    </div>
-  } @else if (orders().length === 0) {
-    <div class="state-message state-message--empty">
-      <p>You haven't placed any orders yet.</p>
-      <a routerLink="/products" class="btn">Browse Products</a>
-    </div>
-  } @else {
-    @if (actionError()) {
-      <p class="form-error" role="alert">{{ actionError() }}</p>
     }
+  </div>
+  } @else if (errorMessage()) {
+  <div class="state-message state-message--error">
+    <p>{{ errorMessage() }}</p>
+    <button type="button" class="btn" (click)="loadOrders()">Retry</button>
+  </div>
+  } @else if (orders().length === 0) {
+  <div class="state-message state-message--empty">
+    <p>You haven't placed any orders yet.</p>
+    <a routerLink="/products" class="btn">Browse Products</a>
+  </div>
+  } @else {
+  @if (actionError()) {
+  <p class="form-error" role="alert">{{ actionError() }}</p>
+  }
 
-    <div class="order-list">
-      @for (order of orders(); track order.orderId) {
-        <article class="order-card" [class]="'order-card ' + statusTone(order)">
-          <header class="order-head">
-            <div class="order-state">
-              <span class="state-title"><span class="state-dot" aria-hidden="true"></span>{{ statusTitle(order) }}</span>
-              <span class="state-sub">{{ statusSubtitle(order) }}</span>
-            </div>
-            <div class="order-summary">
-              <span class="summary-total">{{ order.totalAmount | inr }}</span>
-              <span class="summary-meta">Order #{{ order.orderId }} &middot; {{ order.orderDate | date:'dd MMM yyyy' }} &middot; {{ order.paymentMethod === 'Card' ? 'Card' : 'COD' }}</span>
-            </div>
-          </header>
+  <!-- Previously Purchased Crystals Re-Order & Care Strip -->
+  @if (purchasedCrystals().length > 0) {
+  <section class="reorder-care-strip" aria-labelledby="reorder-strip-title">
+    <div class="reorder-strip-head">
+      <div class="reorder-strip-titles">
+        <h2 id="reorder-strip-title">
+          <span class="strip-icon" aria-hidden="true">💎</span>
+          Your Sacred Crystals
+        </h2>
+        <p>1-Click Re-Order &amp; Essential Mineral Care Guides</p>
+      </div>
+    </div>
 
-          <ul class="item-list">
-            @for (item of visibleItems(order); track item.productId) {
-              <li class="item-row">
-                <a class="item-thumb" [routerLink]="['/products', itemSlug(item)]" tabindex="-1" aria-hidden="true">
-                  <img [imgSrc]="item.imageUrl ?? null" imgSizes="72px" [alt]="item.productName" width="72" height="72" loading="lazy" decoding="async" imgFallback />
-                </a>
-                <div class="item-info">
-                  <a class="item-name" [routerLink]="['/products', itemSlug(item)]">{{ item.productName }}</a>
-                  <span class="item-qty">Qty: {{ item.quantity }}</span>
-                </div>
-                <span class="item-price">{{ item.subtotal | inr }}</span>
-              </li>
-            } @empty {
-              @if (order.productNames?.length) {
-                <li class="item-row item-row--plain">{{ order.productNames!.join(', ') }}</li>
-              }
-            }
-          </ul>
-
-          @if (hiddenCount(order) > 0) {
-            <button type="button" class="more-toggle" (click)="toggleItems(order.orderId)">
-              + {{ hiddenCount(order) }} more {{ hiddenCount(order) === 1 ? 'item' : 'items' }}
-            </button>
-          } @else if (isExpanded(order.orderId) && orderItems(order).length > maxItems) {
-            <button type="button" class="more-toggle" (click)="toggleItems(order.orderId)">Show less</button>
-          }
-
-          <footer class="order-actions">
-            <a class="btn btn-sm" [routerLink]="['/orders', order.orderId]">View Order</a>
-            <!-- Like big stores: tracking only while the parcel is on its way.
-                 After delivery the history stays reachable from the order page. -->
-            @if (order.trackingNumber && order.status === 'Shipped') {
-              <a class="btn btn-sm btn-outline" [routerLink]="['/orders', order.orderId, 'track']">Track Package</a>
-            }
-            @if (canCancel(order)) {
-              <button
-                type="button"
-                class="btn btn-sm btn-cancel"
-                [disabled]="cancellingOrderId() === order.orderId"
-                (click)="cancelOrder(order)"
-              >
-                {{ cancellingOrderId() === order.orderId ? 'Cancelling...' : 'Cancel Order' }}
-              </button>
-            }
-          </footer>
-        </article>
+    <div class="reorder-crystal-carousel" role="list">
+      @for (crystal of purchasedCrystals(); track crystal.productId) {
+      <div class="reorder-crystal-card" role="listitem">
+        <a class="reorder-crystal-thumb" [routerLink]="['/products', itemSlug(crystal)]">
+          <img [imgSrc]="crystal.imageUrl ?? null" imgSizes="64px" [alt]="crystal.productName" width="64" height="64"
+            loading="lazy" decoding="async" imgFallback />
+        </a>
+        <div class="reorder-crystal-meta">
+          <a class="reorder-crystal-name" [routerLink]="['/products', itemSlug(crystal)]">{{ crystal.productName }}</a>
+          <span class="reorder-crystal-price">{{ crystal.price | inr }}</span>
+        </div>
+        <div class="reorder-crystal-buttons">
+          <button type="button" class="btn-reorder" (click)="buyAgain(crystal, $event)"
+            [disabled]="reorderingProductId() === crystal.productId" title="Buy Again in 1 Click">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+              <path d="M3 6h18" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            <span>{{ reorderingProductId() === crystal.productId ? 'Adding...' : 'Buy Again' }}</span>
+          </button>
+          <button type="button" class="btn-care-guide"
+            (click)="openCareGuide(crystal.productName, crystal.productId, $event)" title="View Cleansing & Care Guide">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+            </svg>
+            <span>Care Guide</span>
+          </button>
+        </div>
+      </div>
       }
     </div>
+  </section>
+  }
+
+  <div class="order-list">
+    @for (order of orders(); track order.orderId) {
+    <article class="order-card" [class]="'order-card ' + statusTone(order)">
+      <header class="order-head">
+        <div class="order-state">
+          <span class="state-title"><span class="state-dot" aria-hidden="true"></span>{{ statusTitle(order) }}</span>
+          <span class="state-sub">{{ statusSubtitle(order) }}</span>
+        </div>
+        <div class="order-summary">
+          <span class="summary-total">{{ order.totalAmount | inr }}</span>
+          <span class="summary-meta">Order #{{ order.orderId }} &middot; {{ order.orderDate | date:'dd MMM yyyy' }}
+            &middot; {{ order.paymentMethod === 'Card' ? 'Card' : 'COD' }}</span>
+        </div>
+      </header>
+
+      <ul class="item-list">
+        @for (item of visibleItems(order); track item.productId) {
+        <li class="item-row">
+          <a class="item-thumb" [routerLink]="['/products', itemSlug(item)]" tabindex="-1" aria-hidden="true">
+            <img [imgSrc]="item.imageUrl ?? null" imgSizes="72px" [alt]="item.productName" width="72" height="72"
+              loading="lazy" decoding="async" imgFallback />
+          </a>
+          <div class="item-info">
+            <a class="item-name" [routerLink]="['/products', itemSlug(item)]">{{ item.productName }}</a>
+            <span class="item-qty">Qty: {{ item.quantity }}</span>
+            <div class="item-inline-actions">
+              <button type="button" class="link-btn-action" (click)="buyAgain(item, $event)"
+                [disabled]="reorderingProductId() === item.productId">
+                Buy Again
+              </button>
+              <span class="action-separator">&middot;</span>
+              <button type="button" class="link-btn-action"
+                (click)="openCareGuide(item.productName, item.productId, $event)">
+                Care Guide
+              </button>
+            </div>
+          </div>
+          <span class="item-price">{{ item.subtotal | inr }}</span>
+        </li>
+        } @empty {
+        @if (order.productNames?.length) {
+        <li class="item-row item-row--plain">{{ order.productNames!.join(', ') }}</li>
+        }
+        }
+      </ul>
+
+      @if (hiddenCount(order) > 0) {
+      <button type="button" class="more-toggle" (click)="toggleItems(order.orderId)">
+        + {{ hiddenCount(order) }} more {{ hiddenCount(order) === 1 ? 'item' : 'items' }}
+      </button>
+      } @else if (isExpanded(order.orderId) && orderItems(order).length > maxItems) {
+      <button type="button" class="more-toggle" (click)="toggleItems(order.orderId)">Show less</button>
+      }
+
+      <footer class="order-actions">
+        <a class="btn btn-sm" [routerLink]="['/orders', order.orderId]">View Order</a>
+        <!-- Tracking only while parcel is on its way -->
+        @if (order.trackingNumber && order.status === 'Shipped') {
+        <a class="btn btn-sm btn-outline" [routerLink]="['/orders', order.orderId, 'track']">Track Package</a>
+        }
+        @if (canCancel(order)) {
+        <button type="button" class="btn btn-sm btn-cancel" [disabled]="cancellingOrderId() === order.orderId"
+          (click)="cancelOrder(order)">
+          {{ cancellingOrderId() === order.orderId ? 'Cancelling...' : 'Cancel Order' }}
+        </button>
+        }
+      </footer>
+    </article>
+    }
+  </div>
+  }
+
+  <!-- Care & Cleansing Modal -->
+  @if (selectedCareItem(); as care) {
+  <div class="care-modal-backdrop" (click)="closeCareGuide()" role="dialog" aria-modal="true"
+    aria-labelledby="care-modal-title">
+    <div class="care-modal-card" (click)="$event.stopPropagation()">
+      <div class="care-modal-header">
+        <div>
+          <span class="care-modal-badge">Mineral Care &amp; Energetics</span>
+          <h2 id="care-modal-title">{{ care.name }}</h2>
+        </div>
+        <button type="button" class="care-modal-close" (click)="closeCareGuide()" aria-label="Close care guide">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="care-specs-grid">
+        <div class="care-spec-box">
+          <div class="spec-head">
+            <span class="spec-icon" aria-hidden="true">🌊</span>
+            <strong>Water Cleansing</strong>
+          </div>
+          <p>{{ care.specs.waterSafe }}</p>
+        </div>
+
+        <div class="care-spec-box">
+          <div class="spec-head">
+            <span class="spec-icon" aria-hidden="true">☀️</span>
+            <strong>Sun &amp; Light Charging</strong>
+          </div>
+          <p>{{ care.specs.sunlightExposure }}</p>
+        </div>
+
+        <div class="care-spec-box">
+          <div class="spec-head">
+            <span class="spec-icon" aria-hidden="true">🧘</span>
+            <strong>Chakra Alignment</strong>
+          </div>
+          <p>{{ care.specs.chakra }}</p>
+        </div>
+
+        <div class="care-spec-box">
+          <div class="spec-head">
+            <span class="spec-icon" aria-hidden="true">🌿</span>
+            <strong>Elemental Resonance</strong>
+          </div>
+          <p>{{ care.specs.element }}</p>
+        </div>
+      </div>
+
+      <div class="care-modal-footer">
+        <button type="button" class="btn btn-outline" (click)="closeCareGuide()">Close Guide</button>
+      </div>
+    </div>
+  </div>
   }
 </section>

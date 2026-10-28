@@ -5,7 +5,9 @@ import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { AddressService } from '../../services/address.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { SupportService } from '../../services/support.service';
 import { OrderSummary } from '../../models/order';
+import { InrPipe } from '../../pipes/inr.pipe';
 
 const PROGRESS_STEPS = [
   { status: 'Pending', label: 'Placed' },
@@ -16,9 +18,8 @@ const PROGRESS_STEPS = [
 
 const RECENT_LIMIT = 3;
 
-// My Account > Overview (/profile): greeting, quick stats, where the latest
-// order is, and the few before it.
-import { InrPipe } from '../../pipes/inr.pipe';
+// My Account > Overview (/profile): greeting, quick-action stat cards, latest order tracking,
+// earlier orders, and quick shortcuts.
 @Component({
   selector: 'app-account-overview',
   standalone: true,
@@ -31,15 +32,23 @@ export class AccountOverview implements OnInit {
   wishlistService = inject(WishlistService);
   private orderService = inject(OrderService);
   private addressService = inject(AddressService);
+  private supportService = inject(SupportService);
 
   orders = signal<OrderSummary[]>([]);
   isLoadingOrders = signal(true);
   ordersError = signal(false);
   addressCount = signal<number | null>(null);
+  supportTicketCount = signal<number | null>(null);
+  activeTicketsCount = signal<number | null>(null);
 
   firstName = computed(() => this.authService.currentUser()?.name?.trim().split(/\s+/)[0] ?? '');
 
   latestOrder = computed(() => this.orders()[0] ?? null);
+  hasActiveOrder = computed(() => {
+    const latest = this.latestOrder();
+    return !!latest && (latest.status === 'Pending' || latest.status === 'Confirmed' || latest.status === 'Shipped');
+  });
+
   recentOrders = computed(() => this.orders().slice(1, RECENT_LIMIT + 1));
 
   // Cancelled orders don't count toward what the customer has spent.
@@ -60,6 +69,18 @@ export class AccountOverview implements OnInit {
     this.addressService.getAddresses().subscribe({
       next: addresses => this.addressCount.set(addresses.length),
       error: () => this.addressCount.set(null)
+    });
+
+    this.supportService.getMyTickets().subscribe({
+      next: tickets => {
+        this.supportTicketCount.set(tickets.length);
+        const active = tickets.filter(t => t.status === 'Open' || t.status === 'AwaitingCustomer').length;
+        this.activeTicketsCount.set(active);
+      },
+      error: () => {
+        this.supportTicketCount.set(null);
+        this.activeTicketsCount.set(null);
+      }
     });
   }
 

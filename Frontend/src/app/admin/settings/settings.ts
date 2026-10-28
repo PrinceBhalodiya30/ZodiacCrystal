@@ -158,7 +158,7 @@ export class AdminSettings implements OnInit {
         this.heroTitle.set(s.heroTitle);
         this.heroSubtitle.set(s.heroSubtitle);
 
-        this.lastUpdated.set(s.updatedAt);
+        this.lastUpdated.set(this.formatUtcIso(s.updatedAt));
         this.lastUpdatedBy.set(s.updatedByEmail ?? null);
         this.isLoading.set(false);
       },
@@ -226,7 +226,7 @@ export class AdminSettings implements OnInit {
     this.storeSettingsService.updateSettings(req).subscribe({
       next: (updated) => {
         this.isSaving.set(false);
-        this.lastUpdated.set(updated.updatedAt);
+        this.lastUpdated.set(this.formatUtcIso(updated.updatedAt));
         this.lastUpdatedBy.set(updated.updatedByEmail ?? null);
         this.toastService.success('Store settings & CMS copy saved successfully!');
       },
@@ -236,5 +236,17 @@ export class AdminSettings implements OnInit {
         this.toastService.error(msg);
       }
     });
+  }
+
+  private formatUtcIso(rawDate: string | null | undefined): string {
+    if (!rawDate) return '';
+    const trimmed = rawDate.trim();
+    // If the date string does not have a timezone indicator (Z or offset),
+    // append 'Z' so JavaScript and Angular DatePipe correctly treat it as UTC
+    // and convert it to the browser's local timezone (e.g. IST).
+    if (!trimmed.endsWith('Z') && !trimmed.includes('+') && !/-\d{2}:\d{2}$/.test(trimmed)) {
+      return `${trimmed}Z`;
+    }
+    return trimmed;
   }
 }

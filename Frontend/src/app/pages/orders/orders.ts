@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -9,8 +9,21 @@ import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ToastService } from '../../services/toast.service';
 import { NotificationService } from '../../services/notification.service';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
-
+import { CartService } from '../../services/cart.service';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product';
+import { CrystalSpecs, getProductCrystalSpecs } from '../../utils/crystal-specs.util';
 import { InrPipe } from '../../pipes/inr.pipe';
+
+export interface PurchasedCrystalSummary {
+  productId: number;
+  productName: string;
+  price: number;
+  imageUrl?: string | null;
+  orderId: number;
+  lastPurchasedDate: string;
+}
+
 @Component({
   selector: 'app-orders',
   standalone: true,
@@ -22,12 +35,40 @@ export class Orders implements OnInit {
   private orderService = inject(OrderService);
   private confirmDialog = inject(ConfirmDialogService);
   private toast = inject(ToastService);
+  cartService = inject(CartService);
+  private productService = inject(ProductService);
 
   orders = signal<OrderSummary[]>([]);
   isLoading = signal(true);
   errorMessage = signal('');
   actionError = signal('');
   cancellingOrderId = signal<number | null>(null);
+
+  reorderingProductId = signal<number | null>(null);
+  selectedCareItem = signal<{ name: string; specs: CrystalSpecs } | null>(null);
+
+  // Distinct list of crystals previously ordered by the customer (excluding cancelled orders)
+  purchasedCrystals = computed<PurchasedCrystalSummary[]>(() => {
+    const list = this.orders();
+    const map = new Map<number, PurchasedCrystalSummary>();
+
+    for (const order of list) {
+      if (order.status === 'Cancelled') continue;
+      for (const item of order.items ?? []) {
+        if (!map.has(item.productId)) {
+          map.set(item.productId, {
+            productId: item.productId,
+            productName: item.productName,
+            price: item.unitPrice,
+            imageUrl: item.imageUrl,
+            orderId: order.orderId,
+            lastPurchasedDate: order.orderDate
+          });
+        }
+      }
+    }
+    return Array.from(map.values()).slice(0, 8);
+  });
 
   constructor() {
     // An admin changed one of these orders (status or return) - refresh quietly.
@@ -63,7 +104,7 @@ export class Orders implements OnInit {
     return order.items ?? [];
   }
 
-  itemSlug(item: OrderSummaryItem): string {
+  itemSlug(item: { productId: number; productName: string }): string {
     return getProductSlug({ productId: item.productId, name: item.productName });
   }
 
@@ -173,5 +214,90 @@ export class Orders implements OnInit {
         this.toast.error(message);
       }
     });
+  }
+
+  buyAgain(item: { productId: number; productName: string }, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (this.reorderingProductId() === item.productId) return;
+
+    this.reorderingProductId.set(item.productId);
+    this.productService.getProduct(item.productId).subscribe({
+      next: product => {
+        this.reorderingProductId.set(null);
+        if (product.stockQuantity <= 0) {
+          this.toast.error(`${product.name} is currently out of stock.`);
+          return;
+        }
+        const added = this.cartService.addToCart(product, 1, true);
+        if (added > 0) {
+          this.toast.success(`Added ${product.name} to cart.`);
+        } else {
+          this.toast.error(`Unable to add ${product.name} to cart.`);
+        }
+      },
+      error: () => {
+        this.reorderingProductId.set(null);
+        this.toast.error('Unable to fetch product details.');
+      }
+    });
+  }
+
+  openCareGuide(productName: string, productId?: number, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    const specs = getProductCrystalSpecs({ name: productName } as Product);
+    if (specs) {
+      this.selectedCareItem.set({ name: productName, specs });
+    } else if (productId) {
+      this.productService.getProduct(productId).subscribe({
+        next: prod => {
+          const fetchedSpecs = getProductCrystalSpecs(prod) ?? {
+            waterSafe: 'Safe for gentle cool water cleansing',
+            sunlightExposure: 'Best charged under full moonlight or morning sun',
+            chakra: 'Universal Energy Alignment',
+            element: 'Earth & Ether'
+          };
+          this.selectedCareItem.set({ name: prod.name, specs: fetchedSpecs });
+        },
+        error: () => {
+          this.selectedCareItem.set({
+            name: productName,
+            specs: {
+              waterSafe: 'Safe for gentle cool water cleansing',
+              sunlightExposure: 'Best charged under full moonlight or morning sun',
+              chakra: 'Universal Energy Alignment',
+              element: 'Earth & Ether'
+            }
+          });
+        }
+      });
+    } else {
+      this.selectedCareItem.set({
+        name: productName,
+        specs: {
+          waterSafe: 'Safe for gentle cool water cleansing',
+          sunlightExposure: 'Best charged under full moonlight or morning sun',
+          chakra: 'Universal Energy Alignment',
+          element: 'Earth & Ether'
+        }
+      });
+    }
+  }
+
+  closeCareGuide(): void {
+    this.selectedCareItem.set(null);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.selectedCareItem()) {
+      this.closeCareGuide();
+    }
   }
 }

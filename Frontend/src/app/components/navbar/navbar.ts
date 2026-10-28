@@ -53,6 +53,20 @@ export class Navbar {
   isScrolled = signal(false);
   isSearchOpen = signal(false);
   searchTerm = signal('');
+  isShopDropdownOpen = signal(false);
+  isAccountDropdownOpen = signal(false);
+
+  userInitials = computed(() => {
+    const name = this.authService.currentUser()?.name;
+    if (!name) return '';
+    return name
+      .trim()
+      .split(/\s+/)
+      .map(part => part[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+  });
   announcementDismissed = signal(this.readAnnouncementDismissed());
   isAnnouncementVisible = computed(() => this.storeSettings.announcementEnabled() && !this.announcementDismissed());
   announcementText = computed(() => this.storeSettings.announcementText());
@@ -117,6 +131,34 @@ export class Navbar {
 
   closeMenu(): void {
     this.isMenuOpen.set(false);
+    this.isShopDropdownOpen.set(false);
+    this.isAccountDropdownOpen.set(false);
+  }
+
+  toggleShopDropdown(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isAccountDropdownOpen.set(false);
+    this.isShopDropdownOpen.update(v => !v);
+  }
+
+  toggleAccountDropdown(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isShopDropdownOpen.set(false);
+    this.isAccountDropdownOpen.update(v => !v);
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.isShopDropdownOpen.set(false);
+    this.isAccountDropdownOpen.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.isShopDropdownOpen.set(false);
+    this.isAccountDropdownOpen.set(false);
+    this.isSearchOpen.set(false);
+    this.isMenuOpen.set(false);
   }
 
   toggleSearch(): void {
@@ -145,6 +187,7 @@ export class Navbar {
   }
 
   logout(): void {
+    this.isAccountDropdownOpen.set(false);
     this.authService.logout();
     this.wishlistService.clear();
     this.closeMenu();

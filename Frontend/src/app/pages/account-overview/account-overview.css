@@ -22,7 +22,7 @@
 /* Stat tiles */
 .stat-tiles {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1.25rem;
 }
 
@@ -67,6 +67,7 @@
 .stat-tile-icon--gold { background-color: var(--color-amber-bg, #fdf3e2); color: var(--color-brass); }
 .stat-tile-icon--rose { background-color: var(--color-rose-bg, #fdebf0); color: var(--color-rose, #c2416b); }
 .stat-tile-icon--teal { background-color: var(--color-teal-bg, #e3f5f2); color: var(--color-teal, #1f7a6d); }
+.stat-tile-icon--purple { background-color: #f3e8ff; color: #7e22ce; }
 
 .stat-tile-value {
   font-family: var(--font-display);
@@ -348,4 +349,13 @@
   .progress-label {
     font-size: 0.72rem;
   }
+}
+
+
+.latest-order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1.25rem;
 }

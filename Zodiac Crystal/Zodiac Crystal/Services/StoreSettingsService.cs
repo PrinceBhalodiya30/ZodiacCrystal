@@ -150,7 +150,7 @@ namespace Zodiac_Crystal.Services
             MoonBannerCustomBenefit = s.MoonBannerCustomBenefit,
             MoonBannerCustomLink = s.MoonBannerCustomLink,
             MoonBannerShowModal = s.MoonBannerShowModal,
-            UpdatedAt = s.UpdatedAt,
+            UpdatedAt = DateTime.SpecifyKind(s.UpdatedAt, DateTimeKind.Utc),
             UpdatedByEmail = s.UpdatedByUser?.Email
         };
     }
