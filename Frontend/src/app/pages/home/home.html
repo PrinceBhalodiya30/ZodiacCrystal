@@ -2,12 +2,12 @@
   <div class="container hero-inner">
     <div class="hero-copy">
       <span class="hero-eyebrow">
-        Natural Minerals & Astrological Alignments
+        {{ heroEyebrow() }}
       </span>
-      <h1>Discover Crystals Aligned with <span class="hero-highlight">Your Zodiac</span></h1>
+      <h1>{{ heroTitle() }}</h1>
       <p>
-        Hand-selected crystals, raw clusters, polished towers, and gemstone jewelry
-        intuitively paired to resonate with your astrological blueprint and daily intentions.
+        {{ heroSubtitle() }}
+
       </p>
       <div class="hero-actions">
         <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>

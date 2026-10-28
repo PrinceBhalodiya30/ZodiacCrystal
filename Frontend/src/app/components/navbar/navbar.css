@@ -15,6 +15,57 @@
   transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
+.announcement-link {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.announcement-link:hover {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+/* Luxury Announcement Bar Themes */
+.announcement-bar[data-style="gold"] {
+  background: linear-gradient(90deg, #fdf8ee 0%, #f7eccb 50%, #fdf8ee 100%);
+  color: #63430c;
+  border-bottom-color: #ebd79e;
+}
+.announcement-bar[data-style="gold"] .announcement-close {
+  color: #63430c;
+}
+
+.announcement-bar[data-style="amethyst"] {
+  background: linear-gradient(90deg, #f7f3fb 0%, #ede3f7 50%, #f7f3fb 100%);
+  color: #4a2b66;
+  border-bottom-color: #ded0ee;
+}
+.announcement-bar[data-style="amethyst"] .announcement-close {
+  color: #4a2b66;
+}
+
+.announcement-bar[data-style="sapphire"] {
+  background: linear-gradient(90deg, #1b263b 0%, #1e2d4a 50%, #1b263b 100%);
+  color: #e0e8f5;
+  border-bottom-color: #2e3e5c;
+}
+.announcement-bar[data-style="sapphire"] .announcement-close {
+  color: #e0e8f5;
+}
+
+.announcement-bar[data-style="ruby"] {
+  background: linear-gradient(90deg, #fff2f2 0%, #fce2e2 50%, #fff2f2 100%);
+  color: #7d1f1f;
+  border-bottom-color: #f7c3c3;
+}
+.announcement-bar[data-style="ruby"] .announcement-close {
+  color: #7d1f1f;
+}
+
 .announcement-text {
   flex: 1;
 }

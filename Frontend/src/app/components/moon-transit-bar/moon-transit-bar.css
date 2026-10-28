@@ -1,0 +1,536 @@
+/* ==========================================================================
+   Daily Moon Phase & Transit Energy Header Ticker — Crystal Studio
+   ========================================================================== */
+
+.moon-transit-bar {
+  background: linear-gradient(90deg, #0e0c1a 0%, #17142c 50%, #0e0c1a 100%);
+  color: #ede7f8;
+  border-bottom: 1px solid rgba(216, 201, 242, 0.14);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.025em;
+  position: relative;
+  z-index: 510;
+  transition: opacity 0.25s ease;
+}
+
+.moon-transit-content {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0.42rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ticker-text-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-weight: 400;
+  color: #dfd7ee;
+}
+
+.moon-icon {
+  font-size: 14px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(237, 231, 248, 0.4));
+}
+
+.moon-phrase strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.ticker-divider {
+  color: rgba(216, 201, 242, 0.4);
+  font-weight: bold;
+}
+
+.crystal-recommendation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  color: #dfd7ee;
+}
+
+.crystal-name-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f7d498;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(247, 212, 152, 0.4);
+  text-underline-offset: 3px;
+  transition: color 0.18s ease, text-shadow 0.18s ease, text-decoration-color 0.18s ease;
+}
+
+.crystal-name-btn:hover {
+  color: #fff0d4;
+  text-decoration-color: #fff0d4;
+  text-shadow: 0 0 8px rgba(247, 212, 152, 0.6);
+}
+
+.crystal-name-btn:focus-visible {
+  outline: 2px solid #f7d498;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.crystal-benefit {
+  color: #c4bbdb;
+  font-style: italic;
+}
+
+.ticker-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.cosmic-details-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(226, 217, 243, 0.22);
+  color: #e8e2f6;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.cosmic-details-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(247, 212, 152, 0.45);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.sparkle {
+  color: #f7d498;
+  font-size: 10px;
+}
+
+.moon-bar-close {
+  background: none;
+  border: none;
+  color: #a49abf;
+  padding: 0.2rem;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.moon-bar-close:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.moon-bar-close:focus-visible {
+  outline: 2px solid #f7d498;
+  outline-offset: 1px;
+}
+
+/* ==========================================================================
+   Cosmic Alignment Modal Dialog
+   ========================================================================== */
+
+.cosmic-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(10, 8, 20, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  overflow-y: auto;
+  animation: cosmic-fade 0.22s ease-out;
+}
+
+.cosmic-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  background: #141126;
+  color: #ede7f8;
+  border: 1px solid rgba(226, 217, 243, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 28px 72px rgba(4, 3, 10, 0.65), 0 0 32px rgba(152, 94, 56, 0.12);
+  overflow: hidden;
+  animation: cosmic-scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cosmic-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cosmic-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.cosmic-modal-header {
+  padding: 1.5rem 1.75rem 1.25rem;
+  border-bottom: 1px solid rgba(226, 217, 243, 0.12);
+  position: relative;
+  background: linear-gradient(180deg, rgba(32, 26, 56, 0.45) 0%, rgba(20, 17, 38, 0) 100%);
+}
+
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #f7d498;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.cosmic-modal-title {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.cosmic-modal-subtitle {
+  font-size: 13px;
+  color: #bfb5d8;
+  margin: 0;
+}
+
+.cosmic-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #bfb5d8;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.cosmic-modal-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.cosmic-modal-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.cosmic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.cosmic-panel {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(226, 217, 243, 0.1);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.transit-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.phase-pill,
+.element-pill {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.phase-pill {
+  background: rgba(216, 201, 242, 0.14);
+  color: #f1edfa;
+}
+
+.element-pill[data-element="earth"] {
+  background: rgba(100, 150, 90, 0.18);
+  color: #bde0b5;
+  border: 1px solid rgba(100, 150, 90, 0.3);
+}
+
+.element-pill[data-element="fire"] {
+  background: rgba(215, 95, 60, 0.18);
+  color: #ffb8a0;
+  border: 1px solid rgba(215, 95, 60, 0.3);
+}
+
+.element-pill[data-element="water"] {
+  background: rgba(60, 140, 215, 0.18);
+  color: #aae0ff;
+  border: 1px solid rgba(60, 140, 215, 0.3);
+}
+
+.element-pill[data-element="air"] {
+  background: rgba(180, 160, 220, 0.18);
+  color: #e6dbff;
+  border: 1px solid rgba(180, 160, 220, 0.3);
+}
+
+.zodiac-dual-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.zodiac-symbol {
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #f7d498;
+  text-shadow: 0 0 16px rgba(247, 212, 152, 0.35);
+}
+
+.zodiac-heading {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.25rem;
+}
+
+.zodiac-subheading {
+  font-size: 12px;
+  color: #bfb5d8;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.transit-focus-box {
+  margin-top: auto;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 3px solid #f7d498;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0 6px 6px 0;
+}
+
+.focus-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f7d498;
+  margin-bottom: 0.25rem;
+}
+
+.focus-desc {
+  font-size: 12.5px;
+  color: #e5def5;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Crystal Panel */
+.panel-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #f7d498;
+  margin-bottom: 0.6rem;
+}
+
+.crystal-feature-header {
+  margin-bottom: 0.6rem;
+}
+
+.crystal-title {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.15rem;
+}
+
+.crystal-tagline {
+  font-size: 12px;
+  color: #f7d498;
+  font-style: italic;
+}
+
+.crystal-intention {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #dcd4ee;
+  margin: 0 0 1rem;
+  font-style: italic;
+}
+
+.ritual-box {
+  background: rgba(247, 212, 152, 0.06);
+  border: 1px solid rgba(247, 212, 152, 0.2);
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.ritual-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f7d498;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+.ritual-text {
+  font-size: 12px;
+  color: #ede7f8;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.crystal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.btn-shop-crystal {
+  background: linear-gradient(135deg, #f7d498 0%, #d89f5d 100%);
+  color: #120e24;
+  border: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.btn-shop-crystal:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(247, 212, 152, 0.3);
+}
+
+.btn-all-zodiac {
+  background: transparent;
+  color: #bfb5d8;
+  border: 1px solid rgba(226, 217, 243, 0.2);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.btn-all-zodiac:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+@media (max-width: 860px) {
+  .cosmic-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticker-actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .moon-transit-content {
+    padding: 0.4rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .ticker-text-wrapper {
+    font-size: 11px;
+    gap: 0.3rem;
+  }
+
+  .crystal-name-btn {
+    font-size: 11px;
+  }
+
+  .cosmic-details-btn {
+    padding: 0.18rem 0.45rem;
+    font-size: 10px;
+  }
+
+  .cosmic-modal-title {
+    font-size: 1.3rem;
+  }
+
+  .cosmic-modal-body {
+    padding: 1.25rem 1rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moon-transit-bar,
+  .cosmic-modal-overlay,
+  .cosmic-modal-card,
+  .btn-shop-crystal,
+  .cosmic-details-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+

@@ -33,6 +33,7 @@ const STATIC_NAV_COMMANDS: CommandItem[] = [
   { id: 'nav-coupons', category: 'Navigation', title: 'Coupons & Discounts', subtitle: 'Promo codes & usage limits', icon: ADMIN_NAV_ICONS.coupons, path: '/admin/coupons' },
   { id: 'nav-reports', category: 'Navigation', title: 'Sales Reports', subtitle: 'Revenue, area charts & analytics', icon: ADMIN_NAV_ICONS.reports, path: '/admin/reports' },
   { id: 'nav-users', category: 'Navigation', title: 'Users & Customers', subtitle: 'User accounts & Customer 360', icon: ADMIN_NAV_ICONS.users, path: '/admin/users' },
+  { id: 'nav-settings', category: 'Navigation', title: 'Store Settings & CMS', subtitle: 'Announcement bar, shipping rules & hero banner', icon: ADMIN_NAV_ICONS.settings, path: '/admin/settings' },
   { id: 'nav-audit', category: 'Navigation', title: 'Audit Logs', subtitle: 'System security & action history', icon: ADMIN_NAV_ICONS.audit, path: '/admin/audit-logs' },
   { id: 'nav-news', category: 'Navigation', title: 'Newsletter Subscribers', subtitle: 'Email subscriber audience', icon: ADMIN_NAV_ICONS.newsletter, path: '/admin/newsletter-subscribers' },
   { id: 'nav-store', category: 'Navigation', title: 'View Storefront', subtitle: 'Public customer shop', icon: ADMIN_NAV_ICONS.store, path: '/' }

@@ -6,8 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { CheckoutModeService } from '../../services/checkout-mode.service';
 import { NotificationBell } from '../notification-bell/notification-bell';
+import { MoonTransitBar } from '../moon-transit-bar/moon-transit-bar';
 import { SITE_NAME } from '../../services/page-title.service';
 
 import { QuizService } from '../../services/quiz.service';
@@ -17,7 +19,7 @@ const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, FormsModule, NotificationBell],
+  imports: [RouterLink, RouterLinkActive, FormsModule, NotificationBell, MoonTransitBar],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
 })
@@ -27,6 +29,7 @@ export class Navbar {
   cartService = inject(CartService);
   wishlistService = inject(WishlistService);
   quizService = inject(QuizService);
+  storeSettings = inject(StoreSettingsService);
   private router = inject(Router);
 
   openQuiz(): void {
@@ -50,7 +53,11 @@ export class Navbar {
   isScrolled = signal(false);
   isSearchOpen = signal(false);
   searchTerm = signal('');
-  isAnnouncementVisible = signal(this.readAnnouncementVisible());
+  announcementDismissed = signal(this.readAnnouncementDismissed());
+  isAnnouncementVisible = computed(() => this.storeSettings.announcementEnabled() && !this.announcementDismissed());
+  announcementText = computed(() => this.storeSettings.announcementText());
+  announcementLink = computed(() => this.storeSettings.announcementLink());
+  announcementStyle = computed(() => this.storeSettings.announcementStyle());
 
   cartBump = signal(false);
   wishlistBump = signal(false);
@@ -82,16 +89,16 @@ export class Navbar {
     setTimeout(() => bumpSignal.set(false), 350);
   }
 
-  private readAnnouncementVisible(): boolean {
+  private readAnnouncementDismissed(): boolean {
     try {
-      return localStorage.getItem(ANNOUNCEMENT_DISMISSED_KEY) !== 'true';
+      return localStorage.getItem(ANNOUNCEMENT_DISMISSED_KEY) === 'true';
     } catch {
-      return true;
+      return false;
     }
   }
 
   dismissAnnouncement(): void {
-    this.isAnnouncementVisible.set(false);
+    this.announcementDismissed.set(true);
     try {
       localStorage.setItem(ANNOUNCEMENT_DISMISSED_KEY, 'true');
     } catch {

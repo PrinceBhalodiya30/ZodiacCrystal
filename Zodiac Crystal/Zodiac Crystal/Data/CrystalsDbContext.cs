@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Models;
@@ -65,6 +65,8 @@ public partial class CrystalsDbContext : DbContext
     public virtual DbSet<RecentlyViewed> RecentlyViewed { get; set; }
 
     public virtual DbSet<PaymentFailure> PaymentFailures { get; set; }
+
+    public virtual DbSet<StoreSetting> StoreSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -470,6 +472,13 @@ public partial class CrystalsDbContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.Resolved).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<StoreSetting>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_StoreSettings");
+            entity.ToTable("StoreSettings");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysutcdatetime())");
         });
 
         OnModelCreatingPartial(modelBuilder);

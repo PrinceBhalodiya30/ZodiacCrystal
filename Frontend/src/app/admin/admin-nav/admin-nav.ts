@@ -105,7 +105,10 @@ export class AdminNav implements OnInit {
     },
     {
       title: 'System',
-      links: [{ label: 'Audit Logs', path: '/admin/audit-logs', icon: ICONS.audit }]
+      links: [
+        { label: 'Store Settings', path: '/admin/settings', icon: ICONS.settings },
+        { label: 'Audit Logs', path: '/admin/audit-logs', icon: ICONS.audit }
+      ]
     }
   ];
 

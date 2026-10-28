@@ -6,6 +6,7 @@ import { CategoryService } from '../../services/category.service';
 import { Zodiac } from '../../models/zodiac';
 import { Product } from '../../models/product';
 import { Category, CategoryTileStats } from '../../models/category';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { ZodiacCard } from '../../components/zodiac-card/zodiac-card';
 import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardSkeleton } from '../../components/product-card-skeleton/product-card-skeleton';
@@ -45,6 +46,10 @@ export class Home implements OnInit {
   private zodiacService = inject(ZodiacService);
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
+  private storeSettings = inject(StoreSettingsService);
+  readonly heroEyebrow = computed(() => this.storeSettings.heroEyebrow());
+  readonly heroTitle = computed(() => this.storeSettings.heroTitle());
+  readonly heroSubtitle = computed(() => this.storeSettings.heroSubtitle());
   quizService = inject(QuizService);
 
   openQuiz(): void {

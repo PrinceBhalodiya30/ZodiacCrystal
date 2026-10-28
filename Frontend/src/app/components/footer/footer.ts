@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { NewsletterService } from '../../services/newsletter.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { SITE_NAME } from '../../services/page-title.service';
 
 @Component({
@@ -18,6 +19,8 @@ export class Footer {
   readonly currentYear = new Date().getFullYear();
   authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
+  private storeSettings = inject(StoreSettingsService);
+  readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
 
   newsletterEmail = signal('');
   newsletterHoneypot = signal('');

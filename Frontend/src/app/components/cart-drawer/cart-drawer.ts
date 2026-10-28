@@ -1,6 +1,7 @@
 import { Component, HostListener, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, FREE_SHIPPING_THRESHOLD } from '../../services/cart.service';
+import { CartService } from '../../services/cart.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { CartItem } from '../../models/cart';
 import { Product } from '../../models/product';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
@@ -17,9 +18,10 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 })
 export class CartDrawer {
   cartService = inject(CartService);
+  private storeSettings = inject(StoreSettingsService);
   private router = inject(Router);
 
-  readonly threshold = FREE_SHIPPING_THRESHOLD;
+  readonly threshold = computed(() => this.storeSettings.freeShippingThreshold());
 
   items = this.cartService.items;
   total = this.cartService.total;
@@ -27,9 +29,9 @@ export class CartDrawer {
   isOpen = this.cartService.isDrawerOpen;
   lastAddedProduct = this.cartService.lastAddedProduct;
 
-  amountNeeded = computed(() => Math.max(0, this.threshold - this.total()));
-  progressPercent = computed(() => Math.min(100, Math.round((this.total() / this.threshold) * 100)));
-  hasFreeShipping = computed(() => this.total() >= this.threshold);
+  amountNeeded = computed(() => Math.max(0, this.threshold() - this.total()));
+  progressPercent = computed(() => Math.min(100, Math.round((this.total() / (this.threshold() || 1)) * 100)));
+  hasFreeShipping = computed(() => this.total() >= this.threshold());
 
   @HostListener('document:keydown.escape')
   onEscape(): void {

@@ -1,6 +1,14 @@
+<app-moon-transit-bar></app-moon-transit-bar>
+
 @if (isAnnouncementVisible() && !isCheckout()) {
-  <div class="announcement-bar">
-    <span class="announcement-text">Free shipping on orders over ₹999 · Cash on Delivery available · 7-day returns</span>
+  <div class="announcement-bar" [attr.data-style]="announcementStyle()">
+    @if (announcementLink(); as link) {
+      <a [routerLink]="link" class="announcement-link">
+        <span class="announcement-text">{{ announcementText() }}</span>
+      </a>
+    } @else {
+      <span class="announcement-text">{{ announcementText() }}</span>
+    }
     <button
       type="button"
       class="announcement-close"

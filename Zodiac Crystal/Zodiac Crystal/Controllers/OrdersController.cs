@@ -28,6 +28,7 @@ namespace Zodiac_Crystal.Controllers
         private readonly BraintreePaymentService _paymentService;
         private readonly LowStockAlertService _lowStockAlertService;
         private readonly AddressCheckService _addressCheckService;
+        private readonly StoreSettingsService _storeSettingsService;
 
         public OrdersController(
             CrystalsDbContext context,
@@ -38,7 +39,8 @@ namespace Zodiac_Crystal.Controllers
             IEmailService emailService,
             BraintreePaymentService paymentService,
             LowStockAlertService lowStockAlertService,
-            AddressCheckService addressCheckService)
+            AddressCheckService addressCheckService,
+            StoreSettingsService storeSettingsService)
         {
             _addressCheckService = addressCheckService;
             _context = context;
@@ -49,6 +51,7 @@ namespace Zodiac_Crystal.Controllers
             _emailService = emailService;
             _paymentService = paymentService;
             _lowStockAlertService = lowStockAlertService;
+            _storeSettingsService = storeSettingsService;
         }
 
         // POST: api/orders
@@ -148,9 +151,9 @@ namespace Zodiac_Crystal.Controllers
             // coupon/points discount), flat ₹50 otherwise. Computed here and stored on
             // the order itself, so historical orders keep whatever fee actually applied
             // even if this threshold/rate changes later.
-            const decimal FreeShippingThreshold = 999m;
-            const decimal FlatShippingFee = 50m;
-            var shippingFee = total >= FreeShippingThreshold ? 0m : FlatShippingFee;
+            var (freeShippingThreshold, flatShippingFee) = await _storeSettingsService.GetShippingRulesAsync();
+
+            var shippingFee = total >= freeShippingThreshold ? 0m : flatShippingFee;
 
             // Step 2: everything is valid - create the order, order items, and reduce
             // stock together as one transaction. If anything fails, none of it saves.

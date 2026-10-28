@@ -1,0 +1,555 @@
+<app-admin-nav></app-admin-nav>
+
+<section class="container admin-settings-page">
+  <div class="settings-header">
+    <div class="header-left">
+      <div class="header-title-row">
+        <h1>Store Settings &amp; CMS</h1>
+        @if (lastUpdated()) {
+          <span class="last-updated-pill">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Updated {{ lastUpdated() | date:'short' }}
+            @if (lastUpdatedBy()) {
+              by {{ lastUpdatedBy() }}
+            }
+          </span>
+        }
+      </div>
+      <p class="header-subtitle">
+        Control top announcement banner, free shipping threshold rules, and storefront hero copy without code deployments.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/" target="_blank" class="btn btn-outline storefront-preview-btn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span>View Live Storefront</span>
+      </a>
+      <button
+        type="button"
+        class="btn btn-primary save-btn"
+        (click)="saveSettings()"
+        [disabled]="isSaving() || isLoading()"
+      >
+        @if (isSaving()) {
+          <span class="spinner-small" aria-hidden="true"></span>
+          <span>Saving...</span>
+        } @else {
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span>Save Changes</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Live Storefront Header Preview Mockup -->
+  <div class="live-preview-card">
+    <div class="preview-card-header">
+      <span class="preview-badge">
+        <span class="pulsing-dot"></span>
+        Live Storefront Preview
+      </span>
+      <span class="preview-hint">What your customers see at the very top of every page</span>
+    </div>
+
+    <div class="preview-browser-frame">
+      <div class="preview-browser-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+
+      <!-- Preview Moon Transit Bar -->
+      <div class="preview-moon-bar" [class.is-hidden]="!moonBannerEnabled()">
+        @if (moonBannerEnabled()) {
+          <div class="preview-moon-content">
+            <span class="preview-moon-icon">🌙</span>
+            @if (moonBannerMode() === 'custom' && moonBannerCustomText()) {
+              <span class="preview-moon-text">{{ moonBannerCustomText() }}</span>
+            } @else {
+              <span class="preview-moon-text">
+                Waxing Moon in Taurus · Best Crystal Today:
+                <strong class="preview-crystal-highlight">{{ moonBannerCustomCrystal() || 'Rose Quartz' }}</strong>
+                for {{ moonBannerCustomBenefit() || 'Inner Peace' }}
+              </span>
+            }
+            @if (moonBannerShowModal()) {
+              <span class="preview-cosmic-pill">✦ Cosmic Alignment</span>
+            }
+          </div>
+          <span class="preview-close-btn" aria-hidden="true">×</span>
+        } @else {
+          <span class="preview-disabled-text">✕ Daily Moon Phase &amp; Transit Banner is currently turned OFF</span>
+        }
+      </div>
+
+      <div class="preview-announcement-bar" [attr.data-style]="announcementStyle()" [class.is-hidden]="!announcementEnabled()">
+        @if (announcementEnabled()) {
+          <span class="preview-announcement-text">{{ announcementText() || 'Enter your announcement message below...' }}</span>
+          <span class="preview-close-btn" aria-hidden="true">×</span>
+        } @else {
+          <span class="preview-disabled-text">✕ Announcement Bar is currently turned OFF (Hidden from customers)</span>
+        }
+      </div>
+
+      <div class="preview-mock-navbar">
+        <div class="mock-logo">
+          <span class="mock-gem">💎</span>
+          <strong>Crystal Studio</strong>
+        </div>
+        <div class="mock-nav-links">
+          <span>Home</span>
+          <span>Products</span>
+          <span>Zodiac Signs</span>
+          <span>Mystery Box</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Navigation Tabs -->
+  <div class="settings-tabs">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'announcement'"
+      (click)="activeTab.set('announcement')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Top Announcement Bar</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'moon'"
+      (click)="activeTab.set('moon')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      <span>🌙 Daily Moon &amp; Cosmic Banner</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'shipping'"
+      (click)="activeTab.set('shipping')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <span>Shipping &amp; Free Delivery Rules</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'hero'"
+      (click)="activeTab.set('hero')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      <span>Home Hero CMS</span>
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading store settings...</p>
+    </div>
+  } @else {
+    <!-- TAB 1: Announcement Bar Settings -->
+    @if (activeTab() === 'announcement') {
+      <div class="tab-pane">
+        <!-- Quick Preset Templates -->
+        <div class="preset-box">
+          <div class="preset-title">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
+            <strong>Quick Campaign Presets</strong>
+            <span class="preset-sub">Click any template to auto-populate message &amp; theme</span>
+          </div>
+          <div class="preset-chips">
+            @for (tpl of templates; track tpl.name) {
+              <button
+                type="button"
+                class="preset-chip"
+                (click)="applyTemplate(tpl)"
+                [attr.data-chip-style]="tpl.style"
+              >
+                <span class="chip-dot"></span>
+                <span class="chip-name">{{ tpl.name }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="card-section">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <label for="announcementEnabled" class="section-title">Enable Announcement Bar</label>
+                <p class="section-desc">When disabled, the top banner is hidden from all visitors on the storefront.</p>
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  id="announcementEnabled"
+                  [ngModel]="announcementEnabled()"
+                  (ngModelChange)="announcementEnabled.set($event)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <label for="announcementText" class="section-title">Announcement Message</label>
+            <p class="section-desc">The promotional banner text displayed to shoppers across all devices.</p>
+            <input
+              type="text"
+              id="announcementText"
+              class="form-control"
+              placeholder="e.g. Diwali Cosmic Sale: Extra 15% off with code CELESTIAL15"
+              [ngModel]="announcementText()"
+              (ngModelChange)="announcementText.set($event)"
+              maxlength="500"
+            />
+            <div class="char-count">{{ announcementText().length }} / 500 characters</div>
+          </div>
+
+          <div class="card-section">
+            <label for="announcementStyle" class="section-title">Color Palette &amp; Holiday Theme</label>
+            <p class="section-desc">Choose a visual style matching your current sale or seasonal campaign.</p>
+            <div class="style-selector">
+              <label class="style-option" [class.selected]="announcementStyle() === 'emerald'">
+                <input type="radio" name="announcementStyle" value="emerald" [ngModel]="announcementStyle()" (ngModelChange)="announcementStyle.set($event)"/>
+                <span class="style-swatch swatch-emerald"></span>
+                <div class="style-details">
+                  <strong>Parchment Sage (Default)</strong>
+                  <small>Classic botanical healing vibe</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="announcementStyle() === 'gold'">
+                <input type="radio" name="announcementStyle" value="gold" [ngModel]="announcementStyle()" (ngModelChange)="announcementStyle.set($event)"/>
+                <span class="style-swatch swatch-gold"></span>
+                <div class="style-details">
+                  <strong>Festive Gold</strong>
+                  <small>Diwali, Dhanteras, &amp; Abundance</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="announcementStyle() === 'amethyst'">
+                <input type="radio" name="announcementStyle" value="amethyst" [ngModel]="announcementStyle()" (ngModelChange)="announcementStyle.set($event)"/>
+                <span class="style-swatch swatch-amethyst"></span>
+                <div class="style-details">
+                  <strong>Royal Amethyst</strong>
+                  <small>Full moon &amp; spiritual rituals</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="announcementStyle() === 'sapphire'">
+                <input type="radio" name="announcementStyle" value="sapphire" [ngModel]="announcementStyle()" (ngModelChange)="announcementStyle.set($event)"/>
+                <span class="style-swatch swatch-sapphire"></span>
+                <div class="style-details">
+                  <strong>Celestial Twilight</strong>
+                  <small>Midnight drops &amp; rare crystals</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="announcementStyle() === 'ruby'">
+                <input type="radio" name="announcementStyle" value="ruby" [ngModel]="announcementStyle()" (ngModelChange)="announcementStyle.set($event)"/>
+                <span class="style-swatch swatch-ruby"></span>
+                <div class="style-details">
+                  <strong>Garnet Crimson</strong>
+                  <small>Urgent flash sales &amp; clearance</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <label for="announcementLink" class="section-title">Click Destination Link (Optional)</label>
+            <p class="section-desc">Make the banner clickable to send customers directly to a promotion.</p>
+            <input
+              type="text"
+              id="announcementLink"
+              class="form-control"
+              placeholder="e.g. /products, /categories, or /mystery-box"
+              [ngModel]="announcementLink()"
+              (ngModelChange)="announcementLink.set($event)"
+            />
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- TAB: Daily Moon Phase & Transit Energy Banner -->
+    @if (activeTab() === 'moon') {
+      <div class="tab-pane">
+        <div class="settings-card">
+          <!-- Master Toggles -->
+          <div class="card-section">
+            <div class="toggle-row">
+              <div class="toggle-label-wrap">
+                <span class="section-title">Enable Daily Moon Phase &amp; Transit Banner</span>
+                <p class="section-desc">
+                  Displays the celestial top ticker banner across the entire storefront (e.g., <em>🌙 Waxing Moon in Taurus · Best Crystal Today: Rose Quartz</em>). Automatically suppressed during checkout.
+                </p>
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [ngModel]="moonBannerEnabled()"
+                  (ngModelChange)="moonBannerEnabled.set($event)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <div class="toggle-row">
+              <div class="toggle-label-wrap">
+                <span class="section-title">Enable "✦ Cosmic Alignment" Rituals Dialog</span>
+                <p class="section-desc">
+                  Allows customers to click "✦ Cosmic Alignment" to open the interactive celestial popup with Moon illumination %, Zodiac element, and a daily crystal meditation ritual.
+                </p>
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [ngModel]="moonBannerShowModal()"
+                  (ngModelChange)="moonBannerShowModal.set($event)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Mode Selector -->
+          <div class="card-section">
+            <label class="section-title">Banner Calculation Mode</label>
+            <p class="section-desc">
+              Choose whether the daily banner runs on automatic real-time astronomy or custom marketing overrides.
+            </p>
+
+            <div class="mode-options-grid">
+              <label class="mode-option" [class.selected]="moonBannerMode() === 'auto'">
+                <input
+                  type="radio"
+                  name="moonBannerMode"
+                  value="auto"
+                  [ngModel]="moonBannerMode()"
+                  (ngModelChange)="moonBannerMode.set($event)"
+                />
+                <div class="mode-details">
+                  <div class="mode-title-row">
+                    <span class="mode-icon">🔮</span>
+                    <strong>Automatic Astronomical Calculation (Recommended)</strong>
+                  </div>
+                  <p>
+                    Computes the real-time Moon phase (New, Waxing, Full, etc.), current Zodiac transit sign, and pairs the ideal matching crystal automatically every day with <strong>zero admin maintenance</strong>.
+                  </p>
+                </div>
+              </label>
+
+              <label class="mode-option" [class.selected]="moonBannerMode() === 'custom'">
+                <input
+                  type="radio"
+                  name="moonBannerMode"
+                  value="custom"
+                  [ngModel]="moonBannerMode()"
+                  (ngModelChange)="moonBannerMode.set($event)"
+                />
+                <div class="mode-details">
+                  <div class="mode-title-row">
+                    <span class="mode-icon">✍️</span>
+                    <strong>Custom Editorial / Event Override</strong>
+                  </div>
+                  <p>
+                    Manually specify your own banner message, featured crystal, and promotion link (perfect for Supermoons, Solar Eclipses, or seasonal marketing campaigns).
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Custom Mode Configuration -->
+          @if (moonBannerMode() === 'custom') {
+            <div class="card-section custom-moon-section">
+              <div class="custom-section-header">
+                <span class="sparkle" aria-hidden="true">✦</span>
+                <strong>Custom Promotional &amp; Celestial Overrides</strong>
+              </div>
+
+              <!-- 1-Click Presets -->
+              <div class="presets-block">
+                <span class="presets-label">1-Click Celestial Presets:</span>
+                <div class="preset-chips">
+                  @for (preset of moonPresets; track preset.name) {
+                    <button
+                      type="button"
+                      class="preset-chip"
+                      (click)="applyMoonPreset(preset)"
+                    >
+                      {{ preset.name }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="moonBannerCustomText" class="form-label">Full Banner Text</label>
+                <input
+                  type="text"
+                  id="moonBannerCustomText"
+                  class="form-control"
+                  placeholder="e.g. 🌙 Waxing Moon in Taurus · Best Crystal Today: Rose Quartz for Inner Peace"
+                  [ngModel]="moonBannerCustomText()"
+                  (ngModelChange)="moonBannerCustomText.set($event)"
+                  maxlength="500"
+                />
+              </div>
+
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label for="moonBannerCustomCrystal" class="form-label">Featured Crystal Name</label>
+                  <input
+                    type="text"
+                    id="moonBannerCustomCrystal"
+                    class="form-control"
+                    placeholder="e.g. Rose Quartz"
+                    [ngModel]="moonBannerCustomCrystal()"
+                    (ngModelChange)="moonBannerCustomCrystal.set($event)"
+                    maxlength="100"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="moonBannerCustomBenefit" class="form-label">Crystal Benefit / Intention</label>
+                  <input
+                    type="text"
+                    id="moonBannerCustomBenefit"
+                    class="form-control"
+                    placeholder="e.g. Inner Peace &amp; Emotional Harmony"
+                    [ngModel]="moonBannerCustomBenefit()"
+                    (ngModelChange)="moonBannerCustomBenefit.set($event)"
+                    maxlength="200"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="moonBannerCustomLink" class="form-label">Search / Target Link (Optional)</label>
+                <input
+                  type="text"
+                  id="moonBannerCustomLink"
+                  class="form-control"
+                  placeholder="e.g. /products?search=Rose+Quartz or /categories"
+                  [ngModel]="moonBannerCustomLink()"
+                  (ngModelChange)="moonBannerCustomLink.set($event)"
+                  maxlength="255"
+                />
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- TAB 2: Shipping Rules -->
+    @if (activeTab() === 'shipping') {
+      <div class="tab-pane">
+        <div class="settings-card">
+          <div class="card-section">
+            <label for="freeShippingThreshold" class="section-title">Free Shipping Threshold (₹)</label>
+            <p class="section-desc">
+              Customers whose cart subtotal is at or above this amount automatically receive <strong>FREE Shipping</strong> across India.
+              The cart drawer's animated progress bar updates dynamically.
+            </p>
+            <div class="input-with-currency">
+              <span class="currency-prefix">₹</span>
+              <input
+                type="number"
+                id="freeShippingThreshold"
+                class="form-control"
+                [ngModel]="freeShippingThreshold()"
+                (ngModelChange)="freeShippingThreshold.set($event)"
+                min="0"
+                step="50"
+              />
+            </div>
+            <div class="threshold-preview-callout">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Current rule: Orders of <strong>₹{{ freeShippingThreshold() }} or more</strong> get free delivery. Orders under ₹{{ freeShippingThreshold() }} are charged a flat ₹{{ flatShippingRate() }} delivery fee.</span>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <label for="flatShippingRate" class="section-title">Standard Flat Shipping Fee (₹)</label>
+            <p class="section-desc">Delivery charge applied when order subtotal is below the free shipping threshold.</p>
+            <div class="input-with-currency">
+              <span class="currency-prefix">₹</span>
+              <input
+                type="number"
+                id="flatShippingRate"
+                class="form-control"
+                [ngModel]="flatShippingRate()"
+                (ngModelChange)="flatShippingRate.set($event)"
+                min="0"
+                step="10"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- TAB 3: Home Hero CMS -->
+    @if (activeTab() === 'hero') {
+      <div class="tab-pane">
+        <div class="settings-card">
+          <div class="card-section">
+            <label for="heroEyebrow" class="section-title">Hero Eyebrow Tag</label>
+            <p class="section-desc">Small uppercase badge rendered directly above the main hero headline.</p>
+            <input
+              type="text"
+              id="heroEyebrow"
+              class="form-control"
+              placeholder="e.g. Natural Minerals & Astrological Alignments"
+              [ngModel]="heroEyebrow()"
+              (ngModelChange)="heroEyebrow.set($event)"
+              maxlength="200"
+            />
+          </div>
+
+          <div class="card-section">
+            <label for="heroTitle" class="section-title">Main Hero Headline (H1)</label>
+            <p class="section-desc">Primary storefront introduction statement.</p>
+            <input
+              type="text"
+              id="heroTitle"
+              class="form-control"
+              placeholder="e.g. Discover Crystals Aligned with Your Zodiac"
+              [ngModel]="heroTitle()"
+              (ngModelChange)="heroTitle.set($event)"
+              maxlength="300"
+            />
+          </div>
+
+          <div class="card-section">
+            <label for="heroSubtitle" class="section-title">Hero Description &amp; Philosophy</label>
+            <p class="section-desc">Supporting introductory paragraph beneath the headline.</p>
+            <textarea
+              id="heroSubtitle"
+              class="form-control textarea"
+              rows="4"
+              placeholder="e.g. Hand-selected crystals, raw clusters, polished towers..."
+              [ngModel]="heroSubtitle()"
+              (ngModelChange)="heroSubtitle.set($event)"
+              maxlength="1000"
+            ></textarea>
+            <div class="char-count">{{ heroSubtitle().length }} / 1000 characters</div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</section>
+

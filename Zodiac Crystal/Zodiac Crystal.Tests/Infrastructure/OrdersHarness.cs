@@ -64,7 +64,8 @@ public sealed class OrdersHarness
             Email.Object,
             payments,
             lowStock,
-            address);
+            address,
+            new StoreSettingsService(ctx, new MemoryCache(new MemoryCacheOptions()), new AuditLogService(ctx)));
 
         controller.ControllerContext = new ControllerContext
         {

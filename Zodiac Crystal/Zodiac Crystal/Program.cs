@@ -62,6 +62,7 @@ builder.Services.AddScoped<Zodiac_Crystal.Services.CsvExportService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.ReportOperationsService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.AuditLogService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.NotificationService>();
+builder.Services.AddScoped<Zodiac_Crystal.Services.StoreSettingsService>();
 
 // Brevo SMTP email. Host/Port/From come from appsettings.json; the SMTP
 // Username/Password (key) are supplied via User Secrets, never committed.

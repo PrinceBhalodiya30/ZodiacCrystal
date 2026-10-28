@@ -1,0 +1,159 @@
+@if (isVisible()) {
+  <aside class="moon-transit-bar" role="complementary" aria-label="Daily Moon Phase and Transit Energy">
+    <div class="moon-transit-content">
+      <div class="ticker-text-wrapper">
+        <span class="moon-icon" aria-hidden="true">{{ transitData().phaseIcon }}</span>
+        
+        @if (customFullText(); as customText) {
+          <span class="moon-phrase">{{ customText }}</span>
+        } @else {
+          <span class="moon-phrase">
+            <strong>{{ transitData().phaseName }}</strong> in <strong>{{ transitData().sign.name }}</strong>
+          </span>
+          <span class="ticker-divider" aria-hidden="true">·</span>
+          <span class="crystal-recommendation">
+            Best Crystal Today:
+            <button
+              type="button"
+              class="crystal-name-btn"
+              (click)="navigateToCrystal(crystalName())"
+              [title]="'View ' + crystalName() + ' in store'"
+            >
+              {{ crystalName() }}
+            </button>
+            @if (crystalBenefit(); as benefit) {
+              <span class="crystal-benefit">for {{ benefit }}</span>
+            }
+          </span>
+        }
+      </div>
+
+      <div class="ticker-actions">
+        @if (showModal()) {
+          <button
+            type="button"
+            class="cosmic-details-btn"
+            (click)="openDetails()"
+            aria-haspopup="dialog"
+            [attr.aria-expanded]="isDetailsOpen()"
+          >
+            <span class="sparkle" aria-hidden="true">✦</span> Cosmic Alignment
+          </button>
+        }
+        <button
+          type="button"
+          class="moon-bar-close"
+          (click)="dismiss()"
+          aria-label="Dismiss daily moon phase banner"
+          title="Dismiss for today"
+        >
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+}
+
+@if (isDetailsOpen()) {
+  <div class="cosmic-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cosmic-modal-title" (click)="closeDetails()">
+    <div class="cosmic-modal-card" (click)="$event.stopPropagation()">
+      <header class="cosmic-modal-header">
+        <div class="header-eyebrow">
+          <span class="sparkle" aria-hidden="true">✦</span>
+          <span>DAILY CELESTIAL ENERGIES · CRYSTAL STUDIO</span>
+        </div>
+        <h2 id="cosmic-modal-title" class="cosmic-modal-title">
+          {{ transitData().phaseName }} in {{ transitData().sign.name }}
+        </h2>
+        <p class="cosmic-modal-subtitle">
+          {{ transitData().date | date:'fullDate' }} · {{ transitData().phaseEssence }}
+        </p>
+        <button
+          type="button"
+          class="cosmic-modal-close"
+          (click)="closeDetails()"
+          aria-label="Close celestial alignment dialog"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="cosmic-modal-body">
+        <div class="cosmic-grid">
+          <!-- Lunar & Zodiac Info -->
+          <div class="cosmic-panel transit-panel">
+            <div class="transit-badge-group">
+              <span class="phase-pill">
+                <span class="phase-emoji" aria-hidden="true">{{ transitData().phaseIcon }}</span>
+                {{ transitData().illuminationPct }}% Illumination
+              </span>
+              <span class="element-pill" [attr.data-element]="transitData().sign.element.toLowerCase()">
+                {{ transitData().sign.element }} Element
+              </span>
+            </div>
+
+            <div class="zodiac-dual-info">
+              <div class="zodiac-symbol" aria-hidden="true">{{ transitData().sign.symbol }}</div>
+              <div>
+                <h3 class="zodiac-heading">{{ transitData().sign.name }} ({{ transitData().sign.rashi }} {{ transitData().sign.devanagari }})</h3>
+                <p class="zodiac-subheading">{{ transitData().sign.transitEnergy }}</p>
+              </div>
+            </div>
+
+            <div class="transit-focus-box">
+              <div class="focus-label">Today's Cosmic Focus</div>
+              <p class="focus-desc">{{ transitData().sign.dailyFocus }}</p>
+            </div>
+          </div>
+
+          <!-- Crystal Alignment & Ritual -->
+          <div class="cosmic-panel crystal-panel">
+            <div class="panel-eyebrow">BEST CRYSTAL COMPANION TODAY</div>
+            <div class="crystal-feature-header">
+              <div class="crystal-title-wrap">
+                <h3 class="crystal-title">{{ crystalName() }}</h3>
+                <span class="crystal-tagline">{{ crystalBenefit() }}</span>
+              </div>
+            </div>
+
+            <p class="crystal-intention">
+              "{{ transitData().crystal.intention }}"
+            </p>
+
+            <div class="ritual-box">
+              <div class="ritual-header">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="5"/>
+                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <span>Suggested Daily Ritual</span>
+              </div>
+              <p class="ritual-text">{{ transitData().crystal.ritualTip }}</p>
+            </div>
+
+            <div class="crystal-actions">
+              <button
+                type="button"
+                class="btn-shop-crystal"
+                (click)="navigateToCrystal(crystalName())"
+              >
+                Explore {{ crystalName() }} Collection →
+              </button>
+              <button
+                type="button"
+                class="btn-all-zodiac"
+                (click)="navigateToZodiac()"
+              >
+                All Zodiac Signs
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
