@@ -13,6 +13,7 @@ import { Zodiac } from '../../models/zodiac';
 import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardSkeleton } from '../../components/product-card-skeleton/product-card-skeleton';
 import { Pager } from '../../components/pager/pager';
+import { SACRED_INTENTIONS, SacredIntention, getIntentionById, productMatchesIntention } from '../../utils/crystal-intentions.util';
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = Array.from({ length: PAGE_SIZE });
@@ -41,6 +42,10 @@ export class Products implements OnInit {
 
   searchTerm = signal('');
   selectedCategoryId = signal<number | null>(null);
+  selectedIntentionId = signal<string | null>(null);
+  selectedIntention = computed(() => getIntentionById(this.selectedIntentionId()));
+  readonly sacredIntentions = SACRED_INTENTIONS;
+  private allProductsCache: Product[] | null = null;
 
   // Sub-category chips under the filters, e.g. Crystals → All · Raw · Tumbled …
   // Shown when the chosen category has sub-categories, or is one (so you can
@@ -113,7 +118,24 @@ export class Products implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       const categoryId = Number(params.get('category'));
       this.selectedCategoryId.set(Number.isFinite(categoryId) && categoryId > 0 ? categoryId : null);
-      this.searchTerm.set(params.get('search') || '');
+
+      const intentionParam = params.get('intention');
+      const searchParam = params.get('search') || '';
+
+      if (intentionParam) {
+        this.selectedIntentionId.set(intentionParam);
+      } else if (searchParam) {
+        const matched = getIntentionById(searchParam);
+        if (matched) {
+          this.selectedIntentionId.set(matched.id);
+        } else {
+          this.selectedIntentionId.set(null);
+        }
+      } else {
+        this.selectedIntentionId.set(null);
+      }
+
+      this.searchTerm.set(searchParam);
       this.page.set(1);
       this.loadProducts();
     });
@@ -139,6 +161,37 @@ export class Products implements OnInit {
   selectSuggestion(product: Product): void {
     this.showSuggestions.set(false);
     this.router.navigate(['/products', getProductSlug(product)]);
+  }
+
+  onIntentionChange(intentionId: string | null): void {
+    if (this.selectedIntentionId() === intentionId) {
+      this.selectedIntentionId.set(null);
+    } else {
+      this.selectedIntentionId.set(intentionId);
+    }
+    this.page.set(1);
+    this.updateQueryParams();
+    this.loadProducts();
+  }
+
+  private updateQueryParams(): void {
+    const qParams: Record<string, string | number | null> = {};
+    if (this.selectedIntentionId()) {
+      qParams['intention'] = this.selectedIntentionId();
+    } else {
+      qParams['intention'] = null;
+    }
+    if (this.selectedCategoryId()) {
+      qParams['category'] = this.selectedCategoryId();
+    }
+    if (this.searchTerm().trim()) {
+      qParams['search'] = this.searchTerm().trim();
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: qParams,
+      queryParamsHandling: 'merge'
+    });
   }
 
   onCategoryChange(categoryId: number | null): void {
@@ -188,6 +241,7 @@ export class Products implements OnInit {
       this.searchTerm() ||
       this.selectedCategoryId() ||
       this.selectedZodiacId() ||
+      this.selectedIntentionId() ||
       this.minPrice() !== null ||
       this.maxPrice() !== null ||
       this.inStockOnly()
@@ -198,10 +252,12 @@ export class Products implements OnInit {
     this.searchTerm.set('');
     this.selectedCategoryId.set(null);
     this.selectedZodiacId.set(null);
+    this.selectedIntentionId.set(null);
     this.minPrice.set(null);
     this.maxPrice.set(null);
     this.inStockOnly.set(false);
     this.page.set(1);
+    this.router.navigate([], { relativeTo: this.route, queryParams: {} });
     this.loadProducts();
   }
 
@@ -209,29 +265,96 @@ export class Products implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    this.productService
-      .getProductsPaged(
-        this.page(),
-        PAGE_SIZE,
-        this.searchTerm().trim() || undefined,
-        this.selectedCategoryId(),
-        true,
-        this.minPrice(),
-        this.maxPrice(),
-        this.selectedZodiacId(),
-        this.inStockOnly(),
-        this.sortBy() || undefined
-      )
-      .subscribe({
-        next: result => {
-          this.products.set(result.items);
-          this.totalPages.set(result.totalPages || 1);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.errorMessage.set('Unable to load products.');
-          this.isLoading.set(false);
+    const intention = this.selectedIntention();
+
+    if (!intention) {
+      this.productService
+        .getProductsPaged(
+          this.page(),
+          PAGE_SIZE,
+          this.searchTerm().trim() || undefined,
+          this.selectedCategoryId(),
+          true,
+          this.minPrice(),
+          this.maxPrice(),
+          this.selectedZodiacId(),
+          this.inStockOnly(),
+          this.sortBy() || undefined
+        )
+        .subscribe({
+          next: result => {
+            this.products.set(result.items);
+            this.totalPages.set(result.totalPages || 1);
+            this.isLoading.set(false);
+          },
+          error: () => {
+            this.errorMessage.set('Unable to load products.');
+            this.isLoading.set(false);
+          }
+        });
+      return;
+    }
+
+    const fetchAll$ = this.allProductsCache
+      ? of(this.allProductsCache)
+      : this.productService.getProducts();
+
+    fetchAll$.subscribe({
+      next: allProducts => {
+        this.allProductsCache = allProducts;
+        let filtered = allProducts.filter(p => p.isActive && productMatchesIntention(p, intention));
+
+        if (this.selectedCategoryId()) {
+          filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId());
         }
-      });
+
+        if (this.selectedZodiacId()) {
+          filtered = filtered.filter(p => p.zodiacs?.some(z => z.zodiacId === this.selectedZodiacId()));
+        }
+
+        if (this.inStockOnly()) {
+          filtered = filtered.filter(p => p.stockQuantity > 0);
+        }
+
+        if (this.minPrice() !== null) {
+          filtered = filtered.filter(p => p.price >= this.minPrice()!);
+        }
+        if (this.maxPrice() !== null) {
+          filtered = filtered.filter(p => p.price <= this.maxPrice()!);
+        }
+
+        const term = this.searchTerm().trim().toLowerCase();
+        if (term) {
+          filtered = filtered.filter(p =>
+            p.name.toLowerCase().includes(term) ||
+            (p.description && p.description.toLowerCase().includes(term))
+          );
+        }
+
+        const sort = this.sortBy();
+        if (sort === 'price_asc') {
+          filtered.sort((a, b) => a.price - b.price);
+        } else if (sort === 'price_desc') {
+          filtered.sort((a, b) => b.price - a.price);
+        } else if (sort === 'newest') {
+          filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        } else if (sort === 'rating') {
+          filtered.sort((a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0));
+        }
+
+        const totalCount = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+        this.totalPages.set(totalPages);
+
+        const startIndex = (this.page() - 1) * PAGE_SIZE;
+        const pagedItems = filtered.slice(startIndex, startIndex + PAGE_SIZE);
+        this.products.set(pagedItems);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Unable to load products.');
+        this.isLoading.set(false);
+      }
+    });
   }
 }

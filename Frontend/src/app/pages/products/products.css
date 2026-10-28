@@ -416,3 +416,218 @@
 .empty-clear-btn {
   min-height: 44px;
 }
+
+/* ==========================================================================
+   Shop by Sacred Intention Filter Bar (Energy Muse inspired)
+   ========================================================================== */
+.intentions-bar-wrapper {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.intentions-bar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.intentions-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-copper, #985E38);
+}
+
+.intentions-sparkle-icon {
+  color: var(--color-copper, #985E38);
+}
+
+.btn-clear-intention {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-subtle, #5a544b);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.btn-clear-intention:hover {
+  color: var(--color-copper, #985E38);
+  background: rgba(152, 94, 56, 0.08);
+}
+
+.intentions-pill-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  margin-bottom: -0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(152, 94, 56, 0.25) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.intentions-pill-list::-webkit-scrollbar {
+  height: 4px;
+}
+
+.intentions-pill-list::-webkit-scrollbar-thumb {
+  background: rgba(152, 94, 56, 0.25);
+  border-radius: 2px;
+}
+
+.intention-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-ink, #1D2739);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast, 0.2s ease);
+  box-shadow: 0 1px 3px rgba(44, 40, 37, 0.03);
+}
+
+.intention-pill:hover {
+  border-color: rgba(152, 94, 56, 0.45);
+  background: var(--color-surface-tint, #fcfbf9);
+  color: var(--color-copper, #985E38);
+}
+
+.intention-pill.active {
+  background: var(--color-copper, #985E38);
+  color: #ffffff;
+  border-color: var(--color-copper, #985E38);
+  box-shadow: 0 2px 8px rgba(152, 94, 56, 0.3);
+  font-weight: 600;
+}
+
+.intention-pill .pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-copper, #985E38);
+  display: inline-block;
+  transition: background-color var(--transition-fast, 0.2s ease);
+}
+
+.intention-pill.active .pill-dot {
+  background: #ffffff;
+}
+
+.intention-pill .intention-icon {
+  flex-shrink: 0;
+  transition: color var(--transition-fast, 0.2s ease);
+}
+
+/* Active Intention Callout Banner */
+.active-intention-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  background: linear-gradient(135deg, rgba(251, 248, 242, 0.95) 0%, rgba(246, 241, 232, 0.65) 100%);
+  border: 1px solid rgba(152, 94, 56, 0.25);
+  border-left: 3px solid var(--color-copper, #985E38);
+  border-radius: var(--radius-sm, 6px);
+  margin-top: 0.25rem;
+  animation: intentionFadeIn 0.25s ease-out;
+  box-shadow: 0 2px 10px rgba(44, 40, 37, 0.03);
+}
+
+@keyframes intentionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.active-intention-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.active-intention-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.active-intention-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-copper, #985E38);
+  background: rgba(152, 94, 56, 0.1);
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+}
+
+.active-intention-title {
+  font-family: var(--font-heading, 'Fraunces', serif);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-ink, #1D2739);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.active-intention-desc {
+  font-size: 0.84rem;
+  color: var(--color-subtle, #5a544b);
+  line-height: 1.5;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.active-intention-minerals {
+  font-size: 0.78rem;
+  color: var(--color-ink, #2c2825);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.active-intention-minerals .minerals-label {
+  font-weight: 700;
+  color: var(--color-copper, #985E38);
+}
+
+.active-intention-minerals .minerals-list {
+  font-weight: 500;
+  color: var(--color-ink, #2c2825);
+}
