@@ -765,3 +765,208 @@ input:checked + .slider:before {
 }
 
 
+
+/* ==========================================================================
+   Unified Top Bar Mockup & Admin Controls
+   ========================================================================== */
+.preview-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.unified-indicator-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.preview-slide-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f1f5f9;
+  padding: 3px 4px;
+  border-radius: 8px;
+}
+
+.preview-toggle-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  padding-left: 0.35rem;
+}
+
+.preview-slide-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preview-slide-btn:hover {
+  color: #0f172a;
+}
+
+.preview-slide-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Preview Unified Bar Container */
+.preview-unified-bar {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.025em;
+  padding: 0.5rem 2rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border-bottom: 1px solid rgba(216, 201, 242, 0.14);
+  transition: all 0.3s ease;
+}
+
+/* Slide 0: Cosmic Moon Style */
+.preview-unified-bar[data-slide="0"] {
+  background: linear-gradient(90deg, #0e0c1a 0%, #17142c 50%, #0e0c1a 100%);
+  color: #ede7f8;
+}
+
+/* Slide 1: Promo Styles */
+.preview-unified-bar[data-slide="1"][data-promo-style="emerald"] {
+  background: #f4efe5;
+  color: #4e5a70;
+  border-bottom-color: #e4dccb;
+}
+
+.preview-unified-bar[data-slide="1"][data-promo-style="gold"] {
+  background: linear-gradient(90deg, #fdf8ee 0%, #f7eccb 50%, #fdf8ee 100%);
+  color: #63430c;
+  border-bottom-color: #ebd79e;
+}
+
+.preview-unified-bar[data-slide="1"][data-promo-style="amethyst"] {
+  background: linear-gradient(90deg, #f7f3fb 0%, #ede3f7 50%, #f7f3fb 100%);
+  color: #4a2b66;
+  border-bottom-color: #ded0ee;
+}
+
+.preview-unified-bar[data-slide="1"][data-promo-style="sapphire"] {
+  background: linear-gradient(90deg, #1b263b 0%, #1e2d4a 50%, #1b263b 100%);
+  color: #e0e8f5;
+  border-bottom-color: #2e3e5c;
+}
+
+.preview-unified-bar[data-slide="1"][data-promo-style="ruby"] {
+  background: linear-gradient(90deg, #fff2f2 0%, #fce2e2 50%, #fff2f2 100%);
+  color: #7d1f1f;
+  border-bottom-color: #f7c3c3;
+}
+
+.preview-unified-bar.is-hidden {
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #e2e8f0 !important;
+  font-style: italic;
+  font-size: 11px;
+}
+
+.preview-unified-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-slide-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: unifiedFade 0.3s ease-out;
+}
+
+.preview-slide-item--promo {
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.preview-promo-sparkle {
+  color: #f59e0b;
+}
+
+.preview-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: absolute;
+  right: 0.75rem;
+}
+
+.preview-slide-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.preview-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.4);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preview-dot.active {
+  background: #f59e0b;
+  width: 12px;
+  border-radius: 3px;
+}
+
+/* Alert Banner in settings cards */
+.unified-info-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 8px;
+  color: #5b21b6;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.unified-info-alert .alert-icon {
+  font-size: 1rem;
+  color: #7c3aed;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.unified-info-alert strong {
+  color: #4c1d95;
+  display: inline-block;
+  margin-right: 0.25rem;
+}

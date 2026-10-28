@@ -45,11 +45,41 @@
   <!-- Live Storefront Header Preview Mockup -->
   <div class="live-preview-card">
     <div class="preview-card-header">
-      <span class="preview-badge">
-        <span class="pulsing-dot"></span>
-        Live Storefront Preview
-      </span>
-      <span class="preview-hint">What your customers see at the very top of every page</span>
+      <div class="preview-header-left">
+        <span class="preview-badge">
+          <span class="pulsing-dot"></span>
+          Live Storefront Preview
+        </span>
+        @if (hasMultiplePreviewSlides()) {
+          <span class="unified-indicator-badge">
+            <span class="cycle-icon">✦</span> Single Rotating Top Bar (Cycles every 5s)
+          </span>
+        }
+      </div>
+
+      @if (hasMultiplePreviewSlides()) {
+        <div class="preview-slide-toggle-group">
+          <span class="preview-toggle-label">Slide Preview:</span>
+          <button
+            type="button"
+            class="preview-slide-btn"
+            [class.active]="currentPreviewSlide() === 0"
+            (click)="setPreviewSlide(0)"
+          >
+            🌙 Moon Transit
+          </button>
+          <button
+            type="button"
+            class="preview-slide-btn"
+            [class.active]="currentPreviewSlide() === 1"
+            (click)="setPreviewSlide(1)"
+          >
+            📢 Promo Announcement
+          </button>
+        </div>
+      } @else {
+        <span class="preview-hint">What your customers see at the very top of every page</span>
+      }
     </div>
 
     <div class="preview-browser-frame">
@@ -59,38 +89,63 @@
         <span class="dot dot-green"></span>
       </div>
 
-      <!-- Preview Moon Transit Bar -->
-      <div class="preview-moon-bar" [class.is-hidden]="!moonBannerEnabled()">
-        @if (moonBannerEnabled()) {
-          <div class="preview-moon-content">
-            <span class="preview-moon-icon">🌙</span>
-            @if (moonBannerMode() === 'custom' && moonBannerCustomText()) {
-              <span class="preview-moon-text">{{ moonBannerCustomText() }}</span>
+      <!-- Unified Smart Rotating Top Bar Preview -->
+      @if (isTopBarPreviewVisible()) {
+        <div class="preview-unified-bar" [attr.data-slide]="currentPreviewSlide()" [attr.data-promo-style]="announcementStyle()">
+          <div class="preview-unified-content">
+            @if (currentPreviewSlide() === 0) {
+              <!-- Slide 0: Moon Transit -->
+              <div class="preview-slide-item">
+                <span class="preview-moon-icon">🌙</span>
+                @if (moonBannerMode() === 'custom' && moonBannerCustomText()) {
+                  <span class="preview-moon-text">{{ moonBannerCustomText() }}</span>
+                } @else {
+                  <span class="preview-moon-text">
+                    Waxing Moon in Taurus · Best Crystal Today:
+                    <strong class="preview-crystal-highlight">{{ moonBannerCustomCrystal() || 'Rose Quartz' }}</strong>
+                    for {{ moonBannerCustomBenefit() || 'Inner Peace' }}
+                  </span>
+                }
+                @if (moonBannerShowModal()) {
+                  <span class="preview-cosmic-pill">✦ Cosmic Alignment</span>
+                }
+              </div>
             } @else {
-              <span class="preview-moon-text">
-                Waxing Moon in Taurus · Best Crystal Today:
-                <strong class="preview-crystal-highlight">{{ moonBannerCustomCrystal() || 'Rose Quartz' }}</strong>
-                for {{ moonBannerCustomBenefit() || 'Inner Peace' }}
-              </span>
-            }
-            @if (moonBannerShowModal()) {
-              <span class="preview-cosmic-pill">✦ Cosmic Alignment</span>
+              <!-- Slide 1: Promo Announcement -->
+              <div class="preview-slide-item preview-slide-item--promo">
+                <span class="preview-promo-sparkle">✨</span>
+                <span class="preview-announcement-text">{{ announcementText() || 'Enter your announcement message below...' }}</span>
+              </div>
             }
           </div>
-          <span class="preview-close-btn" aria-hidden="true">×</span>
-        } @else {
-          <span class="preview-disabled-text">✕ Daily Moon Phase &amp; Transit Banner is currently turned OFF</span>
-        }
-      </div>
 
-      <div class="preview-announcement-bar" [attr.data-style]="announcementStyle()" [class.is-hidden]="!announcementEnabled()">
-        @if (announcementEnabled()) {
-          <span class="preview-announcement-text">{{ announcementText() || 'Enter your announcement message below...' }}</span>
-          <span class="preview-close-btn" aria-hidden="true">×</span>
-        } @else {
-          <span class="preview-disabled-text">✕ Announcement Bar is currently turned OFF (Hidden from customers)</span>
-        }
-      </div>
+          <div class="preview-bar-actions">
+            @if (hasMultiplePreviewSlides()) {
+              <div class="preview-slide-dots">
+                <button
+                  type="button"
+                  class="preview-dot"
+                  [class.active]="currentPreviewSlide() === 0"
+                  (click)="setPreviewSlide(0)"
+                  title="Switch to Moon Transit slide"
+                ></button>
+                <button
+                  type="button"
+                  class="preview-dot"
+                  [class.active]="currentPreviewSlide() === 1"
+                  (click)="setPreviewSlide(1)"
+                  title="Switch to Announcement slide"
+                ></button>
+              </div>
+            }
+            <span class="preview-close-btn" aria-hidden="true">×</span>
+          </div>
+        </div>
+      } @else {
+        <div class="preview-unified-bar is-hidden">
+          <span class="preview-disabled-text">✕ Unified Top Bar is currently turned OFF (Both Moon Banner and Announcement Bar are disabled)</span>
+        </div>
+      }
 
       <div class="preview-mock-navbar">
         <div class="mock-logo">
@@ -195,6 +250,15 @@
                 <span class="slider"></span>
               </label>
             </div>
+            @if (announcementEnabled() && moonBannerEnabled()) {
+              <div class="unified-info-alert">
+                <span class="alert-icon">✦</span>
+                <div class="alert-body">
+                  <strong>Single Unified Rotating Top Bar Active:</strong>
+                  Because both this Announcement Bar and the Daily Moon Transit Banner are enabled, they seamlessly alternate within a single 38px top bar on the customer storefront every 5 seconds (with pause on hover) to eliminate stacked bars and save vertical screen space.
+                </div>
+              </div>
+            }
           </div>
 
           <div class="card-section">
@@ -301,6 +365,15 @@
                 <span class="slider"></span>
               </label>
             </div>
+            @if (moonBannerEnabled() && announcementEnabled()) {
+              <div class="unified-info-alert">
+                <span class="alert-icon">✦</span>
+                <div class="alert-body">
+                  <strong>Single Unified Rotating Top Bar Active:</strong>
+                  Because both the Daily Moon Phase Banner and Store Announcement are enabled, they share a single 38px top bar on the storefront, rotating smoothly every 5 seconds.
+                </div>
+              </div>
+            }
           </div>
 
           <div class="card-section">

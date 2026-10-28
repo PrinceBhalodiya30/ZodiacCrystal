@@ -1,50 +1,101 @@
 @if (isVisible()) {
-  <aside class="moon-transit-bar" role="complementary" aria-label="Daily Moon Phase and Transit Energy">
-    <div class="moon-transit-content">
-      <div class="ticker-text-wrapper">
-        <span class="moon-icon" aria-hidden="true">{{ transitData().phaseIcon }}</span>
-        
-        @if (customFullText(); as customText) {
-          <span class="moon-phrase">{{ customText }}</span>
-        } @else {
-          <span class="moon-phrase">
-            <strong>{{ transitData().phaseName }}</strong> in <strong>{{ transitData().sign.name }}</strong>
-          </span>
-          <span class="ticker-divider" aria-hidden="true">·</span>
-          <span class="crystal-recommendation">
-            Best Crystal Today:
-            <button
-              type="button"
-              class="crystal-name-btn"
-              (click)="navigateToCrystal(crystalName())"
-              [title]="'View ' + crystalName() + ' in store'"
-            >
-              {{ crystalName() }}
-            </button>
-            @if (crystalBenefit(); as benefit) {
-              <span class="crystal-benefit">for {{ benefit }}</span>
+  <aside
+    class="moon-transit-bar unified-top-bar"
+    role="complementary"
+    aria-label="Daily Moon Phase and Store Announcements"
+    (mouseenter)="pauseRotation()"
+    (mouseleave)="resumeRotation()"
+  >
+    <div class="moon-transit-content unified-bar-content">
+      <!-- Slides Container -->
+      <div class="unified-slides-container">
+        <!-- Slide 0: Cosmic Moon Transit -->
+        @if (currentSlide() === 0) {
+          <div class="ticker-slide ticker-slide--moon" role="region" aria-label="Daily Moon Transit">
+            <div class="ticker-text-wrapper">
+              <span class="moon-icon" aria-hidden="true">{{ transitData().phaseIcon }}</span>
+              
+              @if (customFullText(); as customText) {
+                <span class="moon-phrase">{{ customText }}</span>
+              } @else {
+                <span class="moon-phrase">
+                  <strong>{{ transitData().phaseName }}</strong> in <strong>{{ transitData().sign.name }}</strong>
+                </span>
+                <span class="ticker-divider" aria-hidden="true">·</span>
+                <span class="crystal-recommendation">
+                  Best Crystal Today:
+                  <button
+                    type="button"
+                    class="crystal-name-btn"
+                    (click)="navigateToCrystal(crystalName())"
+                    [title]="'View ' + crystalName() + ' in store'"
+                  >
+                    {{ crystalName() }}
+                  </button>
+                  @if (crystalBenefit(); as benefit) {
+                    <span class="crystal-benefit">for {{ benefit }}</span>
+                  }
+                </span>
+              }
+            </div>
+
+            @if (showModal()) {
+              <button
+                type="button"
+                class="cosmic-details-btn"
+                (click)="openDetails()"
+                aria-haspopup="dialog"
+                [attr.aria-expanded]="isDetailsOpen()"
+              >
+                <span class="sparkle" aria-hidden="true">✦</span> Cosmic Alignment
+              </button>
             }
-          </span>
+          </div>
+        }
+
+        <!-- Slide 1: Store Announcement Promo -->
+        @if (currentSlide() === 1) {
+          <div class="ticker-slide ticker-slide--promo" role="region" aria-label="Store Announcement">
+            <span class="promo-icon" aria-hidden="true">✨</span>
+            @if (announcementLink(); as link) {
+              <a [routerLink]="link" class="announcement-link">
+                <span class="announcement-text">{{ announcementText() }}</span>
+              </a>
+            } @else {
+              <span class="announcement-text">{{ announcementText() }}</span>
+            }
+          </div>
         }
       </div>
 
-      <div class="ticker-actions">
-        @if (showModal()) {
-          <button
-            type="button"
-            class="cosmic-details-btn"
-            (click)="openDetails()"
-            aria-haspopup="dialog"
-            [attr.aria-expanded]="isDetailsOpen()"
-          >
-            <span class="sparkle" aria-hidden="true">✦</span> Cosmic Alignment
-          </button>
+      <!-- Unified Actions: Carousel Dots & Dismiss -->
+      <div class="ticker-actions unified-actions">
+        @if (hasMultipleSlides()) {
+          <div class="slide-dots" aria-label="Announcement slides navigation">
+            <button
+              type="button"
+              class="slide-dot"
+              [class.active]="currentSlide() === 0"
+              (click)="goToSlide(0)"
+              aria-label="View Cosmic Transit"
+              title="Cosmic Moon Transit"
+            ></button>
+            <button
+              type="button"
+              class="slide-dot"
+              [class.active]="currentSlide() === 1"
+              (click)="goToSlide(1)"
+              aria-label="View Store Announcement"
+              title="Store Announcement"
+            ></button>
+          </div>
         }
+
         <button
           type="button"
           class="moon-bar-close"
           (click)="dismiss()"
-          aria-label="Dismiss daily moon phase banner"
+          aria-label="Dismiss top announcement"
           title="Dismiss for today"
         >
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

@@ -534,3 +534,104 @@
   }
 }
 
+
+/* ==========================================================================
+   Unified Top Bar Carousel Styles
+   ========================================================================== */
+.unified-top-bar {
+  min-height: 38px;
+}
+
+.unified-bar-content {
+  position: relative;
+}
+
+.unified-slides-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticker-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  animation: unifiedFade 0.35s ease-out;
+  width: 100%;
+}
+
+@keyframes unifiedFade {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ticker-slide--promo {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ede7f8;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.promo-icon {
+  font-size: 13px;
+  color: #f7d498;
+  filter: drop-shadow(0 0 5px rgba(247, 212, 152, 0.6));
+}
+
+.announcement-link {
+  color: #f7d498;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+  transition: color var(--transition-fast, 0.15s ease);
+}
+
+.announcement-link:hover {
+  color: #ffffff;
+}
+
+.unified-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.slide-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.slide-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(237, 231, 248, 0.25);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.slide-dot:hover {
+  background: rgba(237, 231, 248, 0.6);
+}
+
+.slide-dot.active {
+  background: #f7d498;
+  width: 14px;
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(247, 212, 152, 0.5);
+}

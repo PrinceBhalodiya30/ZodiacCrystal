@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -51,6 +51,22 @@ export class AdminSettings implements OnInit {
   readonly moonBannerCustomBenefit = signal('');
   readonly moonBannerCustomLink = signal('');
   readonly moonBannerShowModal = signal(true);
+
+  // Live Storefront Top Bar Preview Rotation Signals
+  readonly previewSlide = signal<0 | 1>(0);
+  readonly hasMultiplePreviewSlides = computed(() => this.moonBannerEnabled() && this.announcementEnabled());
+  readonly isTopBarPreviewVisible = computed(() => this.moonBannerEnabled() || this.announcementEnabled());
+  readonly currentPreviewSlide = computed<0 | 1>(() => {
+    if (this.hasMultiplePreviewSlides()) {
+      return this.previewSlide();
+    }
+    if (this.moonBannerEnabled()) return 0;
+    return 1;
+  });
+
+  setPreviewSlide(index: 0 | 1): void {
+    this.previewSlide.set(index);
+  }
 
   // Shipping & Rates Form State Signals
   readonly freeShippingThreshold = signal(999);

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { MoonTransitBar } from './moon-transit-bar';
@@ -18,21 +18,14 @@ describe('MoonTransitBar', () => {
     moonBannerCustomBenefit: ReturnType<typeof signal<string | null>>;
     moonBannerCustomLink: ReturnType<typeof signal<string | null>>;
     moonBannerShowModal: ReturnType<typeof signal<boolean>>;
+    announcementEnabled: ReturnType<typeof signal<boolean>>;
+    announcementText: ReturnType<typeof signal<string>>;
+    announcementLink: ReturnType<typeof signal<string | null>>;
+    announcementStyle: ReturnType<typeof signal<string>>;
   };
 
   beforeEach(async () => {
     localStorage.clear();
-
-    const mockRouter = {
-      events: {
-        pipe: () => ({
-          subscribe: () => ({ unsubscribe: () => {} })
-        })
-      },
-      url: '/',
-      navigate: vi.fn().mockResolvedValue(true),
-      navigateByUrl: vi.fn().mockResolvedValue(true)
-    };
 
     mockStoreSettings = {
       moonBannerEnabled: signal(true),
@@ -41,19 +34,24 @@ describe('MoonTransitBar', () => {
       moonBannerCustomCrystal: signal<string | null>(null),
       moonBannerCustomBenefit: signal<string | null>(null),
       moonBannerCustomLink: signal<string | null>(null),
-      moonBannerShowModal: signal(true)
+      moonBannerShowModal: signal(true),
+      announcementEnabled: signal(false),
+      announcementText: signal('Free Shipping on orders over ₹999!'),
+      announcementLink: signal<string | null>('/products'),
+      announcementStyle: signal('emerald')
     };
 
     await TestBed.configureTestingModule({
       imports: [MoonTransitBar],
       providers: [
         CheckoutModeService,
-        { provide: Router, useValue: mockRouter },
+        provideRouter([]),
         { provide: StoreSettingsService, useValue: mockStoreSettings }
       ]
     }).compileComponents();
 
     router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture = TestBed.createComponent(MoonTransitBar);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -76,8 +74,9 @@ describe('MoonTransitBar', () => {
     expect(bannerEl.textContent).toContain(component.transitData().crystal.name);
   });
 
-  it('hides the banner completely when admin disables moonBannerEnabled', () => {
+  it('hides the banner completely when admin disables moonBannerEnabled and announcement is disabled', () => {
     mockStoreSettings.moonBannerEnabled.set(false);
+    mockStoreSettings.announcementEnabled.set(false);
     fixture.detectChanges();
 
     expect(component.isVisible()).toBe(false);
@@ -103,7 +102,7 @@ describe('MoonTransitBar', () => {
 
     expect(component.isDismissed()).toBe(true);
     expect(component.isVisible()).toBe(false);
-    expect(localStorage.getItem(`crystal_studio_moon_dismissed_${todayKey}`)).toBe('true');
+    expect(localStorage.getItem(`crystal_studio_topbar_dismissed_${todayKey}`)).toBe('true');
   });
 
   it('opens and closes details modal when showModal is enabled', () => {
@@ -152,5 +151,45 @@ describe('MoonTransitBar', () => {
   it('navigates to zodiac page from modal action', () => {
     component.navigateToZodiac();
     expect(router.navigate).toHaveBeenCalledWith(['/zodiac']);
+  });
+
+  it('rotates between moon and promo slides when both are enabled', () => {
+    mockStoreSettings.moonBannerEnabled.set(true);
+    mockStoreSettings.announcementEnabled.set(true);
+    fixture.detectChanges();
+
+    expect(component.hasMultipleSlides()).toBe(true);
+    expect(component.currentSlide()).toBe(0);
+
+    // Switch to promo slide
+    component.goToSlide(1);
+    fixture.detectChanges();
+
+    expect(component.currentSlide()).toBe(1);
+    const promoSlide = fixture.nativeElement.querySelector('.ticker-slide--promo');
+    expect(promoSlide).toBeTruthy();
+    expect(promoSlide.textContent).toContain('Free Shipping on orders over ₹999!');
+
+    // Switch back to moon slide
+    component.goToSlide(0);
+    fixture.detectChanges();
+
+    expect(component.currentSlide()).toBe(0);
+    const moonSlide = fixture.nativeElement.querySelector('.ticker-slide--moon');
+    expect(moonSlide).toBeTruthy();
+  });
+
+  it('renders promo slide only when moon banner is disabled but announcement is enabled', () => {
+    mockStoreSettings.moonBannerEnabled.set(false);
+    mockStoreSettings.announcementEnabled.set(true);
+    fixture.detectChanges();
+
+    expect(component.isVisible()).toBe(true);
+    expect(component.hasMultipleSlides()).toBe(false);
+    expect(component.currentSlide()).toBe(1);
+
+    const promoSlide = fixture.nativeElement.querySelector('.ticker-slide--promo');
+    expect(promoSlide).toBeTruthy();
+    expect(promoSlide.textContent).toContain('Free Shipping on orders over ₹999!');
   });
 });

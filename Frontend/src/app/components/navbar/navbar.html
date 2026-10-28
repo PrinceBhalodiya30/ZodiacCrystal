@@ -1,23 +1,5 @@
 <app-moon-transit-bar></app-moon-transit-bar>
 
-@if (isAnnouncementVisible() && !isCheckout()) {
-  <div class="announcement-bar" [attr.data-style]="announcementStyle()">
-    @if (announcementLink(); as link) {
-      <a [routerLink]="link" class="announcement-link">
-        <span class="announcement-text">{{ announcementText() }}</span>
-      </a>
-    } @else {
-      <span class="announcement-text">{{ announcementText() }}</span>
-    }
-    <button
-      type="button"
-      class="announcement-close"
-      aria-label="Dismiss announcement"
-      (click)="dismissAnnouncement()"
-    ><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-  </div>
-}
-
 <header class="navbar" [class.scrolled]="isScrolled()">
   <div class="navbar-container">
     <a routerLink="/" class="navbar-brand" (click)="closeMenu()">
