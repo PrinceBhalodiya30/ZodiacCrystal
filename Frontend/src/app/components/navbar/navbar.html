@@ -41,7 +41,7 @@
         [routerLinkActiveOptions]="{ exact: true }"
         (click)="closeMenu()"
       >Home</a>
-      <!-- Combined Shop Dropdown -->
+      <!-- Shop Dropdown -->
       <div class="nav-dropdown" [class.open]="isShopDropdownOpen()">
         <button
           type="button"
@@ -58,39 +58,45 @@
 
         <div class="nav-dropdown-menu" (click)="$event.stopPropagation()">
           <a routerLink="/products" routerLinkActive="active" (click)="closeMenu()">
-            <span class="dropdown-item-icon">💎</span>
+            <span class="dropdown-item-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 3h12l4 6-10 12L2 9l4-6z"/>
+                <path d="M2 9h20"/>
+                <path d="M10 3l-2 6 4 12 4-12-2-6"/>
+              </svg>
+            </span>
             <div class="dropdown-item-content">
               <strong>All Crystals</strong>
               <small>Raw clusters, polished towers &amp; spheres</small>
             </div>
           </a>
-          <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">
-            <span class="dropdown-item-icon">♈</span>
-            <div class="dropdown-item-content">
-              <strong>Shop by Zodiac</strong>
-              <small>Crystals attuned to your natal sign</small>
-            </div>
-          </a>
           <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">
-            <span class="dropdown-item-icon">💠</span>
+            <span class="dropdown-item-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              </svg>
+            </span>
             <div class="dropdown-item-content">
-              <strong>Categories</strong>
-              <small>Browse by mineral forms and specimens</small>
-            </div>
-          </a>
-          <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">
-            <span class="dropdown-item-icon">🎁</span>
-            <div class="dropdown-item-content">
-              <strong>Celestial Mystery Box</strong>
-              <small>Curated surprise boxes with affirmation cards</small>
+              <strong>Categories by Form</strong>
+              <small>Towers, spheres, clusters &amp; mineral specimens</small>
             </div>
           </a>
         </div>
       </div>
 
+      <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">Shop by Zodiac</a>
+      <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
+      <a routerLink="/guides" routerLinkActive="active" (click)="closeMenu()">Crystal Guides</a>
 
-
-      <a routerLink="/consultation" routerLinkActive="active" (click)="closeMenu()">Crystal Consultation</a>
+      <button type="button" class="navbar-quiz-btn" (click)="openQuiz(); closeMenu()" title="Personalized Crystal Quiz">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quiz-btn-icon" aria-hidden="true">
+          <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/>
+        </svg>
+        <span>Crystal Quiz</span>
+      </button>
 
       <div class="navbar-mobile-account">
 

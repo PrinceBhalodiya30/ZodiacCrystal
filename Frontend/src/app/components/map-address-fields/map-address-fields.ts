@@ -1,16 +1,20 @@
-import { Component, inject, input, model, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, inject, input, model, signal, viewChild } from '@angular/core';
 import { ControlContainer, FormsModule } from '@angular/forms';
 import { AddressMap, PickedAddress } from '../address-map/address-map';
 import { StateCitySelect } from '../state-city-select/state-city-select';
 import { VALID_PIN, cityMatchesPlace, lookupPinPlaces, sameState } from '../../utils/india-address.util';
+import {
+  AddressQualityResult,
+  AddressSuggestion,
+  fetchAddressSuggestions,
+  validateAddressQuality
+} from '../../utils/address-autocomplete.util';
 
 type PinStatus = 'ok' | 'checking' | 'unknown' | 'mismatch' | 'city-mismatch' | 'unavailable';
 
 // Shipping address fields shared by checkout, Mystery Box and the address book.
-// Typed by hand (the map is an optional shortcut), but the PIN must be a real
-// India Post PIN for the chosen state and city. A valid PIN fills State and City;
-// changing either afterwards to a place the PIN doesn't cover blocks the form.
-// The server repeats the check.
+// As the user types into the Address textarea, live address suggestions appear.
+// The PIN must be a real India Post PIN for the chosen state and city.
 @Component({
   selector: 'app-map-address-fields',
   standalone: true,
@@ -20,25 +24,126 @@ type PinStatus = 'ok' | 'checking' | 'unknown' | 'mismatch' | 'city-mismatch' | 
   // Joins the parent page's <form>, so it stays invalid until the address is right.
   viewProviders: [{ provide: ControlContainer, useFactory: () => inject(ControlContainer, { skipSelf: true }) }]
 })
-export class MapAddressFields {
+export class MapAddressFields implements OnDestroy {
   line = model('');
   city = model('');
   state = model('');
   postalCode = model('');
-  // Undefined is accepted too: the address book form keeps them optional.
   latitude = model<number | null | undefined>(null);
   longitude = model<number | null | undefined>(null);
-  // Max length of the field the address goes into.
   maxLength = input(410);
+
+  // Address Autocomplete & Quality signals
+  suggestions = signal<AddressSuggestion[]>([]);
+  isSearchingSuggestions = signal(false);
+  showSuggestions = signal(false);
+  selectedSuggestionIndex = signal(-1);
+  addressQuality = signal<AddressQualityResult>({ valid: true });
 
   // An already-saved address starts as checked; the server checked it when saved.
   pinStatus = signal<PinStatus>('ok');
   private checkCount = 0;
+  private searchTimer?: ReturnType<typeof setTimeout>;
+  private abortController?: AbortController;
+
+  ngOnDestroy(): void {
+    if (this.searchTimer) clearTimeout(this.searchTimer);
+    this.abortController?.abort();
+  }
+
+  // Handle typing inside the Address textarea
+  onLineInput(value: string): void {
+    this.line.set(value);
+    this.addressQuality.set(validateAddressQuality(value, this.city()));
+
+    if (this.searchTimer) clearTimeout(this.searchTimer);
+    this.abortController?.abort();
+
+    const q = value.trim();
+    if (q.length < 3) {
+      this.suggestions.set([]);
+      this.showSuggestions.set(false);
+      this.isSearchingSuggestions.set(false);
+      return;
+    }
+
+    this.isSearchingSuggestions.set(true);
+    this.searchTimer = setTimeout(async () => {
+      this.abortController = new AbortController();
+      const results = await fetchAddressSuggestions(q, this.abortController.signal);
+      this.isSearchingSuggestions.set(false);
+      this.suggestions.set(results);
+      this.showSuggestions.set(results.length > 0);
+      this.selectedSuggestionIndex.set(-1);
+    }, 300);
+  }
+
+  // When user selects a suggestion from the live dropdown
+  selectSuggestion(item: AddressSuggestion): void {
+    this.line.set(item.fullLine);
+    this.addressQuality.set(validateAddressQuality(item.fullLine, item.city || this.city()));
+
+    if (item.state) {
+      this.state.set(item.state);
+    }
+    if (item.city) {
+      this.city.set(item.city);
+    }
+    if (item.lat && item.lng) {
+      this.latitude.set(item.lat);
+      this.longitude.set(item.lng);
+    }
+    if (item.postalCode && VALID_PIN.test(item.postalCode)) {
+      this.onPinInput(item.postalCode);
+    } else {
+      this.recheck();
+    }
+
+    this.showSuggestions.set(false);
+    this.suggestions.set([]);
+  }
+
+  onLineKeydown(event: KeyboardEvent): void {
+    if (!this.showSuggestions() || this.suggestions().length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      const next = (this.selectedSuggestionIndex() + 1) % this.suggestions().length;
+      this.selectedSuggestionIndex.set(next);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      const prev = this.selectedSuggestionIndex() <= 0
+        ? this.suggestions().length - 1
+        : this.selectedSuggestionIndex() - 1;
+      this.selectedSuggestionIndex.set(prev);
+    } else if (event.key === 'Enter') {
+      const idx = this.selectedSuggestionIndex();
+      if (idx >= 0 && idx < this.suggestions().length) {
+        event.preventDefault();
+        this.selectSuggestion(this.suggestions()[idx]);
+      }
+    } else if (event.key === 'Escape') {
+      this.showSuggestions.set(false);
+    }
+  }
+
+  onLineBlur(): void {
+    // Delay to let click on suggestion register before hiding dropdown
+    setTimeout(() => {
+      this.showSuggestions.set(false);
+      if (this.line()) {
+        this.addressQuality.set(validateAddressQuality(this.line(), this.city()));
+      }
+    }, 250);
+  }
 
   // The map only pre-fills; every field stays editable. Blank parts from the map
   // don't wipe what the customer already typed.
   onPicked(picked: PickedAddress): void {
-    if (picked.line) this.line.set(picked.line);
+    if (picked.line) {
+      this.line.set(picked.line);
+      this.addressQuality.set(validateAddressQuality(picked.line, picked.city || this.city()));
+    }
     if (picked.state) this.state.set(picked.state);
     if (picked.city) this.city.set(picked.city);
     this.latitude.set(picked.lat);
@@ -48,6 +153,7 @@ export class MapAddressFields {
     } else {
       this.recheck();
     }
+    this.showSuggestions.set(false);
   }
 
   // A full 6-digit PIN fills State and City from India Post; both stay editable.
@@ -109,5 +215,11 @@ export class MapAddressFields {
 
   pinAccepted(): boolean {
     return this.pinStatus() === 'ok' || this.pinStatus() === 'unavailable';
+  }
+
+  isAddressValid(): boolean {
+    const val = this.line().trim();
+    if (!val) return false;
+    return this.addressQuality().valid;
   }
 }

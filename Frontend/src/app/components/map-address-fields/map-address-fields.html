@@ -1,21 +1,72 @@
 <app-address-map [maxLength]="maxLength()" (picked)="onPicked($event)" />
 
-<label for="addressLine">Address *</label>
-<textarea
-  id="addressLine"
-  name="addressLine"
-  rows="3"
-  autocomplete="street-address"
-  [attr.maxlength]="maxLength()"
-  placeholder="Flat / House no., Building, Street, Area"
-  [ngModel]="line()"
-  (ngModelChange)="line.set($event)"
-  required
-  #lineField="ngModel"
-></textarea>
-@if (lineField.invalid && lineField.touched) {
-  <p class="field-hint error">Address is required.</p>
-}
+<div class="address-input-container">
+  <div class="address-label-row">
+    <label for="addressLine">Address *</label>
+    <span class="live-suggest-pill" title="Type to see matching Indian addresses">
+      <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      Auto-suggest active
+    </span>
+  </div>
+
+  <div class="address-field-wrapper">
+    <textarea
+      id="addressLine"
+      name="addressLine"
+      rows="3"
+      autocomplete="off"
+      [attr.maxlength]="maxLength()"
+      placeholder="Type building, street, or area (e.g. Oberoi Mall, MG Road)..."
+      [ngModel]="line()"
+      (ngModelChange)="onLineInput($event)"
+      (blur)="onLineBlur()"
+      (keydown)="onLineKeydown($event)"
+      required
+      #lineField="ngModel"
+    ></textarea>
+
+    @if (isSearchingSuggestions()) {
+      <div class="address-search-spinner" title="Finding matching locations..." aria-hidden="true"></div>
+    }
+  </div>
+
+  <!-- Live Relevant Address Suggestions Dropdown -->
+  @if (showSuggestions() && suggestions().length > 0) {
+    <ul class="address-suggestions-menu" role="listbox" (mousedown)="$event.preventDefault()">
+      @for (item of suggestions(); track item.id; let idx = $index) {
+        <li
+          class="address-suggestion-item"
+          [class.active]="selectedSuggestionIndex() === idx"
+          role="option"
+          (mousedown)="selectSuggestion(item)"
+        >
+          <span class="suggestion-pin" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </span>
+          <div class="suggestion-text">
+            <strong class="suggestion-primary">{{ item.primaryText }}</strong>
+            <small class="suggestion-secondary">{{ item.secondaryText }}</small>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- Hidden quality validator to block form submission on gibberish or empty address -->
+  <input type="hidden" name="addressQualityCheck" [ngModel]="isAddressValid() ? 'ok' : ''" required />
+
+  @if (lineField.invalid && lineField.touched && !line().trim()) {
+    <p class="field-hint error">Address is required.</p>
+  } @else if (lineField.touched && !addressQuality().valid && addressQuality().message) {
+    <p class="field-hint error">{{ addressQuality().message }}</p>
+  }
+</div>
 
 <div class="form-row">
   <app-state-city-select [state]="state()" (stateChange)="onStateChange($event)" [city]="city()" (cityChange)="onCityChange($event)" />

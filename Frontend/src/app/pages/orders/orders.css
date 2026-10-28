@@ -320,7 +320,15 @@
 }
 
 .strip-icon {
-  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-copper, #985e38);
+}
+
+.strip-icon svg {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .reorder-strip-titles p {
@@ -617,7 +625,20 @@
 }
 
 .spec-icon {
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background-color: var(--color-surface-tint, #f4efe5);
+  color: var(--color-copper, #985e38);
+  flex-shrink: 0;
+}
+
+.spec-icon svg {
+  width: 0.95rem;
+  height: 0.95rem;
 }
 
 .care-spec-box p {
