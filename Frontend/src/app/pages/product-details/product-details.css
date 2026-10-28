@@ -2017,3 +2017,29 @@
   }
 }
 
+
+.specs-care-guide-link {
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(229, 224, 216, 0.7);
+}
+
+.btn-specs-care-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-copper, #985E38);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.btn-specs-care-guide:hover {
+  color: #B87A4B;
+  text-decoration: underline;
+}

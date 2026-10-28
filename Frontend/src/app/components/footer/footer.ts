@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { NewsletterService } from '../../services/newsletter.service';
 import { StoreSettingsService } from '../../services/store-settings.service';
+import { CleansingGuideService } from '../../services/cleansing-guide.service';
 import { SITE_NAME } from '../../services/page-title.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class Footer {
   authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
   private storeSettings = inject(StoreSettingsService);
+  private cleansingGuideService = inject(CleansingGuideService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
 
   newsletterEmail = signal('');
@@ -30,6 +32,10 @@ export class Footer {
   copiedCoupon = signal(false);
   isSubscribing = signal(false);
   newsletterError = signal('');
+
+  openCleansingGuide(): void {
+    this.cleansingGuideService.open('cleansing');
+  }
 
   subscribeNewsletter(): void {
     const email = this.newsletterEmail().trim();

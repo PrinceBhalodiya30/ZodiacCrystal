@@ -13,6 +13,7 @@ import { MoonTransitBar } from '../moon-transit-bar/moon-transit-bar';
 import { SITE_NAME } from '../../services/page-title.service';
 
 import { QuizService } from '../../services/quiz.service';
+import { CleansingGuideService } from '../../services/cleansing-guide.service';
 
 const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
 
@@ -29,11 +30,16 @@ export class Navbar {
   cartService = inject(CartService);
   wishlistService = inject(WishlistService);
   quizService = inject(QuizService);
+  cleansingGuideService = inject(CleansingGuideService);
   storeSettings = inject(StoreSettingsService);
   private router = inject(Router);
 
   openQuiz(): void {
     this.quizService.open();
+  }
+
+  openCleansingGuide(): void {
+    this.cleansingGuideService.open('cleansing');
   }
 
   // Checkout gets a focused header (logo + "Secure checkout" only) so shoppers

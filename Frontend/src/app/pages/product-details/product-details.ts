@@ -44,6 +44,7 @@ import { PublicCoupon } from '../../models/coupon';
 import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
 import { checkDeliveryPincode, getSavedPincode, savePincode, PincodeDeliveryInfo } from '../../utils/pincode.util';
 import { getProductCrystalSpecs, CrystalSpecs } from '../../utils/crystal-specs.util';
+import { CleansingGuideService } from '../../services/cleansing-guide.service';
 
 export interface BundleItem {
   product: Product;
@@ -98,6 +99,7 @@ export class ProductDetails implements OnInit {
   private destroyRef = inject(DestroyRef);
   private notificationService = inject(NotificationService);
   private couponService = inject(CouponService);
+  private cleansingGuideService = inject(CleansingGuideService);
 
   readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
   readonly flatShippingFee = FLAT_SHIPPING_FEE;
@@ -186,6 +188,10 @@ export class ProductDetails implements OnInit {
 
   toggleRitualAccordion(): void {
     this.isRitualOpen.update(v => !v);
+  }
+
+  openCleansingGuide(mineralName?: string): void {
+    this.cleansingGuideService.open('checker', mineralName);
   }
 
   copyAffirmation(text: string): void {

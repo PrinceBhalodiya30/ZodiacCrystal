@@ -98,6 +98,13 @@
         <span>Crystal Quiz</span>
       </button>
 
+      <button type="button" class="navbar-quiz-btn" (click)="openCleansingGuide(); closeMenu()" title="Crystal Cleansing & Charging Guide">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quiz-btn-icon" aria-hidden="true">
+          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+        </svg>
+        <span>Cleansing Guide</span>
+      </button>
+
       <div class="navbar-mobile-account">
 
       @if (authService.isLoggedIn()) {

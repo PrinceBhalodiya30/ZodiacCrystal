@@ -12,6 +12,7 @@ import { CartDrawer } from './components/cart-drawer/cart-drawer';
 import { CompareDock } from './components/compare-dock/compare-dock';
 import { CompareModal } from './components/compare-modal/compare-modal';
 import { FindCrystalModal } from './components/find-crystal-modal/find-crystal-modal';
+import { CleansingGuideModal } from './components/cleansing-guide-modal/cleansing-guide-modal';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,8 @@ import { FindCrystalModal } from './components/find-crystal-modal/find-crystal-m
     CartDrawer,
     CompareDock,
     CompareModal,
-    FindCrystalModal
+    FindCrystalModal,
+    CleansingGuideModal
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
