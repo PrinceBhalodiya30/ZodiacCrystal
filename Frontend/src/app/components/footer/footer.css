@@ -320,7 +320,17 @@
   color: var(--color-ink, #1d2739);
 }
 
-.footer-links a {
+.footer-links a,
+.footer-links button,
+.footer-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: inline-block;
   text-decoration: none;
   color: var(--color-muted, #4e5a70);
   font-size: var(--text-sm);
@@ -328,12 +338,16 @@
   transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
-.footer-links a:hover {
+.footer-links a:hover,
+.footer-links button:hover,
+.footer-link-btn:hover {
   color: var(--color-copper, #985e38);
   transform: translateX(3px);
 }
 
-.footer-links a:focus-visible {
+.footer-links a:focus-visible,
+.footer-links button:focus-visible,
+.footer-link-btn:focus-visible {
   outline: 2px solid var(--color-copper);
   outline-offset: 2px;
   border-radius: var(--radius-xs);

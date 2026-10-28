@@ -36,6 +36,75 @@ app-breadcrumbs {
   margin: 1.75rem 0 2.5rem;
 }
 
+/* Interactive Callout Banner for Cleansing & Care */
+.interactive-guide-callout {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  padding: 1.5rem 1.75rem;
+  margin: 0 0 2.5rem;
+  background: linear-gradient(135deg, rgba(152, 94, 56, 0.07) 0%, rgba(29, 39, 57, 0.04) 100%);
+  border: 1px solid rgba(152, 94, 56, 0.22);
+  border-radius: var(--radius-md, 8px);
+}
+
+.callout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-copper, #985e38);
+  border: 1px solid rgba(152, 94, 56, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
+.callout-content {
+  flex: 1;
+}
+
+.callout-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--color-copper, #985e38);
+  margin-bottom: 0.35rem;
+}
+
+.callout-content h3 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-ink, #1d2739);
+  margin: 0 0 0.35rem;
+}
+
+.callout-content p {
+  font-size: 0.94rem;
+  color: var(--color-muted, #4e5a70);
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.callout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.callout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+}
+
 .guide-section {
   margin-bottom: 2.25rem;
 }
@@ -61,19 +130,19 @@ app-breadcrumbs {
 }
 
 .guide-links {
-  margin-top: 3rem;
-  padding: 2rem 2.25rem;
-  background-color: var(--color-tint);
+  margin-top: 3.5rem;
+  padding: 2.25rem;
+  background-color: var(--color-sand-tint, #faf8f5);
+  border-radius: var(--radius-sm, 6px);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
 }
 
 .guide-links h3 {
   font-family: var(--font-heading);
-  margin: 0 0 1.2rem;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-ink);
+  margin: 0 0 1.25rem;
 }
 
 .guide-links-row {
@@ -116,6 +185,12 @@ app-breadcrumbs {
   .guide-intro {
     padding: 1rem 1.1rem;
     font-size: 1rem;
+  }
+
+  .interactive-guide-callout {
+    flex-direction: column;
+    padding: 1.25rem 1rem;
+    gap: 1rem;
   }
 
   .guide-links {

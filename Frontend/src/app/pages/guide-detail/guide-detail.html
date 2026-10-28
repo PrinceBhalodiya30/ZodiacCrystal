@@ -6,6 +6,35 @@
       <h1>{{ g.title }}</h1>
       <p class="guide-intro">{{ g.shortDescription }}</p>
 
+      @if (g.slug === 'cleansing-and-moon-rituals' || g.slug === 'crystal-care') {
+        <div class="interactive-guide-callout">
+          <div class="callout-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              <path d="M19 3v4"></path>
+              <path d="M21 5h-4"></path>
+            </svg>
+          </div>
+          <div class="callout-content">
+            <span class="callout-tag">Interactive Sanctuary Tool</span>
+            <h3>Crystal Cleansing &amp; Water Safety Checker</h3>
+            <p>Looking up a specific mineral like Selenite, Malachite, or Pyrite? Open our instant interactive modal to check water safety, full moon charging rituals, and smoke cleansing instructions.</p>
+            <div class="callout-actions">
+              <button type="button" class="btn btn-primary btn-sm callout-btn" (click)="openCleansingModal('checker')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                Launch Mineral Safety Checker
+              </button>
+              <button type="button" class="btn btn-outline btn-sm callout-btn" (click)="openCleansingModal('charging')">
+                Full Moon Charging Guide
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
       @for (section of g.sections; track $index) {
         <div class="guide-section">
           @if (section.heading) {

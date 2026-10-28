@@ -32,6 +32,57 @@ export const GUIDES: Guide[] = [
     ]
   },
   {
+    slug: 'cleansing-and-moon-rituals',
+    title: 'Cleansing & Moon Ritual Guide',
+    shortDescription: 'Master the sacred art of energetic clearing, full moon charging, and the 3-step intention activation ritual for your healing crystals.',
+    sections: [
+      {
+        heading: 'Why Crystals Need Regular Cleansing',
+        paragraphs: [
+          'Natural crystals absorb, transmit, and transmute subtle energy from your hands, daily environments, and personal meditations. Over time, frequent use or emotional stress can make a crystal feel energetically static.',
+          'Cleansing resets your crystal back to its pure baseline vibration, restoring its natural crystalline frequency so it can hold your intentions with maximum clarity and power.'
+        ]
+      },
+      {
+        heading: 'The 4 Sacred Cleansing Methods',
+        paragraphs: [
+          '1. White Sage & Palo Santo Smoke (Universal): Light ethically sourced white sage or holy palo santo, blow out the flame, and gently pass your crystal through the rising sacred smoke for 30–60 seconds while holding the clear intention of energetic purification. This method is universally safe for all crystals.',
+          '2. Full Moonlight (Gentle & Potent): Place your crystals outdoors or on a clean windowsill bathed in direct moonlight from dusk until dawn during the 3-night full moon window. Moonlight is universally safe for every mineral and recharges stones without heat or abrasive chemical wear.',
+          '3. Selenite Charging Plates (Self-Cleansing): Rest your crystals on a consecrated selenite slab or bowl for 4–6 hours. Selenite contains radiant light energy that continuously clears lower density from other stones.',
+          '4. Sound Resonance: Strike a Tibetan singing bowl, tingsha bell, or 432 Hz tuning fork near your altar. The harmonic vibration instantly disperses stagnant frequency patterns.'
+        ]
+      },
+      {
+        heading: 'Critical Water Safety: Safe vs. Unsafe Minerals',
+        paragraphs: [
+          'Never submerge soft, porous, or metallic minerals in water. Water-soluble minerals like Selenite, Halite, and Calcite dissolve or lose their luster. Iron-rich minerals like Pyrite and Hematite can oxidize and rust, while fibrous stones like Malachite should never touch moisture.',
+          'Water-Safe: Clear Quartz, Rose Quartz, Amethyst, Smoky Quartz, Citrine, and Agate can safely handle brief cool water rinses. When in doubt, default to safe dry cleansing methods like moonlight, smoke, or selenite.'
+        ]
+      },
+      {
+        heading: 'Step-by-Step Full Moon Charging Ritual',
+        paragraphs: [
+          'Step 1 (Cleanse First): Always smudge or dust your stones before setting them under the moon.',
+          'Step 2 (The Lunar Altar): On the night of the full moon, arrange your crystals on a natural cloth on a windowsill facing the moon or safely on a balcony.',
+          'Step 3 (Morning Retrieval): Gather your crystals before the harsh midday sun arrives (especially for colored varieties like Amethyst and Rose Quartz that can fade under intense ultraviolet rays). Your crystals are now fully charged with potent celestial prana.'
+        ]
+      },
+      {
+        heading: 'The 3-Step Sacred Intention Activation Ritual',
+        paragraphs: [
+          'Step 1 (Connect): Hold your cleansed stone in both palms. Close your eyes, take 3 deep grounding breaths, and feel its cool weight and tactile vibration.',
+          'Step 2 (Attune): Bring the stone to your heart chakra for emotional intentions (love, compassion, healing) or to your third eye chakra for mental insight, wealth, or spiritual protection.',
+          'Step 3 (Speak Your Intention): State your affirmation aloud with conviction (e.g., "I program this stone to shield my aura with radiant divine light"). Seal the ritual with "And so it is."'
+        ]
+      }
+    ],
+    relatedLinks: [
+      { label: 'Shop All Crystals', path: '/products' },
+      { label: 'Shop by Zodiac Sign', path: '/zodiac' },
+      { label: 'Take 60-Sec Crystal Quiz', path: '/consultation' }
+    ]
+  },
+  {
     slug: 'crystal-care',
     title: 'How to Care for Your Crystals',
     shortDescription: 'Simple, practical guidance for keeping your crystals clean and looking their best.',

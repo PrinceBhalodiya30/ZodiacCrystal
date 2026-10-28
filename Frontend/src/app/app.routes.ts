@@ -115,6 +115,8 @@ export const routes: Routes = [
   },
   { path: 'guides', title: 'Crystal Guides', component: Guides, data: { description: 'Practical crystal guides: how to choose, care for and use crystals, and which stones suit each zodiac sign.' } },
   { path: 'guides/:slug', title: route => GUIDES.find(g => g.slug === route.paramMap.get('slug'))?.title ?? 'Crystal Guides', component: GuideDetail },
+  { path: 'rituals', redirectTo: 'guides/cleansing-and-moon-rituals', pathMatch: 'full' },
+  { path: 'cleansing-guide', redirectTo: 'guides/cleansing-and-moon-rituals', pathMatch: 'full' },
   { path: 'about', title: 'About Us', component: About, data: { description: `Who we are and how we source the healing crystals we sell at ${SITE_NAME}.` } },
   {
     path: 'help',
