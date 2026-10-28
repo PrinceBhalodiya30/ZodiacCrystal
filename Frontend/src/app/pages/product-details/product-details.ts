@@ -173,6 +173,8 @@ export class ProductDetails implements OnInit {
   crystalSpecs = computed<CrystalSpecs | null>(() => getProductCrystalSpecs(this.product()));
   isHealingOpen = signal(false);
   isCareOpen = signal(false);
+  isRitualOpen = signal(false);
+  copiedAffirmation = signal(false);
 
   toggleHealingAccordion(): void {
     this.isHealingOpen.update(v => !v);
@@ -180,6 +182,22 @@ export class ProductDetails implements OnInit {
 
   toggleCareAccordion(): void {
     this.isCareOpen.update(v => !v);
+  }
+
+  toggleRitualAccordion(): void {
+    this.isRitualOpen.update(v => !v);
+  }
+
+  copyAffirmation(text: string): void {
+    if (!text) return;
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.copiedAffirmation.set(true);
+        setTimeout(() => this.copiedAffirmation.set(false), 2500);
+      }).catch(() => {
+        // Fallback if clipboard permission is denied
+      });
+    }
   }
 
   ngOnInit(): void {

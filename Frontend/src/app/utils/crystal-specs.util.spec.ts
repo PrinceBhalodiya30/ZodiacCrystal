@@ -29,7 +29,7 @@ describe('crystal-specs.util', () => {
     expect(getProductCrystalSpecs(nonCrystal)).toBeNull();
   });
 
-  it('should resolve archetype specs for Amethyst', () => {
+  it('should resolve archetype specs for Amethyst with affirmation and 3-step ritual', () => {
     const amethyst: Product = {
       ...baseProduct,
       name: 'Amethyst Raw Cluster',
@@ -39,6 +39,10 @@ describe('crystal-specs.util', () => {
     expect(specs).not.toBeNull();
     expect(specs?.chakra).toContain('Crown');
     expect(specs?.waterSafe).toContain('Yes');
+    expect(specs?.affirmation).toContain('intuition');
+    expect(specs?.activationRitual.cleanse).toBeTruthy();
+    expect(specs?.activationRitual.program).toContain('3 times');
+    expect(specs?.activationRitual.anchor).toBeTruthy();
   });
 
   it('should resolve archetype specs for Selenite warning about water solubility', () => {
@@ -51,6 +55,8 @@ describe('crystal-specs.util', () => {
     expect(specs).not.toBeNull();
     expect(specs?.waterSafe).toContain('No');
     expect(specs?.waterSafe).toContain('dissolves');
+    expect(specs?.affirmation).toBeTruthy();
+    expect(specs?.activationRitual).toBeDefined();
   });
 
   it('should prioritize custom product properties over archetype defaults', () => {
@@ -66,5 +72,6 @@ describe('crystal-specs.util', () => {
     expect(specs?.chakra).toBe('Custom Astral Chakra');
     // Fallback archetype filled missing fields
     expect(specs?.element).toBe('Air & Water');
+    expect(specs?.affirmation).toBeTruthy();
   });
 });

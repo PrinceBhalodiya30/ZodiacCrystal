@@ -12,7 +12,7 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
-import { CrystalSpecs, getProductCrystalSpecs } from '../../utils/crystal-specs.util';
+import { CrystalSpecs, DEFAULT_SPECS, getProductCrystalSpecs } from '../../utils/crystal-specs.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 
 export interface PurchasedCrystalSummary {
@@ -257,35 +257,20 @@ export class Orders implements OnInit {
     } else if (productId) {
       this.productService.getProduct(productId).subscribe({
         next: prod => {
-          const fetchedSpecs = getProductCrystalSpecs(prod) ?? {
-            waterSafe: 'Safe for gentle cool water cleansing',
-            sunlightExposure: 'Best charged under full moonlight or morning sun',
-            chakra: 'Universal Energy Alignment',
-            element: 'Earth & Ether'
-          };
+          const fetchedSpecs = getProductCrystalSpecs(prod) ?? DEFAULT_SPECS;
           this.selectedCareItem.set({ name: prod.name, specs: fetchedSpecs });
         },
         error: () => {
           this.selectedCareItem.set({
             name: productName,
-            specs: {
-              waterSafe: 'Safe for gentle cool water cleansing',
-              sunlightExposure: 'Best charged under full moonlight or morning sun',
-              chakra: 'Universal Energy Alignment',
-              element: 'Earth & Ether'
-            }
+            specs: DEFAULT_SPECS
           });
         }
       });
     } else {
       this.selectedCareItem.set({
         name: productName,
-        specs: {
-          waterSafe: 'Safe for gentle cool water cleansing',
-          sunlightExposure: 'Best charged under full moonlight or morning sun',
-          chakra: 'Universal Energy Alignment',
-          element: 'Earth & Ether'
-        }
+        specs: DEFAULT_SPECS
       });
     }
   }

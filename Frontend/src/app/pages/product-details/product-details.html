@@ -89,6 +89,41 @@
         </div>
 
         @if (crystalSpecs(); as specs) {
+          <!-- Sacred Affirmation Card (Energy Muse inspired) -->
+          <div class="crystal-affirmation-card" role="region" aria-label="Sacred Crystal Affirmation">
+            <div class="affirmation-header">
+              <span class="affirmation-badge">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span>Daily Sacred Mantra</span>
+              </span>
+              <button
+                type="button"
+                class="btn-copy-affirmation"
+                (click)="copyAffirmation(specs.affirmation)"
+                [attr.aria-label]="copiedAffirmation() ? 'Affirmation copied' : 'Copy affirmation to clipboard'"
+                [title]="copiedAffirmation() ? 'Copied!' : 'Copy affirmation'"
+              >
+                @if (copiedAffirmation()) {
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Copied</span>
+                } @else {
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy Mantra</span>
+                }
+              </button>
+            </div>
+            <blockquote class="affirmation-quote">
+              &ldquo;{{ specs.affirmation }}&rdquo;
+            </blockquote>
+          </div>
+
           <div class="crystal-specs-accordion" aria-label="Crystal Healing & Care Specifications">
             <!-- Healing & Spiritual Energy Accordion Item -->
             <div class="specs-accordion-item" [class.is-open]="isHealingOpen()">
@@ -165,6 +200,53 @@
                       <span>Sunlight Exposure</span>
                     </div>
                     <div class="spec-prop-value">{{ specs.sunlightExposure }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- How to Activate & Program Your Crystal Accordion Item -->
+            <div class="specs-accordion-item" [class.is-open]="isRitualOpen()">
+              <button
+                type="button"
+                class="specs-accordion-header"
+                (click)="toggleRitualAccordion()"
+                [attr.aria-expanded]="isRitualOpen()"
+                aria-controls="specs-ritual-panel"
+              >
+                <div class="specs-header-title">
+                  <svg class="specs-header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                  </svg>
+                  <span>How to Activate &amp; Program Your Crystal</span>
+                </div>
+                <svg class="specs-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div id="specs-ritual-panel" class="specs-accordion-body" [hidden]="!isRitualOpen()">
+                <div class="ritual-steps-container">
+                  <div class="ritual-step-item">
+                    <div class="ritual-step-num">1</div>
+                    <div class="ritual-step-content">
+                      <div class="ritual-step-title">Cleanse &amp; Clear</div>
+                      <p class="ritual-step-desc">{{ specs.activationRitual.cleanse }}</p>
+                    </div>
+                  </div>
+                  <div class="ritual-step-item">
+                    <div class="ritual-step-num">2</div>
+                    <div class="ritual-step-content">
+                      <div class="ritual-step-title">Program Your Intention</div>
+                      <p class="ritual-step-desc">{{ specs.activationRitual.program }}</p>
+                    </div>
+                  </div>
+                  <div class="ritual-step-item">
+                    <div class="ritual-step-num">3</div>
+                    <div class="ritual-step-content">
+                      <div class="ritual-step-title">Anchor in Your Sanctuary</div>
+                      <p class="ritual-step-desc">{{ specs.activationRitual.anchor }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
