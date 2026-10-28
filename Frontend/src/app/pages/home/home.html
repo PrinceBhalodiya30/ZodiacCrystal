@@ -1,58 +1,339 @@
-<section class="hero">
-  <div class="container hero-inner">
-    <div class="hero-copy">
-      <span class="hero-eyebrow">
-        {{ heroEyebrow() }}
-      </span>
-      <h1>{{ heroTitle() }}</h1>
-      <p>
-        {{ heroSubtitle() }}
+<section class="hero hero-carousel" 
+  (mouseenter)="pauseCarousel()" 
+  (mouseleave)="resumeCarousel()" 
+  (touchstart)="onTouchStart($event)" 
+  (touchend)="onTouchEnd($event)"
+  (keydown.arrowleft)="prevSlide()"
+  (keydown.arrowright)="nextSlide()"
+  tabindex="0"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="Energy Muse Featured Crystal Carousel">
 
-      </p>
-      <div class="hero-actions">
-        <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
-        <a class="btn btn-outline hero-btn-secondary" routerLink="/consultation">
-          <span class="btn-sparkle" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg></span>
-          <span>Crystal Consultation</span>
-        </a>
+  <!-- Prev / Next Navigation Arrows -->
+  <button type="button" class="carousel-nav-btn prev" (click)="prevSlide(); $event.stopPropagation()" aria-label="Previous Slide">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+  <button type="button" class="carousel-nav-btn next" (click)="nextSlide(); $event.stopPropagation()" aria-label="Next Slide">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+
+  <!-- Carousel Slides Track -->
+  <div class="hero-slides-track">
+
+    <!-- SLIDE 0: Astrological & Planetary Resonance -->
+    <div class="hero-slide" [class.active]="activeSlide() === 0" role="tabpanel" [attr.aria-hidden]="activeSlide() !== 0">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="hero-eyebrow">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {{ heroEyebrow() || 'Celestial Resonance & Zodiac Alignment' }}
+          </span>
+          <h1>{{ heroTitle() }}</h1>
+          <p>{{ heroSubtitle() }}</p>
+          <div class="hero-actions">
+            <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
+            <a class="btn btn-outline hero-btn-secondary" routerLink="/zodiac">
+              <span class="btn-sparkle" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg></span>
+              <span>Explore 12 Zodiac Signs</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-image-wrap">
+          <div class="hero-image">
+            @if (heroImageUrl(); as url) {
+              <img [imgSrc]="url" imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="'Healing crystals from the ' + siteName + ' collection'" fetchpriority="high" imgFallback />
+            } @else {
+              <svg class="hero-image-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 3h8l4 5-10 13L2 8Z"/>
+                <path d="M2 8h20M8 3l2 5-2 8M16 3l-2 5 2 8M6 8l6 13 6-13"/>
+              </svg>
+            }
+            <div class="hero-floating-badge badge-top">
+              <span class="badge-dot"></span>
+              <span>100% Certified Earth-Mined</span>
+            </div>
+            <div class="hero-floating-badge badge-bottom">
+              <span>🪐 Vedic Astrology Attuned</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <ul class="hero-trust">
-        <li class="trust-badge">
-          <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <polyline points="9 12 11 14 15 10"/>
-          </svg>
-          <span>100% Natural Minerals</span>
-        </li>
-        <li class="trust-badge">
-          <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-          <span>12 Zodiac Attuned</span>
-        </li>
-        <li class="trust-badge">
-          <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
-            <polyline points="2 9 12 13 22 9"/>
-            <line x1="12" y1="22" x2="12" y2="13"/>
-          </svg>
-          <span>Artisanal Hand-Selected</span>
-        </li>
-      </ul>
     </div>
 
-    <div class="hero-image-wrap">
-      <div class="hero-image">
-        @if (heroImageUrl(); as url) {
-          <img [imgSrc]="url" imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="'Healing crystals from the ' + siteName + ' collection'" fetchpriority="high" imgFallback />
-        } @else {
-          <svg class="hero-image-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
-            <path d="M8 3h8l4 5-10 13L2 8Z"/>
-            <path d="M2 8h20M8 3l2 5-2 8M16 3l-2 5 2 8M6 8l6 13 6-13"/>
-          </svg>
-        }
+    <!-- SLIDE 1: Sacred Intention Collection (Energy Muse Signature) -->
+    <div class="hero-slide" [class.active]="activeSlide() === 1" role="tabpanel" [attr.aria-hidden]="activeSlide() !== 1">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="hero-eyebrow">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            Sacred Intention Alchemy
+          </span>
+          <h1>Program Your Stones. <span class="hero-highlight">Awaken Your Reality.</span></h1>
+          <p>Crystals are tangible energy anchors for your mind and spirit. Select the sacred intention you wish to amplify today:</p>
+          
+          <!-- Energy Muse Intention Chips -->
+          <div class="hero-intention-chips">
+            <a class="hero-intention-chip chip-wealth" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
+              <span class="chip-icon">💰</span>
+              <span class="chip-label">Wealth & Success</span>
+            </a>
+            <a class="hero-intention-chip chip-protection" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
+              <span class="chip-icon">🛡️</span>
+              <span class="chip-label">Protection & Shield</span>
+            </a>
+            <a class="hero-intention-chip chip-love" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
+              <span class="chip-icon">💖</span>
+              <span class="chip-label">Love & Harmony</span>
+            </a>
+            <a class="hero-intention-chip chip-peace" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
+              <span class="chip-icon">🧘</span>
+              <span class="chip-label">Peace & Serenity</span>
+            </a>
+          </div>
+
+          <div class="hero-actions">
+            <a class="btn hero-btn-primary" routerLink="/products">Shop All Intentions</a>
+            <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openCleansingGuide('ritual')">
+              <span class="btn-sparkle" aria-hidden="true">✦</span>
+              <span>3-Step Activation Ritual</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-image-wrap">
+          <div class="intention-showcase-card">
+            <div class="intention-card-header">
+              <span class="intention-card-tag">Energy Muse Pattern</span>
+              <h4>The 4 Core Manifestation Pillars</h4>
+            </div>
+            <div class="intention-grid-tiles">
+              <a class="intention-tile tile-wealth" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
+                <span class="tile-icon">💰</span>
+                <div class="tile-text">
+                  <strong>Abundance Magnet</strong>
+                  <small>Pyrite · Citrine · Jade</small>
+                </div>
+                <span class="tile-arrow">→</span>
+              </a>
+              <a class="intention-tile tile-protection" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
+                <span class="tile-icon">🛡️</span>
+                <div class="tile-text">
+                  <strong>Aura Armor</strong>
+                  <small>Black Tourmaline · Obsidian</small>
+                </div>
+                <span class="tile-arrow">→</span>
+              </a>
+              <a class="intention-tile tile-love" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
+                <span class="tile-icon">💖</span>
+                <div class="tile-text">
+                  <strong>Heart Awakening</strong>
+                  <small>Rose Quartz · Moonstone</small>
+                </div>
+                <span class="tile-arrow">→</span>
+              </a>
+              <a class="intention-tile tile-peace" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
+                <span class="tile-icon">🧘</span>
+                <div class="tile-text">
+                  <strong>Restorative Serenity</strong>
+                  <small>Amethyst · Selenite</small>
+                </div>
+                <span class="tile-arrow">→</span>
+              </a>
+            </div>
+            <div class="intention-card-footer">
+              <span>✦ Consecrated With Vedic Mantra & Moon Frequency</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- SLIDE 2: Intuitive 60-Second Crystal Quiz -->
+    <div class="hero-slide" [class.active]="activeSlide() === 2" role="tabpanel" [attr.aria-hidden]="activeSlide() !== 2">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="hero-eyebrow">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
+            Intuitive Energy Matcher
+          </span>
+          <h1>What Crystal Do You <span class="hero-highlight">Need Right Now?</span></h1>
+          <p>Unsure which crystal calls to you? Take our 60-second guided intuitive assessment to decode your energetic blocks and discover your soul crystal match.</p>
+
+          <ul class="hero-checklist">
+            <li>
+              <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>3 Intuitive Energy Questions (Under 60 Seconds)</span>
+            </li>
+            <li>
+              <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Harmonized with Your Zodiac & Current Planetary Transit</span>
+            </li>
+            <li>
+              <svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Includes Personalized 3-Step Crystal Activation Ritual</span>
+            </li>
+          </ul>
+
+          <div class="hero-actions">
+            <button type="button" class="btn hero-btn-primary" (click)="openQuiz()">
+              <span>Take 60-Sec Crystal Quiz</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <a class="btn btn-outline hero-btn-secondary" routerLink="/consultation">
+              <span>Personal Consultation</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-image-wrap">
+          <div class="quiz-preview-card" (click)="openQuiz()" role="button" tabindex="0" (keydown.enter)="openQuiz()" (keydown.space)="openQuiz()">
+            <div class="quiz-preview-badge">✦ Interactive Assessment</div>
+            <div class="quiz-preview-question">
+              <span class="quiz-step">Step 1 of 3</span>
+              <h3>What area of your life needs the strongest energetic shift?</h3>
+            </div>
+            <div class="quiz-sample-options">
+              <div class="quiz-option-pill active">
+                <span>✨ Attracting Abundance & Success</span>
+                <span class="option-check">✓</span>
+              </div>
+              <div class="quiz-option-pill">
+                <span>🛡️ Shielding My Aura & Boundaries</span>
+              </div>
+              <div class="quiz-option-pill">
+                <span>💖 Healing Emotional Heart Wounds</span>
+              </div>
+            </div>
+            <div class="quiz-preview-cta">
+              <span class="quiz-tap-text">Click anywhere to start quiz</span>
+              <span class="quiz-stats-pill">12,000+ Matches Curated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Celestial Mystery Box & Sacred Care -->
+    <div class="hero-slide" [class.active]="activeSlide() === 3" role="tabpanel" [attr.aria-hidden]="activeSlide() !== 3">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="hero-eyebrow">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Sacred Care & Celestial Surprise
+          </span>
+          <h1>Celestial Mystery Boxes & <span class="hero-highlight">Sacred Cleansing.</span></h1>
+          <p>Experience the joy of unboxing consecrated minerals intuitively selected for your sign, and learn the sacred art of cleansing, charging, and activating your altar.</p>
+
+          <div class="mystery-box-highlights">
+            <div class="mb-highlight-item">
+              <span class="mb-icon">🎁</span>
+              <div>
+                <strong>Curated Cosmic Mystery Box</strong>
+                <small>Guaranteed 1 rare geode + 3 attuned crystals</small>
+              </div>
+            </div>
+            <div class="mb-highlight-item">
+              <span class="mb-icon">🌙</span>
+              <div>
+                <strong>Full Moon Cleansing Protocols</strong>
+                <small>Selenite plate, sound bowl & sage guidance</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a class="btn hero-btn-primary" routerLink="/mystery-box">Unbox Celestial Mystery Box</a>
+            <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openCleansingGuide('cleansing')">
+              <span class="btn-sparkle" aria-hidden="true">✦</span>
+              <span>Interactive Cleansing Guide</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-image-wrap">
+          <div class="mystery-showcase-card">
+            <div class="mystery-badge-ribbon">⭐ Limited Lunar Edition</div>
+            <div class="mystery-card-content">
+              <div class="mystery-box-icon-wrap">
+                <svg class="mystery-box-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+              </div>
+              <h4>The Celestial Mystery Vault</h4>
+              <p class="mystery-tagline">Intuitive Selection Matched to Your Astrological Vibration</p>
+              <ul class="mystery-perks-list">
+                <li>✦ 1 High-Vibration Raw Geode / Cluster</li>
+                <li>✦ 3 Attuned Tumbled Pocket Stones</li>
+                <li>✦ Consecrated White Sage & Selenite Wand</li>
+                <li>✦ Astrological Alignment Certificate</li>
+              </ul>
+              <a class="btn mystery-card-cta" routerLink="/mystery-box">
+                <span>Explore Mystery Boxes</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Carousel Slide Indicators / Tabs with Live Progress Bar -->
+  <div class="carousel-nav" role="tablist" aria-label="Carousel Navigation">
+    @for (tab of carouselTabs; track $index) {
+      <button type="button" 
+        class="carousel-indicator" 
+        [class.active]="activeSlide() === $index" 
+        (click)="goToSlide($index); $event.stopPropagation()"
+        role="tab"
+        [attr.aria-selected]="activeSlide() === $index"
+        [attr.aria-label]="tab.label">
+        <span class="indicator-bar">
+          @if (activeSlide() === $index) {
+            <span class="indicator-progress" [class.paused]="isPaused()"></span>
+          }
+        </span>
+        <span class="indicator-label">{{ tab.shortLabel }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Shared Trust Bar -->
+  <div class="container hero-trust-container">
+    <ul class="hero-trust">
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+        <span>100% Natural Minerals</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span>12 Zodiac Attuned</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+          <polyline points="2 9 12 13 22 9"/>
+          <line x1="12" y1="22" x2="12" y2="13"/>
+        </svg>
+        <span>Artisanal Hand-Selected</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span>Full Moon Cleansed</span>
+      </li>
+    </ul>
   </div>
 </section>
 

@@ -1,11 +1,96 @@
-/* Hero Section */
+/* ==========================================================================
+   Hero Section - Energy Muse 4-Slide Interactive Carousel
+   ========================================================================== */
+
+@keyframes heroSlideProgress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
 .hero {
   position: relative;
   overflow: hidden;
-  background: radial-gradient(ellipse at 85% 25%, rgba(152, 94, 56, 0.08) 0%, transparent 60%),
+  background: radial-gradient(ellipse at 85% 20%, rgba(152, 94, 56, 0.09) 0%, transparent 60%),
+              radial-gradient(ellipse at 15% 80%, rgba(197, 160, 89, 0.07) 0%, transparent 55%),
               linear-gradient(180deg, var(--color-surface-tint, #F4EFE5) 0%, var(--color-canvas, #FBF8F2) 100%);
-  padding: 5.5rem 1.5rem 5rem;
+  padding: 4.5rem 1.5rem 3.5rem;
   border-bottom: 1px solid var(--color-border-subtle, #EAE3D6);
+}
+
+.hero-carousel {
+  outline: none;
+}
+
+/* Navigation Arrows */
+.carousel-nav-btn {
+  position: absolute;
+  top: 42%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border, #E4DCCB);
+  color: var(--color-ink, #1D2739);
+  box-shadow: 0 4px 14px rgba(29, 39, 57, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+}
+
+.carousel-nav-btn:hover {
+  background: #ffffff;
+  color: var(--color-copper, #985E38);
+  border-color: var(--color-copper, #985E38);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 20px rgba(152, 94, 56, 0.22);
+}
+
+.carousel-nav-btn:focus-visible {
+  outline: 2px solid var(--color-copper, #985E38);
+  outline-offset: 2px;
+}
+
+.carousel-nav-btn.prev {
+  left: 1.25rem;
+}
+
+.carousel-nav-btn.next {
+  right: 1.25rem;
+}
+
+/* Slides Track (CSS Grid Stacking for Zero Layout Shift) */
+.hero-slides-track {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  min-height: 460px;
+  align-items: center;
+}
+
+.hero-slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(24px) scale(0.992);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.45s;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+  z-index: 2;
 }
 
 .hero-inner {
@@ -35,12 +120,13 @@
 
 .hero-eyebrow svg {
   color: var(--color-copper, #985E38);
+  flex-shrink: 0;
 }
 
 .hero h1 {
   margin: 0 0 1.25rem;
   font-family: var(--font-heading);
-  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-size: clamp(2.1rem, 4.2vw, 3.25rem);
   line-height: 1.15;
   letter-spacing: -0.015em;
   font-weight: 500;
@@ -54,11 +140,11 @@
 }
 
 .hero p {
-  margin: 0 0 2rem;
+  margin: 0 0 1.75rem;
   color: var(--color-subtle, #4E5A70);
   font-size: var(--text-md);
   line-height: var(--leading-relaxed);
-  max-width: 520px;
+  max-width: 530px;
 }
 
 .hero-actions {
@@ -75,6 +161,21 @@
   text-transform: uppercase;
   font-weight: 600;
   border-radius: var(--radius-sm, 4px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  background-color: var(--color-ink, #1D2739);
+  color: #ffffff;
+  transition: all var(--transition-base, 200ms ease);
+}
+
+.hero-btn-primary:hover {
+  background-color: var(--color-copper, #985E38);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(152, 94, 56, 0.25);
 }
 
 .hero-btn-secondary {
@@ -92,6 +193,7 @@
   border: 1px solid var(--color-border, #E4DCCB);
   color: var(--color-ink, #1D2739);
   border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
   transition: all var(--transition-base);
 }
 
@@ -108,34 +210,96 @@
   font-size: 0.85rem;
 }
 
-.hero-trust {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem 1.75rem;
+/* Slide 1: Intention Chips (Energy Muse Signature) */
+.hero-intention-chips {
+  display: flex;
   flex-wrap: wrap;
-  list-style: none;
-  margin: 2.25rem 0 0;
-  padding: 0.7rem 1.5rem;
-  background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border-subtle, #EAE3D6);
-  box-shadow: var(--shadow-sm);
-  border-radius: var(--radius-pill);
-  color: var(--color-subtle, #4E5A70);
-  font-size: 0.84rem;
-  font-weight: 500;
+  gap: 0.55rem;
+  margin-bottom: 1.75rem;
 }
 
-.trust-badge {
+.hero-intention-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-pill, 9999px);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--color-border, #E4DCCB);
+  color: var(--color-ink, #1D2739);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.trust-badge-icon {
+.hero-intention-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(152, 94, 56, 0.15);
+  border-color: var(--color-copper, #985E38);
   color: var(--color-copper, #985E38);
+}
+
+.hero-intention-chip .chip-icon {
+  font-size: 0.95rem;
+}
+
+/* Slide 2: Quiz Checklist */
+.hero-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.hero-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 13.5px;
+  color: var(--color-subtle, #4E5A70);
+}
+
+.hero-checklist .check-icon {
+  color: #2e7d32;
   flex-shrink: 0;
 }
 
+/* Slide 3: Mystery Box Highlights */
+.mystery-box-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.mb-highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.mb-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.mb-highlight-item strong {
+  display: block;
+  font-size: 13.5px;
+  color: var(--color-ink, #1D2739);
+}
+
+.mb-highlight-item small {
+  display: block;
+  font-size: 11.5px;
+  color: var(--color-subtle, #4E5A70);
+}
+
+/* Hero Visual Cards */
 .hero-image-wrap {
   position: relative;
   flex: 1 1 320px;
@@ -178,7 +342,453 @@
   color: var(--color-copper, #985E38);
 }
 
-/* Section Headers */
+/* Slide 0 Floating Badges */
+.hero-floating-badge {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border, #E4DCCB);
+  border-radius: var(--radius-pill, 9999px);
+  padding: 0.35rem 0.85rem;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-ink, #1D2739);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  z-index: 3;
+}
+
+.hero-floating-badge.badge-top {
+  top: 1rem;
+  right: 1rem;
+}
+
+.hero-floating-badge.badge-bottom {
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2e7d32;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.6);
+}
+
+/* Slide 1: Intention Showcase Card */
+.intention-showcase-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border, #E4DCCB);
+  border-radius: var(--radius-sm, 6px);
+  padding: 1.5rem;
+  box-shadow: 0 12px 36px rgba(29, 39, 57, 0.08);
+  width: 100%;
+}
+
+.intention-card-header {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.intention-card-tag {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-copper, #985E38);
+  font-weight: 700;
+}
+
+.intention-card-header h4 {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--color-ink, #1D2739);
+}
+
+.intention-grid-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.intention-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--color-canvas, #FBF8F2);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.intention-tile:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  border-color: var(--color-copper, #985E38);
+  box-shadow: 0 4px 14px rgba(152, 94, 56, 0.12);
+}
+
+.tile-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.tile-text strong {
+  display: block;
+  font-size: 12px;
+  color: var(--color-ink, #1D2739);
+}
+
+.tile-text small {
+  display: block;
+  font-size: 10px;
+  color: var(--color-subtle, #4E5A70);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.tile-arrow {
+  margin-left: auto;
+  color: var(--color-copper, #985E38);
+  font-weight: bold;
+  font-size: 12px;
+  opacity: 0.5;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.intention-tile:hover .tile-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.intention-card-footer {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--color-border-subtle, #EAE3D6);
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-copper, #985E38);
+  font-weight: 500;
+}
+
+/* Slide 2: Quiz Preview Card */
+.quiz-preview-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--color-copper-light, #D8B092);
+  border-radius: var(--radius-sm, 6px);
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 12px 36px rgba(152, 94, 56, 0.12);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+  width: 100%;
+}
+
+.quiz-preview-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(152, 94, 56, 0.2);
+  border-color: var(--color-copper, #985E38);
+}
+
+.quiz-preview-card:focus-visible {
+  outline: 2px solid var(--color-copper, #985E38);
+  outline-offset: 2px;
+}
+
+.quiz-preview-badge {
+  display: inline-block;
+  background: rgba(152, 94, 56, 0.1);
+  color: var(--color-copper, #985E38);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill, 9999px);
+  margin-bottom: 0.75rem;
+}
+
+.quiz-preview-question .quiz-step {
+  display: block;
+  font-size: 11px;
+  color: var(--color-subtle, #4E5A70);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+
+.quiz-preview-question h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  line-height: 1.3;
+  margin: 0 0 1rem;
+  color: var(--color-ink, #1D2739);
+}
+
+.quiz-sample-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.quiz-option-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--color-canvas, #FBF8F2);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  font-size: 12.5px;
+  color: var(--color-ink, #1D2739);
+}
+
+.quiz-option-pill.active {
+  background: rgba(152, 94, 56, 0.07);
+  border-color: var(--color-copper, #985E38);
+  font-weight: 600;
+  color: var(--color-copper, #985E38);
+}
+
+.option-check {
+  font-weight: bold;
+}
+
+.quiz-preview-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed var(--color-border-subtle, #EAE3D6);
+  padding-top: 0.75rem;
+}
+
+.quiz-tap-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-copper, #985E38);
+}
+
+.quiz-stats-pill {
+  font-size: 10px;
+  color: var(--color-subtle, #4E5A70);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Slide 3: Mystery Showcase Card */
+.mystery-showcase-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(29, 39, 57, 0.95) 0%, rgba(19, 26, 38, 0.98) 100%);
+  border: 1px solid rgba(216, 176, 146, 0.4);
+  border-radius: var(--radius-sm, 6px);
+  padding: 2rem 1.75rem 1.75rem;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  color: #FBF8F2;
+  overflow: hidden;
+}
+
+.mystery-badge-ribbon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-copper, #985E38);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill, 9999px);
+}
+
+.mystery-box-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(216, 176, 146, 0.15);
+  border: 1px solid rgba(216, 176, 146, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #E4DCCB;
+  margin-bottom: 0.75rem;
+}
+
+.mystery-box-svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mystery-card-content h4 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: #ffffff;
+  margin: 0 0 0.25rem;
+}
+
+.mystery-tagline {
+  font-size: 11.5px;
+  color: #D8B092;
+  margin: 0 0 1rem;
+}
+
+.mystery-perks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 12px;
+  color: #E4DCCB;
+}
+
+.mystery-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-copper, #985E38);
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm, 4px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mystery-card-cta:hover {
+  background: #B87A4B;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(152, 94, 56, 0.35);
+}
+
+/* Carousel Indicators & Live Progress */
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 5;
+}
+
+.carousel-indicator {
+  background: transparent;
+  border: none;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+.carousel-indicator:hover,
+.carousel-indicator.active {
+  opacity: 1;
+}
+
+.carousel-indicator:focus-visible {
+  outline: 2px solid var(--color-copper, #985E38);
+  outline-offset: 2px;
+}
+
+.indicator-bar {
+  width: 48px;
+  height: 3px;
+  border-radius: 2px;
+  background-color: rgba(152, 94, 56, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.indicator-progress {
+  display: block;
+  height: 100%;
+  background-color: var(--color-copper, #985E38);
+  width: 100%;
+  animation: heroSlideProgress 6.5s linear;
+}
+
+.indicator-progress.paused {
+  animation-play-state: paused;
+}
+
+.indicator-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-subtle, #4E5A70);
+  transition: color 0.2s ease;
+}
+
+.carousel-indicator.active .indicator-label {
+  color: var(--color-copper, #985E38);
+}
+
+/* Shared Trust Bar */
+.hero-trust-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.25rem;
+}
+
+.hero-trust {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem 1.75rem;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0.7rem 1.5rem;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-pill);
+  color: var(--color-subtle, #4E5A70);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.trust-badge-icon {
+  color: var(--color-copper, #985E38);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Section Headers & Common Layout
+   ========================================================================== */
+
 .section-header {
   text-align: center;
   margin-bottom: 2.75rem;
@@ -780,12 +1390,26 @@ section h2 {
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .hero {
-    padding: 3.5rem 1rem;
+    padding: 3rem 1rem 2.5rem;
     text-align: center;
+  }
+
+  .carousel-nav-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .carousel-nav-btn.prev {
+    left: 0.5rem;
+  }
+
+  .carousel-nav-btn.next {
+    right: 0.5rem;
   }
 
   .hero-inner {
     justify-content: center;
+    gap: 2rem;
   }
 
   .hero-copy {
@@ -800,8 +1424,21 @@ section h2 {
   }
 
   .hero-actions,
-  .hero-trust {
+  .hero-trust,
+  .hero-intention-chips {
     justify-content: center;
+  }
+
+  .carousel-indicator {
+    padding: 0.35rem 0.5rem;
+  }
+
+  .indicator-bar {
+    width: 36px;
+  }
+
+  .indicator-label {
+    font-size: 10px;
   }
 
   .mystery-box-card {
@@ -820,6 +1457,43 @@ section h2 {
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding: 2.5rem 0.75rem 2rem;
+  }
+
+  .carousel-nav-btn {
+    display: none; /* Mobile touch swipe enabled */
+  }
+
+  .carousel-nav {
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .indicator-bar {
+    width: 28px;
+    height: 4px;
+  }
+
+  .indicator-label {
+    display: none; /* Compact dots on small mobile */
+  }
+
+  .hero-intention-chips {
+    gap: 0.4rem;
+  }
+
+  .hero-intention-chip {
+    font-size: 11px;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .hero-trust {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.76rem;
+    gap: 0.5rem 1rem;
+  }
+
   .featured-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.85rem;
