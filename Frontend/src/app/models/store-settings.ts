@@ -16,6 +16,7 @@ export interface StoreSettings {
   moonBannerCustomBenefit?: string | null;
   moonBannerCustomLink?: string | null;
   moonBannerShowModal: boolean;
+  moonBannerStyle?: string;
   updatedAt: string;
   updatedByEmail?: string | null;
 }
@@ -37,4 +38,5 @@ export interface UpdateStoreSettingsRequest {
   moonBannerCustomBenefit?: string | null;
   moonBannerCustomLink?: string | null;
   moonBannerShowModal: boolean;
+  moonBannerStyle?: string;
 }

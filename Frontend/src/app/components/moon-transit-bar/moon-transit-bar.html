@@ -5,6 +5,7 @@
     aria-label="Daily Moon Phase and Store Announcements"
     [attr.data-slide]="currentSlide()"
     [attr.data-style]="announcementStyle()"
+    [attr.data-moon-style]="moonBannerStyle()"
     (mouseenter)="pauseRotation()"
     (mouseleave)="resumeRotation()"
   >

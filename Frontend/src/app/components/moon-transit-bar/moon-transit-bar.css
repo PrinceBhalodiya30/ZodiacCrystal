@@ -846,3 +846,107 @@
   background: #dc2626;
   box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
 }
+
+/* ==========================================================================
+   Cosmic Moon Palette Styles (Applied when Moon Transit slide 0 is shown)
+   ========================================================================== */
+
+/* Celestial Midnight (Default) */
+.moon-transit-bar[data-slide="0"][data-moon-style="midnight"],
+.moon-transit-bar[data-slide="0"]:not([data-moon-style]) {
+  background: linear-gradient(90deg, #0e0c1a 0%, #17142c 50%, #0e0c1a 100%);
+  color: #ede7f8;
+  border-bottom-color: rgba(216, 201, 242, 0.14);
+}
+
+/* Cosmic Amethyst (Mystical Royal Violet) */
+.moon-transit-bar[data-slide="0"][data-moon-style="amethyst"] {
+  background: linear-gradient(90deg, #180d2b 0%, #291244 50%, #180d2b 100%);
+  color: #f3ebfc;
+  border-bottom-color: rgba(139, 79, 199, 0.35);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="amethyst"] .crystal-name-btn {
+  color: #f5d0fe;
+  text-decoration-color: rgba(245, 208, 254, 0.45);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="amethyst"] .cosmic-details-btn {
+  background: rgba(139, 79, 199, 0.22);
+  border-color: rgba(192, 132, 252, 0.4);
+  color: #f3ebfc;
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="amethyst"] .slide-dot.active {
+  background: #c084fc;
+  box-shadow: 0 0 6px rgba(192, 132, 252, 0.6);
+}
+
+/* Golden Supermoon (Celestial Amber & Abundance) */
+.moon-transit-bar[data-slide="0"][data-moon-style="gold"] {
+  background: linear-gradient(90deg, #1c1608 0%, #30240d 50%, #1c1608 100%);
+  color: #fdf5e6;
+  border-bottom-color: rgba(247, 212, 152, 0.35);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="gold"] .crystal-name-btn {
+  color: #fef08a;
+  text-decoration-color: rgba(254, 240, 138, 0.45);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="gold"] .cosmic-details-btn {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #fef08a;
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="gold"] .slide-dot.active {
+  background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+/* Eclipse Twilight / Sapphire (Deep Oceanic Midnight) */
+.moon-transit-bar[data-slide="0"][data-moon-style="sapphire"] {
+  background: linear-gradient(90deg, #081524 0%, #10233b 50%, #081524 100%);
+  color: #edf4fe;
+  border-bottom-color: rgba(96, 165, 250, 0.35);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="sapphire"] .crystal-name-btn {
+  color: #93c5fd;
+  text-decoration-color: rgba(147, 197, 253, 0.45);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="sapphire"] .cosmic-details-btn {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #bfdbfe;
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="sapphire"] .slide-dot.active {
+  background: #60a5fa;
+  box-shadow: 0 0 6px rgba(96, 165, 250, 0.6);
+}
+
+/* Blood Moon Garnet (Deep Wine & Sacred Red Embers) */
+.moon-transit-bar[data-slide="0"][data-moon-style="ruby"] {
+  background: linear-gradient(90deg, #24080e 0%, #3b0e17 50%, #24080e 100%);
+  color: #fceeed;
+  border-bottom-color: rgba(220, 38, 38, 0.35);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="ruby"] .crystal-name-btn {
+  color: #fca5a5;
+  text-decoration-color: rgba(252, 165, 165, 0.45);
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="ruby"] .cosmic-details-btn {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fecaca;
+}
+
+.moon-transit-bar[data-slide="0"][data-moon-style="ruby"] .slide-dot.active {
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}

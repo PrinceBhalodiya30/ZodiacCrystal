@@ -91,7 +91,7 @@
 
       <!-- Unified Smart Rotating Top Bar Preview -->
       @if (isTopBarPreviewVisible()) {
-        <div class="preview-unified-bar" [attr.data-slide]="currentPreviewSlide()" [attr.data-promo-style]="announcementStyle()">
+        <div class="preview-unified-bar" [attr.data-slide]="currentPreviewSlide()" [attr.data-promo-style]="announcementStyle()" [attr.data-moon-style]="moonBannerStyle()">
           <div class="preview-unified-content">
             @if (currentPreviewSlide() === 0) {
               <!-- Slide 0: Moon Transit -->
@@ -391,6 +391,57 @@
                   (ngModelChange)="moonBannerShowModal.set($event)"
                 />
                 <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-section">
+            <label for="moonBannerStyle" class="section-title">Cosmic Color Palette &amp; Night Sky Aesthetic</label>
+            <p class="section-desc">Choose a celestial visual style for the Daily Moon Phase &amp; Cosmic Alignment ticker.</p>
+            <div class="style-selector">
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'midnight'" (click)="setMoonBannerStyle('midnight')">
+                <input type="radio" name="moonBannerStyle" value="midnight" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('midnight')"/>
+                <span class="style-swatch swatch-moon-midnight"></span>
+                <div class="style-details">
+                  <strong>Celestial Midnight (Default)</strong>
+                  <small>Deep space obsidian &amp; starry lavender</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'amethyst'" (click)="setMoonBannerStyle('amethyst')">
+                <input type="radio" name="moonBannerStyle" value="amethyst" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('amethyst')"/>
+                <span class="style-swatch swatch-moon-amethyst"></span>
+                <div class="style-details">
+                  <strong>Cosmic Amethyst</strong>
+                  <small>Mystical royal violet &amp; lunar rituals</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'gold'" (click)="setMoonBannerStyle('gold')">
+                <input type="radio" name="moonBannerStyle" value="gold" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('gold')"/>
+                <span class="style-swatch swatch-moon-gold"></span>
+                <div class="style-details">
+                  <strong>Golden Supermoon</strong>
+                  <small>Radiant celestial amber &amp; abundance</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'sapphire'" (click)="setMoonBannerStyle('sapphire')">
+                <input type="radio" name="moonBannerStyle" value="sapphire" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('sapphire')"/>
+                <span class="style-swatch swatch-moon-sapphire"></span>
+                <div class="style-details">
+                  <strong>Eclipse Twilight</strong>
+                  <small>Deep oceanic midnight &amp; starlight sheen</small>
+                </div>
+              </label>
+
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'ruby'" (click)="setMoonBannerStyle('ruby')">
+                <input type="radio" name="moonBannerStyle" value="ruby" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('ruby')"/>
+                <span class="style-swatch swatch-moon-ruby"></span>
+                <div class="style-details">
+                  <strong>Blood Moon Garnet</strong>
+                  <small>Rich dark wine &amp; sacred embers</small>
+                </div>
               </label>
             </div>
           </div>

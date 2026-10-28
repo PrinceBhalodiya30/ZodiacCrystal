@@ -90,6 +90,12 @@ export class MoonTransitBar implements OnInit {
       : 'default';
   });
 
+  readonly moonBannerStyle = computed(() => {
+    return typeof this.storeSettings.moonBannerStyle === 'function'
+      ? this.storeSettings.moonBannerStyle()
+      : 'midnight';
+  });
+
   // Unified top bar visibility
   readonly isVisible = computed(() => {
     if (this.isDismissed() || this.isCheckoutRoute() || this.checkoutMode.active()) {

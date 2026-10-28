@@ -18,6 +18,7 @@ describe('MoonTransitBar', () => {
     moonBannerCustomBenefit: ReturnType<typeof signal<string | null>>;
     moonBannerCustomLink: ReturnType<typeof signal<string | null>>;
     moonBannerShowModal: ReturnType<typeof signal<boolean>>;
+    moonBannerStyle: ReturnType<typeof signal<string>>;
     announcementEnabled: ReturnType<typeof signal<boolean>>;
     announcementText: ReturnType<typeof signal<string>>;
     announcementLink: ReturnType<typeof signal<string | null>>;
@@ -35,6 +36,7 @@ describe('MoonTransitBar', () => {
       moonBannerCustomBenefit: signal<string | null>(null),
       moonBannerCustomLink: signal<string | null>(null),
       moonBannerShowModal: signal(true),
+      moonBannerStyle: signal('midnight'),
       announcementEnabled: signal(false),
       announcementText: signal('Free Shipping on orders over ₹999!'),
       announcementLink: signal<string | null>('/products'),
@@ -205,5 +207,19 @@ describe('MoonTransitBar', () => {
     mockStoreSettings.announcementStyle.set('ruby');
     fixture.detectChanges();
     expect(asideEl.getAttribute('data-style')).toBe('ruby');
+  });
+
+  it('applies data-moon-style attribute reflecting current cosmic moon theme', () => {
+    mockStoreSettings.moonBannerStyle.set('amethyst');
+    fixture.detectChanges();
+
+    const asideEl = fixture.nativeElement.querySelector('.moon-transit-bar');
+    expect(asideEl).toBeTruthy();
+    expect(asideEl.getAttribute('data-moon-style')).toBe('amethyst');
+
+    // Switch to gold
+    mockStoreSettings.moonBannerStyle.set('gold');
+    fixture.detectChanges();
+    expect(asideEl.getAttribute('data-moon-style')).toBe('gold');
   });
 });

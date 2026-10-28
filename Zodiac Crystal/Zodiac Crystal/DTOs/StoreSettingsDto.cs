@@ -21,6 +21,7 @@ public class StoreSettingsDto
     public string? MoonBannerCustomBenefit { get; set; }
     public string? MoonBannerCustomLink { get; set; }
     public bool MoonBannerShowModal { get; set; } = true;
+    public string MoonBannerStyle { get; set; } = "midnight";
     public DateTime UpdatedAt { get; set; }
     public string? UpdatedByEmail { get; set; }
 }
@@ -58,5 +59,7 @@ public class UpdateStoreSettingsDto
     public string? MoonBannerCustomLink { get; set; }
 
     public bool MoonBannerShowModal { get; set; } = true;
+
+    public string MoonBannerStyle { get; set; } = "midnight";
 }
 

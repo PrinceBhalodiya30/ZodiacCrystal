@@ -51,6 +51,7 @@ export class AdminSettings implements OnInit {
   readonly moonBannerCustomBenefit = signal('');
   readonly moonBannerCustomLink = signal('');
   readonly moonBannerShowModal = signal(true);
+  readonly moonBannerStyle = signal('midnight');
 
   // Live Storefront Top Bar Preview Rotation Signals
   readonly previewSlide = signal<0 | 1>(1);
@@ -80,6 +81,11 @@ export class AdminSettings implements OnInit {
   setAnnouncementStyle(style: string): void {
     this.announcementStyle.set(style);
     this.previewSlide.set(1);
+  }
+
+  setMoonBannerStyle(style: string): void {
+    this.moonBannerStyle.set(style);
+    this.previewSlide.set(0);
   }
 
   // Shipping & Rates Form State Signals
@@ -180,6 +186,7 @@ export class AdminSettings implements OnInit {
         this.moonBannerCustomBenefit.set(s.moonBannerCustomBenefit ?? '');
         this.moonBannerCustomLink.set(s.moonBannerCustomLink ?? '');
         this.moonBannerShowModal.set(s.moonBannerShowModal ?? true);
+        this.moonBannerStyle.set(s.moonBannerStyle || 'midnight');
 
         this.freeShippingThreshold.set(s.freeShippingThreshold);
         this.flatShippingRate.set(s.flatShippingRate);
@@ -248,6 +255,7 @@ export class AdminSettings implements OnInit {
       moonBannerCustomBenefit: this.moonBannerCustomBenefit().trim() || null,
       moonBannerCustomLink: this.moonBannerCustomLink().trim() || null,
       moonBannerShowModal: this.moonBannerShowModal(),
+      moonBannerStyle: this.moonBannerStyle(),
       freeShippingThreshold: Number(this.freeShippingThreshold()),
       flatShippingRate: Number(this.flatShippingRate()),
       heroEyebrow: this.heroEyebrow().trim(),

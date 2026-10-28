@@ -90,6 +90,9 @@ namespace Zodiac_Crystal.Services
             if (setting.MoonBannerMode != dto.MoonBannerMode)
                 changes.Add($"MoonBannerMode: {setting.MoonBannerMode} → {dto.MoonBannerMode}");
 
+            if (setting.MoonBannerStyle != dto.MoonBannerStyle)
+                changes.Add($"MoonBannerStyle: {setting.MoonBannerStyle} → {dto.MoonBannerStyle}");
+
             setting.AnnouncementEnabled = dto.AnnouncementEnabled;
             setting.AnnouncementText = dto.AnnouncementText?.Trim() ?? string.Empty;
             setting.AnnouncementLink = string.IsNullOrWhiteSpace(dto.AnnouncementLink) ? null : dto.AnnouncementLink.Trim();
@@ -106,6 +109,7 @@ namespace Zodiac_Crystal.Services
             setting.MoonBannerCustomBenefit = string.IsNullOrWhiteSpace(dto.MoonBannerCustomBenefit) ? null : dto.MoonBannerCustomBenefit.Trim();
             setting.MoonBannerCustomLink = string.IsNullOrWhiteSpace(dto.MoonBannerCustomLink) ? null : dto.MoonBannerCustomLink.Trim();
             setting.MoonBannerShowModal = dto.MoonBannerShowModal;
+            setting.MoonBannerStyle = string.IsNullOrWhiteSpace(dto.MoonBannerStyle) ? "midnight" : dto.MoonBannerStyle.Trim().ToLowerInvariant();
             setting.UpdatedAt = DateTime.UtcNow;
             setting.UpdatedByUserId = adminUserId;
 
@@ -150,6 +154,7 @@ namespace Zodiac_Crystal.Services
             MoonBannerCustomBenefit = s.MoonBannerCustomBenefit,
             MoonBannerCustomLink = s.MoonBannerCustomLink,
             MoonBannerShowModal = s.MoonBannerShowModal,
+            MoonBannerStyle = s.MoonBannerStyle,
             UpdatedAt = DateTime.SpecifyKind(s.UpdatedAt, DateTimeKind.Utc),
             UpdatedByEmail = s.UpdatedByUser?.Email
         };

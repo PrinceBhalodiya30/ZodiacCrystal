@@ -54,6 +54,9 @@ public partial class StoreSetting
 
     public bool MoonBannerShowModal { get; set; } = true;
 
+    [StringLength(50)]
+    public string MoonBannerStyle { get; set; } = "midnight";
+
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public int? UpdatedByUserId { get; set; }

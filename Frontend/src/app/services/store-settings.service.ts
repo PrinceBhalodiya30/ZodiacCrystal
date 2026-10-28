@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS: StoreSettings = {
   moonBannerCustomBenefit: null,
   moonBannerCustomLink: null,
   moonBannerShowModal: true,
+  moonBannerStyle: 'midnight',
   updatedAt: new Date().toISOString()
 };
 
@@ -52,6 +53,7 @@ export class StoreSettingsService {
   readonly moonBannerCustomBenefit = computed(() => this.settings().moonBannerCustomBenefit ?? null);
   readonly moonBannerCustomLink = computed(() => this.settings().moonBannerCustomLink ?? null);
   readonly moonBannerShowModal = computed(() => this.settings().moonBannerShowModal ?? true);
+  readonly moonBannerStyle = computed(() => this.settings().moonBannerStyle ?? 'midnight');
 
   constructor() {
     this.loadPublicSettings();
