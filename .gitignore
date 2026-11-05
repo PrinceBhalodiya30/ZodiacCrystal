@@ -37,3 +37,6 @@ Thumbs.db
 
 # Ignore documentation folder
 /docs/
+
+# Ignore agents
+.agent/
