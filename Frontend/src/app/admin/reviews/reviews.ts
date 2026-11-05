@@ -40,6 +40,7 @@ export class AdminReviews implements OnInit {
   deletingReviewId = signal<number | null>(null);
   updatingStatusId = signal<number | null>(null);
 
+  pageSize = signal(8);
   page = signal(1);
   totalPages = signal(1);
   totalCount = signal(0);
@@ -129,6 +130,12 @@ export class AdminReviews implements OnInit {
   onPageChange(page: number): void {
     this.page.set(page);
     this.loadReviews();
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.pageSize.set(Number(newSize) || 8);
+    this.page.set(1);
+    this.loadReviews();
   }                                    
 
   loadReviews(): void {
@@ -141,7 +148,7 @@ export class AdminReviews implements OnInit {
     this.loadSubscription = this.reviewService
       .getReviewsAdminPaged(
         this.page(),
-        PAGE_SIZE,
+        this.pageSize(),
         this.searchTerm().trim() || undefined,
         this.minRating(),
         this.statusFilter(),

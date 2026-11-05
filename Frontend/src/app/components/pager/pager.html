@@ -3,7 +3,7 @@
     @if (totalCount) {
       <span class="pager-range">Showing <strong>{{ rangeStart }}–{{ rangeEnd }}</strong> of <strong>{{ totalCount }}</strong></span>
     }
-    @if (totalPages > 1) {
+    @if (totalPages >= 1 && (totalCount ?? 0) > 0) {
       <ul class="pager-pages">
         <li>
           <button type="button" class="pager-btn pager-arrow" [disabled]="page === 1" (click)="goTo(page - 1)" aria-label="Previous page">

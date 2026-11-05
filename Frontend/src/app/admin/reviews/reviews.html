@@ -255,7 +255,31 @@
       </table>
     </div>
 
-    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+    <div class="reviews-pagination-wrap" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem">
+      <div class="page-size-selector" style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #555">
+        <span>Reviews per page:</span>
+        <select
+          [ngModel]="pageSize()"
+          (ngModelChange)="onPageSizeChange($event)"
+          class="page-size-select"
+          style="padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid #d4cdc3; font: inherit; font-size: 0.82rem; background: #fff"
+          aria-label="Reviews per page"
+        >
+          <option [ngValue]="5">5</option>
+          <option [ngValue]="8">8</option>
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+        </select>
+      </div>
+
+      <app-pager
+        [page]="page()"
+        [totalPages]="totalPages()"
+        [totalCount]="totalCount()"
+        [pageSize]="pageSize()"
+        (pageChange)="onPageChange($event)"
+      ></app-pager>
+    </div>
   }
 
   @if (photoViewer(); as viewer) {

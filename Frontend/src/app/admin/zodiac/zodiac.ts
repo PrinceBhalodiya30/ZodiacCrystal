@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ZodiacService } from '../../services/zodiac.service';
@@ -7,6 +7,7 @@ import { AdminNav } from '../admin-nav/admin-nav';
 import { Spinner } from '../../components/spinner/spinner';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ToastService } from '../../services/toast.service';
+import { Pager } from '../../components/pager/pager';
 
 import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 import { getRashiWithDevanagari } from '../../utils/zodiac-names.util';
@@ -16,7 +17,7 @@ import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
 @Component({
   selector: 'app-admin-zodiac',
   standalone: true,
-  imports: [Spinner, FormsModule, AdminNav, VedicZodiacPipe, ZodiacIcon],
+  imports: [Spinner, FormsModule, AdminNav, VedicZodiacPipe, ZodiacIcon, Pager],
   templateUrl: './zodiac.html',
   styleUrls: ['../admin-shared.css', './zodiac.css']
 })
@@ -28,6 +29,16 @@ export class AdminZodiac implements OnInit {
   zodiacSigns = signal<Zodiac[]>([]);
   isLoading = signal(true);
   errorMessage = signal('');
+
+  page = signal(1);
+  pageSize = signal(6);
+  totalCount = computed(() => this.zodiacSigns().length);
+  totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.pageSize())));
+  pagedZodiacSigns = computed(() => {
+    const page = Math.min(this.page(), this.totalPages());
+    const size = this.pageSize();
+    return this.zodiacSigns().slice((page - 1) * size, page * size);
+  });
 
   formMode = signal<'closed' | 'create' | 'edit'>('closed');
   editingZodiacId = signal<number | null>(null);
@@ -167,5 +178,14 @@ export class AdminZodiac implements OnInit {
         this.toast.error(message);
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.page.set(page);
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.pageSize.set(Number(newSize) || 6);
+    this.page.set(1);
   }
 }
