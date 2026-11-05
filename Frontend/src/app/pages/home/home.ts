@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ZodiacService } from '../../services/zodiac.service';
 import { ProductService } from '../../services/product.service';
@@ -59,7 +59,30 @@ export class Home implements OnInit, OnDestroy {
   quizService = inject(QuizService);
   private cleansingGuideService = inject(CleansingGuideService);
 
-  // Hero Carousel State (Energy Muse Pattern)
+  // Featured Products Horizontal Slider (E-Commerce Luxury Pattern)
+  @ViewChild('featuredTrack') featuredTrack?: ElementRef<HTMLDivElement>;
+  readonly isFeaturedAtStart = signal<boolean>(true);
+  readonly isFeaturedAtEnd = signal<boolean>(false);
+
+  scrollFeatured(direction: 'prev' | 'next'): void {
+    const el = this.featuredTrack?.nativeElement;
+    if (!el) return;
+    const scrollAmount = Math.max(el.clientWidth * 0.75, 280);
+    el.scrollBy({
+      left: direction === 'next' ? scrollAmount : -scrollAmount,
+      behavior: 'smooth'
+    });
+    setTimeout(() => this.onFeaturedScroll(), 340);
+  }
+
+  onFeaturedScroll(): void {
+    const el = this.featuredTrack?.nativeElement;
+    if (!el) return;
+    this.isFeaturedAtStart.set(el.scrollLeft <= 8);
+    this.isFeaturedAtEnd.set(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8);
+  }
+
+  // Hero Carousel State (Preserved for compatibility and sub-curations)
   readonly totalSlides = 4;
   activeSlide = signal(0);
   isPaused = signal(false);
