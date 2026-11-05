@@ -222,4 +222,21 @@ describe('MoonTransitBar', () => {
     fixture.detectChanges();
     expect(asideEl.getAttribute('data-moon-style')).toBe('gold');
   });
+
+  it('automatically calculates contextual slide (promo for commerce, moon for discovery)', () => {
+    // Commerce routes
+    expect(component.calculateContextualSlide('/products')).toBe(1);
+    expect(component.calculateContextualSlide('/products/amethyst-cluster')).toBe(1);
+    expect(component.calculateContextualSlide('/cart')).toBe(1);
+    expect(component.calculateContextualSlide('/categories')).toBe(1);
+    expect(component.calculateContextualSlide('/orders')).toBe(1);
+    expect(component.calculateContextualSlide('/wishlist')).toBe(1);
+
+    // Discovery & spiritual routes
+    expect(component.calculateContextualSlide('/')).toBe(0);
+    expect(component.calculateContextualSlide('/zodiac')).toBe(0);
+    expect(component.calculateContextualSlide('/zodiac/scorpio')).toBe(0);
+    expect(component.calculateContextualSlide('/guides')).toBe(0);
+    expect(component.calculateContextualSlide('/consultation')).toBe(0);
+  });
 });

@@ -1,7 +1,7 @@
 import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { getMoonPhaseAndTransit, LunarTransitData } from '../../utils/lunar-transit.util';
@@ -9,7 +9,6 @@ import { CheckoutModeService } from '../../services/checkout-mode.service';
 import { StoreSettingsService } from '../../services/store-settings.service';
 
 const DISMISS_STORAGE_PREFIX = 'crystal_studio_topbar_dismissed_';
-const ROTATION_INTERVAL_MS = 5000;
 
 @Component({
   selector: 'app-moon-transit-bar',
@@ -27,9 +26,11 @@ export class MoonTransitBar implements OnInit {
   readonly transitData = signal<LunarTransitData>(getMoonPhaseAndTransit(new Date()));
   readonly isDismissed = signal<boolean>(this.checkDismissed());
   readonly isDetailsOpen = signal<boolean>(false);
-  readonly activeSlideIndex = signal<number>(0); // 0 = Moon Transit, 1 = Store Promo
   readonly isPaused = signal<boolean>(false);
-  private rotationTimer: any = null;
+
+  // Approach 4: Page-Contextual Banner (Smart Commerce)
+  // Initializes based on current route and adapts when navigating across the store.
+  readonly activeSlideIndex = signal<number>(this.calculateContextualSlide(this.router.url));
 
   // Suppress on checkout flow to avoid cart distraction
   private isCheckoutRoute = toSignal(
@@ -154,27 +155,39 @@ export class MoonTransitBar implements OnInit {
   });
 
   ngOnInit(): void {
-    this.startRotationTimer();
-    this.destroyRef.onDestroy(() => {
-      this.stopRotationTimer();
-    });
+    // Approach 4: Smart Page-Contextual Adaptation
+    // When both banners are active, automatically select the most relevant message:
+    // - Commerce routes (products, cart, wishlist, orders) -> Store Promo (Slide 1)
+    // - Discovery routes (home, zodiac, guides, consultation) -> Moon Transit (Slide 0)
+    // Zero auto-flipping timer. The customer enjoys a serene, static banner on every page.
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((e) => {
+        const url = e.urlAfterRedirects || e.url || '';
+        this.activeSlideIndex.set(this.calculateContextualSlide(url));
+      });
   }
 
-  private startRotationTimer(): void {
-    if (typeof window === 'undefined') return;
-    this.stopRotationTimer();
-    this.rotationTimer = setInterval(() => {
-      if (!this.isPaused() && this.hasMultipleSlides()) {
-        this.activeSlideIndex.update(idx => (idx === 0 ? 1 : 0));
-      }
-    }, ROTATION_INTERVAL_MS);
-  }
-
-  private stopRotationTimer(): void {
-    if (this.rotationTimer) {
-      clearInterval(this.rotationTimer);
-      this.rotationTimer = null;
+  /**
+   * Determine the most relevant banner message based on the current page context
+   */
+  calculateContextualSlide(url: string | null | undefined): number {
+    const route = url || '';
+    if (
+      route.startsWith('/products') ||
+      route.startsWith('/cart') ||
+      route.startsWith('/categories') ||
+      route.startsWith('/orders') ||
+      route.startsWith('/wishlist') ||
+      route.startsWith('/mystery-box') ||
+      route.startsWith('/profile')
+    ) {
+      return 1; // Commerce promotion & shipping
     }
+    return 0; // Celestial moon phase & daily astrological alignment
   }
 
   pauseRotation(): void {
@@ -183,6 +196,10 @@ export class MoonTransitBar implements OnInit {
 
   resumeRotation(): void {
     this.isPaused.set(false);
+  }
+
+  togglePause(): void {
+    this.isPaused.update(val => !val);
   }
 
   goToSlide(index: number): void {
