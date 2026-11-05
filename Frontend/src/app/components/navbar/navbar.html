@@ -73,18 +73,12 @@
       <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
       <a routerLink="/guides" routerLinkActive="active" (click)="closeMenu()">Crystal Guides</a>
 
-      <button type="button" class="navbar-quiz-btn" (click)="openQuiz(); closeMenu()" title="Personalized Crystal Quiz">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quiz-btn-icon" aria-hidden="true">
-          <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/>
-        </svg>
-        <span>Crystal Quiz</span>
+      <button type="button" class="navbar-link-btn" (click)="openQuiz(); closeMenu()" title="Personalized Crystal Quiz">
+        Crystal Quiz
       </button>
 
-      <button type="button" class="navbar-quiz-btn" (click)="openCleansingGuide(); closeMenu()" title="Crystal Cleansing & Charging Guide">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quiz-btn-icon" aria-hidden="true">
-          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-        </svg>
-        <span>Cleansing Guide</span>
+      <button type="button" class="navbar-link-btn" (click)="openCleansingGuide(); closeMenu()" title="Crystal Cleansing & Charging Guide">
+        Cleansing Guide
       </button>
 
       <div class="navbar-mobile-account">

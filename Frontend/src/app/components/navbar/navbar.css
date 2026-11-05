@@ -172,6 +172,7 @@
 }
 
 .navbar-links a,
+.navbar-link-btn,
 .navbar-quiz-btn {
   text-decoration: none;
   color: var(--color-muted, #4e5a70);
@@ -190,6 +191,7 @@
 }
 
 .navbar-links a::after,
+.navbar-link-btn::after,
 .navbar-quiz-btn::after {
   content: '';
   position: absolute;
@@ -204,22 +206,29 @@
 }
 
 .navbar-links a:hover,
+.navbar-link-btn:hover,
 .navbar-quiz-btn:hover {
   color: var(--color-copper, #985e38);
 }
 
 .navbar-links a:hover::after,
 .navbar-links a.active::after,
-.navbar-quiz-btn:hover::after {
+.navbar-link-btn:hover::after,
+.navbar-link-btn.active::after,
+.navbar-quiz-btn:hover::after,
+.navbar-quiz-btn.active::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
-.navbar-links a.active {
+.navbar-links a.active,
+.navbar-link-btn.active,
+.navbar-quiz-btn.active {
   color: var(--color-ink, #1d2739);
   font-weight: 600;
 }
 
+.navbar-link-btn:focus-visible,
 .navbar-quiz-btn:focus-visible {
   outline: 2px solid var(--color-copper);
   outline-offset: 4px;
@@ -833,51 +842,7 @@
 }
 
 
-/* Luxury Crystal Quiz Action Button */
-.navbar-quiz-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
-  border: 1px solid var(--color-border, #ded7c8);
-  border-radius: var(--radius-sm, 6px);
-  background-color: transparent;
-  color: var(--color-ink, #1d2739);
-  font-family: inherit;
-  font-size: 0.835rem;
-  font-weight: 600;
-  letter-spacing: 0.025em;
-  cursor: pointer;
-  line-height: 1;
-  white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(29, 39, 57, 0.04);
-  transition: all var(--transition-fast);
-  margin-left: 0.35rem;
-}
 
-.navbar-quiz-btn::after {
-  display: none !important;
-}
-
-.quiz-btn-icon {
-  color: var(--color-copper, #985e38);
-  transition: transform var(--transition-fast), color var(--transition-fast);
-}
-
-.navbar-quiz-btn:hover {
-  background-color: var(--color-surface-tint, #f4efe5);
-  border-color: var(--color-copper, #985e38);
-  color: var(--color-copper, #985e38);
-}
-
-.navbar-quiz-btn:hover .quiz-btn-icon {
-  transform: rotate(45deg);
-}
-
-.navbar-quiz-btn:focus-visible {
-  outline: 2px solid var(--color-copper);
-  outline-offset: 2px;
-}
 
 /* Mobile Navigation */
 @media (max-width: 1040px) {
@@ -915,6 +880,7 @@
 
   .navbar-links a,
   .navbar-links .navbar-logout,
+  .navbar-links .navbar-link-btn,
   .navbar-links .navbar-quiz-btn {
     padding: 0.85rem 1.75rem;
     min-height: 44px;
@@ -930,6 +896,7 @@
   }
 
   .navbar-links a::after,
+  .navbar-links .navbar-link-btn::after,
   .navbar-links .navbar-quiz-btn::after {
     display: none;
   }
@@ -937,6 +904,8 @@
   .navbar-links a:hover,
   .navbar-links a.active,
   .navbar-links .navbar-logout:hover,
+  .navbar-links .navbar-link-btn:hover,
+  .navbar-links .navbar-link-btn.active,
   .navbar-links .navbar-quiz-btn:hover {
     background-color: var(--color-sand-tint, #f4efe5);
     color: var(--color-brand);
@@ -1009,17 +978,6 @@
   }
 
 
-  .navbar-links .navbar-quiz-btn {
-    margin: 0.75rem 1.75rem 0.25rem;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.925rem;
-    justify-content: center;
-    border-radius: var(--radius-sm, 6px);
-    width: calc(100% - 3.5rem);
-    box-sizing: border-box;
-    border: 1px solid var(--color-border, #ded7c8);
-    background-color: var(--color-surface-tint, #f4efe5);
-    color: var(--color-ink, #1d2739);
-  }
+
 
 }
