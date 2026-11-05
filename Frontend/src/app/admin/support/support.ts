@@ -16,6 +16,8 @@ import { ToastService } from '../../services/toast.service';
 import { SUPPORT_MAX_PHOTOS, SupportTicket, TICKET_CATEGORIES, TicketMessage, TicketStatus } from '../../models/support-ticket';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { InrPipe } from '../../pipes/inr.pipe';
+import { downloadBlob } from '../../utils/download.util';
+import { Customer360Drawer } from '../shared/customer-360-drawer/customer-360-drawer';
 import { debounced } from '../../utils/debounce.util';
 
 const PAGE_SIZE = 20;
@@ -51,7 +53,7 @@ const CANNED_REPLIES: { label: string; text: string }[] = [
 @Component({
   selector: 'app-admin-support',
   standalone: true,
-  imports: [AdminNav, Spinner, Pager, TicketThread, DatePipe, FormsModule, RouterLink, InrPipe],
+  imports: [AdminNav, Spinner, Pager, TicketThread, DatePipe, FormsModule, RouterLink, InrPipe, Customer360Drawer],
   templateUrl: './support.html',
   styleUrls: ['../admin-shared.css', './support.css']
 })
@@ -78,6 +80,8 @@ export class AdminSupport implements OnInit {
   tickets = signal<SupportTicket[]>([]);
   isLoading = signal(true);
   errorMessage = signal('');
+  isExporting = signal(false);
+  customer360Email = signal<string | null>(null);
   statusFilter = signal(this.defaultStatus);
   categoryFilter = signal('');
   searchTerm = signal('');
@@ -419,5 +423,36 @@ export class AdminSupport implements OnInit {
     } else if (failedCount > 0) {
       this.toast.error(`Unable to update ${failedCount} ticket(s).`);
     }
+  }
+
+  exportCsv(): void {
+    if (this.isExporting() || this.totalCount() === 0) return;
+    this.isExporting.set(true);
+    this.supportService.getTicketsAdminPaged(1, 1000, this.statusFilter(), this.categoryFilter() || undefined, this.searchTerm().trim() || undefined)
+      .subscribe({
+        next: res => {
+          const header = ['Ticket Ref', 'Subject', 'Customer Name', 'Customer Email', 'Category', 'Status', 'Order ID', 'Created At', 'Rating'];
+          const rows = res.items.map(t => [
+            `"${t.reference}"`,
+            `"${(t.subject || '').replace(/"/g, '""')}"`,
+            `"${(t.customerName || '').replace(/"/g, '""')}"`,
+            `"${t.customerEmail}"`,
+            `"${t.categoryLabel}"`,
+            `"${t.statusLabel}"`,
+            t.orderId ? `"#${t.orderId}"` : '""',
+            `"${t.createdAt}"`,
+            t.rating ? `"${t.rating} Stars"` : '""'
+          ]);
+          const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          downloadBlob(blob, `support-tickets-${new Date().toISOString().slice(0, 10)}.csv`);
+          this.isExporting.set(false);
+          this.toast.success('Support tickets exported to CSV.');
+        },
+        error: () => {
+          this.isExporting.set(false);
+          this.toast.error('Unable to export support tickets.');
+        }
+      });
   }
 }

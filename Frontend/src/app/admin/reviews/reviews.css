@@ -362,3 +362,16 @@ tr.has-photos > td {
   }
 }
 
+
+
+.review-product-link,
+.review-reviewer-link {
+  color: var(--color-brand, #985e38);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+.review-product-link:hover,
+.review-reviewer-link:hover {
+  color: #6d4123;
+}

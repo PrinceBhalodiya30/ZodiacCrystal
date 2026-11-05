@@ -515,4 +515,16 @@ export class AdminCoupons implements OnInit {
       this.toast.error(`Unable to update ${failedCount} coupon(s).`);
     }
   }
+
+  copyCode(code: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(() => {
+        this.toast.success('Copied coupon code "' + code + '" to clipboard!');
+      }).catch(() => {
+        this.toast.info('Coupon code: ' + code);
+      });
+    } else {
+      this.toast.info('Coupon code: ' + code);
+    }
+  }
 }

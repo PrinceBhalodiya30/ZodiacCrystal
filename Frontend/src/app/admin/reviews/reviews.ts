@@ -1,4 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +23,7 @@ const STATUSES: ReviewStatus[] = ['Approved', 'Rejected'];
 @Component({
   selector: 'app-admin-reviews',
   standalone: true,
-  imports: [Spinner, DatePipe, FormsModule, AdminNav, Pager, PhotoLightbox],
+  imports: [Spinner, DatePipe, FormsModule, AdminNav, Pager, PhotoLightbox, RouterLink],
   templateUrl: './reviews.html',
   styleUrls: ['../admin-shared.css', './reviews.css']
 })

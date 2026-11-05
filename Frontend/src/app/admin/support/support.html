@@ -129,7 +129,18 @@
           <div>
             <span class="support-ref">{{ t.reference }} · {{ t.categoryLabel }} · opened {{ t.createdAt | date:'dd MMM yyyy' }}</span>
             <h2>{{ t.subject }}</h2>
-            <span class="support-customer">{{ t.customerName }} · <a [href]="'mailto:' + t.customerEmail">{{ t.customerEmail }}</a></span>
+            <span class="support-customer">
+            {{ t.customerName }} · <a [href]="'mailto:' + t.customerEmail">{{ t.customerEmail }}</a>
+            <button
+              type="button"
+              class="chip-btn"
+              style="font-size: 0.7rem; padding: 0.1rem 0.4rem; height: auto; margin-left: 0.35rem"
+              title="View Customer 360 Profile"
+              (click)="customer360Email.set(t.customerEmail)"
+            >
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:2px" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>360
+            </button>
+          </span>
           </div>
           <button type="button" class="panel-close" (click)="closePanel()" aria-label="Close ticket">×</button>
         </div>
@@ -216,4 +227,11 @@
       </div>
     }
   </div>
+
+  @if (customer360Email(); as email) {
+    <app-customer-360-drawer
+      [customerEmail]="email"
+      (closed)="customer360Email.set(null)"
+    ></app-customer-360-drawer>
+  }
 </section>

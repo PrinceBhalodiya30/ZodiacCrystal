@@ -16,3 +16,21 @@
   background-color: var(--color-border-light);
   color: var(--color-muted);
 }
+
+
+.coupon-code-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.coupon-code-text {
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.copy-coupon-btn {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.72rem;
+  height: auto;
+  border-radius: 4px;
+}

@@ -145,9 +145,29 @@
                   (change)="toggleSelectReturn(r.returnRequestId)"
                 />
               </td>
-              <td data-label="Order">#{{ r.orderId }}</td>
+              <td data-label="Order">
+                <button
+                  type="button"
+                  class="order-link-btn"
+                  title="Open Order Details"
+                  (click)="openOrder(r.orderId, $event)"
+                >
+                  #{{ r.orderId }}
+                </button>
+              </td>
               <td data-label="Customer">
-                <div class="customer-name">{{ r.customerName }}</div>
+                <div class="customer-name-row" style="display: flex; align-items: center; gap: 0.4rem">
+                  <div class="customer-name">{{ r.customerName }}</div>
+                  <button
+                    type="button"
+                    class="chip-btn"
+                    style="font-size: 0.7rem; padding: 0.1rem 0.4rem; height: auto"
+                    title="View Customer 360"
+                    (click)="openCustomer(r.customerEmail, $event)"
+                  >
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:2px" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>360
+                  </button>
+                </div>
                 <div class="customer-email">{{ r.customerEmail }}</div>
               </td>
               <td data-label="Reason">
@@ -187,5 +207,23 @@
     </div>
 
     <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+  }
+
+  @if (selectedOrderId(); as orderId) {
+    <app-order-detail-drawer
+      [orderId]="orderId"
+      [backToCustomerEmail]="previousCustomerEmailForOrder() ?? undefined"
+      (closed)="closeOrderDrawer()"
+      (backToCustomer)="returnToCustomer360($event)"
+      (viewCustomer)="returnToCustomer360($event)"
+    ></app-order-detail-drawer>
+  }
+
+  @if (selectedCustomerEmail(); as email) {
+    <app-customer-360-drawer
+      [customerEmail]="email"
+      (closed)="selectedCustomerEmail.set(null)"
+      (viewOrder)="onViewOrder($event)"
+    ></app-customer-360-drawer>
   }
 </section>

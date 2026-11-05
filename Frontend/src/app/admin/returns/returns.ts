@@ -13,6 +13,8 @@ import { ReturnRequest } from '../../models/return-request';
 import { scrollBehavior } from '../../utils/motion.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { Pager } from '../../components/pager/pager';
+import { OrderDetailDrawer } from '../orders/order-detail-drawer/order-detail-drawer';
+import { Customer360Drawer } from '../shared/customer-360-drawer/customer-360-drawer';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 
@@ -26,7 +28,7 @@ import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
 @Component({
   selector: 'app-admin-returns',
   standalone: true,
-  imports: [InrPipe, AdminNav, Spinner, DatePipe, FormsModule, Pager],
+  imports: [InrPipe, AdminNav, Spinner, DatePipe, FormsModule, Pager, OrderDetailDrawer, Customer360Drawer],
   templateUrl: './returns.html',
   styleUrls: ['../admin-shared.css', './returns.css']
 })
@@ -35,6 +37,9 @@ export class AdminReturns implements OnInit {
   private confirmDialog = inject(ConfirmDialogService);
 
   isExporting = signal(false);
+  selectedOrderId = signal<number | null>(null);
+  selectedCustomerEmail = signal<string | null>(null);
+  previousCustomerEmailForOrder = signal<string | null>(null);
   private toast = inject(ToastService);
   private navCounts = inject(AdminNavCountsService);
   private injector = inject(Injector);
@@ -335,5 +340,33 @@ export class AdminReturns implements OnInit {
     } else if (failedCount > 0) {
       this.toast.error(`Unable to update ${failedCount} return request(s).`);
     }
+  }
+
+  openOrder(orderId: number, event?: Event): void {
+    event?.stopPropagation();
+    this.selectedOrderId.set(orderId);
+  }
+
+  openCustomer(email: string, event?: Event): void {
+    event?.stopPropagation();
+    this.selectedCustomerEmail.set(email);
+  }
+
+  onViewOrder(orderId: number): void {
+    const currentEmail = this.selectedCustomerEmail();
+    this.previousCustomerEmailForOrder.set(currentEmail);
+    this.selectedCustomerEmail.set(null);
+    this.selectedOrderId.set(orderId);
+  }
+
+  closeOrderDrawer(): void {
+    this.selectedOrderId.set(null);
+    this.previousCustomerEmailForOrder.set(null);
+  }
+
+  returnToCustomer360(customerEmail: string): void {
+    this.selectedOrderId.set(null);
+    this.previousCustomerEmailForOrder.set(null);
+    this.selectedCustomerEmail.set(customerEmail);
   }
 }
