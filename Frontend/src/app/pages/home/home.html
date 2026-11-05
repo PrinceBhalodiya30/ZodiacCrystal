@@ -63,13 +63,15 @@
               </svg>
               <span>100% Certified Earth-Mined</span>
             </div>
-            <div class="hero-floating-badge badge-bottom">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="7"/>
-                <ellipse cx="12" cy="12" rx="10" ry="3.5" transform="rotate(-28 12 12)"/>
-              </svg>
-              <span>Vedic Planetary Alignment</span>
-            </div>
+            <a class="hero-shoppable-pill" routerLink="/products" [queryParams]="{ search: 'Amethyst' }" title="Explore featured Amethyst">
+              <span class="pill-sparkle" aria-hidden="true">✦</span>
+              <div class="pill-meta">
+                <span class="pill-kicker">Curated Centerpiece</span>
+                <strong class="pill-title">Raw Amethyst Geode</strong>
+              </div>
+              <span class="pill-price">from ₹1,899</span>
+              <span class="pill-arrow" aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
       </div>
@@ -103,7 +105,7 @@
               <svg class="chip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
-              <span>Protection & Shield</span>
+              <span>Protection & Grounding</span>
             </a>
             <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
               <svg class="chip-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
