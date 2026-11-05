@@ -98,77 +98,7 @@
   </div>
 </section>
 
-<!-- 4 Curated Discovery Gateways (Zodiac, Intentions, Quiz, Mystery Box) -->
-<section class="container discovery-gateways-section" scrollReveal>
-  <div class="discovery-gateways-grid">
-    <!-- Gateway 1: Zodiac -->
-    <a class="discovery-gateway-card" routerLink="/zodiac">
-      <div class="gateway-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
-        </svg>
-      </div>
-      <div class="gateway-body">
-        <span class="gateway-tag">Cosmic Resonance</span>
-        <h3 class="gateway-title">Shop by Zodiac Sign</h3>
-        <p class="gateway-desc">Attuned to your Sun, Moon, and Rising sign.</p>
-      </div>
-      <span class="gateway-cta-link">Explore Zodiac →</span>
-    </a>
 
-    <!-- Gateway 2: Sacred Intentions -->
-    <a class="discovery-gateway-card" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
-      <div class="gateway-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
-          <polyline points="2 9 12 13 22 9"/>
-          <line x1="12" y1="22" x2="12" y2="13"/>
-        </svg>
-      </div>
-      <div class="gateway-body">
-        <span class="gateway-tag">Sacred Intention</span>
-        <h3 class="gateway-title">Shop by Intention</h3>
-        <p class="gateway-desc">Wealth, Protection, Love, & Serene Peace.</p>
-      </div>
-      <span class="gateway-cta-link">Explore Intentions →</span>
-    </a>
-
-    <!-- Gateway 3: 60-Sec Quiz -->
-    <button type="button" class="discovery-gateway-card gateway-card--btn" (click)="openQuiz()">
-      <div class="gateway-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-        </svg>
-      </div>
-      <div class="gateway-body">
-        <span class="gateway-tag">Interactive Matcher</span>
-        <h3 class="gateway-title">60-Sec Soul Crystal Quiz</h3>
-        <p class="gateway-desc">Decode blocks and discover your soul stone.</p>
-      </div>
-      <span class="gateway-cta-link">Start Quiz →</span>
-    </button>
-
-    <!-- Gateway 4: Mystery Box -->
-    <a class="discovery-gateway-card" routerLink="/mystery-box">
-      <div class="gateway-icon-wrap" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="8" width="18" height="13" rx="2"/>
-          <path d="M12 8v13M3 12h18"/>
-          <path d="M7.5 8a2.5 2.5 0 0 1 0-5c1.5 0 2.5 1.5 4.5 5"/>
-          <path d="M16.5 8a2.5 2.5 0 0 0 0-5c-1.5 0-2.5 1.5-4.5 5"/>
-        </svg>
-      </div>
-      <div class="gateway-body">
-        <span class="gateway-tag">Consecrated Surprise</span>
-        <h3 class="gateway-title">Celestial Mystery Box</h3>
-        <p class="gateway-desc">Rare geodes & consecrated ritual tools.</p>
-      </div>
-      <span class="gateway-cta-link">Unbox Magic →</span>
-    </a>
-  </div>
-</section>
 
 <!-- Quick Category / Collection Filter Pills -->
 @if (categoryTiles().length > 0) {
