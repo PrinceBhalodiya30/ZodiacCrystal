@@ -23,12 +23,10 @@
       <p>{{ heroSubtitle() }}</p>
       <div class="hero-actions">
         <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
-        <a class="btn btn-outline hero-btn-secondary" routerLink="/zodiac">
-          <span class="btn-sparkle" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.1L5 10l5.1 1.9L12 17l1.9-5.1L19 10l-5.1-1.9Z"/></svg>
-          </span>
-          <span>Explore 12 Zodiac Signs</span>
-        </a>
+        <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openQuiz()">
+          <span class="btn-sparkle" aria-hidden="true">✦</span>
+          <span>Take 60s Crystal Quiz</span>
+        </button>
       </div>
     </div>
 
@@ -241,32 +239,6 @@
   }
 </section>
 
-<!-- Mystery Box Spotlight Banner -->
-<section class="container mystery-box-spotlight" scrollReveal>
-  <div class="mystery-box-card">
-    <div class="mystery-box-content">
-      <span class="mystery-box-eyebrow">
-        Intuitive Curation
-      </span>
-      <h2>The Celestial Mystery Box</h2>
-      <p>
-        Let the universe choose for you. Each mystery box includes hand-selected raw specimens,
-        carved crystal points, affirmation cards, and custom notes tuned to your zodiac energy.
-      </p>
-      <div class="mystery-box-actions">
-        <a class="btn btn-accent" routerLink="/mystery-box">Explore Mystery Boxes</a>
-      </div>
-    </div>
-    <div class="mystery-box-visual" aria-hidden="true">
-      <div class="mystery-box-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Astrological Crystal Consultation Section -->
 <section class="container consultation-callout-section" scrollReveal>
   <div class="consultation-callout-card">
@@ -359,6 +331,32 @@
     }
   </section>
 }
+
+<!-- Mystery Box Spotlight Banner -->
+<section class="container mystery-box-spotlight" scrollReveal>
+  <div class="mystery-box-card">
+    <div class="mystery-box-content">
+      <span class="mystery-box-eyebrow">
+        Intuitive Curation
+      </span>
+      <h2>The Celestial Mystery Box</h2>
+      <p>
+        Let the universe choose for you. Each mystery box includes hand-selected raw specimens,
+        carved crystal points, affirmation cards, and custom notes tuned to your zodiac energy.
+      </p>
+      <div class="mystery-box-actions">
+        <a class="btn btn-accent" routerLink="/mystery-box">Explore Mystery Boxes</a>
+      </div>
+    </div>
+    <div class="mystery-box-visual" aria-hidden="true">
+      <div class="mystery-box-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Crystal Wisdom Guides -->
 @if (guides().length > 0) {
