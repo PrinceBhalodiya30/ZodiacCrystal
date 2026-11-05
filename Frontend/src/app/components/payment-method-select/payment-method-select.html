@@ -51,8 +51,15 @@
     }
 
     @if (status() === 'error') {
-      <p class="form-error">{{ loadError() }}</p>
-      <button type="button" class="retry-btn" (click)="retryLoad()">Try again</button>
+      <div class="card-demo-fallback">
+        <p class="form-error">{{ loadError() }}</p>
+        <div class="card-fallback-btns">
+          <button type="button" class="fallback-cod-btn" (click)="selectMethod('COD')">
+            ✦ Use Cash on Delivery (Instant Demo Checkout)
+          </button>
+          <button type="button" class="retry-btn" (click)="retryLoad()">Retry</button>
+        </div>
+      </div>
     }
 
     <div #dropinContainer class="dropin-container"></div>

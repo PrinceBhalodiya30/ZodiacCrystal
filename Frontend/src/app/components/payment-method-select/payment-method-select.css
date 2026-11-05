@@ -157,3 +157,36 @@ legend {
     grid-template-columns: 1fr;
   }
 }
+
+
+.card-demo-fallback {
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.card-fallback-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.fallback-cod-btn {
+  background: var(--color-ink, #1D2739);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  padding: 0.55rem 1.15rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.fallback-cod-btn:hover {
+  background: var(--color-copper, #985E38);
+  transform: translateY(-1px);
+}

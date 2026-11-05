@@ -77,9 +77,19 @@ namespace Zodiac_Crystal.Controllers
         {
             if (!string.IsNullOrWhiteSpace(search))
             {
+                var s = search.Trim();
                 query = matchSku
-                    ? query.Where(p => p.Name.Contains(search) || p.Sku.Contains(search))
-                    : query.Where(p => p.Name.Contains(search));
+                    ? query.Where(p => p.Name.Contains(s)
+                        || p.Sku.Contains(s)
+                        || (p.Description != null && p.Description.Contains(s))
+                        || (p.Chakra != null && p.Chakra.Contains(s))
+                        || (p.Element != null && p.Element.Contains(s))
+                        || (p.Category != null && p.Category.Name.Contains(s)))
+                    : query.Where(p => p.Name.Contains(s)
+                        || (p.Description != null && p.Description.Contains(s))
+                        || (p.Chakra != null && p.Chakra.Contains(s))
+                        || (p.Element != null && p.Element.Contains(s))
+                        || (p.Category != null && p.Category.Name.Contains(s)));
             }
 
             if (categoryIds != null)
