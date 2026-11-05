@@ -101,8 +101,8 @@ export class ProductDetails implements OnInit {
   private couponService = inject(CouponService);
   private cleansingGuideService = inject(CleansingGuideService);
 
-  readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
-  readonly flatShippingFee = FLAT_SHIPPING_FEE;
+  readonly freeShippingThreshold = computed(() => this.cartService.freeShippingThreshold());
+  readonly flatShippingFee = computed(() => this.cartService.flatShippingFee());
   private activeCoupons = signal<PublicCoupon[]>([]);
 
   private productId = 0;

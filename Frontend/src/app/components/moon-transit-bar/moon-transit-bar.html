@@ -59,7 +59,7 @@
         <!-- Slide 1: Store Announcement Promo -->
         @if (currentSlide() === 1) {
           <div class="ticker-slide ticker-slide--promo" role="region" aria-label="Store Announcement">
-            <span class="promo-icon" aria-hidden="true">✨</span>
+            <svg class="promo-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
             @if (effectiveAnnouncementLink(); as link) {
               @if (isAnnouncementLinkExternal()) {
                 <a [href]="link" target="_blank" rel="noopener noreferrer" class="announcement-link">

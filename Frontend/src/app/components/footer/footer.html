@@ -86,7 +86,7 @@
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
         <div class="pillar-text">
           <strong>Free Express Delivery</strong>
-          <small>All India orders over ₹{{ freeShippingThreshold() }}</small>
+          <small>All India orders over {{ freeShippingThreshold() | inr:0 }}</small>
         </div>
       </div>
       <div class="footer-pillar">
@@ -136,7 +136,7 @@
       <a routerLink="/consultation">Crystal Quiz &amp; Blueprint</a>
       <a routerLink="/products" [queryParams]="{ intention: 'wealth' }">Wealth &amp; Success</a>
       <a routerLink="/products" [queryParams]="{ intention: 'love' }">Love &amp; Harmony</a>
-      <a routerLink="/products" [queryParams]="{ intention: 'protection' }">Protection &amp; Shielding</a>
+      <a routerLink="/products" [queryParams]="{ intention: 'protection' }">Protection &amp; Grounding</a>
       <a routerLink="/products" [queryParams]="{ intention: 'peace' }">Peace &amp; Restful Sleep</a>
       <a routerLink="/zodiac">Shop by Zodiac Sign</a>
       <a routerLink="/products">All Crystals Catalog</a>
@@ -210,8 +210,8 @@
         Mastercard
       </span>
       <span class="footer-trust-badge">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>
-        Instant UPI &amp; NetBanking
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01"/><path d="M18 12h.01"/></svg>
+        Cash on Delivery Available
       </span>
       <span class="footer-trust-badge">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

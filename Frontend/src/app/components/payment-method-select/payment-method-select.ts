@@ -125,6 +125,9 @@ export class PaymentMethodSelect {
       this.loadError.set(
         error?.error?.message || 'The secure card form could not be loaded. Please try again or choose Cash on Delivery.'
       );
+      if (this.cardOnly()) {
+        this.method.set('COD');
+      }
     }
   }
 

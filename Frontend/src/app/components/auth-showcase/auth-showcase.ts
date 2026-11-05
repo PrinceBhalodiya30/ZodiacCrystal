@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { getProductSlug } from '../../utils/product-slug.util';
 import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { InrPipe } from '../../pipes/inr.pipe';
-import { FREE_SHIPPING_THRESHOLD } from '../../services/cart.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { PublicCoupon } from '../../models/coupon';
 import { Review } from '../../models/review';
 
@@ -49,7 +49,8 @@ export class AuthShowcase implements OnInit {
   private reviewService = inject(ReviewService);
   private couponService = inject(CouponService);
 
-  readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
+  private storeSettings = inject(StoreSettingsService);
+  readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
   readonly fallbackImage = HERO_IMAGE_URL;
 
   featured = signal<FeaturedProduct | null>(null);

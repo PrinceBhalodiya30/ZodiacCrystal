@@ -25,11 +25,11 @@ export class Cart implements OnInit {
   // Notes from re-checking prices/availability when the page opened.
   changeNotes = signal<string[]>([]);
 
-  shippingFee = computed(() => shippingFeeFor(this.cartService.total()));
+  shippingFee = computed(() => this.cartService.shippingFeeFor(this.cartService.total()));
   grandTotal = computed(() => this.cartService.total() + this.shippingFee() + this.cartService.giftFee());
-  amountToFreeShipping = computed(() => Math.max(0, FREE_SHIPPING_THRESHOLD - this.cartService.total()));
+  amountToFreeShipping = computed(() => Math.max(0, this.cartService.freeShippingThreshold() - this.cartService.total()));
   freeShippingProgress = computed(() =>
-    Math.min(100, Math.round((this.cartService.total() / FREE_SHIPPING_THRESHOLD) * 100))
+    Math.min(100, Math.round((this.cartService.total() / (this.cartService.freeShippingThreshold() || 1)) * 100))
   );
 
   toggleGiftWrap(event: Event): void {

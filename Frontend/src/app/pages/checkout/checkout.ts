@@ -74,7 +74,7 @@ export class Checkout implements OnInit, OnDestroy {
   });
 
   // Display estimate only - the backend computes the fee it actually charges.
-  shippingFee = computed(() => shippingFeeFor(this.total()));
+  shippingFee = computed(() => this.cartService.shippingFeeFor(this.total()));
 
   // Lines asking for more than is in stock (or sold out). Payment is blocked until fixed.
   stockProblems = computed(() =>

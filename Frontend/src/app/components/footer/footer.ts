@@ -2,16 +2,16 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { InrPipe } from '../../pipes/inr.pipe';
 import { AuthService } from '../../services/auth.service';
 import { NewsletterService } from '../../services/newsletter.service';
 import { StoreSettingsService } from '../../services/store-settings.service';
-import { CleansingGuideService } from '../../services/cleansing-guide.service';
 import { SITE_NAME } from '../../services/page-title.service';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, InrPipe],
   templateUrl: './footer.html',
   styleUrl: './footer.css'
 })
@@ -21,7 +21,6 @@ export class Footer {
   authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
   private storeSettings = inject(StoreSettingsService);
-  private cleansingGuideService = inject(CleansingGuideService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
 
   newsletterEmail = signal('');
@@ -32,10 +31,6 @@ export class Footer {
   copiedCoupon = signal(false);
   isSubscribing = signal(false);
   newsletterError = signal('');
-
-  openCleansingGuide(): void {
-    this.cleansingGuideService.open('cleansing');
-  }
 
   subscribeNewsletter(): void {
     const email = this.newsletterEmail().trim();

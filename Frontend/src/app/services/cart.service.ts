@@ -8,6 +8,7 @@ import { ProductService } from './product.service';
 import { CartItem } from '../models/cart';
 import { Product } from '../models/product';
 import { ToastService } from './toast.service';
+import { StoreSettingsService } from './store-settings.service';
 
 // Guest cart; each signed-in user gets their own key so the next person to sign
 // in on a shared device never sees someone else's cart.
@@ -42,6 +43,7 @@ export class CartService {
   private productService = inject(ProductService);
   private http = inject(HttpClient);
   private toast = inject(ToastService);
+  private storeSettings = inject(StoreSettingsService);
   private syncTimer?: ReturnType<typeof setTimeout>;
   private storageKey = cartKey(this.auth.currentUser()?.userId ?? null);
 
@@ -352,6 +354,15 @@ export class CartService {
   total = computed(() =>
     this.items().reduce((sum, item) => sum + item.product.price * item.quantity, 0)
   );
+
+  readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
+  readonly flatShippingFee = computed(() => this.storeSettings.flatShippingRate());
+
+  shippingFeeFor(subtotal: number): number {
+    return subtotal >= this.freeShippingThreshold() ? 0 : this.flatShippingFee();
+  }
+
+  shippingFee = computed(() => this.shippingFeeFor(this.total()));
 
   // Returns how many were actually added - less than asked (or 0) when stock runs
   // out, so callers can say "Only N in stock" instead of a false success.

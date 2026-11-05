@@ -33,7 +33,7 @@ export class Faq {
     },
     {
       question: 'How do I place an order?',
-      answer: 'Add products to your cart, then go to checkout. You\'ll need to be logged in with a shipping address saved (or entered at checkout) to complete your purchase.'
+      answer: 'Add products to your cart and proceed to checkout. You can check out as a guest with quick email verification, or sign in to your account to save your addresses and track your orders.'
     },
     {
       question: 'How can I track my order?',
