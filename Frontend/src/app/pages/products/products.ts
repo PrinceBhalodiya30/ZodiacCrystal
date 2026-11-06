@@ -12,7 +12,6 @@ import { Category } from '../../models/category';
 import { Zodiac } from '../../models/zodiac';
 import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardSkeleton } from '../../components/product-card-skeleton/product-card-skeleton';
-import { Pager } from '../../components/pager/pager';
 import { SACRED_INTENTIONS, SacredIntention, getIntentionById, productMatchesIntention } from '../../utils/crystal-intentions.util';
 
 const PAGE_SIZE = 12;
@@ -23,7 +22,7 @@ import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [InrPipe, FormsModule, ProductCard, ProductCardSkeleton, Pager, VedicZodiacPipe],
+  imports: [InrPipe, FormsModule, ProductCard, ProductCardSkeleton, VedicZodiacPipe],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
@@ -76,6 +75,20 @@ export class Products implements OnInit {
   page = signal(1);
   totalPages = signal(1);
   totalCount = signal<number | undefined>(undefined);
+  isLoadingMore = signal(false);
+
+  displayedCount = computed(() => this.products().length);
+
+  progressPercent = computed(() => {
+    const total = this.totalCount() || 0;
+    if (!total) return 0;
+    return Math.min(100, Math.round((this.displayedCount() / total) * 100));
+  });
+
+  hasMore = computed(() => {
+    const total = this.totalCount() || 0;
+    return total > 0 && this.displayedCount() < total;
+  });
 
   readonly skeletonRows = SKELETON_ROWS;
 
@@ -262,102 +275,58 @@ export class Products implements OnInit {
     this.loadProducts();
   }
 
-  loadProducts(): void {
-    this.isLoading.set(true);
-    this.errorMessage.set('');
+  loadMore(): void {
+    if (this.isLoadingMore() || !this.hasMore()) {
+      return;
+    }
+    this.page.update(p => p + 1);
+    this.loadProducts(true);
+  }
+
+  loadProducts(append = false): void {
+    if (append) {
+      this.isLoadingMore.set(true);
+    } else {
+      this.isLoading.set(true);
+      this.errorMessage.set('');
+    }
 
     const intention = this.selectedIntention();
 
-    if (!intention) {
-      this.productService
-        .getProductsPaged(
-          this.page(),
-          PAGE_SIZE,
-          this.searchTerm().trim() || undefined,
-          this.selectedCategoryId(),
-          true,
-          this.minPrice(),
-          this.maxPrice(),
-          this.selectedZodiacId(),
-          this.inStockOnly(),
-          this.sortBy() || undefined
-        )
-        .subscribe({
-          next: result => {
+    this.productService
+      .getProductsPaged(
+        this.page(),
+        PAGE_SIZE,
+        this.searchTerm().trim() || undefined,
+        this.selectedCategoryId(),
+        true,
+        this.minPrice(),
+        this.maxPrice(),
+        this.selectedZodiacId(),
+        this.inStockOnly(),
+        this.sortBy() || undefined,
+        false,
+        intention?.id || undefined
+      )
+      .subscribe({
+        next: result => {
+          if (append) {
+            this.products.update(prev => [...prev, ...result.items]);
+          } else {
             this.products.set(result.items);
-            this.totalPages.set(result.totalPages || 1);
-            this.totalCount.set(result.totalCount);
-            this.isLoading.set(false);
-          },
-          error: () => {
+          }
+          this.totalPages.set(result.totalPages || 1);
+          this.totalCount.set(result.totalCount);
+          this.isLoading.set(false);
+          this.isLoadingMore.set(false);
+        },
+        error: () => {
+          if (!append) {
             this.errorMessage.set('Unable to load products.');
             this.isLoading.set(false);
           }
-        });
-      return;
-    }
-
-    const fetchAll$ = this.allProductsCache
-      ? of(this.allProductsCache)
-      : this.productService.getProducts();
-
-    fetchAll$.subscribe({
-      next: allProducts => {
-        this.allProductsCache = allProducts;
-        let filtered = allProducts.filter(p => p.isActive && productMatchesIntention(p, intention));
-
-        if (this.selectedCategoryId()) {
-          filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId());
+          this.isLoadingMore.set(false);
         }
-
-        if (this.selectedZodiacId()) {
-          filtered = filtered.filter(p => p.zodiacs?.some(z => z.zodiacId === this.selectedZodiacId()));
-        }
-
-        if (this.inStockOnly()) {
-          filtered = filtered.filter(p => p.stockQuantity > 0);
-        }
-
-        if (this.minPrice() !== null) {
-          filtered = filtered.filter(p => p.price >= this.minPrice()!);
-        }
-        if (this.maxPrice() !== null) {
-          filtered = filtered.filter(p => p.price <= this.maxPrice()!);
-        }
-
-        const term = this.searchTerm().trim().toLowerCase();
-        if (term) {
-          filtered = filtered.filter(p =>
-            p.name.toLowerCase().includes(term) ||
-            (p.description && p.description.toLowerCase().includes(term))
-          );
-        }
-
-        const sort = this.sortBy();
-        if (sort === 'price_asc') {
-          filtered.sort((a, b) => a.price - b.price);
-        } else if (sort === 'price_desc') {
-          filtered.sort((a, b) => b.price - a.price);
-        } else if (sort === 'newest') {
-          filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        } else if (sort === 'rating') {
-          filtered.sort((a, b) => (b.averageRating ?? 0) - (a.averageRating ?? 0));
-        }
-
-        const totalCount = filtered.length;
-        const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-        this.totalPages.set(totalPages);
-        this.totalCount.set(totalCount);
-
-        const startIndex = (this.page() - 1) * PAGE_SIZE;
-        const pagedItems = filtered.slice(startIndex, startIndex + PAGE_SIZE);
-        this.products.set(pagedItems);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Unable to load products.');
-        this.isLoading.set(false);
-      }
-    });
+      });
   }
 }

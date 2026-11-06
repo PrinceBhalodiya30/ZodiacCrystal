@@ -245,6 +245,49 @@
       }
     </div>
 
-    <app-pager [page]="page()" [totalPages]="totalPages()" [totalCount]="totalCount()" (pageChange)="onPageChange($event)"></app-pager>
+    @if (products().length > 0) {
+      <div class="catalog-pagination-wrap" aria-label="Catalog navigation">
+        <div class="catalog-progress">
+          <span class="catalog-progress-text">
+            Showing <strong class="catalog-progress-count">{{ displayedCount() }}</strong> of <strong class="catalog-progress-total">{{ totalCount() }}</strong> crystals
+          </span>
+          <div
+            class="catalog-progress-track"
+            role="progressbar"
+            [attr.aria-valuenow]="progressPercent()"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-label]="'Viewing ' + displayedCount() + ' of ' + totalCount() + ' crystals'"
+          >
+            <div class="catalog-progress-fill" [style.width.%]="progressPercent()"></div>
+          </div>
+        </div>
+
+        @if (hasMore()) {
+          <button
+            type="button"
+            class="load-more-btn"
+            [disabled]="isLoadingMore()"
+            (click)="loadMore()"
+          >
+            @if (isLoadingMore()) {
+              <span class="load-more-spinner" aria-hidden="true"></span>
+              <span>Revealing Crystals...</span>
+            } @else {
+              <span>Load More Crystals</span>
+              <svg class="load-more-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            }
+          </button>
+        } @else if (totalCount() && totalCount()! > 0) {
+          <div class="catalog-complete-note" role="status">
+            <span class="complete-ornament" aria-hidden="true">✦</span>
+            <span>You have explored all {{ totalCount() }} crystals in this collection</span>
+            <span class="complete-ornament" aria-hidden="true">✦</span>
+          </div>
+        }
+      </div>
+    }
   }
 </section>

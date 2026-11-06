@@ -22,6 +22,7 @@ export interface Product {
   chakra?: string | null;
   element?: string | null;
   marketingBadge?: string | null;
+  intention?: string | null;
 }
 
 export interface ProductRequest {
@@ -39,4 +40,5 @@ export interface ProductRequest {
   chakra?: string | null;
   element?: string | null;
   marketingBadge?: string | null;
+  intention?: string | null;
 }

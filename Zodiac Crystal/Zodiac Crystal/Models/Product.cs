@@ -45,6 +45,9 @@ public partial class Product
     [StringLength(50)]
     public string? MarketingBadge { get; set; }
 
+    [StringLength(50)]
+    public string? Intention { get; set; }
+
     public int StockQuantity { get; set; }
 
     public int CategoryId { get; set; }

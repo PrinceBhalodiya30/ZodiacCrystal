@@ -250,6 +250,7 @@ export class AdminProducts implements OnInit {
   formChakra = '';
   formElement = '';
   formMarketingBadge = '';
+  formIntention = '';
 
   constructor() {
     // Live stock (SignalR): orders, cancellations and restocks update the Stock column.
@@ -385,6 +386,7 @@ export class AdminProducts implements OnInit {
     this.formChakra = '';
     this.formElement = '';
     this.formMarketingBadge = '';
+    this.formIntention = '';
     this.formError.set('');
   }
 
@@ -406,6 +408,7 @@ export class AdminProducts implements OnInit {
     this.formChakra = product.chakra ?? '';
     this.formElement = product.element ?? '';
     this.formMarketingBadge = product.marketingBadge ?? '';
+    this.formIntention = product.intention ?? '';
     this.formError.set('');
   }
 
@@ -474,7 +477,8 @@ export class AdminProducts implements OnInit {
       sunlightExposure: this.formSunlightExposure?.trim() || null,
       chakra: this.formChakra?.trim() || null,
       element: this.formElement?.trim() || null,
-      marketingBadge: this.formMarketingBadge?.trim() || null
+      marketingBadge: this.formMarketingBadge?.trim() || null,
+      intention: this.formIntention?.trim() || null
     };
 
     const editingId = this.editingProductId();

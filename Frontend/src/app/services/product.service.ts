@@ -25,7 +25,8 @@ export class ProductService {
     zodiacId?: number | null,
     inStockOnly = false,
     sortBy?: string | null,
-    lowStockOnly = false
+    lowStockOnly = false,
+    intention?: string | null
   ): Observable<PagedResult<Product>> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber)
@@ -39,6 +40,10 @@ export class ProductService {
 
     if (search) {
       params = params.set('search', search);
+    }
+
+    if (intention) {
+      params = params.set('intention', intention);
     }
 
     if (categoryId !== null && categoryId !== undefined) {

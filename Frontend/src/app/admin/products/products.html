@@ -325,11 +325,28 @@
       </div>
 
       <div class="form-section">
-        <h3 class="form-section-title">Merchandising &amp; Marketing Ribbon (Optional)</h3>
+        <h3 class="form-section-title">Merchandising &amp; Sacred Intention</h3>
         <p class="field-hint" style="margin-bottom: 0.75rem;">
-          Displays a sleek ribbon badge on storefront product cards and product details (e.g. Bestseller, Rare Specimen, Trending).
+          Assign sacred intention collections and marketing ribbon badges for storefront curation.
         </p>
         <div class="form-grid">
+          <div>
+            <label for="intention">Sacred Intention</label>
+            <select
+              id="intention"
+              name="intention"
+              [(ngModel)]="formIntention"
+            >
+              <option value="">None (Unassigned / General)</option>
+              <option value="wealth">Wealth &amp; Success (Abundance, Prosperity)</option>
+              <option value="love">Love &amp; Harmony (Compassion, Heart Resonance)</option>
+              <option value="protection">Protection &amp; Grounding (Aura Shield, Defense)</option>
+              <option value="peace">Peace &amp; Sleep (Calmness, Restorative Rest)</option>
+              <option value="intuition">Clarity &amp; Intuition (Third Eye Vision, Wisdom)</option>
+              <option value="energy">Vitality &amp; Energy (Passion, Pranic Fire)</option>
+            </select>
+          </div>
+
           <div>
             <label for="marketingBadge">Marketing Ribbon Badge</label>
             <select

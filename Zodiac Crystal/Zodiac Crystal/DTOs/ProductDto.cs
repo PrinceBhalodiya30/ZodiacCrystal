@@ -24,6 +24,8 @@ namespace Zodiac_Crystal.DTOs
 
         public string? MarketingBadge { get; set; }
 
+        public string? Intention { get; set; }
+
         public int StockQuantity { get; set; }
 
         public int CategoryId { get; set; }

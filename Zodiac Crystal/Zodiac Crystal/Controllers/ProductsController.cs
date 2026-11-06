@@ -28,6 +28,16 @@ namespace Zodiac_Crystal.Controllers
             "Staff Pick"
         };
 
+        private static readonly HashSet<string> AllowedIntentions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "wealth",
+            "love",
+            "protection",
+            "peace",
+            "intuition",
+            "energy"
+        };
+
         public ProductsController(CrystalsDbContext context, CsvExportService csvExportService, AuditLogService auditLogService, NotificationService notificationService)
         {
             _context = context;
@@ -188,6 +198,7 @@ namespace Zodiac_Crystal.Controllers
                     Chakra = p.Chakra,
                     Element = p.Element,
                     MarketingBadge = p.MarketingBadge,
+                    Intention = p.Intention,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -232,7 +243,8 @@ namespace Zodiac_Crystal.Controllers
             bool lowStockOnly = false,
             string? status = null,
             string? stock = null,
-            bool missingImagesOnly = false)
+            bool missingImagesOnly = false,
+            string? intention = null)
         {
             if (pageNumber < 1)
             {
@@ -251,6 +263,12 @@ namespace Zodiac_Crystal.Controllers
             // Non-admins only ever see active products, whatever they ask for.
             var query = ApplyFilters(_context.Products.AsQueryable(), search, await CategoryWithDescendantsAsync(categoryId), activeOnly || !IsAdmin, minPrice, maxPrice, zodiacId, inStockOnly, matchSku: IsAdmin);
             query = ApplyAdminFilters(query, status, stock, missingImagesOnly);
+
+            if (!string.IsNullOrWhiteSpace(intention))
+            {
+                var trimmedIntention = intention.Trim().ToLowerInvariant();
+                query = query.Where(p => p.Intention == trimmedIntention);
+            }
 
             // Admin Stock page's "Low stock only" filter.
             if (lowStockOnly)
@@ -298,6 +316,7 @@ namespace Zodiac_Crystal.Controllers
                     Chakra = p.Chakra,
                     Element = p.Element,
                     MarketingBadge = p.MarketingBadge,
+                    Intention = p.Intention,
 
                     AverageRating = _context.ProductReviews
                         .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved")
@@ -375,18 +394,19 @@ namespace Zodiac_Crystal.Controllers
                     p.Chakra,
                     p.Element,
                     p.MarketingBadge,
+                    p.Intention,
                     p.IsActive,
                     p.CreatedAt,
                     Zodiacs = p.Zodiacs.Select(z => z.Name).ToList()
                 })
                 .ToListAsync();
 
-            var headers = new[] { "ProductId", "SKU", "Name", "Category", "Price", "CompareAtPrice", "StockQuantity", "WaterSafe", "SunlightExposure", "Chakra", "Element", "MarketingBadge", "ZodiacSigns", "IsActive", "CreatedAt" };
+            var headers = new[] { "ProductId", "SKU", "Name", "Category", "Price", "CompareAtPrice", "StockQuantity", "WaterSafe", "SunlightExposure", "Chakra", "Element", "MarketingBadge", "Intention", "ZodiacSigns", "IsActive", "CreatedAt" };
 
             var rows = products.Select(p => new object?[]
             {
                 p.ProductId, p.SKU, p.Name, p.CategoryName, p.Price, p.CompareAtPrice, p.StockQuantity,
-                p.WaterSafe, p.SunlightExposure, p.Chakra, p.Element, p.MarketingBadge,
+                p.WaterSafe, p.SunlightExposure, p.Chakra, p.Element, p.MarketingBadge, p.Intention,
                 string.Join("; ", p.Zodiacs.OrderBy(z => z)), p.IsActive, p.CreatedAt
             });
 
@@ -480,6 +500,7 @@ namespace Zodiac_Crystal.Controllers
                     Chakra = p.Chakra,
                     Element = p.Element,
                     MarketingBadge = p.MarketingBadge,
+                    Intention = p.Intention,
 
                     // Approved, not-deleted reviews only (same as the list endpoints);
                     // the product page's JSON-LD rating comes from these.
@@ -611,6 +632,7 @@ namespace Zodiac_Crystal.Controllers
                     Chakra = p.Chakra,
                     Element = p.Element,
                     MarketingBadge = p.MarketingBadge,
+                    Intention = p.Intention,
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -701,6 +723,14 @@ namespace Zodiac_Crystal.Controllers
                 });
             }
 
+            if (!string.IsNullOrWhiteSpace(dto.Intention) && !AllowedIntentions.Contains(dto.Intention.Trim()))
+            {
+                return BadRequest(new
+                {
+                    message = $"Invalid sacred intention '{dto.Intention}'. Allowed values: {string.Join(", ", AllowedIntentions)}"
+                });
+            }
+
             var product = new Product
             {
                 Sku = dto.SKU,
@@ -716,6 +746,7 @@ namespace Zodiac_Crystal.Controllers
                 Chakra = dto.Chakra,
                 Element = dto.Element,
                 MarketingBadge = dto.MarketingBadge?.Trim(),
+                Intention = string.IsNullOrWhiteSpace(dto.Intention) ? null : dto.Intention.Trim().ToLowerInvariant(),
                 Zodiacs = zodiacs
             };
 
@@ -812,6 +843,14 @@ namespace Zodiac_Crystal.Controllers
                 });
             }
 
+            if (!string.IsNullOrWhiteSpace(dto.Intention) && !AllowedIntentions.Contains(dto.Intention.Trim()))
+            {
+                return BadRequest(new
+                {
+                    message = $"Invalid sacred intention '{dto.Intention}'. Allowed values: {string.Join(", ", AllowedIntentions)}"
+                });
+            }
+
             // What changed, for the audit log (e.g. "Price ₹899.00 → ₹799.00").
             var changes = new List<string>();
             if (product.Name != dto.Name) changes.Add($"Name \"{product.Name}\" → \"{dto.Name}\"");
@@ -825,6 +864,9 @@ namespace Zodiac_Crystal.Controllers
                 changes.Add("Zodiac signs changed");
             if (product.MarketingBadge != (string.IsNullOrWhiteSpace(dto.MarketingBadge) ? null : dto.MarketingBadge.Trim()))
                 changes.Add($"Badge \"{product.MarketingBadge ?? "None"}\" → \"{(string.IsNullOrWhiteSpace(dto.MarketingBadge) ? "None" : dto.MarketingBadge.Trim())}\"");
+            var newIntention = string.IsNullOrWhiteSpace(dto.Intention) ? null : dto.Intention.Trim().ToLowerInvariant();
+            if (product.Intention != newIntention)
+                changes.Add($"Intention \"{product.Intention ?? "None"}\" → \"{newIntention ?? "None"}\"");
 
             _auditLogService.Log(CurrentAdminId(), "ProductUpdated", "Product", product.ProductId,
                 $"{dto.Name}: " + (changes.Count > 0 ? string.Join("; ", changes) : "no changes"));
@@ -841,6 +883,7 @@ namespace Zodiac_Crystal.Controllers
             product.Chakra = dto.Chakra;
             product.Element = dto.Element;
             product.MarketingBadge = dto.MarketingBadge?.Trim();
+            product.Intention = newIntention;
 
             product.Zodiacs.Clear();
             foreach (var zodiac in zodiacs)
