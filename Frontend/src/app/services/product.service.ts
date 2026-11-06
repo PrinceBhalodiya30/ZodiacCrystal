@@ -176,6 +176,7 @@ export interface AdminProductFilters {
   status?: 'active' | 'inactive' | '';
   stock?: 'in' | 'low' | 'out' | '';
   missingImagesOnly?: boolean;
+  intention?: string;
 }
 
 function adminProductParams(filters: AdminProductFilters): HttpParams {
@@ -194,6 +195,9 @@ function adminProductParams(filters: AdminProductFilters): HttpParams {
   }
   if (filters.missingImagesOnly) {
     params = params.set('missingImagesOnly', true);
+  }
+  if (filters.intention) {
+    params = params.set('intention', filters.intention);
   }
   return params;
 }

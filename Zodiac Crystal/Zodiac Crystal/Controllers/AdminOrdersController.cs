@@ -319,6 +319,7 @@ namespace Zodiac_Crystal.Controllers
                     o.PostalCode,
                     o.Latitude,
                     o.Longitude,
+                    o.DeliveryInstructions,
                     // Same figure as the invoice: the stored line subtotals added up.
                     Subtotal = o.OrderItems.Sum(oi => oi.Subtotal),
                     o.DiscountAmount,
@@ -346,7 +347,7 @@ namespace Zodiac_Crystal.Controllers
             var headers = new[]
             {
                 "OrderId", "OrderType", "Customer", "CustomerEmail", "Date", "Status",
-                "ShipTo", "Phone", "ShippingAddress", "City", "State", "PIN", "MapLink",
+                "ShipTo", "Phone", "ShippingAddress", "City", "State", "PIN", "MapLink", "DeliveryInstructions",
                 "ConfirmedAt", "ShippedAt", "Courier", "TrackingNumber", "DeliveredAt", "CancellationReason", "ReturnStatus", "PaymentMethod", "PaymentStatus", "PaidAt", "TransactionId",
                 "Subtotal", "Discount", "Shipping", "Total", "CouponCode"
             };
@@ -377,6 +378,7 @@ namespace Zodiac_Crystal.Controllers
                         ? string.Create(System.Globalization.CultureInfo.InvariantCulture,
                             $"https://www.google.com/maps?q={o.Latitude.Value},{o.Longitude.Value}")
                         : "",
+                    o.DeliveryInstructions ?? "",
                     o.ConfirmedAt,
                     o.ShippedAt,
                     o.CourierName ?? "",

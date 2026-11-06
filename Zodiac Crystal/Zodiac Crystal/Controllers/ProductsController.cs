@@ -373,11 +373,20 @@ namespace Zodiac_Crystal.Controllers
             bool inStockOnly = false,
             string? status = null,
             string? stock = null,
-            bool missingImagesOnly = false)
+            bool missingImagesOnly = false,
+            string? intention = null)
         {
-            var products = await ApplyAdminFilters(
+            var query = ApplyAdminFilters(
                     ApplyFilters(_context.Products.AsQueryable(), search, await CategoryWithDescendantsAsync(categoryId), activeOnly, minPrice, maxPrice, zodiacId, inStockOnly),
-                    status, stock, missingImagesOnly)
+                    status, stock, missingImagesOnly);
+
+            if (!string.IsNullOrWhiteSpace(intention))
+            {
+                var trimmedIntention = intention.Trim().ToLowerInvariant();
+                query = query.Where(p => p.Intention == trimmedIntention);
+            }
+
+            var products = await query
                 .Include(p => p.Category)
                 .OrderBy(p => p.ProductId)
                 .Select(p => new
