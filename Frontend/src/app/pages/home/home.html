@@ -2,102 +2,86 @@
 
 <!-- Quick Category / Collection Filter Pills -->
 @if (categoryTiles().length > 0) {
-  <section class="container quick-pills-section">
-    <div class="quick-pills-track">
-      <a class="quick-pill active" routerLink="/products">All Crystals</a>
-      @for (tile of categoryTiles(); track tile.category.categoryId) {
-        <a class="quick-pill" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
-          {{ tile.category.name }}
-        </a>
-      }
-      <a class="quick-pill" routerLink="/mystery-box">Mystery Boxes</a>
-      <a class="quick-pill" routerLink="/zodiac">Zodiac Stones</a>
-    </div>
-  </section>
+<section class="container quick-pills-section">
+  <div class="quick-pills-track">
+    <a class="quick-pill active" routerLink="/products">All Crystals</a>
+    @for (tile of categoryTiles(); track tile.category.categoryId) {
+    <a class="quick-pill" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
+      {{ tile.category.name }}
+    </a>
+    }
+    <a class="quick-pill" routerLink="/mystery-box">Mystery Boxes</a>
+    <a class="quick-pill" routerLink="/zodiac">Zodiac Stones</a>
+  </div>
+</section>
 }
 
 <!-- Featured Crystals Horizontal Product Slider -->
 @if (productsLoading()) {
-  <section class="container featured-section">
-    <div class="section-header featured-header-with-nav">
-      <div>
-        <h2>Featured Crystals</h2>
-      </div>
-    </div>
-    <span class="visually-hidden" role="status">Loading featured crystals...</span>
-    <div class="featured-slider-track" aria-hidden="true">
-      @for (n of [1, 2, 3, 4]; track n) {
-        <div class="featured-slider-item">
-          <app-product-card-skeleton></app-product-card-skeleton>
-        </div>
-      }
-    </div>
-  </section>
-} @else if (productsError()) {
-  <section class="container featured-section">
-    <div class="section-header">
+<section class="container featured-section">
+  <div class="section-header featured-header-with-nav">
+    <div>
       <h2>Featured Crystals</h2>
     </div>
-    <div class="state-message state-message--error">
-      <p>{{ productsError() }}</p>
-      <button type="button" class="btn" (click)="loadFeaturedProducts()">Retry</button>
+  </div>
+  <span class="visually-hidden" role="status">Loading featured crystals...</span>
+  <div class="featured-slider-track" aria-hidden="true">
+    @for (n of [1, 2, 3, 4]; track n) {
+    <div class="featured-slider-item">
+      <app-product-card-skeleton></app-product-card-skeleton>
     </div>
-  </section>
+    }
+  </div>
+</section>
+} @else if (productsError()) {
+<section class="container featured-section">
+  <div class="section-header">
+    <h2>Featured Crystals</h2>
+  </div>
+  <div class="state-message state-message--error">
+    <p>{{ productsError() }}</p>
+    <button type="button" class="btn" (click)="loadFeaturedProducts()">Retry</button>
+  </div>
+</section>
 } @else if (featuredProducts().length > 0) {
-  <section class="container featured-section" scrollReveal>
-    <div class="section-header featured-header-with-nav">
-      <div class="header-text-group">
-        <h2>Featured Crystals</h2>
-        <p class="section-subtitle">
-          Hand-selected raw clusters, polished obelisks, and tumbled pocket stones.
-        </p>
-      </div>
-
-      <!-- Small Product Slider Navigation Controls -->
-      <div class="product-slider-arrows" aria-label="Featured crystals navigation">
-        <button
-          type="button"
-          class="slider-arrow-btn prev"
-          (click)="scrollFeatured('prev')"
-          [disabled]="isFeaturedAtStart()"
-          aria-label="Previous products"
-          title="Previous products"
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
-        </button>
-        <button
-          type="button"
-          class="slider-arrow-btn next"
-          (click)="scrollFeatured('next')"
-          [disabled]="isFeaturedAtEnd()"
-          aria-label="Next products"
-          title="Next products"
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="m9 18 6-6-6-6"/>
-          </svg>
-        </button>
-      </div>
+<section class="container featured-section" scrollReveal>
+  <div class="section-header featured-header-with-nav">
+    <div class="header-text-group">
+      <h2>Featured Crystals</h2>
+      <p class="section-subtitle">
+        Hand-selected raw clusters, polished obelisks, and tumbled pocket stones.
+      </p>
     </div>
 
-    <!-- Scrollable Product Slider Track -->
-    <div
-      #featuredTrack
-      class="featured-slider-track"
-      (scroll)="onFeaturedScroll()"
-      tabindex="0"
-      role="region"
-      aria-label="Featured crystals carousel"
-    >
-      @for (product of featuredProducts(); track product.productId) {
-        <div class="featured-slider-item">
-          <app-product-card [product]="product"></app-product-card>
-        </div>
-      }
+    <!-- Small Product Slider Navigation Controls -->
+    <div class="product-slider-arrows" aria-label="Featured crystals navigation">
+      <button type="button" class="slider-arrow-btn prev" (click)="scrollFeatured('prev')"
+        [disabled]="isFeaturedAtStart()" aria-label="Previous products" title="Previous products">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+      <button type="button" class="slider-arrow-btn next" (click)="scrollFeatured('next')"
+        [disabled]="isFeaturedAtEnd()" aria-label="Next products" title="Next products">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
     </div>
-  </section>
+  </div>
+
+  <!-- Scrollable Product Slider Track -->
+  <div #featuredTrack class="featured-slider-track" (scroll)="onFeaturedScroll()" tabindex="0" role="region"
+    aria-label="Featured crystals carousel">
+    @for (product of featuredProducts(); track product.productId) {
+    <div class="featured-slider-item">
+      <app-product-card [product]="product"></app-product-card>
+    </div>
+    }
+  </div>
+</section>
 }
 
 <!-- Shop by Zodiac & Birthday Sign Finder -->
@@ -112,28 +96,30 @@
   <app-birthday-sign-finder></app-birthday-sign-finder>
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading zodiac signs...</span>
-    <div class="zodiac-grid" aria-hidden="true">
-      @for (n of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track n) {
-        <div class="zodiac-skeleton">
-          <span class="skeleton zodiac-skeleton-icon"></span>
-          <span class="skeleton skeleton-line zodiac-skeleton-name"></span>
-        </div>
-      }
+  <span class="visually-hidden" role="status">Loading zodiac signs...</span>
+  <div class="zodiac-grid" aria-hidden="true">
+    @for (n of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track n) {
+    <div class="zodiac-skeleton">
+      <span class="skeleton zodiac-skeleton-icon"></span>
+      <span class="skeleton skeleton-line zodiac-skeleton-name"></span>
     </div>
+    }
+  </div>
   } @else if (errorMessage()) {
-    <div class="state-message state-message--error">
-      <p>{{ errorMessage() }}</p>
-      <button type="button" class="btn" (click)="loadZodiacSigns()">Retry</button>
-    </div>
+  <div class="state-message state-message--error">
+    <p>{{ errorMessage() }}</p>
+    <button type="button" class="btn" (click)="loadZodiacSigns()">Retry</button>
+  </div>
   } @else if (zodiacSigns().length === 0) {
-    <div class="state-message state-message--empty"><p>No zodiac signs found.</p></div>
+  <div class="state-message state-message--empty">
+    <p>No zodiac signs found.</p>
+  </div>
   } @else {
-    <div class="zodiac-grid">
-      @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
-        <app-zodiac-card [zodiac]="zodiac"></app-zodiac-card>
-      }
-    </div>
+  <div class="zodiac-grid">
+    @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
+    <app-zodiac-card [zodiac]="zodiac"></app-zodiac-card>
+    }
+  </div>
   }
 </section>
 
@@ -151,14 +137,8 @@
     <!-- Card 1: Protection -->
     <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
       <div class="intention-image-wrapper">
-        <img
-          src="/intentions/protection.webp"
-          alt="Protection &amp; Grounding Crystals - Natural Smoky Quartz Obelisk"
-          class="intention-img"
-          loading="lazy"
-          decoding="async"
-          imgFallback
-        />
+        <img src="/intentions/protection.webp" alt="Protection &amp; Grounding Crystals - Natural Smoky Quartz Obelisk"
+          class="intention-img" loading="lazy" decoding="async" imgFallback />
         <div class="intention-overlay"></div>
         <span class="intention-pill">Grounding &amp; Shield</span>
       </div>
@@ -166,65 +146,58 @@
         <span class="intention-kicker">Smoky Quartz &amp; Obsidian</span>
         <h3 class="intention-title">Protection &amp; Grounding</h3>
         <p class="intention-desc">Banish psychic drain, deflect heavy frequencies, and stay deeply grounded.</p>
-        <span class="intention-link">Shop Protection <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        <span class="intention-link">Shop Protection <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg></span>
       </div>
     </a>
 
     <!-- Card 2: Wealth & Abundance -->
     <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
       <div class="intention-image-wrapper">
-        <img
-          src="/intentions/wealth.webp"
-          alt="Wealth &amp; Abundance Crystals - Golden Tiger's Eye and Citrine"
-          class="intention-img"
-          loading="lazy"
-          decoding="async"
-          imgFallback
-        />
+        <img src="/intentions/wealth.webp" alt="Wealth &amp; Abundance Crystals - Golden Tiger's Eye and Citrine"
+          class="intention-img" loading="lazy" decoding="async" imgFallback />
         <div class="intention-overlay"></div>
         <span class="intention-pill">Prosperity &amp; Drive</span>
       </div>
       <div class="intention-content">
         <span class="intention-kicker">Golden Tiger's Eye &amp; Citrine</span>
         <h3 class="intention-title">Wealth &amp; Success</h3>
-        <p class="intention-desc">Attune your vibration to business breakthrough, solar vitality, and financial flow.</p>
-        <span class="intention-link">Shop Wealth <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        <p class="intention-desc">Attune your vibration to business breakthrough, solar vitality, and financial flow.
+        </p>
+        <span class="intention-link">Shop Wealth <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg></span>
       </div>
     </a>
 
     <!-- Card 3: Love & Compassion -->
     <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
       <div class="intention-image-wrapper">
-        <img
-          src="/intentions/love.jpg"
-          alt="Love &amp; Harmony Crystals - Natural Madagascar Rose Quartz"
-          class="intention-img"
-          loading="lazy"
-          decoding="async"
-          imgFallback
-        />
+        <img src="/intentions/love.jpg" alt="Love &amp; Harmony Crystals - Natural Madagascar Rose Quartz"
+          class="intention-img" loading="lazy" decoding="async" imgFallback />
         <div class="intention-overlay"></div>
         <span class="intention-pill">Heart Resonance</span>
       </div>
       <div class="intention-content">
         <span class="intention-kicker">Madagascar Rose Quartz</span>
         <h3 class="intention-title">Love &amp; Harmony</h3>
-        <p class="intention-desc">Open the sacred heart space, dissolve emotional stress, and cultivate tender self-love.</p>
-        <span class="intention-link">Shop Love <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        <p class="intention-desc">Open the sacred heart space, dissolve emotional stress, and cultivate tender
+          self-love.</p>
+        <span class="intention-link">Shop Love <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg></span>
       </div>
     </a>
 
     <!-- Card 4: Calm & Clarity -->
     <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
       <div class="intention-image-wrapper">
-        <img
-          src="/intentions/clarity.jpg"
-          alt="Peace &amp; Clarity Crystals - Authentic Amethyst Crystal Cluster"
-          class="intention-img"
-          loading="lazy"
-          decoding="async"
-          imgFallback
-        />
+        <img src="/intentions/clarity.jpg" alt="Peace &amp; Clarity Crystals - Authentic Amethyst Crystal Cluster"
+          class="intention-img" loading="lazy" decoding="async" imgFallback />
         <div class="intention-overlay"></div>
         <span class="intention-pill">Serenity &amp; Sleep</span>
       </div>
@@ -232,7 +205,10 @@
         <span class="intention-kicker">Natural Amethyst &amp; Selenite</span>
         <h3 class="intention-title">Peace &amp; Rest</h3>
         <p class="intention-desc">Still an overactive mind, welcome restorative rest, and awaken lucid inner peace.</p>
-        <span class="intention-link">Shop Peace <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        <span class="intention-link">Shop Peace <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg></span>
       </div>
     </a>
   </div>
@@ -240,59 +216,66 @@
 
 <!-- Shop by Category / Forms & Shapes -->
 @if (categoriesLoading()) {
-  <section class="container category-section">
-    <div class="section-header">
-      <h2>Shop by Category</h2>
+<section class="container category-section">
+  <div class="section-header">
+    <h2>Shop by Category</h2>
+  </div>
+  <span class="visually-hidden" role="status">Loading categories...</span>
+  <div class="category-grid" aria-hidden="true">
+    @for (n of [1, 2, 3, 4]; track n) {
+    <div class="category-tile">
+      <span class="skeleton category-tile-image"></span>
+      <span class="category-tile-name"><span class="skeleton skeleton-line category-skeleton-name"></span></span>
     </div>
-    <span class="visually-hidden" role="status">Loading categories...</span>
-    <div class="category-grid" aria-hidden="true">
-      @for (n of [1, 2, 3, 4]; track n) {
-        <div class="category-tile">
-          <span class="skeleton category-tile-image"></span>
-          <span class="category-tile-name"><span class="skeleton skeleton-line category-skeleton-name"></span></span>
-        </div>
-      }
-    </div>
-  </section>
-} @else if (categoriesError()) {
-  <section class="container category-section">
-    <div class="section-header">
-      <h2>Shop by Category</h2>
-    </div>
-    <div class="state-message state-message--error">
-      <p>{{ categoriesError() }}</p>
-      <button type="button" class="btn" (click)="loadCategories()">Retry</button>
-    </div>
-  </section>
-} @else if (categoryTiles().length > 0) {
-  <section class="container category-section" scrollReveal>
-    <div class="section-header">
-      <h2>Shop by Category</h2>
-      <p class="section-subtitle">
-        Explore natural specimens, towers, tumbled stones, jewelry, and sacred shapes.
-      </p>
-    </div>
-    <div class="category-grid">
-      @for (tile of categoryTiles(); track tile.category.categoryId) {
-        <a class="category-tile" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
-          <span class="category-tile-image">
-            @if (tile.imageUrl) {
-              <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="tile.category.name" loading="lazy" decoding="async" imgFallback />
-            } @else {
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
-                <path d="M8 3h8l4 5-10 13L2 8Z"/>
-              </svg>
-            }
-          </span>
-          <span class="category-tile-name">{{ tile.category.name }}</span>
-          <span class="category-tile-count">{{ tile.productCount }} {{ tile.productCount === 1 ? 'product' : 'products' }}</span>
-        </a>
-      }
-    </div>
-    @if (categories().length > categoryTiles().length) {
-      <a class="category-view-all" routerLink="/categories">View all categories <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     }
-  </section>
+  </div>
+</section>
+} @else if (categoriesError()) {
+<section class="container category-section">
+  <div class="section-header">
+    <h2>Shop by Category</h2>
+  </div>
+  <div class="state-message state-message--error">
+    <p>{{ categoriesError() }}</p>
+    <button type="button" class="btn" (click)="loadCategories()">Retry</button>
+  </div>
+</section>
+} @else if (categoryTiles().length > 0) {
+<section class="container category-section" scrollReveal>
+  <div class="section-header">
+    <h2>Shop by Category</h2>
+    <p class="section-subtitle">
+      Explore natural specimens, towers, tumbled stones, jewelry, and sacred shapes.
+    </p>
+  </div>
+  <div class="category-grid">
+    @for (tile of categoryTiles(); track tile.category.categoryId) {
+    <a class="category-tile" [routerLink]="['/products']" [queryParams]="{ category: tile.category.categoryId }">
+      <span class="category-tile-image">
+        @if (tile.imageUrl) {
+        <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="tile.category.name"
+          loading="lazy" decoding="async" imgFallback />
+        } @else {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"
+          aria-hidden="true">
+          <path d="M8 3h8l4 5-10 13L2 8Z" />
+        </svg>
+        }
+      </span>
+      <span class="category-tile-name">{{ tile.category.name }}</span>
+      <span class="category-tile-count">{{ tile.productCount }} {{ tile.productCount === 1 ? 'product' : 'products'
+        }}</span>
+    </a>
+    }
+  </div>
+  @if (categories().length > categoryTiles().length) {
+  <a class="category-view-all" routerLink="/categories">View all categories <svg viewBox="0 0 24 24" width="14"
+      height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-inline-right" aria-hidden="true">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg></a>
+  }
+</section>
 }
 
 <!-- Real Shoppable Mystery Box Showcase (Mejuri / Energy Muse Pattern) -->
@@ -301,14 +284,8 @@
     <!-- Left Column: Real Packaging Photography & Price Pill -->
     <div class="mystery-product-media">
       <div class="mystery-media-frame">
-        <img
-          src="/mystery-box/curated-box.jpg"
-          alt="The Celestial Zodiac Mystery Crystal Box Set - Curated Collection"
-          class="mystery-product-img"
-          loading="lazy"
-          decoding="async"
-          imgFallback
-        />
+        <img src="/mystery-box/curated-box.jpg" alt="The Celestial Zodiac Mystery Crystal Box Set - Curated Collection"
+          class="mystery-product-img" loading="lazy" decoding="async" imgFallback />
         <div class="mystery-badge-stack">
           <span class="mystery-badge-item featured">Best Seller</span>
           <span class="mystery-badge-item rating">★ 4.9 (128 Reviews)</span>
@@ -335,66 +312,77 @@
       </div>
 
       <p class="mystery-summary">
-        Let the universe choose for you. Each gift box is hand-packed with authentic natural crystals specifically selected to harmonize with your zodiac sign. Worth at least ₹3,500 at individual catalog prices.
+        Let the universe choose for you. Each gift box is hand-packed with authentic natural crystals specifically
+        selected to harmonize with your zodiac sign. Worth at least ₹3,500 at individual catalog prices.
       </p>
 
       <!-- Transparent What's Inside List -->
       <div class="mystery-included-list">
         <div class="included-item">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+            class="check-icon" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           <span>3 to 4 natural raw specimens &amp; tumbled pocket stones</span>
         </div>
         <div class="included-item">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+            class="check-icon" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           <span>1 polished crystal generator point or obelisk</span>
         </div>
         <div class="included-item">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+            class="check-icon" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           <span>Natural Californian white sage smudge stick</span>
         </div>
         <div class="included-item">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+            class="check-icon" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           <span>Custom printed zodiac stone guide &amp; affirmation card</span>
         </div>
       </div>
 
       <!-- Interactive Zodiac Sign Picker -->
       @if (zodiacSigns().length > 0) {
-        <div class="mystery-zodiac-selector">
-          <div class="selector-header">
-            <label class="selector-label">Choose Your Zodiac Sign:</label>
-            @if (selectedMysteryZodiac(); as sign) {
-              <span class="selected-sign-pill">Selected: {{ sign.name }}</span>
-            } @else {
-              <span class="selector-hint">Optional · Tap your sign to customize</span>
-            }
-          </div>
-
-          <div class="mystery-zodiac-chips-grid">
-            @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
-              <button
-                type="button"
-                class="mystery-zodiac-chip"
-                [class.active]="selectedMysteryZodiacId() === zodiac.zodiacId"
-                (click)="selectMysteryZodiac(zodiac.zodiacId)"
-                [attr.aria-pressed]="selectedMysteryZodiacId() === zodiac.zodiacId"
-              >
-                {{ zodiac.name }}
-              </button>
-            }
-          </div>
+      <div class="mystery-zodiac-selector">
+        <div class="selector-header">
+          <label class="selector-label">Choose Your Zodiac Sign:</label>
+          @if (selectedMysteryZodiac(); as sign) {
+          <span class="selected-sign-pill">Selected: {{ sign.name }}</span>
+          } @else {
+          <span class="selector-hint">Optional · Tap your sign to customize</span>
+          }
         </div>
+
+        <div class="mystery-zodiac-chips-grid">
+          @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
+          <button type="button" class="mystery-zodiac-chip"
+            [class.active]="selectedMysteryZodiacId() === zodiac.zodiacId"
+            (click)="selectMysteryZodiac(zodiac.zodiacId)"
+            [attr.aria-pressed]="selectedMysteryZodiacId() === zodiac.zodiacId">
+            {{ zodiac.name }}
+          </button>
+          }
+        </div>
+      </div>
       }
 
       <!-- Order CTA & Micro-Trust -->
       <div class="mystery-actions-row">
-        <a
-          class="btn btn-accent mystery-order-cta"
-          routerLink="/mystery-box"
-          [queryParams]="selectedMysteryZodiacId() ? { zodiac: selectedMysteryZodiacId() } : {}"
-        >
-          <span>{{ selectedMysteryZodiac() ? 'Order for ' + selectedMysteryZodiac()?.name : 'Order Mystery Box' }} — ₹1,999</span>
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <a class="btn btn-accent mystery-order-cta" routerLink="/mystery-box"
+          [queryParams]="selectedMysteryZodiacId() ? { zodiac: selectedMysteryZodiacId() } : {}">
+          <span>{{ selectedMysteryZodiac() ? 'Order for ' + selectedMysteryZodiac()?.name : 'Order Mystery Box' }} —
+            ₹1,999</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+            class="icon-inline-right" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </a>
       </div>
 
@@ -409,25 +397,33 @@
 
 <!-- Crystal Wisdom Guides -->
 @if (guides().length > 0) {
-  <section class="container guides-section" scrollReveal>
-    <div class="section-header">
-      <h2>Crystal Guides & Wisdom</h2>
-      <p class="section-subtitle">
-        Practical advice for choosing, cleansing, and pairing your crystals.
-      </p>
-    </div>
-    <div class="guides-grid">
-      @for (guide of guides(); track guide.slug) {
-        <article class="guide-card">
-          <span class="guide-card-tag">Guide</span>
-          <h3>{{ guide.title }}</h3>
-          <p>{{ guide.shortDescription }}</p>
-          <a class="guide-card-link" [routerLink]="['/guides', guide.slug]">Read Guide <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-        </article>
-      }
-    </div>
-    <a class="guides-view-all" routerLink="/guides">Explore all crystal guides <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-  </section>
+<section class="container guides-section" scrollReveal>
+  <div class="section-header">
+    <h2>Crystal Guides & Wisdom</h2>
+    <p class="section-subtitle">
+      Practical advice for choosing, cleansing, and pairing your crystals.
+    </p>
+  </div>
+  <div class="guides-grid">
+    @for (guide of guides(); track guide.slug) {
+    <article class="guide-card">
+      <span class="guide-card-tag">Guide</span>
+      <h3>{{ guide.title }}</h3>
+      <p>{{ guide.shortDescription }}</p>
+      <a class="guide-card-link" [routerLink]="['/guides', guide.slug]">Read Guide <svg viewBox="0 0 24 24" width="13"
+          height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="icon-inline-right" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg></a>
+    </article>
+    }
+  </div>
+  <a class="guides-view-all" routerLink="/guides">Explore all crystal guides <svg viewBox="0 0 24 24" width="14"
+      height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-inline-right" aria-hidden="true">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg></a>
+</section>
 }
 
 <!-- Recently Viewed -->
@@ -444,10 +440,11 @@
   <div class="why-us-grid">
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M6 3h12l4 6-10 13L2 9Z"/>
-          <path d="M11 3 8 9l4 13 4-13-3-6"/>
-          <path d="M2 9h20"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 3h12l4 6-10 13L2 9Z" />
+          <path d="M11 3 8 9l4 13 4-13-3-6" />
+          <path d="M2 9h20" />
         </svg>
       </span>
       <h3>Natural Crystals & Minerals</h3>
@@ -455,9 +452,10 @@
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
       </span>
       <h3>Secure Payments & COD</h3>
@@ -465,9 +463,10 @@
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="m12 2 2.8 6.9L22 12l-7.2 3.1L12 22l-2.8-6.9L2 12l7.2-3.1Z"/>
-          <circle cx="12" cy="12" r="2.5"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="m12 2 2.8 6.9L22 12l-7.2 3.1L12 22l-2.8-6.9L2 12l7.2-3.1Z" />
+          <circle cx="12" cy="12" r="2.5" />
         </svg>
       </span>
       <h3>Astrological Guidance</h3>
@@ -475,11 +474,13 @@
     </div>
     <div class="why-us-card">
       <span class="why-us-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="m7.5 4.27 9 5.15"/>
-          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-          <path d="m3.3 7 8.7 5 8.7-5"/>
-          <path d="M12 22V12"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="m7.5 4.27 9 5.15" />
+          <path
+            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5" />
+          <path d="M12 22V12" />
         </svg>
       </span>
       <h3>Careful Protective Packaging</h3>

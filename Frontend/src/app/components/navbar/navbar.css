@@ -25,22 +25,26 @@
   gap: clamp(0.75rem, 1.5vw, 1.5rem);
 }
 
-/* Brand Logo */
+/* Brand Logo (Energy Muse Style Refined Lockup) */
 .navbar-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  font-family: var(--font-heading);
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: var(--color-ink, #1d2739);
+  gap: 0.75rem;
   text-decoration: none;
-  letter-spacing: -0.015em;
   transition: opacity var(--transition-fast), transform var(--transition-fast);
+  user-select: none;
 }
 
 .navbar-brand:hover {
-  opacity: 0.88;
+  opacity: 0.95;
+}
+
+.navbar-brand:hover .brand-emblem-svg {
+  transform: rotate(8deg) scale(1.04);
+}
+
+.navbar-brand:hover .brand-name {
+  color: var(--color-brand-hover, #985e38);
 }
 
 .navbar-brand:focus-visible {
@@ -49,11 +53,65 @@
   border-radius: var(--radius-xs);
 }
 
-.navbar-brand-icon {
-  width: 1.85rem;
-  height: 1.85rem;
+.brand-emblem-wrap {
+  width: 2.35rem;
+  height: 2.35rem;
   flex-shrink: 0;
-  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-emblem-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-text-lockup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+}
+
+.brand-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink, #1d2739);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.brand-tagline {
+  font-family: var(--font-body);
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-copper, #985e38);
+  margin-top: 0.28rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .brand-emblem-wrap {
+    width: 2rem;
+    height: 2rem;
+  }
+  .brand-name {
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+  }
+  .brand-tagline {
+    font-size: 0.46rem;
+    letter-spacing: 0.18em;
+  }
 }
 
 /* Navigation Links */

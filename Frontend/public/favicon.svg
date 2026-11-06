@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d68f"/>
+      <stop offset="50%" stop-color="#d49b42"/>
+      <stop offset="100%" stop-color="#985e38"/>
+    </linearGradient>
+    <linearGradient id="facetHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fbf4e8" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="facetShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b87a40"/>
+      <stop offset="100%" stop-color="#733e1c"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#glow)">
+    <!-- Tilted Celestial Planetary Orbit Ring -->
+    <ellipse cx="16" cy="16" rx="14" ry="5.5" transform="rotate(-26 16 16)" fill="none" stroke="url(#goldGrad)" stroke-width="1.4" opacity="0.95"/>
+    
+    <!-- Central Faceted Crystal Obelisk -->
+    <!-- Left shaded facet -->
+    <polygon points="16 2.5 11 9.5 11 22.5 16 29.5 16 16" fill="url(#facetShadow)" stroke="#1d2739" stroke-width="0.8" stroke-linejoin="round"/>
+    
+    <!-- Right bright facet -->
+    <polygon points="16 2.5 16 16 16 29.5 21 22.5 21 9.5" fill="url(#facetHighlight)" stroke="#1d2739" stroke-width="0.8" stroke-linejoin="round"/>
+    
+    <!-- Center facet highlight division -->
+    <polygon points="16 2.5 21 9.5 16 12.5" fill="#fcf6eb"/>
+    <polygon points="16 19.5 21 22.5 16 29.5" fill="#c48a4d"/>
+    
+    <!-- Center spine -->
+    <line x1="16" y1="2.5" x2="16" y2="29.5" stroke="#1d2739" stroke-width="0.9"/>
+    
+    <!-- Orbit satellites / pearls -->
+    <circle cx="5.5" cy="11.5" r="1.1" fill="#f5d68f"/>
+    <circle cx="26.5" cy="20.5" r="1.1" fill="#f5d68f"/>
+    
+    <!-- Brilliant 4-Point Celestial Sparkle Star -->
+    <path d="M24 5.5 L24.7 3.7 L26.5 3 L24.7 2.3 L24 0.5 L23.3 2.3 L21.5 3 L23.3 3.7 Z" fill="#ffffff" stroke="#c8963e" stroke-width="0.3"/>
+  </g>
+</svg>

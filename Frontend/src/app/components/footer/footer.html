@@ -103,10 +103,29 @@
   <div class="container footer-inner">
     <!-- Brand Info & Story -->
     <div class="footer-brand">
-      <span class="footer-logo">
-        <img src="logo-icon.png" alt="" class="footer-logo-icon" aria-hidden="true" />
-        {{ siteName }}
-      </span>
+      <a routerLink="/" class="footer-logo" aria-label="Crystal Studio Home">
+        <span class="brand-emblem-wrap" aria-hidden="true">
+          <svg class="brand-emblem-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18.5" stroke="#985e38" stroke-width="0.75" stroke-dasharray="1.5 2.5" opacity="0.55"/>
+            <circle cx="20" cy="20" r="17" stroke="#985e38" stroke-width="0.5" opacity="0.35"/>
+            <ellipse cx="20" cy="20" rx="18" ry="7" transform="rotate(-26 20 20)" stroke="#985e38" stroke-width="1.2" opacity="0.85"/>
+            <polygon points="20 4.5 13.5 12.5 13.5 27.5 20 35.5 20 24.5 13.5 20 20 15.5" fill="#f4efe5" stroke="#1d2739" stroke-width="1.1" stroke-linejoin="round"/>
+            <polygon points="20 4.5 20 15.5 20 24.5 20 35.5 26.5 27.5 26.5 12.5" fill="#fbf8f2" stroke="#1d2739" stroke-width="1.1" stroke-linejoin="round"/>
+            <polygon points="20 4.5 26.5 12.5 20 15.5" fill="#e8c9ad" opacity="0.6"/>
+            <polygon points="20 24.5 26.5 27.5 20 35.5" fill="#985e38" opacity="0.35"/>
+            <polygon points="13.5 12.5 20 15.5 13.5 20" fill="#d8b092" opacity="0.45"/>
+            <line x1="20" y1="4.5" x2="20" y2="35.5" stroke="#1d2739" stroke-width="1.1"/>
+            <circle cx="7" cy="14" r="1.2" fill="#985e38"/>
+            <circle cx="33" cy="26" r="1.2" fill="#985e38"/>
+            <path d="M28 8.5 L28.8 6.5 L30.8 5.7 L28.8 4.9 L28 2.9 L27.2 4.9 L25.2 5.7 L27.2 6.5 Z" fill="#985e38"/>
+            <path d="M10 32 L10.5 30.6 L11.9 30 L10.5 29.4 L10 28 L9.5 29.4 L8.1 30 L9.5 30.6 Z" fill="#985e38" opacity="0.8"/>
+          </svg>
+        </span>
+        <span class="brand-text-lockup">
+          <span class="brand-name">{{ siteName }}</span>
+          <span class="brand-tagline">Zodiac &amp; Sacred Minerals</span>
+        </span>
+      </a>
       <p>Sacred healing crystals attuned to your natal zodiac blueprint and daily intentions.</p>
       
       <div class="footer-social">
