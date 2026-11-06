@@ -137,36 +137,104 @@
   }
 </section>
 
-<!-- Astrological Crystal Consultation Section -->
-<section class="container consultation-callout-section" scrollReveal>
-  <div class="consultation-callout-card">
-    <div class="consultation-callout-content">
-      <span class="consultation-callout-tag">Astrological Consultation</span>
-      <h2>Find Your Resonant Mineral</h2>
-      <p>
-        Every natural specimen carries a distinct crystalline geometry that harmonizes with your natal sign.
-        Complete our 3-step consultation to discover the specimens attuned to your astrological blueprint.
-      </p>
-      <a class="btn btn-accent consultation-cta" routerLink="/consultation">
-        Begin Consultation <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="consultation-callout-visual" aria-hidden="true">
-      <div class="astrolabe-art">
-        <svg viewBox="0 0 200 200" width="180" height="180" fill="none" stroke="currentColor">
-          <circle cx="100" cy="100" r="90" stroke="#dcc28b" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
-          <circle cx="100" cy="100" r="70" stroke="#dcc28b" stroke-width="1.2" opacity="0.75"/>
-          <circle cx="100" cy="100" r="48" stroke="#ffffff" stroke-width="0.8" opacity="0.4"/>
-          <line x1="100" y1="5" x2="100" y2="195" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
-          <line x1="5" y1="100" x2="195" y2="100" stroke="#dcc28b" stroke-width="0.7" opacity="0.5"/>
-          <!-- Central faceted gemstone outline -->
-          <polygon points="100 62 134 82 134 118 100 138 66 118 66 82" stroke="#f7d88b" stroke-width="1.6" fill="rgba(247, 216, 139, 0.08)"/>
-          <line x1="100" y1="62" x2="100" y2="138" stroke="#f7d88b" stroke-width="1" opacity="0.8"/>
-          <line x1="66" y1="82" x2="134" y2="82" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
-          <line x1="66" y1="118" x2="134" y2="118" stroke="#f7d88b" stroke-width="0.8" opacity="0.8"/>
-        </svg>
+<!-- Shop by Intention Section (Energy Muse Pattern) -->
+<section class="container intentions-showcase-section" scrollReveal>
+  <div class="section-header">
+    <span class="section-tag">Curated Collections</span>
+    <h2>Shop by Intention</h2>
+    <p class="section-subtitle">
+      Authentic raw minerals, polished towers, and natural gemstone jewelry selected to support your daily rituals.
+    </p>
+  </div>
+
+  <div class="intentions-grid">
+    <!-- Card 1: Protection -->
+    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
+      <div class="intention-image-wrapper">
+        <img
+          src="/intentions/protection.webp"
+          alt="Protection &amp; Grounding Crystals - Natural Smoky Quartz Obelisk"
+          class="intention-img"
+          loading="lazy"
+          decoding="async"
+          imgFallback
+        />
+        <div class="intention-overlay"></div>
+        <span class="intention-pill">Grounding &amp; Shield</span>
       </div>
-    </div>
+      <div class="intention-content">
+        <span class="intention-kicker">Smoky Quartz &amp; Obsidian</span>
+        <h3 class="intention-title">Protection &amp; Grounding</h3>
+        <p class="intention-desc">Banish psychic drain, deflect heavy frequencies, and stay deeply grounded.</p>
+        <span class="intention-link">Shop Protection <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- Card 2: Wealth & Abundance -->
+    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
+      <div class="intention-image-wrapper">
+        <img
+          src="/intentions/wealth.webp"
+          alt="Wealth &amp; Abundance Crystals - Golden Tiger's Eye and Citrine"
+          class="intention-img"
+          loading="lazy"
+          decoding="async"
+          imgFallback
+        />
+        <div class="intention-overlay"></div>
+        <span class="intention-pill">Prosperity &amp; Drive</span>
+      </div>
+      <div class="intention-content">
+        <span class="intention-kicker">Golden Tiger's Eye &amp; Citrine</span>
+        <h3 class="intention-title">Wealth &amp; Success</h3>
+        <p class="intention-desc">Attune your vibration to business breakthrough, solar vitality, and financial flow.</p>
+        <span class="intention-link">Shop Wealth <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- Card 3: Love & Compassion -->
+    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
+      <div class="intention-image-wrapper">
+        <img
+          src="/intentions/love.jpg"
+          alt="Love &amp; Harmony Crystals - Natural Madagascar Rose Quartz"
+          class="intention-img"
+          loading="lazy"
+          decoding="async"
+          imgFallback
+        />
+        <div class="intention-overlay"></div>
+        <span class="intention-pill">Heart Resonance</span>
+      </div>
+      <div class="intention-content">
+        <span class="intention-kicker">Madagascar Rose Quartz</span>
+        <h3 class="intention-title">Love &amp; Harmony</h3>
+        <p class="intention-desc">Open the sacred heart space, dissolve emotional stress, and cultivate tender self-love.</p>
+        <span class="intention-link">Shop Love <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- Card 4: Calm & Clarity -->
+    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
+      <div class="intention-image-wrapper">
+        <img
+          src="/intentions/clarity.jpg"
+          alt="Peace &amp; Clarity Crystals - Authentic Amethyst Crystal Cluster"
+          class="intention-img"
+          loading="lazy"
+          decoding="async"
+          imgFallback
+        />
+        <div class="intention-overlay"></div>
+        <span class="intention-pill">Serenity &amp; Sleep</span>
+      </div>
+      <div class="intention-content">
+        <span class="intention-kicker">Natural Amethyst &amp; Selenite</span>
+        <h3 class="intention-title">Peace &amp; Rest</h3>
+        <p class="intention-desc">Still an overactive mind, welcome restorative rest, and awaken lucid inner peace.</p>
+        <span class="intention-link">Shop Peace <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -227,27 +295,113 @@
   </section>
 }
 
-<!-- Mystery Box Spotlight Banner -->
-<section class="container mystery-box-spotlight" scrollReveal>
-  <div class="mystery-box-card">
-    <div class="mystery-box-content">
-      <span class="mystery-box-eyebrow">
-        Intuitive Curation
-      </span>
-      <h2>The Celestial Mystery Box</h2>
-      <p>
-        Let the universe choose for you. Each mystery box includes hand-selected raw specimens,
-        carved crystal points, affirmation cards, and custom notes tuned to your zodiac energy.
-      </p>
-      <div class="mystery-box-actions">
-        <a class="btn btn-accent" routerLink="/mystery-box">Explore Mystery Boxes</a>
+<!-- Real Shoppable Mystery Box Showcase (Mejuri / Energy Muse Pattern) -->
+<section class="container mystery-product-section" scrollReveal>
+  <div class="mystery-product-card">
+    <!-- Left Column: Real Packaging Photography & Price Pill -->
+    <div class="mystery-product-media">
+      <div class="mystery-media-frame">
+        <img
+          src="/mystery-box/curated-box.jpg"
+          alt="The Celestial Zodiac Mystery Crystal Box Set - Curated Collection"
+          class="mystery-product-img"
+          loading="lazy"
+          decoding="async"
+          imgFallback
+        />
+        <div class="mystery-badge-stack">
+          <span class="mystery-badge-item featured">Best Seller</span>
+          <span class="mystery-badge-item rating">★ 4.9 (128 Reviews)</span>
+        </div>
+        <div class="mystery-value-overlay">
+          <span class="value-text">Guaranteed ₹3,500+ Catalog Value inside</span>
+        </div>
       </div>
     </div>
-    <div class="mystery-box-visual" aria-hidden="true">
-      <div class="mystery-box-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/>
-        </svg>
+
+    <!-- Right Column: Shoppable Details & Interactive Zodiac Sign Picker -->
+    <div class="mystery-product-details">
+      <div class="mystery-eyebrow-row">
+        <span class="mystery-category-tag">Limited Edition Curation</span>
+        <span class="mystery-stock-status">In Stock · Ships in 24 Hours</span>
+      </div>
+
+      <h2 class="mystery-title">The Zodiac Mystery Crystal Box</h2>
+
+      <div class="mystery-price-strip">
+        <span class="mystery-current-price">₹1,999</span>
+        <del class="mystery-original-price">₹3,500</del>
+        <span class="mystery-discount-badge">Save ₹1,501 (43% Off)</span>
+      </div>
+
+      <p class="mystery-summary">
+        Let the universe choose for you. Each gift box is hand-packed with authentic natural crystals specifically selected to harmonize with your zodiac sign. Worth at least ₹3,500 at individual catalog prices.
+      </p>
+
+      <!-- Transparent What's Inside List -->
+      <div class="mystery-included-list">
+        <div class="included-item">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>3 to 4 natural raw specimens &amp; tumbled pocket stones</span>
+        </div>
+        <div class="included-item">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>1 polished crystal generator point or obelisk</span>
+        </div>
+        <div class="included-item">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Natural Californian white sage smudge stick</span>
+        </div>
+        <div class="included-item">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="check-icon" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Custom printed zodiac stone guide &amp; affirmation card</span>
+        </div>
+      </div>
+
+      <!-- Interactive Zodiac Sign Picker -->
+      @if (zodiacSigns().length > 0) {
+        <div class="mystery-zodiac-selector">
+          <div class="selector-header">
+            <label class="selector-label">Choose Your Zodiac Sign:</label>
+            @if (selectedMysteryZodiac(); as sign) {
+              <span class="selected-sign-pill">Selected: {{ sign.name }}</span>
+            } @else {
+              <span class="selector-hint">Optional · Tap your sign to customize</span>
+            }
+          </div>
+
+          <div class="mystery-zodiac-chips-grid">
+            @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
+              <button
+                type="button"
+                class="mystery-zodiac-chip"
+                [class.active]="selectedMysteryZodiacId() === zodiac.zodiacId"
+                (click)="selectMysteryZodiac(zodiac.zodiacId)"
+                [attr.aria-pressed]="selectedMysteryZodiacId() === zodiac.zodiacId"
+              >
+                {{ zodiac.name }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Order CTA & Micro-Trust -->
+      <div class="mystery-actions-row">
+        <a
+          class="btn btn-accent mystery-order-cta"
+          routerLink="/mystery-box"
+          [queryParams]="selectedMysteryZodiacId() ? { zodiac: selectedMysteryZodiacId() } : {}"
+        >
+          <span>{{ selectedMysteryZodiac() ? 'Order for ' + selectedMysteryZodiac()?.name : 'Order Mystery Box' }} — ₹1,999</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="mystery-trust-footer">
+        <span class="trust-point">✓ 100% Natural Certified Crystals</span>
+        <span class="trust-point">✓ Free Shipping across India</span>
+        <span class="trust-point">✓ Safe Fragile Packaging</span>
       </div>
     </div>
   </div>

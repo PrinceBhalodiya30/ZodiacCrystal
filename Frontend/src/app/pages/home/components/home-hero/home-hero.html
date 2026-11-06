@@ -1,19 +1,47 @@
-<!-- Static Luxury Atelier Hero Section -->
-<section class="hero static-hero" 
-  (mouseenter)="pauseCarousel()" 
-  (mouseleave)="resumeCarousel()" 
-  (touchstart)="onTouchStart($event)" 
-  (touchend)="onTouchEnd($event)"
-  (keydown.arrowleft)="prevSlide()"
-  (keydown.arrowright)="nextSlide()"
-  tabindex="0"
-  role="region"
-  aria-label="Celestial Crystal Collection">
+<!-- Full-Bleed Energy Muse Hero Banner -->
+<section class="hero full-bleed-hero" role="region" aria-label="Energy Muse Celestial Crystal Collection">
+  <!-- Full-Width Background Lifestyle Imagery -->
+  <div class="hero-backdrop" aria-hidden="true">
+    @if (heroImageUrl(); as url) {
+      <img [imgSrc]="url" 
+           class="hero-bg-image" 
+           alt="" 
+           fetchpriority="high" 
+           imgFallback />
+    } @else {
+      <div class="hero-bg-fallback"></div>
+    }
+    <div class="hero-scrim"></div>
+  </div>
 
-  <div class="container hero-inner">
-    <div class="hero-copy">
-      <h1>{{ heroTitle() }}</h1>
-      <p>{{ heroSubtitle() }}</p>
+  <div class="container hero-container">
+    <div class="hero-content">
+      @if (heroEyebrow()) {
+        <div class="hero-eyebrow">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>{{ heroEyebrow() }}</span>
+        </div>
+      }
+
+      <h1 class="hero-title">{{ heroTitle() }}</h1>
+      <p class="hero-subtitle">{{ heroSubtitle() }}</p>
+
+      <!-- Energy Muse Signature: Shop by Energy Quick Chips -->
+      <div class="hero-intentions-wrap">
+        <span class="hero-intentions-label">Shop by Energy:</span>
+        <div class="hero-intentions-chips">
+          @for (item of intentionChips; track item.id) {
+            <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: item.id }">
+              <span class="chip-sparkle" aria-hidden="true">✦</span>
+              <span>{{ item.label }}</span>
+            </a>
+          }
+        </div>
+      </div>
+
+      <!-- High-Contrast CTAs -->
       <div class="hero-actions">
         <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
         <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openQuiz()">
@@ -23,69 +51,120 @@
       </div>
     </div>
 
-    <div class="hero-image-wrap">
-      <div class="hero-image">
-        @if (heroImageUrl(); as url) {
-          <img [imgSrc]="url" imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="'Healing crystals from the ' + siteName + ' collection'" fetchpriority="high" imgFallback />
-        } @else {
-          <svg class="hero-image-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
-            <path d="M8 3h8l4 5-10 13L2 8Z"/>
-            <path d="M2 8h20M8 3l2 5-2 8M16 3l-2 5 2 8M6 8l6 13 6-13"/>
-          </svg>
-        }
-        <div class="hero-floating-badge badge-top">
-          <span class="badge-dot" aria-hidden="true"></span>
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <path d="m9 12 2 2 4-4"/>
-          </svg>
-          <span>100% Certified Earth-Mined</span>
-        </div>
-        <a class="hero-shoppable-pill" routerLink="/products" [queryParams]="{ search: 'Amethyst' }" title="Explore featured Amethyst">
-          <span class="pill-sparkle" aria-hidden="true">✦</span>
-          <div class="pill-meta">
-            <span class="pill-kicker">Curated Centerpiece</span>
-            <strong class="pill-title">Raw Amethyst Geode</strong>
+    <!-- Floating Centerpiece Product Card (Mejuri Shoppable Luxury) -->
+    <div class="hero-product-anchor">
+      @if (isLoadingProduct()) {
+        <div class="hero-product-card-skeleton" aria-hidden="true">
+          <div class="card-skeleton-thumb"></div>
+          <div class="card-skeleton-info">
+            <div class="skeleton-shimmer-line sm"></div>
+            <div class="skeleton-shimmer-line md"></div>
+            <div class="skeleton-shimmer-line xs"></div>
           </div>
-          <span class="pill-price">from ₹1,899</span>
-          <span class="pill-arrow" aria-hidden="true">→</span>
+        </div>
+      } @else if (featuredProduct(); as prod) {
+        <a class="hero-shoppable-card" 
+           [routerLink]="['/products', getProductLink(prod)]" 
+           [attr.aria-label]="'Featured crystal centerpiece: ' + prod.name + ', ' + (prod.price | inr)">
+          
+          <!-- Real Product Thumbnail -->
+          <div class="card-thumb-wrap">
+            @if (getProductImage(prod); as imgUrl) {
+              <img [imgSrc]="imgUrl" [alt]="prod.name" class="card-thumb" imgFallback />
+            } @else {
+              <div class="card-thumb-placeholder" aria-hidden="true">✦</div>
+            }
+            @if (prod.compareAtPrice && prod.compareAtPrice > prod.price) {
+              <span class="card-sale-pill">Sale</span>
+            }
+          </div>
+
+          <!-- Product Meta -->
+          <div class="card-info">
+            <div class="card-kicker-row">
+              <span class="card-kicker">Curated Centerpiece</span>
+              @if (prod.averageRating && prod.averageRating > 0) {
+                <span class="card-rating">
+                  <span class="star-glyph" aria-hidden="true">★</span>
+                  <span class="rating-val">{{ prod.averageRating | number:'1.1-1' }}</span>
+                  @if (prod.reviewCount) {
+                    <span class="rating-count">({{ prod.reviewCount }})</span>
+                  }
+                </span>
+              }
+            </div>
+
+            <strong class="card-title" [title]="prod.name">{{ prod.name }}</strong>
+
+            <div class="card-pricing-row">
+              <span class="price-current">{{ prod.price | inr }}</span>
+              @if (prod.compareAtPrice && prod.compareAtPrice > prod.price) {
+                <del class="price-compare">{{ prod.compareAtPrice | inr }}</del>
+              }
+            </div>
+          </div>
+
+          <!-- Direct Add to Bag CTA -->
+          <button type="button" 
+                  class="btn-card-quick-add"
+                  [class.is-added]="isAdded()"
+                  [disabled]="prod.stockQuantity <= 0"
+                  (click)="addToBag(prod, $event)"
+                  [attr.aria-label]="'Add ' + prod.name + ' to bag'">
+            @if (isAdded()) {
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span>Added</span>
+            } @else if (prod.stockQuantity <= 0) {
+              <span>Sold Out</span>
+            } @else {
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+              <span>Add</span>
+            }
+          </button>
         </a>
-      </div>
+      }
     </div>
   </div>
 
-  <!-- Shared Trust Bar -->
-  <div class="container hero-trust-container">
-    <ul class="hero-trust">
-      <li class="trust-badge">
-        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
-          <polyline points="2 9 12 13 22 9"/>
-          <line x1="12" y1="22" x2="12" y2="13"/>
-        </svg>
-        <span>100% Natural Minerals</span>
-      </li>
-      <li class="trust-badge">
-        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
-        </svg>
-        <span>12 Zodiac Attuned</span>
-      </li>
-      <li class="trust-badge">
-        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="m9 11 3 3L22 4"/>
-          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-        </svg>
-        <span>Artisanal Hand-Selected</span>
-      </li>
-      <li class="trust-badge">
-        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-        </svg>
-        <span>Full Moon Cleansed</span>
-      </li>
-    </ul>
+  <!-- Integrated Bottom Trust Bar -->
+  <div class="hero-trust-bar">
+    <div class="container">
+      <ul class="hero-trust">
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+            <polyline points="2 9 12 13 22 9"/>
+            <line x1="12" y1="22" x2="12" y2="13"/>
+          </svg>
+          <span>100% Natural Minerals</span>
+        </li>
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
+          </svg>
+          <span>12 Zodiac Attuned</span>
+        </li>
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m9 11 3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <span>Artisanal Hand-Selected</span>
+        </li>
+        <li class="trust-badge">
+          <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+          <span>Full Moon Cleansed</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
-

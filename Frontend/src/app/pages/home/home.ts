@@ -174,6 +174,16 @@ export class Home implements OnInit, OnDestroy {
   isLoading = signal(true);
   errorMessage = signal('');
 
+  // Interactive Mystery Box Zodiac Sign Picker State
+  selectedMysteryZodiacId = signal<number | null>(null);
+  selectedMysteryZodiac = computed(() =>
+    this.zodiacSigns().find(z => z.zodiacId === this.selectedMysteryZodiacId()) ?? null
+  );
+
+  selectMysteryZodiac(zodiacId: number): void {
+    this.selectedMysteryZodiacId.update(curr => (curr === zodiacId ? null : zodiacId));
+  }
+
   featuredProducts = signal<Product[]>([]);
   productsLoading = signal(true);
   productsError = signal('');

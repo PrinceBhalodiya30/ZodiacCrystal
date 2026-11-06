@@ -137,7 +137,8 @@ export class Products implements OnInit {
       const searchParam = params.get('search') || '';
 
       if (intentionParam) {
-        this.selectedIntentionId.set(intentionParam);
+        const matched = getIntentionById(intentionParam);
+        this.selectedIntentionId.set(matched ? matched.id : intentionParam.trim().toLowerCase());
       } else if (searchParam) {
         const matched = getIntentionById(searchParam);
         if (matched) {

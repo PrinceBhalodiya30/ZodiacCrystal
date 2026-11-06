@@ -268,96 +268,305 @@ section h2 {
   }
 }
 
-/* Mystery Box Spotlight Card */
-.mystery-box-spotlight {
-  padding: 1.5rem 1.5rem 3rem;
+/* ==========================================================================
+   Real Shoppable Mystery Box Showcase (Mejuri / Energy Muse Pattern)
+   ========================================================================== */
+.mystery-product-section {
+  padding: 3.5rem 1.5rem 4rem;
 }
 
-.mystery-box-card {
-  position: relative;
-  overflow: hidden;
-  background: radial-gradient(circle at 90% 20%, rgba(152, 94, 56, 0.28) 0%, transparent 55%),
-              linear-gradient(135deg, var(--color-ink) 0%, #111827 100%);
-  border: 1px solid var(--color-copper-light, #D8B092);
+.mystery-product-card {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  gap: 3.5rem;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
   border-radius: var(--radius-card, 4px);
-  padding: 3.5rem 3rem;
+  padding: 3rem;
+  box-shadow: 0 16px 40px rgba(29, 39, 57, 0.06);
+}
+
+/* Left: Packaging Media */
+.mystery-product-media {
+  position: relative;
+  width: 100%;
+}
+
+.mystery-media-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--color-surface-sunken, #F4ECE1);
+  box-shadow: 0 12px 32px rgba(29, 39, 57, 0.1);
+}
+
+.mystery-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mystery-product-card:hover .mystery-product-img {
+  transform: scale(1.04);
+}
+
+.mystery-badge-stack {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 2;
+}
+
+.mystery-badge-item {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.mystery-badge-item.featured {
+  background: var(--color-ink, #1D2739);
   color: #ffffff;
+}
+
+.mystery-badge-item.rating {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  color: var(--color-ink, #1D2739);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.mystery-value-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(17, 24, 39, 0.78) 100%);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  z-index: 2;
+}
+
+/* Right: Product Details */
+.mystery-product-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.mystery-eyebrow-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2.5rem;
-  box-shadow: 0 16px 40px rgba(17, 24, 39, 0.28);
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
 }
 
-.mystery-box-content {
-  flex: 1 1 400px;
-  max-width: 600px;
-}
-
-.mystery-box-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: #D8B092;
-  font-size: 11.5px;
+.mystery-category-tag {
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  margin-bottom: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--color-copper, #985E38);
 }
 
-.mystery-box-card h2 {
+.mystery-stock-status {
+  font-size: 11px;
+  font-weight: 600;
+  color: #15803D;
+  background: #F0FDF4;
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.mystery-title {
   font-family: var(--font-heading);
-  text-align: left;
-  color: #ffffff;
+  font-size: clamp(1.8rem, 2.8vw, 2.35rem);
+  color: var(--color-ink, #1D2739);
   font-weight: 500;
-  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
-  margin: 0 0 1rem;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin: 0 0 0.85rem;
 }
 
-.mystery-box-card p {
-  color: rgba(255, 255, 255, 0.82);
+.mystery-price-strip {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.mystery-current-price {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-ink, #1D2739);
+  letter-spacing: -0.02em;
+}
+
+.mystery-original-price {
+  font-size: 16px;
+  color: var(--color-subtle, #4E5A70);
+}
+
+.mystery-discount-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #985E38;
+  background: rgba(152, 94, 56, 0.1);
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.mystery-summary {
   font-size: var(--text-base);
+  color: var(--color-subtle, #4E5A70);
   line-height: var(--leading-relaxed);
-  margin: 0 0 1.75rem;
+  margin: 0 0 1.35rem;
 }
 
-.mystery-box-card .btn {
-  background-color: var(--color-copper, #985E38);
+/* What's Inside List */
+.mystery-included-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1rem 1.15rem;
+  background: #FDFBF7;
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.included-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 12.5px;
+  color: #334155;
+}
+
+.check-icon {
+  color: var(--color-copper, #985E38);
+  flex-shrink: 0;
+}
+
+/* Zodiac Chips Selector */
+.mystery-zodiac-selector {
+  margin-bottom: 1.75rem;
+}
+
+.selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.selector-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-ink, #1D2739);
+}
+
+.selected-sign-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-copper, #985E38);
+}
+
+.selector-hint {
+  font-size: 11px;
+  color: #64748B;
+}
+
+.mystery-zodiac-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.mystery-zodiac-chip {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #E4DCCB);
+  color: var(--color-ink, #1D2739);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mystery-zodiac-chip:hover {
+  border-color: var(--color-copper, #985E38);
+  background: #FAF7F2;
+  color: var(--color-copper, #985E38);
+}
+
+.mystery-zodiac-chip.active {
+  background: var(--color-copper, #985E38);
   border-color: var(--color-copper, #985E38);
   color: #ffffff;
-  box-shadow: 0 6px 20px rgba(152, 94, 56, 0.35);
+  box-shadow: 0 2px 8px rgba(152, 94, 56, 0.3);
 }
 
-.mystery-box-card .btn:hover {
+/* Actions & Trust */
+.mystery-actions-row {
+  margin-bottom: 1.15rem;
+}
+
+.mystery-order-cta {
+  background-color: var(--color-copper, #985E38);
+  border: 1px solid var(--color-copper, #985E38);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.95rem 2.2rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 6px 20px rgba(152, 94, 56, 0.32);
+  transition: all var(--transition-fast);
+}
+
+.mystery-order-cta:hover {
   background-color: #B87A4B;
   border-color: #B87A4B;
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(152, 94, 56, 0.45);
+  box-shadow: 0 10px 28px rgba(152, 94, 56, 0.42);
 }
 
-.mystery-box-visual {
-  flex: 0 0 auto;
+.mystery-trust-footer {
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.25rem;
+  font-size: 11px;
+  color: #64748B;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-subtle, #EAE3D6);
 }
 
-.mystery-box-badge {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 2px dashed rgba(216, 176, 146, 0.6);
-  background: rgba(255, 255, 255, 0.05);
-  display: flex;
+.trust-point {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: #D8B092;
-}
-
-.mystery-box-badge svg {
-  width: 54px;
-  height: 54px;
 }
 
 /* Category Grid */
@@ -455,124 +664,127 @@ section h2 {
   text-decoration: underline;
 }
 
-/* Astrological Consultation Callout Banner */
-.consultation-callout-section {
-  margin: 3.5rem auto;
+/* ==========================================================================
+   Shop by Intention Section (Energy Muse Pattern)
+   ========================================================================== */
+.intentions-showcase-section {
+  padding: 3.5rem 1.5rem;
 }
 
-.consultation-callout-card {
-  position: relative;
-  background: radial-gradient(ellipse at 80% 30%, rgba(152, 94, 56, 0.3) 0%, transparent 60%),
-              linear-gradient(135deg, var(--color-ink) 0%, #151D2A 100%);
-  border: 1px solid rgba(216, 176, 146, 0.4);
-  border-radius: var(--radius-card, 4px);
-  padding: 3.25rem 3.75rem;
-  color: #ffffff;
+.intentions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.intention-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  overflow: hidden;
-  box-shadow: 0 16px 44px rgba(17, 24, 39, 0.28);
-}
-
-.consultation-callout-content {
-  flex: 1;
-  max-width: 600px;
-  z-index: 2;
-}
-
-.consultation-callout-tag {
-  display: inline-block;
-  font-size: var(--text-xs, 0.75rem);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--color-surface-tint);
-  background: rgba(152, 94, 56, 0.25);
-  border: 1px solid rgba(216, 176, 146, 0.4);
-  padding: 0.3rem 0.95rem;
-  border-radius: var(--radius-pill);
-  margin-bottom: 1rem;
-}
-
-.consultation-callout-content h2 {
-  font-family: var(--font-heading);
-  font-size: clamp(1.8rem, 2.5vw, 2.35rem);
-  font-weight: 500;
-  color: #ffffff;
-  margin: 0 0 0.95rem;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-}
-
-.consultation-callout-content p {
-  font-size: var(--text-base);
-  color: rgba(255, 255, 255, 0.82);
-  line-height: var(--leading-relaxed);
-  margin: 0 0 2rem;
-}
-
-.consultation-cta {
-  background-color: var(--color-copper, #985E38);
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.85rem 2.2rem;
-  border: none;
+  flex-direction: column;
+  background-color: #ffffff;
   border-radius: var(--radius-sm, 4px);
-  box-shadow: 0 6px 20px rgba(152, 94, 56, 0.35);
-  transition: all var(--transition-fast);
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle, #EAE3D6);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: var(--color-ink, #1D2739);
+  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
 }
 
-.consultation-cta:hover {
-  background-color: #B87A4B;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(152, 94, 56, 0.45);
+.intention-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(29, 39, 57, 0.1);
+  border-color: var(--color-copper-light, #D8B092);
 }
 
-.consultation-callout-visual {
-  flex-shrink: 0;
+.intention-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: var(--color-surface-sunken, #F4ECE1);
+}
+
+.intention-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.intention-card:hover .intention-img {
+  transform: scale(1.06);
+}
+
+.intention-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(17, 24, 39, 0.45) 100%);
+  pointer-events: none;
+}
+
+.intention-pill {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  color: var(--color-ink, #1D2739);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.intention-content {
+  padding: 1.25rem 1.25rem 1.35rem;
   display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.intention-kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--color-copper, #985E38);
+  margin-bottom: 0.3rem;
+}
+
+.intention-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink, #1D2739);
+  margin: 0 0 0.45rem;
+  line-height: 1.25;
+}
+
+.intention-desc {
+  font-size: var(--text-xs);
+  color: var(--color-subtle, #4E5A70);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 1rem;
+  flex: 1;
+}
+
+.intention-link {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-copper, #985E38);
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.35rem;
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
-.astrolabe-art {
-  width: 180px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 16px rgba(152, 94, 56, 0.35));
-  animation: astrolabe-gentle-turn 90s linear infinite;
-}
-
-@keyframes astrolabe-gentle-turn {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@media (max-width: 900px) {
-  .consultation-callout-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 2.5rem 1.75rem;
-  }
-
-  .consultation-callout-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .astrolabe-art {
-    margin-top: 1rem;
-    width: 140px;
-    height: 140px;
-  }
+.intention-card:hover .intention-link {
+  color: #B87A4B;
+  transform: translateX(3px);
 }
 
 /* Crystal Guides Section */
@@ -718,129 +930,45 @@ section h2 {
 }
 
 /* Responsive adjustments */
-@media (max-width: 900px) {
-  .hero {
-    padding: 3rem 1rem 2.5rem;
-    text-align: center;
+@media (max-width: 990px) {
+  .intentions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 
-  .carousel-nav-btn {
-    width: 38px;
-    height: 38px;
+  .mystery-product-card {
+    grid-template-columns: 1fr;
+    padding: 2.25rem 1.5rem;
+    gap: 2.25rem;
   }
 
-  .carousel-nav-btn.prev {
-    left: 0.5rem;
-  }
-
-  .carousel-nav-btn.next {
-    right: 0.5rem;
-  }
-
-  .hero-inner {
+  .mystery-order-cta {
+    width: 100%;
     justify-content: center;
-    gap: 2rem;
-  }
-
-  .hero-copy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .hero p {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .hero-actions,
-  .hero-trust,
-  .hero-intention-chips {
-    justify-content: center;
-  }
-
-  .carousel-indicator {
-    padding: 0.35rem 0.5rem;
-  }
-
-  .indicator-bar {
-    width: 36px;
-  }
-
-  .indicator-label {
-    font-size: var(--text-xs, 0.75rem);
-  }
-
-  .mystery-box-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 2.5rem 1.5rem;
-  }
-
-  .mystery-box-card h2 {
-    text-align: center;
-  }
-
-  .mystery-box-visual {
-    margin-top: 1rem;
   }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 2.5rem 0.75rem 2rem;
+  .intentions-showcase-section,
+  .mystery-product-section {
+    padding: 2.5rem 1rem;
   }
 
-  .carousel-nav-btn {
-    display: none; /* Mobile touch swipe enabled */
+  .intentions-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .carousel-nav {
-    gap: 0.5rem;
-    margin-top: 1.5rem;
+  .mystery-zodiac-chips-grid {
+    gap: 0.35rem;
   }
 
-  .indicator-bar {
-    width: 28px;
-    height: 4px;
+  .mystery-zodiac-chip {
+    font-size: 11px;
+    padding: 0.35rem 0.65rem;
   }
 
-  .indicator-label {
-    display: none; /* Compact dots on small mobile */
-  }
-
-  .hero-intention-chips {
-    gap: 0.4rem;
-  }
-
-  .hero-intention-chip {
-    font-size: var(--text-xs, 0.75rem);
-    padding: 0.35rem 0.7rem;
-  }
-
-  .hero-trust {
-    padding: 0.5rem 0.85rem;
-    font-size: 0.76rem;
-    gap: 0.5rem 1rem;
-  }
-
-  .hero-shoppable-pill {
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 0.75rem;
-    padding: 0.45rem 0.75rem;
-    gap: 0.5rem;
-  }
-
-  .pill-kicker {
-    display: none;
-  }
-
-  .featured-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.85rem;
-  }
-
+  .featured-grid,
   .category-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.85rem;
