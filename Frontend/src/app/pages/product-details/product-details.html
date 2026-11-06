@@ -12,12 +12,12 @@
     <div class="product-details" aria-hidden="true">
       <span class="skeleton product-image-skeleton"></span>
       <div class="product-info-skeleton">
-        <span class="skeleton skeleton-line" style="width: 30%"></span>
-        <span class="skeleton" style="width: 75%; height: 1.8rem"></span>
-        <span class="skeleton" style="width: 35%; height: 1.5rem"></span>
-        <span class="skeleton skeleton-line" style="width: 100%"></span>
-        <span class="skeleton skeleton-line" style="width: 92%"></span>
-        <span class="skeleton skeleton-line" style="width: 60%"></span>
+        <span class="skeleton skeleton-line skeleton-w-xs"></span>
+        <span class="skeleton skeleton-w-lg skeleton-h-md"></span>
+        <span class="skeleton skeleton-w-sm skeleton-h-sm"></span>
+        <span class="skeleton skeleton-line skeleton-w-full"></span>
+        <span class="skeleton skeleton-line skeleton-w-xl"></span>
+        <span class="skeleton skeleton-line skeleton-w-md"></span>
         <span class="skeleton product-actions-skeleton"></span>
       </div>
     </div>
@@ -89,183 +89,19 @@
         </div>
 
         @if (crystalSpecs(); as specs) {
-          <!-- Sacred Affirmation Card (Energy Muse inspired) -->
-          <div class="crystal-affirmation-card" role="region" aria-label="Sacred Crystal Affirmation">
-            <div class="affirmation-header">
-              <span class="affirmation-badge">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-                <span>Daily Sacred Mantra</span>
-              </span>
-              <button
-                type="button"
-                class="btn-copy-affirmation"
-                (click)="copyAffirmation(specs.affirmation)"
-                [attr.aria-label]="copiedAffirmation() ? 'Affirmation copied' : 'Copy affirmation to clipboard'"
-                [title]="copiedAffirmation() ? 'Copied!' : 'Copy affirmation'"
-              >
-                @if (copiedAffirmation()) {
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <span>Copied</span>
-                } @else {
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                  </svg>
-                  <span>Copy Mantra</span>
-                }
-              </button>
-            </div>
-            <blockquote class="affirmation-quote">
-              &ldquo;{{ specs.affirmation }}&rdquo;
-            </blockquote>
-          </div>
-
-          <div class="crystal-specs-accordion" aria-label="Crystal Healing & Care Specifications">
-            <!-- Healing & Spiritual Energy Accordion Item -->
-            <div class="specs-accordion-item" [class.is-open]="isHealingOpen()">
-              <button
-                type="button"
-                class="specs-accordion-header"
-                (click)="toggleHealingAccordion()"
-                [attr.aria-expanded]="isHealingOpen()"
-                aria-controls="specs-healing-panel"
-              >
-                <div class="specs-header-title">
-                  <svg class="specs-header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                  <span>Crystal Healing &amp; Energy Resonance</span>
-                </div>
-                <svg class="specs-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div id="specs-healing-panel" class="specs-accordion-body" [hidden]="!isHealingOpen()">
-                <div class="specs-grid">
-                  <div class="spec-prop">
-                    <div class="spec-prop-label">
-                      <span class="spec-bullet chakra-bullet"></span>
-                      <span>Chakra Alignment</span>
-                    </div>
-                    <div class="spec-prop-value">{{ specs.chakra }}</div>
-                  </div>
-                  <div class="spec-prop">
-                    <div class="spec-prop-label">
-                      <span class="spec-bullet element-bullet"></span>
-                      <span>Elemental Force</span>
-                    </div>
-                    <div class="spec-prop-value">{{ specs.element }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Cleansing & Care Guidelines Accordion Item -->
-            <div class="specs-accordion-item" [class.is-open]="isCareOpen()">
-              <button
-                type="button"
-                class="specs-accordion-header"
-                (click)="toggleCareAccordion()"
-                [attr.aria-expanded]="isCareOpen()"
-                aria-controls="specs-care-panel"
-              >
-                <div class="specs-header-title">
-                  <svg class="specs-header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                  </svg>
-                  <span>Cleansing &amp; Care Guide</span>
-                </div>
-                <svg class="specs-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div id="specs-care-panel" class="specs-accordion-body" [hidden]="!isCareOpen()">
-                <div class="specs-grid">
-                  <div class="spec-prop">
-                    <div class="spec-prop-label">
-                      <span class="spec-bullet water-bullet"></span>
-                      <span>Water Safe</span>
-                    </div>
-                    <div class="spec-prop-value" [class.spec-warning]="specs.waterSafe.startsWith('No') || specs.waterSafe.startsWith('Caution')">
-                      {{ specs.waterSafe }}
-                    </div>
-                  </div>
-                  <div class="spec-prop">
-                    <div class="spec-prop-label">
-                      <span class="spec-bullet sun-bullet"></span>
-                      <span>Sunlight Exposure</span>
-                    </div>
-                    <div class="spec-prop-value">{{ specs.sunlightExposure }}</div>
-                  </div>
-                </div>
-                <div class="specs-care-guide-link">
-                  <button type="button" class="btn-specs-care-guide" (click)="openCleansingGuide(p.name)">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                    </svg>
-                    <span>Open Atelier Cleansing &amp; Moon Charging Protocols &rarr;</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- How to Activate & Program Your Crystal Accordion Item -->
-            <div class="specs-accordion-item" [class.is-open]="isRitualOpen()">
-              <button
-                type="button"
-                class="specs-accordion-header"
-                (click)="toggleRitualAccordion()"
-                [attr.aria-expanded]="isRitualOpen()"
-                aria-controls="specs-ritual-panel"
-              >
-                <div class="specs-header-title">
-                  <svg class="specs-header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="4"/>
-                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                  </svg>
-                  <span>How to Activate &amp; Program Your Crystal</span>
-                </div>
-                <svg class="specs-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div id="specs-ritual-panel" class="specs-accordion-body" [hidden]="!isRitualOpen()">
-                <div class="ritual-steps-container">
-                  <div class="ritual-step-item">
-                    <div class="ritual-step-num">1</div>
-                    <div class="ritual-step-content">
-                      <div class="ritual-step-title">Cleanse &amp; Clear</div>
-                      <p class="ritual-step-desc">{{ specs.activationRitual.cleanse }}</p>
-                    </div>
-                  </div>
-                  <div class="ritual-step-item">
-                    <div class="ritual-step-num">2</div>
-                    <div class="ritual-step-content">
-                      <div class="ritual-step-title">Program Your Intention</div>
-                      <p class="ritual-step-desc">{{ specs.activationRitual.program }}</p>
-                    </div>
-                  </div>
-                  <div class="ritual-step-item">
-                    <div class="ritual-step-num">3</div>
-                    <div class="ritual-step-content">
-                      <div class="ritual-step-title">Anchor in Your Sanctuary</div>
-                      <p class="ritual-step-desc">{{ specs.activationRitual.anchor }}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <app-product-cleansing-ritual
+            [specs]="specs"
+            [productName]="p.name"
+            [copiedAffirmation]="copiedAffirmation()"
+            (copyAffirmation)="copyAffirmation($event)"
+            (openCleansingGuide)="openCleansingGuide($event)"
+          ></app-product-cleansing-ritual>
         }
 
         <!-- Crystal Quality & Shipping Guarantee -->
         <div class="crystal-authenticity-card" aria-label="Quality and shipping guarantee">
           <div class="authenticity-item">
-            <svg class="authenticity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
             <div class="authenticity-text">
@@ -274,7 +110,7 @@
             </div>
           </div>
           <div class="authenticity-item">
-            <svg class="authenticity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
               <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
               <line x1="12" y1="22.08" x2="12" y2="12"/>
@@ -285,7 +121,7 @@
             </div>
           </div>
           <div class="authenticity-item">
-            <svg class="authenticity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="1 4 1 10 7 10"/>
               <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
             </svg>
@@ -366,62 +202,7 @@
         </ul>
 
         <!-- Simulated Pincode Delivery Checker -->
-        <div class="delivery-pincode-card" aria-label="Delivery pincode checker">
-          <div class="pincode-title-row">
-            <svg class="pincode-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="1" y="6" width="13" height="11"/>
-              <path d="M14 9h4l4 4v4h-8V9Z"/>
-              <circle cx="6" cy="19" r="1.6"/>
-              <circle cx="17.5" cy="19" r="1.6"/>
-            </svg>
-            <span class="pincode-label">Estimated Delivery & Services</span>
-          </div>
-
-          @if (pincodeResult(); as res) {
-            <div class="pincode-result-box">
-              <div class="pincode-result-content">
-                <span class="pincode-check-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-                <div class="pincode-result-text">
-                  <span class="pincode-main-line">
-                    Delivery to <strong>{{ res.location }}</strong> ({{ res.pincode }}) by <strong>{{ res.deliveryDate }}</strong> · <span class="pincode-perk">{{ res.shippingType }}</span> · <span class="pincode-perk">{{ res.codAvailable ? 'Cash on Delivery Available' : 'Prepaid Only' }}</span>
-                  </span>
-                </div>
-                <button type="button" class="btn-pincode-change" (click)="resetPincode()" aria-label="Change delivery pincode">
-                  Change
-                </button>
-              </div>
-            </div>
-          } @else {
-            <form class="pincode-form" (ngSubmit)="checkPincode()">
-              <div class="pincode-input-row">
-                <input
-                  type="text"
-                  inputmode="numeric"
-                  pattern="[0-9]*"
-                  maxlength="6"
-                  class="pincode-input"
-                  placeholder="Enter 6-digit Pincode"
-                  [ngModel]="pincodeInput()"
-                  (ngModelChange)="onPincodeChange($event)"
-                  name="deliveryPincode"
-                  aria-label="Enter 6-digit Indian Pincode"
-                />
-                <button
-                  type="submit"
-                  class="btn-pincode-submit"
-                  [disabled]="isCheckingPincode() || pincodeInput().length !== 6"
-                >
-                  {{ isCheckingPincode() ? 'Checking...' : 'Check' }}
-                </button>
-              </div>
-              @if (pincodeError()) {
-                <p class="pincode-error" role="alert">
-                  {{ pincodeError() }}
-                </p>
-              }
-            </form>
-          }
-        </div>
+        <app-product-pincode></app-product-pincode>
 
 
         @if (!reviewsLoading() && reviewCount() > 0) {
@@ -543,7 +324,7 @@
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
                 <span>{{ cartQuantity() }} already in your bag</span>
-                <a routerLink="/cart" class="view-cart-link">View Bag <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-left:3px" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                <a routerLink="/cart" class="view-cart-link">View Bag <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
               </div>
             }
           }
@@ -628,259 +409,50 @@
     }
 
     @if (bundleItems().length > 1) {
-      <section class="bundle-section" aria-label="Frequently Bought Together">
-        <div class="bundle-card">
-          <div class="bundle-header">
-            <div class="bundle-badge">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-              <span>Pair & Save 10%</span>
-            </div>
-            <h2 class="bundle-title">Frequently Bought Together</h2>
-            <p class="bundle-subtitle">Carefully curated crystal pairings to amplify your energy & intentions</p>
-          </div>
-
-          <div class="bundle-content">
-            <!-- Visual chain of product cards -->
-            <div class="bundle-visual-chain">
-              @for (item of bundleItems(); track item.product.productId; let idx = $index; let last = $last) {
-                <div class="bundle-item-card" [class.unselected]="!item.selected">
-                  <a [routerLink]="['/products', item.slug]" class="bundle-img-link" [attr.aria-label]="item.product.name">
-                    @if (item.imageUrl) {
-                      <img [src]="item.imageUrl" [alt]="item.product.name" class="bundle-img" loading="lazy" />
-                    } @else {
-                      <div class="bundle-img-placeholder">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                          <path d="M8 3h8l4 5-10 13L2 8Z"/>
-                        </svg>
-                      </div>
-                    }
-                    @if (item.isMain) {
-                      <span class="bundle-this-item-badge">This Item</span>
-                    }
-                  </a>
-                  <div class="bundle-item-meta">
-                    <a [routerLink]="['/products', item.slug]" class="bundle-item-name">{{ item.product.name }}</a>
-                    <span class="bundle-item-price">{{ item.product.price | inr }}</span>
-                  </div>
-                </div>
-
-                @if (!last) {
-                  <div class="bundle-operator-sign" aria-hidden="true">+</div>
-                }
-              }
-            </div>
-
-            <!-- Checkbox List & Action Box -->
-            <div class="bundle-summary-panel">
-              <ul class="bundle-checklist">
-                @for (item of bundleItems(); track item.product.productId) {
-                  <li class="bundle-check-row">
-                    <label class="bundle-checkbox-label">
-                      <input
-                        type="checkbox"
-                        class="bundle-checkbox"
-                        [checked]="item.selected"
-                        (change)="toggleBundleItem(item.product.productId)"
-                      />
-                      <span class="bundle-item-name-text">
-                        <strong>{{ item.isMain ? 'This item: ' : '' }}</strong>{{ item.product.name }}
-                        <span class="bundle-item-price-tag">({{ item.product.price | inr }})</span>
-                      </span>
-                    </label>
-                  </li>
-                }
-              </ul>
-
-              <div class="bundle-total-box">
-                <div class="bundle-price-row">
-                  <span class="bundle-price-caption">Bundle Price:</span>
-                  <span class="bundle-final-amount">{{ bundleFinalPrice() | inr }}</span>
-                  @if (bundleSavings() > 0) {
-                    <span class="bundle-strikethrough">{{ bundleOriginalTotal() | inr }}</span>
-                    <span class="bundle-save-badge">Save {{ bundleSavings() | inr:0 }}</span>
-                  }
-                </div>
-
-                @if (bundleSavings() > 0) {
-                  <p class="bundle-perk-note">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span>10% bundle savings applied for multi-crystal pairing</span>
-                  </p>
-                }
-
-                <button
-                  type="button"
-                  class="btn btn-bundle-submit"
-                  [class.btn-added]="bundleJustAdded()"
-                  [disabled]="bundleSelectedCount() === 0"
-                  (click)="addBundleToCart()"
-                >
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    @if (bundleJustAdded()) {
-                      <polyline points="20 6 9 17 4 12"/>
-                    } @else {
-                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-                      <path d="M3 6h18"/>
-                      <path d="M16 10a4 4 0 0 1-8 0"/>
-                    }
-                  </svg>
-                  <span>
-                    {{ bundleJustAdded() ? 'Bundle Added to Bag' : ('Add ' + bundleSelectedCount() + (bundleSelectedCount() === 1 ? ' Item' : ' Items') + ' to Bag') }}
-                  </span>
-                </button>
-
-                @if (bundleJustAdded()) {
-                  <div class="bundle-inline-feedback" role="status">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="9"/>
-                      <path d="m8 12.5 2.5 2.5L16 9.5"/>
-                    </svg>
-                    <span>
-                      Bundle added! @if (bundleSavings() > 0) { Saved {{ bundleSavings() | inr:0 }} on {{ bundleSelectedCount() }} items. } @else { Added to your bag. }
-                    </span>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <app-product-bundle
+        [bundleItems]="bundleItems()"
+        [bundleJustAdded]="bundleJustAdded()"
+        (itemToggled)="toggleBundleItem($event)"
+        (bundleAdded)="addBundleToCart()"
+      ></app-product-bundle>
     }
 
-    <section class="reviews-section">
-      <h2>Reviews & Ratings</h2>
-
-      @if (reviewsLoading()) {
-        <app-spinner label="Loading reviews..."></app-spinner>
-      } @else if (reviewsError()) {
-        <div class="state-message state-message--error">
-          <p>{{ reviewsError() }}</p>
-          <button type="button" class="btn" (click)="loadReviews(p.productId)">Retry</button>
-        </div>
-      } @else {
-        @if (reviewCount() > 0) {
-          <div class="reviews-summary">
-            <div class="reviews-score-block">
-              <span class="reviews-score-number">{{ averageRating() }}</span>
-              <div class="reviews-score-meta">
-                <span class="stars stars-lg">{{ getStars(averageRating()) }}</span>
-                <span class="reviews-summary-text">Based on {{ reviewCount() }} customer review{{ reviewCount() === 1 ? '' : 's' }}</span>
-              </div>
-            </div>
-          </div>
-        }
-
-        @if (isLoggedIn) {
-          @if (!hasReviewed) {
-            <div class="review-form">
-              <h3>Write a Review</h3>
-              <div class="star-select" role="radiogroup" aria-label="Rating">
-                @for (star of [1, 2, 3, 4, 5]; track star) {
-                  <button
-                    type="button"
-                    class="star-btn"
-                    [class.filled]="star <= reviewRating()"
-                    [attr.aria-pressed]="star <= reviewRating()"
-                    [attr.aria-label]="star + ' star' + (star === 1 ? '' : 's')"
-                    (click)="setReviewRating(star)"
-                  ><svg viewBox="0 0 24 24" width="18" height="18" [attr.fill]="star <= reviewRating() ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
-                }
-              </div>
-              <textarea
-                class="review-comment-input"
-                aria-label="Review comment (optional)"
-                placeholder="Share your thoughts about this product (optional)"
-                rows="3"
-                maxlength="1000"
-                [value]="reviewComment()"
-                (input)="reviewComment.set($any($event.target).value)"
-              ></textarea>
-              @if (photoEligibility()?.canUploadPhotos) {
-                <app-review-photo-picker
-                  [(photos)]="reviewPhotos"
-                  [max]="photoEligibility()!.maxPhotos"
-                  [disabled]="isSubmittingReview()"
-                ></app-review-photo-picker>
-              }
-              <button
-                type="button"
-                class="btn"
-                [disabled]="isSubmittingReview() || reviewRating() < 1"
-                (click)="submitReview()"
-              >{{ isSubmittingReview() ? 'Submitting...' : 'Submit Review' }}</button>
-            </div>
-          } @else {
-            <p class="already-reviewed">You've already reviewed this product. Thank you!</p>
-          }
-        }
-
-        @if (customerPhotos().length > 0) {
-          <app-review-photo-thumbs
-            heading="Customer photos"
-            size="md"
-            [photos]="customerPhotos()"
-            (open)="openPhotoViewer(customerPhotos(), $event, 'Customer photo')"
-          ></app-review-photo-thumbs>
-        }
-
-        @if (reviews().length > 0) {
-          <ul class="review-list">
-            @for (review of reviews(); track review.reviewId) {
-              <li class="review-item">
-                <div class="review-item-header">
-                  <span class="stars">{{ getStars(review.rating) }}</span>
-                  <span class="review-author">{{ review.userName }}</span>
-                  <span class="review-date">{{ review.createdAt | date:'dd MMM yyyy' }}</span>
-                  @if (canDeleteReview(review)) {
-                    <button type="button" class="link-btn danger review-delete-btn" (click)="deleteReview(review)">Delete</button>
-                  }
-                </div>
-                @if (review.comment) {
-                  <p class="review-comment">{{ review.comment }}</p>
-                }
-                @if (review.images.length) {
-                  <app-review-photo-thumbs
-                    [photos]="reviewThumbs(review)"
-                    (open)="openPhotoViewer(reviewThumbs(review), $event, 'Photo by ' + review.userName)"
-                  ></app-review-photo-thumbs>
-                }
-                @if (review.adminReply) {
-                  <div class="review-admin-reply">
-                    <span class="review-admin-reply-label">Response from {{ siteName }}</span>
-                    <p>{{ review.adminReply }}</p>
-                  </div>
-                }
-              </li>
-            }
-          </ul>
-        } @else {
-          <div class="state-message state-message--empty">
-            <p>No reviews yet. Be the first to share your experience!</p>
-          </div>
-        }
-      }
-    </section>
+    <app-product-reviews
+      [productId]="p.productId"
+      [siteName]="siteName"
+      [isLoggedIn]="isLoggedIn"
+      [hasReviewed]="hasReviewed"
+      [reviews]="reviews()"
+      [averageRating]="averageRating()"
+      [reviewCount]="reviewCount()"
+      [reviewsLoading]="reviewsLoading()"
+      [reviewsError]="reviewsError()"
+      [photoEligibility]="photoEligibility()"
+      [customerPhotos]="customerPhotos()"
+      [reviewRating]="reviewRating()"
+      [reviewComment]="reviewComment()"
+      [reviewPhotos]="reviewPhotos()"
+      [isSubmittingReview]="isSubmittingReview()"
+      [canDeleteReviewFn]="canDeleteReview"
+      (retry)="loadReviews($event)"
+      (ratingChange)="setReviewRating($event)"
+      (commentChange)="reviewComment.set($event)"
+      (photosChange)="reviewPhotos.set($event)"
+      (submitReview)="submitReview()"
+      (deleteReview)="deleteReview($event)"
+      (openPhoto)="openPhotoViewer($event.photos, $event.index, $event.caption)"
+    ></app-product-reviews>
 
     <app-recently-viewed [excludeProductId]="p.productId"></app-recently-viewed>
 
     @if (!isOutOfStock) {
-      <div class="mobile-add-bar">
-        <span class="mobile-add-bar-price">{{ p.price | inr }}</span>
-        <button type="button" class="btn" [class.btn-added]="justAdded()" (click)="addToCart()">
-          @if (justAdded()) {
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Added
-          } @else {
-            Add to Bag
-          }
-        </button>
-        @if (cartQuantity() > 0) {
-          <a routerLink="/cart" class="btn btn-outline">View Bag ({{ cartQuantity() }})</a>
-        }
-      </div>
+      <app-product-sticky-bar
+        [product]="p"
+        [isOutOfStock]="isOutOfStock"
+        [justAdded]="justAdded()"
+        [cartQuantity]="cartQuantity()"
+        (addToCart)="addToCart()"
+      ></app-product-sticky-bar>
     }
 
     @if (photoViewer(); as viewer) {

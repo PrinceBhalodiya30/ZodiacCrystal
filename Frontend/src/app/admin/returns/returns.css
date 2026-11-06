@@ -24,6 +24,18 @@
   box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.16);
 }
 
+.customer-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chip-btn-xs {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  height: auto;
+}
+
 .customer-name {
   font-weight: 600;
 }

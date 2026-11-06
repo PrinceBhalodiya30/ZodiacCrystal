@@ -141,7 +141,7 @@
     align-items: stretch;
     border-bottom: none;
     border-right: 1px solid var(--color-border, #e6e0d4);
-    z-index: 50;
+    z-index: var(--z-dropdown, 50);
     background-color: var(--color-surface, #ffffff);
   }
 
@@ -183,7 +183,7 @@
   }
 
   .admin-nav-brand-tag {
-    font-size: 0.7rem;
+    font-size: var(--text-xs, 0.75rem);
     font-weight: 700;
     color: var(--color-accent-gold, #c4984f);
     text-transform: uppercase;
@@ -211,7 +211,7 @@
   .admin-nav-group-title {
     display: block;
     padding: 0.25rem 0.75rem 0.35rem;
-    font-size: 0.7rem;
+    font-size: var(--text-xs, 0.75rem);
     font-weight: 700;
     color: var(--color-subtle);
     text-transform: uppercase;
@@ -276,7 +276,7 @@
 }
 
 .admin-nav-search-btn kbd {
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   padding: 0.1rem 0.35rem;
   background-color: #ffffff;

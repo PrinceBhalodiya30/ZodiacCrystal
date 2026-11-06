@@ -11,7 +11,6 @@ import { CartService } from '../../services/cart.service';
 import { NotificationService } from '../../services/notification.service';
 import { OrderService } from '../../services/order.service';
 import { CANCELLATION_REASONS, Order } from '../../models/order';
-import { Spinner } from '../../components/spinner/spinner';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ToastService } from '../../services/toast.service';
 import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
@@ -35,7 +34,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
 @Component({
   selector: 'app-order-details',
   standalone: true,
-  imports: [InrPipe, Breadcrumbs, Spinner, RouterLink, DatePipe, ReturnRequestPanel],
+  imports: [InrPipe, Breadcrumbs, RouterLink, DatePipe, ReturnRequestPanel],
   templateUrl: './order-details.html',
   styleUrl: './order-details.css'
 })

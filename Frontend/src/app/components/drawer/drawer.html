@@ -1,0 +1,57 @@
+@if (isOpen) {
+  <div
+    class="app-drawer-backdrop"
+    [class.transparent]="backdropType === 'transparent'"
+    (click)="onBackdropClick()"
+    role="presentation"
+  ></div>
+
+  <aside
+    #drawerEl
+    class="app-drawer"
+    [class.drawer-left]="placement === 'left'"
+    [class.drawer-right]="placement === 'right'"
+    [style.width]="width"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title ? undefined : (ariaLabel || 'Drawer panel')"
+    [attr.aria-labelledby]="title ? 'drawer-panel-title' : undefined"
+    (click)="$event.stopPropagation()"
+  >
+    @if (title || showCloseButton) {
+      <header class="app-drawer-header">
+        <div class="app-drawer-titles">
+          <ng-content select="[drawer-header-actions]"></ng-content>
+          @if (title) {
+            <h2 id="drawer-panel-title" class="app-drawer-title">{{ title }}</h2>
+          }
+          @if (subtitle) {
+            <p class="app-drawer-subtitle">{{ subtitle }}</p>
+          }
+        </div>
+        @if (showCloseButton) {
+          <button
+            type="button"
+            class="app-drawer-close"
+            aria-label="Close panel"
+            (click)="close()"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        }
+      </header>
+    }
+
+    <div class="app-drawer-body">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="app-drawer-footer">
+      <ng-content select="[drawer-footer]"></ng-content>
+    </div>
+  </aside>
+}
+

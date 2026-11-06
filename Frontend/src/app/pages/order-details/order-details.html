@@ -4,7 +4,24 @@
   }
 
   @if (isLoading()) {
-    <app-spinner label="Loading order..."></app-spinner>
+    <span class="visually-hidden" role="status">Loading order...</span>
+    <div class="order-card order-details-skeleton" aria-hidden="true">
+      <div class="skeleton-header-row">
+        <span class="skeleton skeleton-line skeleton-w-md skeleton-h-md"></span>
+        <span class="skeleton skeleton-line skeleton-w-xs skeleton-h-sm"></span>
+      </div>
+      <div class="skeleton-items-block">
+        @for (i of [1, 2]; track i) {
+          <div class="skeleton-item-row">
+            <span class="skeleton skeleton-thumb"></span>
+            <div class="skeleton-item-meta">
+              <span class="skeleton skeleton-line skeleton-w-lg"></span>
+              <span class="skeleton skeleton-line skeleton-w-sm"></span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
   } @else if (errorMessage()) {
     <div class="state-message state-message--error">
       <p>{{ errorMessage() }}</p>
@@ -169,7 +186,7 @@
 
       @if (o.isGiftWrap) {
         <div class="order-total-row gift-wrap-row">
-          <span><svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>Luxury Gift Packaging &amp; Note</span>
+          <span><svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>Luxury Gift Packaging &amp; Note</span>
           <span>+{{ (o.giftFee || 99) | inr }}</span>
         </div>
       }

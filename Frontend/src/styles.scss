@@ -49,6 +49,13 @@
   --color-amethyst-light: #f3eff5;
   --color-slate: #3b464f;
 
+  /* Sacred Healing Sage & Celestial Zodiac Gold */
+  --color-sage: #3d6b52;
+  --color-sage-tint: #edf5f0;
+  --color-gold: #c8963e;
+  --color-gold-tint: #fbf4e8;
+  --color-gold-border: #f2caa0;
+
   /* Aliases & undeclared fallback tokens */
   --color-accent: #985e38;
   --color-copper-light: #faf5ee;
@@ -134,8 +141,11 @@
 
   /* --- Z-Index Layers --- */
   --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 50;
   --z-sticky: 100;
   --z-header: 500;
+  --z-backdrop: 800;
   --z-drawer: 800;
   --z-modal-backdrop: 900;
   --z-modal: 1000;
@@ -164,11 +174,65 @@
   box-sizing: border-box;
 }
 
-*:focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(152, 94, 56, 0.16);
+*:focus-visible,
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(152, 94, 56, 0.16) !important;
 }
+
+/* Modern Typographic Wrapping */
+h1, h2, h3, h4, h5, h6, .font-heading {
+  text-wrap: balance;
+}
+
+p, .reading-measure {
+  text-wrap: pretty;
+}
+
+/* Consolidated Studio Spin Animation */
+@keyframes studio-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Inline SVG Icon Alignment Utilities */
+.icon-inline-left {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-right: var(--space-2xs, 4px);
+}
+
+.icon-inline-right {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-left: var(--space-2xs, 4px);
+}
+
+.icon-inline {
+  display: inline-block;
+  vertical-align: -1px;
+}
+
+/* Standard Skeleton Size Helpers */
+.skeleton-w-xs { width: 30% !important; }
+.skeleton-w-sm { width: 40% !important; }
+.skeleton-w-md { width: 60% !important; }
+.skeleton-w-lg { width: 75% !important; }
+.skeleton-w-xl { width: 92% !important; }
+.skeleton-w-full { width: 100% !important; }
+
+.skeleton-h-sm { height: 1.5rem !important; }
+.skeleton-h-md { height: 1.8rem !important; }
+.skeleton-h-lg { height: 3.5rem !important; }
+.skeleton-h-xl { height: 5.5rem !important; }
+.skeleton-h-2xl { height: 8rem !important; }
+.skeleton-card-block { height: 3.5rem !important; margin-top: 1rem !important; }
 
 html,
 body {
@@ -257,6 +321,25 @@ a {
   opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+/* Standardized Button Sizing Tiers */
+.btn-sm {
+  min-height: 32px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+}
+
+.btn-md {
+  min-height: 42px;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  min-height: 50px;
+  padding: 0.85rem 1.85rem;
+  font-size: 1rem;
 }
 
 .btn-outline {

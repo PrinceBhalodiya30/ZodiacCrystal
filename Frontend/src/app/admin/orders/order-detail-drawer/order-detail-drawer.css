@@ -446,7 +446,7 @@
 }
 
 .audit-source-tag {
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -464,7 +464,7 @@
   border-radius: 4px;
   background-color: #f0ebe1;
   color: var(--color-brand);
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   letter-spacing: 0.02em;
 }
@@ -475,7 +475,7 @@
   inset: 0;
   background-color: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
-  z-index: 1200;
+  z-index: var(--z-modal, 1000);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -881,7 +881,7 @@
 
 .drawer-delivery-note .delivery-note-tag {
   display: block;
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;

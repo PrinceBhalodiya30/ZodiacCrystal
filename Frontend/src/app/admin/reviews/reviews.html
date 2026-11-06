@@ -123,7 +123,7 @@
               <td data-label="Product">
                 <a [routerLink]="['/products', review.productId]" target="_blank" class="review-product-link" title="View product in store">
                   {{ review.productName }}
-                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:2px" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 </a>
               </td>
               <td data-label="Reviewer">
@@ -255,14 +255,13 @@
       </table>
     </div>
 
-    <div class="reviews-pagination-wrap" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem">
-      <div class="page-size-selector" style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #555">
+    <div class="reviews-pagination-wrap">
+      <div class="page-size-selector">
         <span>Reviews per page:</span>
         <select
           [ngModel]="pageSize()"
           (ngModelChange)="onPageSizeChange($event)"
           class="page-size-select"
-          style="padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid #d4cdc3; font: inherit; font-size: 0.82rem; background: #fff"
           aria-label="Reviews per page"
         >
           <option [ngValue]="5">5</option>

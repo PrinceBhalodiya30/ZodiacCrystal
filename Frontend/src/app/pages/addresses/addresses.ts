@@ -5,7 +5,6 @@ import { AddressService } from '../../services/address.service';
 import { Address, AddressRequest } from '../../models/address';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ToastService } from '../../services/toast.service';
-import { Spinner } from '../../components/spinner/spinner';
 import { PhoneInput } from '../../components/phone-input/phone-input';
 import { MapAddressFields } from '../../components/map-address-fields/map-address-fields';
 
@@ -28,7 +27,7 @@ const EMPTY_FORM: AddressRequest = {
 @Component({
   selector: 'app-addresses',
   standalone: true,
-  imports: [FormsModule, Spinner, PhoneInput, MapAddressFields],
+  imports: [FormsModule, PhoneInput, MapAddressFields],
   templateUrl: './addresses.html',
   styleUrl: './addresses.css'
 })

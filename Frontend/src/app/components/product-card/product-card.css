@@ -159,7 +159,7 @@
   .sale-badge {
     bottom: 0.4rem;
     left: 0.4rem;
-    font-size: 10px;
+    font-size: var(--text-xs, 0.75rem);
     padding: 0.15rem 0.45rem;
   }
 
@@ -337,7 +337,7 @@
 }
 
 .product-rating .stars {
-  color: var(--color-copper-hi, #b87a4b);
+  color: var(--color-gold, #c8963e);
   letter-spacing: 1px;
 }
 
@@ -373,7 +373,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  background-color: #f4efe5;
+  background-color: var(--color-surface-tint);
   color: #8f5330;
   border: 1px solid rgba(152, 94, 56, 0.22);
   font-size: var(--text-xs);
@@ -385,7 +385,7 @@
 
 .zodiac-tag:hover {
   background-color: #f0e3d6;
-  border-color: #985e38;
+  border-color: var(--color-copper);
   color: #8f5330;
 }
 

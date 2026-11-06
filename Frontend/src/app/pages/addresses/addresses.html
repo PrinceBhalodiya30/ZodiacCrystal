@@ -2,7 +2,17 @@
   <h1>My Addresses</h1>
 
   @if (isLoading()) {
-    <app-spinner label="Loading addresses..."></app-spinner>
+    <span class="visually-hidden" role="status">Loading addresses...</span>
+    <div class="address-grid" aria-hidden="true">
+      @for (i of [1, 2]; track i) {
+        <div class="address-card address-card-skeleton">
+          <span class="skeleton skeleton-line skeleton-w-md skeleton-h-sm"></span>
+          <span class="skeleton skeleton-line skeleton-w-full"></span>
+          <span class="skeleton skeleton-line skeleton-w-lg"></span>
+          <span class="skeleton skeleton-line skeleton-w-xs"></span>
+        </div>
+      }
+    </div>
   } @else if (errorMessage()) {
     <div class="state-message state-message--error">
       <p>{{ errorMessage() }}</p>

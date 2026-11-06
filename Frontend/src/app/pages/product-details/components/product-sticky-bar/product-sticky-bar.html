@@ -1,0 +1,16 @@
+@if (!isOutOfStock) {
+  <div class="mobile-add-bar">
+    <span class="mobile-add-bar-price">{{ product.price | inr }}</span>
+    <button type="button" class="btn" [class.btn-added]="justAdded" (click)="addToCart.emit()">
+      @if (justAdded) {
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Added
+      } @else {
+        Add to Bag
+      }
+    </button>
+    @if (cartQuantity > 0) {
+      <a routerLink="/cart" class="btn btn-outline">View Bag ({{ cartQuantity }})</a>
+    }
+  </div>
+}
+

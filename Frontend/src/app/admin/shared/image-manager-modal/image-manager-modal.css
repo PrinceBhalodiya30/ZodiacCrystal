@@ -6,8 +6,8 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  /* Opens from inside the product drawer (1000), so it has to sit above it. */
-  z-index: 1010;
+  /* Opens from inside the product drawer (800), so it sits at modal level (1000). */
+  z-index: var(--z-modal, 1000);
   backdrop-filter: blur(3px);
   animation: image-modal-fade 0.15s ease;
 }

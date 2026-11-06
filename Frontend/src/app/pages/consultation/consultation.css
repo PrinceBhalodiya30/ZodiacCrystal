@@ -100,7 +100,7 @@
 }
 
 .stepper-item.completed .stepper-num {
-  background-color: #F4EFE5;
+  background-color: var(--color-surface-tint);
   color: var(--color-copper, #985E38);
 }
 
@@ -493,7 +493,7 @@
   border: 1px solid rgba(152, 94, 56, 0.25);
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-pill);
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   color: var(--color-copper, #985E38);
   letter-spacing: 0.08em;

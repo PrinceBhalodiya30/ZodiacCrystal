@@ -123,6 +123,10 @@ select:focus {
   transition: all var(--transition-fast);
 }
 
+.address-card-skeleton {
+  gap: 0.75rem;
+}
+
 .address-card:hover {
   border-color: var(--color-accent, #985e38);
   box-shadow: 0 4px 14px rgba(29, 39, 57, 0.06);
@@ -135,7 +139,7 @@ select:focus {
   display: inline-block;
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;

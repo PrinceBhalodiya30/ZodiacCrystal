@@ -375,3 +375,30 @@ tr.has-photos > td {
 .review-reviewer-link:hover {
   color: #6d4123;
 }
+
+.reviews-pagination-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md, 1rem);
+  margin-top: var(--space-lg, 1.5rem);
+}
+
+.page-size-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs, 0.5rem);
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-ink-secondary, #4e5a70);
+}
+
+.page-size-select {
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--color-border, #eae3d6);
+  font: inherit;
+  font-size: 0.82rem;
+  background: var(--color-surface, #fff);
+  color: var(--color-ink, #1d2739);
+}

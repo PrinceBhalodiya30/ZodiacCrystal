@@ -117,7 +117,7 @@
       <table class="stack-table">
         <thead>
           <tr>
-            <th class="cb-col" style="width: 44px">
+            <th class="cb-col">
               <input
                 type="checkbox"
                 aria-label="Select all returns on this page"
@@ -156,16 +156,15 @@
                 </button>
               </td>
               <td data-label="Customer">
-                <div class="customer-name-row" style="display: flex; align-items: center; gap: 0.4rem">
+                <div class="customer-name-row">
                   <div class="customer-name">{{ r.customerName }}</div>
                   <button
                     type="button"
-                    class="chip-btn"
-                    style="font-size: 0.7rem; padding: 0.1rem 0.4rem; height: auto"
+                    class="chip-btn chip-btn-xs"
                     title="View Customer 360"
                     (click)="openCustomer(r.customerEmail, $event)"
                   >
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:2px" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>360
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>360
                   </button>
                 </div>
                 <div class="customer-email">{{ r.customerEmail }}</div>

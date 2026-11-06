@@ -3,7 +3,7 @@
   bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1500;
+  z-index: var(--z-drawer, 800);
   width: calc(100% - 2rem);
   max-width: 640px;
   animation: dock-up 0.28s cubic-bezier(0.16, 1, 0.3, 1);

@@ -1,0 +1,142 @@
+.app-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 900);
+  background: rgba(14, 18, 27, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  overflow-y: auto;
+  animation: appModalBackdropFade 0.2s ease-out;
+}
+
+.app-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-height: calc(100vh - 2.5rem);
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border-subtle, #eae4d8);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 20px 48px -12px rgba(14, 18, 27, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: appModalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.app-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem 1rem;
+  border-bottom: 1px solid var(--color-border-subtle, #f0ebd8);
+  background: var(--color-surface, #ffffff);
+}
+
+.app-modal-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-modal-title {
+  margin: 0;
+  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-size: var(--text-xl, 1.35rem);
+  color: var(--color-ink, #1d2739);
+  line-height: var(--leading-tight, 1.25);
+  letter-spacing: -0.01em;
+}
+
+.app-modal-subtitle {
+  margin: 0;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-subtle, #4e5a70);
+  line-height: var(--leading-normal, 1.5);
+}
+
+.app-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill, 9999px);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-subtle, #4e5a70);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.app-modal-close:hover {
+  background: var(--color-surface-tint, #f4efe5);
+  color: var(--color-ink, #1d2739);
+  border-color: var(--color-border, #ded7c8);
+}
+
+.app-modal-body {
+  padding: 1.5rem 1.75rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1 1 auto;
+}
+
+.app-modal-footer:not(:empty) {
+  padding: 1rem 1.75rem;
+  border-top: 1px solid var(--color-border-subtle, #f0ebd8);
+  background: var(--color-surface-tint, #faf7f2);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+@keyframes appModalBackdropFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes appModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .app-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .app-modal-dialog {
+    max-height: 90vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .app-modal-header,
+  .app-modal-body,
+  .app-modal-footer:not(:empty) {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-modal-overlay,
+  .app-modal-dialog {
+    animation: none;
+  }
+}
+

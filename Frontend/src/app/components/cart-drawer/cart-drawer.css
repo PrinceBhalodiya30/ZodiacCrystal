@@ -2,7 +2,7 @@
 .cart-flyout-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 590;
+  z-index: var(--z-backdrop, 800);
   background: transparent;
 }
 
@@ -20,7 +20,7 @@
   border: 1px solid var(--color-border-subtle, #EAE3D6);
   border-radius: var(--radius-sm, 4px);
   box-shadow: 0 16px 44px rgba(29, 39, 57, 0.18), 0 2px 8px rgba(29, 39, 57, 0.06);
-  z-index: 600;
+  z-index: var(--z-drawer, 900);
   overflow: hidden;
   animation: flyout-slide-down 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -85,12 +85,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-copper-dark, #8F5330);
-  background: #EAE3D6;
+  background: var(--color-border);
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-pill);
 }
@@ -162,7 +162,7 @@
 
 .shipping-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #985E38, #b87a4b);
+  background: linear-gradient(90deg, var(--color-copper), #b87a4b);
   border-radius: 999px;
   transition: width 0.35s ease;
 }
@@ -209,7 +209,7 @@
 }
 
 .flyout-item-row.highlighted {
-  background: #F4EFE5;
+  background: var(--color-surface-tint);
   border-radius: var(--radius-xs, 4px);
   padding: 0.75rem 0.5rem;
 }
@@ -360,7 +360,7 @@
 }
 
 .subtotal-label {
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   color: var(--color-subtle, #4E5A70);
   text-transform: uppercase;

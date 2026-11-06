@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { PageTitleService, SITE_NAME } from '../../services/page-title.service';
 import { SeoService, absoluteUrl } from '../../services/seo.service';
@@ -21,10 +21,14 @@ import { StockAlertService } from '../../services/stock-alert.service';
 import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 import { ReviewService } from '../../services/review.service';
 import { PhotoEligibility, Review } from '../../models/review';
-import { PickedPhoto, ReviewPhotoPicker } from '../../components/review-photos/review-photo-picker';
-import { ReviewPhotoThumbs, ThumbPhoto } from '../../components/review-photos/review-photo-thumbs';
+import { PickedPhoto } from '../../components/review-photos/review-photo-picker';
+import { ThumbPhoto } from '../../components/review-photos/review-photo-thumbs';
+import { ProductCleansingRitual } from './components/product-cleansing-ritual/product-cleansing-ritual';
+import { ProductBundle } from './components/product-bundle/product-bundle';
+import { ProductStickyBar } from './components/product-sticky-bar/product-sticky-bar';
+import { ProductReviews } from './components/product-reviews/product-reviews';
+import { ProductPincode } from './components/product-pincode/product-pincode';
 import { PhotoLightbox } from '../../components/photo-lightbox/photo-lightbox';
-import { Spinner } from '../../components/spinner/spinner';
 import { ProductCard } from '../../components/product-card/product-card';
 import { RecentlyViewed } from '../../components/recently-viewed/recently-viewed';
 import { RecentlyViewedService } from '../../services/recently-viewed.service';
@@ -38,11 +42,9 @@ const RELATED_PRODUCT_LIMIT = 4;
 
 import { InrPipe, formatInr } from '../../pipes/inr.pipe';
 import { CompareService } from '../../services/compare.service';
-import { FormsModule } from '@angular/forms';
 import { CouponService } from '../../services/coupon.service';
 import { PublicCoupon } from '../../models/coupon';
 import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
-import { checkDeliveryPincode, getSavedPincode, savePincode, PincodeDeliveryInfo } from '../../utils/pincode.util';
 import { getProductCrystalSpecs, CrystalSpecs } from '../../utils/crystal-specs.util';
 import { CleansingGuideService } from '../../services/cleansing-guide.service';
 
@@ -60,18 +62,18 @@ export interface BundleItem {
   imports: [
     InrPipe,
     Breadcrumbs,
-    Spinner,
     RouterLink,
-    DatePipe,
     ProductCard,
     RecentlyViewed,
     ImgFallbackDirective,
     ZodiacIcon,
-    ReviewPhotoPicker,
-    ReviewPhotoThumbs,
     PhotoLightbox,
-    FormsModule,
-    VedicZodiacPipe
+    VedicZodiacPipe,
+    ProductCleansingRitual,
+    ProductBundle,
+    ProductStickyBar,
+    ProductReviews,
+    ProductPincode
   ],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
@@ -151,11 +153,6 @@ export class ProductDetails implements OnInit {
   );
   photoViewer = signal<{ urls: string[]; index: number; caption: string } | null>(null);
 
-  // Simulated Pincode Delivery Checker
-  pincodeInput = signal('');
-  pincodeResult = signal<PincodeDeliveryInfo | null>(null);
-  isCheckingPincode = signal(false);
-  pincodeError = signal('');
 
   // Frequently Bought Together Bundle
   bundleItems = signal<BundleItem[]>([]);
@@ -207,11 +204,6 @@ export class ProductDetails implements OnInit {
   }
 
   ngOnInit(): void {
-    const savedPin = getSavedPincode();
-    if (savedPin) {
-      this.pincodeInput.set(savedPin);
-      this.pincodeResult.set(checkDeliveryPincode(savedPin));
-    }
 
     // Same list checkout offers; a failure just hides the coupon line.
     this.couponService.getActiveCoupons().subscribe({
@@ -395,13 +387,13 @@ export class ProductDetails implements OnInit {
     return userId !== undefined && this.reviews().some(r => r.userId === userId);
   }
 
-  canDeleteReview(review: Review): boolean {
+  canDeleteReview = (review: Review): boolean => {
     const user = this.authService.currentUser();
     if (!user) {
       return false;
     }
     return user.userId === review.userId || user.role === 'Admin';
-  }
+  };
 
   setReviewRating(rating: number): void {
     this.reviewRating.set(rating);
@@ -708,42 +700,6 @@ export class ProductDetails implements OnInit {
     this.quantity.update(qty => Math.min(max, qty + 1));
   }
 
-  onPincodeChange(value: string): void {
-    const digits = (value || '').replace(/\D/g, '').slice(0, 6);
-    this.pincodeInput.set(digits);
-    this.pincodeError.set('');
-    if (digits.length === 6 && !this.pincodeResult()) {
-      this.checkPincode();
-    }
-  }
-
-  checkPincode(): void {
-    const pin = this.pincodeInput().trim();
-    if (pin.length !== 6) {
-      this.pincodeError.set('Please enter a valid 6-digit Indian postal pincode.');
-      return;
-    }
-
-    this.isCheckingPincode.set(true);
-    this.pincodeError.set('');
-
-    setTimeout(() => {
-      const result = checkDeliveryPincode(pin);
-      this.isCheckingPincode.set(false);
-      if (result) {
-        this.pincodeResult.set(result);
-        savePincode(pin);
-      } else {
-        this.pincodeError.set('Invalid pincode. Please check your 6 digits.');
-      }
-    }, 200);
-  }
-
-  resetPincode(): void {
-    this.pincodeResult.set(null);
-    this.pincodeInput.set('');
-    this.pincodeError.set('');
-  }
 
   addToCart(): void {
     const product = this.product();

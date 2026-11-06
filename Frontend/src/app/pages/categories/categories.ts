@@ -2,7 +2,6 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
 import { Category, CategoryTileStats } from '../../models/category';
-import { Spinner } from '../../components/spinner/spinner';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 
 interface CategoryTile {
@@ -16,7 +15,7 @@ interface CategoryTile {
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [Spinner, RouterLink, ImgFallbackDirective],
+  imports: [RouterLink, ImgFallbackDirective],
   templateUrl: './categories.html',
   styleUrl: './categories.css'
 })

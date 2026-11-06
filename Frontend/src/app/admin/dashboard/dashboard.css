@@ -433,7 +433,7 @@
   border-radius: 6px;
   background-color: var(--gold-soft);
   color: #9a6206;
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   vertical-align: middle;
 }

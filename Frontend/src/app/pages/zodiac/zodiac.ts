@@ -2,13 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ZodiacService } from '../../services/zodiac.service';
 import { Zodiac } from '../../models/zodiac';
 import { ZodiacCard } from '../../components/zodiac-card/zodiac-card';
-import { Spinner } from '../../components/spinner/spinner';
 import { BirthdaySignFinder } from '../../components/birthday-sign-finder/birthday-sign-finder';
 
 @Component({
   selector: 'app-zodiac-page',
   standalone: true,
-  imports: [Spinner, ZodiacCard, BirthdaySignFinder],
+  imports: [ZodiacCard, BirthdaySignFinder],
   templateUrl: './zodiac.html',
   styleUrl: './zodiac.css'
 })

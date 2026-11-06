@@ -7,7 +7,16 @@
   <app-birthday-sign-finder></app-birthday-sign-finder>
 
   @if (isLoading()) {
-    <app-spinner label="Loading zodiac signs..."></app-spinner>
+    <span class="visually-hidden" role="status">Loading zodiac signs...</span>
+    <div class="zodiac-grid" aria-hidden="true">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track i) {
+        <div class="zodiac-skeleton-card">
+          <span class="skeleton zodiac-skeleton-circle"></span>
+          <span class="skeleton skeleton-line skeleton-w-md"></span>
+          <span class="skeleton skeleton-line skeleton-w-xs"></span>
+        </div>
+      }
+    </div>
   } @else if (errorMessage()) {
     <div class="state-message state-message--error">
       <p>{{ errorMessage() }}</p>

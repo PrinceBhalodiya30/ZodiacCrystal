@@ -10,7 +10,7 @@
   line-height: 1.4;
   letter-spacing: 0.025em;
   position: relative;
-  z-index: 510;
+  z-index: var(--z-header, 500);
   transition: opacity 0.25s ease;
 }
 
@@ -102,7 +102,7 @@
   border: 1px solid rgba(226, 217, 243, 0.22);
   color: #e8e2f6;
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 500;
   letter-spacing: 0.04em;
   padding: 0.22rem 0.65rem;
@@ -123,7 +123,7 @@
 
 .sparkle {
   color: #f7d498;
-  font-size: 10px;
+  font-size: var(--text-xs, 0.75rem);
 }
 
 .moon-bar-close {
@@ -158,7 +158,7 @@
 .cosmic-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  z-index: var(--z-modal, 1000);
   background: rgba(10, 8, 20, 0.78);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -283,7 +283,7 @@
 
 .phase-pill,
 .element-pill {
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 500;
   padding: 0.22rem 0.6rem;
   border-radius: 999px;
@@ -375,7 +375,7 @@
 
 /* Crystal Panel */
 .panel-eyebrow {
-  font-size: 10px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   letter-spacing: 0.1em;
   color: #f7d498;
@@ -420,7 +420,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   color: #f7d498;
   margin-bottom: 0.35rem;
@@ -501,17 +501,17 @@
   }
 
   .ticker-text-wrapper {
-    font-size: 11px;
+    font-size: var(--text-xs, 0.75rem);
     gap: 0.3rem;
   }
 
   .crystal-name-btn {
-    font-size: 11px;
+    font-size: var(--text-xs, 0.75rem);
   }
 
   .cosmic-details-btn {
     padding: 0.18rem 0.45rem;
-    font-size: 10px;
+    font-size: var(--text-xs, 0.75rem);
   }
 
   .cosmic-modal-title {
@@ -523,7 +523,7 @@
   }
 
   .ticker-slide--promo {
-    font-size: 11px;
+    font-size: var(--text-xs, 0.75rem);
     gap: 0.4rem;
     line-height: 1.35;
   }
@@ -654,14 +654,14 @@
 /* Emerald / Parchment Sage (Default) */
 .moon-transit-bar[data-slide="1"][data-style="emerald"],
 .moon-transit-bar[data-slide="1"]:not([data-style]) {
-  background: #f4efe5;
-  color: #4e5a70;
+  background: var(--color-surface-tint);
+  color: var(--color-ink-secondary);
   border-bottom-color: #e4dccb;
 }
 
 .moon-transit-bar[data-slide="1"][data-style="emerald"] .ticker-slide--promo,
 .moon-transit-bar[data-slide="1"]:not([data-style]) .ticker-slide--promo {
-  color: #4e5a70;
+  color: var(--color-ink-secondary);
 }
 
 .moon-transit-bar[data-slide="1"][data-style="emerald"] .promo-icon,
@@ -682,7 +682,7 @@
 
 .moon-transit-bar[data-slide="1"][data-style="emerald"] .moon-bar-close,
 .moon-transit-bar[data-slide="1"]:not([data-style]) .moon-bar-close {
-  color: #4e5a70;
+  color: var(--color-ink-secondary);
 }
 
 .moon-transit-bar[data-slide="1"][data-style="emerald"] .slide-dot,

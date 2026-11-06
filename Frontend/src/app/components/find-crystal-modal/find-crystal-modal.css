@@ -1,7 +1,7 @@
 .consultation-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1050;
+  z-index: var(--z-modal, 1000);
   background-color: rgba(23, 21, 18, 0.72);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -61,7 +61,7 @@
 }
 
 .consultation-kicker {
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -178,7 +178,7 @@
 
 .step-indicator {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -315,7 +315,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1D2739 0%, #111827 100%);
+  background: linear-gradient(135deg, var(--color-ink) 0%, #111827 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -353,7 +353,7 @@
 }
 
 .zodiac-dates {
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   color: var(--color-muted);
 }
 
@@ -509,7 +509,7 @@
 
 .results-kicker {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -569,7 +569,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;

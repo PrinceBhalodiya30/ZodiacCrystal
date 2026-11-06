@@ -1,0 +1,91 @@
+<!-- Static Luxury Atelier Hero Section -->
+<section class="hero static-hero" 
+  (mouseenter)="pauseCarousel()" 
+  (mouseleave)="resumeCarousel()" 
+  (touchstart)="onTouchStart($event)" 
+  (touchend)="onTouchEnd($event)"
+  (keydown.arrowleft)="prevSlide()"
+  (keydown.arrowright)="nextSlide()"
+  tabindex="0"
+  role="region"
+  aria-label="Celestial Crystal Collection">
+
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h1>{{ heroTitle() }}</h1>
+      <p>{{ heroSubtitle() }}</p>
+      <div class="hero-actions">
+        <a class="btn hero-btn-primary" routerLink="/products">Shop All Crystals</a>
+        <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openQuiz()">
+          <span class="btn-sparkle" aria-hidden="true">✦</span>
+          <span>Take 60s Crystal Quiz</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-image-wrap">
+      <div class="hero-image">
+        @if (heroImageUrl(); as url) {
+          <img [imgSrc]="url" imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="'Healing crystals from the ' + siteName + ' collection'" fetchpriority="high" imgFallback />
+        } @else {
+          <svg class="hero-image-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 3h8l4 5-10 13L2 8Z"/>
+            <path d="M2 8h20M8 3l2 5-2 8M16 3l-2 5 2 8M6 8l6 13 6-13"/>
+          </svg>
+        }
+        <div class="hero-floating-badge badge-top">
+          <span class="badge-dot" aria-hidden="true"></span>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          <span>100% Certified Earth-Mined</span>
+        </div>
+        <a class="hero-shoppable-pill" routerLink="/products" [queryParams]="{ search: 'Amethyst' }" title="Explore featured Amethyst">
+          <span class="pill-sparkle" aria-hidden="true">✦</span>
+          <div class="pill-meta">
+            <span class="pill-kicker">Curated Centerpiece</span>
+            <strong class="pill-title">Raw Amethyst Geode</strong>
+          </div>
+          <span class="pill-price">from ₹1,899</span>
+          <span class="pill-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Trust Bar -->
+  <div class="container hero-trust-container">
+    <ul class="hero-trust">
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/>
+          <polyline points="2 9 12 13 22 9"/>
+          <line x1="12" y1="22" x2="12" y2="13"/>
+        </svg>
+        <span>100% Natural Minerals</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
+        </svg>
+        <span>12 Zodiac Attuned</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m9 11 3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span>Artisanal Hand-Selected</span>
+      </li>
+      <li class="trust-badge">
+        <svg class="trust-badge-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+        <span>Full Moon Cleansed</span>
+      </li>
+    </ul>
+  </div>
+</section>
+

@@ -23,6 +23,7 @@ import { QuizService } from '../../services/quiz.service';
 import { CleansingGuideService, CleansingGuideTab } from '../../services/cleansing-guide.service';
 
 import { BirthdaySignFinder } from '../../components/birthday-sign-finder/birthday-sign-finder';
+import { HomeHero } from './components/home-hero/home-hero';
 
 const FEATURED_PRODUCT_LIMIT = 8;
 const CATEGORY_TILE_LIMIT = 8;
@@ -43,7 +44,7 @@ export interface CategoryTile {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, ZodiacCard, ProductCard, ProductCardSkeleton, RecentlyViewed, ImgFallbackDirective, ScrollRevealDirective, BirthdaySignFinder],
+  imports: [RouterLink, ZodiacCard, ProductCard, ProductCardSkeleton, RecentlyViewed, ImgFallbackDirective, ScrollRevealDirective, BirthdaySignFinder, HomeHero],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

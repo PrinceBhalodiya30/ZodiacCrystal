@@ -31,6 +31,18 @@
   box-shadow: 0 0 0 4px rgba(152, 94, 56, 0.18);
 }
 
+.customer-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chip-btn-xs {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  height: auto;
+}
+
 .customer-name {
   font-weight: 500;
   color: var(--color-ink);
@@ -58,7 +70,7 @@
   display: inline-block;
   padding: 0.1rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
 }
 
@@ -106,7 +118,7 @@
   border-radius: 4px;
   background-color: #f0ece4;
   color: var(--color-brand);
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   vertical-align: middle;
 }

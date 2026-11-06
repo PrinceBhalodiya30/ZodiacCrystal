@@ -1,6 +1,6 @@
 .zodiac-products-page {
   padding: 2rem 1.5rem 4rem;
-  max-width: 1200px;
+  max-width: var(--container-max, 1400px);
   margin: 0 auto;
 }
 

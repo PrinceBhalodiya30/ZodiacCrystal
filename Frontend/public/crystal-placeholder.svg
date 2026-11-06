@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <rect width="400" height="400" fill="#f4efe5"/>
+  <g transform="translate(100, 70)" stroke="#985e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Diamond/Crystal Facets -->
+    <polygon points="100,20 180,80 150,220 50,220 20,80" fill="rgba(152, 94, 56, 0.05)" stroke="#985e38" stroke-width="2.5"/>
+    <polygon points="100,20 140,80 100,220 60,80" fill="rgba(152, 94, 56, 0.08)"/>
+    <line x1="20" y1="80" x2="180" y2="80"/>
+    <line x1="20" y1="80" x2="100" y2="220"/>
+    <line x1="180" y1="80" x2="100" y2="220"/>
+    <!-- Subtle Shimmer Star -->
+    <path d="M100,0 L103,12 L115,15 L103,18 L100,30 L97,18 L85,15 L97,12 Z" fill="#985e38" stroke="none" opacity="0.75"/>
+  </g>
+  <text x="200" y="325" text-anchor="middle" font-family="'Fraunces', serif" font-size="14" font-weight="600" fill="#4e5a70" letter-spacing="1.5">SACRED MINERAL</text>
+  <text x="200" y="345" text-anchor="middle" font-family="'Inter', sans-serif" font-size="11" fill="#6d695d" letter-spacing="0.5">ZodiacCrystal Apothecary</text>
+</svg>
+

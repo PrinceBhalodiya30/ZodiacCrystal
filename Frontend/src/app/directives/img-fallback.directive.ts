@@ -23,7 +23,7 @@ const FALLBACK_IMAGE =
 // variant 404s (e.g. an older upload with no variants), the srcset is dropped so
 // the browser falls back to the original URL, and only then to the placeholder.
 @Directive({
-  selector: 'img[imgFallback]',
+  selector: 'img[imgFallback], img[appImgFallback]',
   standalone: true
 })
 export class ImgFallbackDirective {

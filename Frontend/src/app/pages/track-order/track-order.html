@@ -1,6 +1,6 @@
 <section class="container track-page">
   @if (isGuestView) {
-    <a class="page-back-link" [routerLink]="['/order', orderId]"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to order #{{ orderId }}</a>
+    <a class="page-back-link" [routerLink]="['/order', orderId]"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to order #{{ orderId }}</a>
   } @else {
     <app-breadcrumbs [items]="[{ label: 'My Account', link: '/profile' }, { label: 'My Orders', link: '/orders' }, { label: 'Order #' + orderId, link: ['/orders', orderId] }, { label: 'Track Package' }]"></app-breadcrumbs>
   }

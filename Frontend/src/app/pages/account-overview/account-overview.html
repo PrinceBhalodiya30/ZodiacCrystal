@@ -60,8 +60,8 @@
     @if (isLoadingOrders()) {
       <span class="visually-hidden" role="status">Loading your orders...</span>
       <div class="overview-card" aria-hidden="true">
-        <span class="skeleton skeleton-line" style="width: 40%"></span>
-        <span class="skeleton" style="height: 3.5rem; margin-top: 1rem"></span>
+        <span class="skeleton skeleton-line skeleton-w-sm"></span>
+        <span class="skeleton skeleton-card-block"></span>
       </div>
     } @else if (ordersError()) {
       <div class="state-message state-message--error">
@@ -103,7 +103,7 @@
           <a class="btn" [routerLink]="['/orders', order.orderId]">View Order Details</a>
           @if (order.status !== 'Delivered' && order.status !== 'Cancelled') {
             <a class="btn btn-outline" [routerLink]="['/orders', order.orderId, 'track']">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:4px"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
               Track Package
             </a>
           }
@@ -116,7 +116,7 @@
         <div class="overview-card">
           <div class="overview-card-head">
             <h2>Earlier orders</h2>
-            <a class="text-link" routerLink="/orders">View all orders <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-left:3px"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            <a class="text-link" routerLink="/orders">View all orders <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
           </div>
           <ul class="recent-list">
             @for (o of recentOrders(); track o.orderId) {

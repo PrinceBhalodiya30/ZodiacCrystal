@@ -3,7 +3,7 @@
   inset: 0;
   background-color: rgba(20, 18, 16, 0.55);
   backdrop-filter: blur(6px);
-  z-index: 2000;
+  z-index: var(--z-modal, 1000);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -75,7 +75,7 @@
   padding: 0.2rem 0.5rem;
   background-color: #eee;
   border-radius: 4px;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   color: #666;
   cursor: pointer;
@@ -152,7 +152,7 @@
 }
 
 .palette-category-badge {
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -193,7 +193,7 @@
   border-radius: 3px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
   font-family: inherit;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
   color: #555;
 }

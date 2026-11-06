@@ -172,7 +172,7 @@
   display: inline-block;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -734,7 +734,7 @@
 }
 
 .gift-field label {
-  font-size: 0.68rem;
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -843,7 +843,7 @@
   background: var(--color-surface, #ffffff);
   color: var(--color-subtle, #4E5A70);
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--text-xs, 0.75rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-weight: 600;
