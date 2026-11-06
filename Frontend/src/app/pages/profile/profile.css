@@ -277,7 +277,7 @@ input:focus {
 }
 
 .otp-input {
-  letter-spacing: 0.45em;
+  letter-spacing: 0.15em;
   font-size: 1.25rem;
   font-family: var(--font-mono, monospace);
   font-weight: 700;

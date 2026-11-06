@@ -4,11 +4,33 @@
 }
 
 .confirmation-banner {
+  position: relative;
   background-color: var(--color-success-bg);
   border: 1px solid var(--color-success-border);
   border-radius: var(--radius-sm, 4px);
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.confirmation-banner-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  transition: opacity var(--transition-fast);
+}
+
+.confirmation-banner-close:hover {
+  opacity: 1;
 }
 
 .confirmation-banner h2 {
@@ -409,7 +431,7 @@
 
 .gift-msg-quote {
   margin: 0.3rem 0 0;
-  font-family: Georgia, serif;
+  font-family: var(--font-heading);
   font-style: italic;
   font-size: 0.95rem;
   color: var(--color-ink, #2c2825);

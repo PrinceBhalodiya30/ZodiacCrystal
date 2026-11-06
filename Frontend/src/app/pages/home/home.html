@@ -12,13 +12,6 @@
 
   <div class="container hero-inner">
     <div class="hero-copy">
-      <span class="hero-eyebrow">
-        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8l2.2 2.2M5 19l2.2-2.2M16.8 7.2l2.2-2.2"/>
-        </svg>
-        {{ heroEyebrow() || 'Celestial Resonance & Zodiac Alignment' }}
-      </span>
       <h1>{{ heroTitle() }}</h1>
       <p>{{ heroSubtitle() }}</p>
       <div class="hero-actions">
@@ -119,7 +112,6 @@
   <section class="container featured-section">
     <div class="section-header featured-header-with-nav">
       <div>
-        <span class="section-tag">Customer Favorites</span>
         <h2>Featured Crystals</h2>
       </div>
     </div>
@@ -135,7 +127,6 @@
 } @else if (productsError()) {
   <section class="container featured-section">
     <div class="section-header">
-      <span class="section-tag">Customer Favorites</span>
       <h2>Featured Crystals</h2>
     </div>
     <div class="state-message state-message--error">
@@ -147,7 +138,6 @@
   <section class="container featured-section" scrollReveal>
     <div class="section-header featured-header-with-nav">
       <div class="header-text-group">
-        <span class="section-tag">Customer Favorites</span>
         <h2>Featured Crystals</h2>
         <p class="section-subtitle">
           Hand-selected raw clusters, polished obelisks, and tumbled pocket stones.
@@ -204,7 +194,6 @@
 <!-- Shop by Zodiac & Birthday Sign Finder -->
 <section class="container zodiac-section" scrollReveal>
   <div class="section-header">
-    <span class="section-tag">Astrological Harmony</span>
     <h2>Shop by Zodiac Sign</h2>
     <p class="section-subtitle">
       Select your sun, moon, or rising sign to explore stones tuned to your cosmic qualities.
@@ -276,7 +265,6 @@
 @if (categoriesLoading()) {
   <section class="container category-section">
     <div class="section-header">
-      <span class="section-tag">Forms & Shapes</span>
       <h2>Shop by Category</h2>
     </div>
     <span class="visually-hidden" role="status">Loading categories...</span>
@@ -292,7 +280,6 @@
 } @else if (categoriesError()) {
   <section class="container category-section">
     <div class="section-header">
-      <span class="section-tag">Forms & Shapes</span>
       <h2>Shop by Category</h2>
     </div>
     <div class="state-message state-message--error">
@@ -303,7 +290,6 @@
 } @else if (categoryTiles().length > 0) {
   <section class="container category-section" scrollReveal>
     <div class="section-header">
-      <span class="section-tag">Forms & Shapes</span>
       <h2>Shop by Category</h2>
       <p class="section-subtitle">
         Explore natural specimens, towers, tumbled stones, jewelry, and sacred shapes.
@@ -362,7 +348,6 @@
 @if (guides().length > 0) {
   <section class="container guides-section" scrollReveal>
     <div class="section-header">
-      <span class="section-tag">Knowledge & Rituals</span>
       <h2>Crystal Guides & Wisdom</h2>
       <p class="section-subtitle">
         Practical advice for choosing, cleansing, and pairing your crystals.
@@ -390,7 +375,6 @@
 <!-- Why Choose Us -->
 <section class="container why-us-section" scrollReveal>
   <div class="section-header">
-    <span class="section-tag">Our Promise</span>
     <h2>Why Choose {{ siteName }}</h2>
     <p class="section-subtitle">Dedicated craftsmanship, transparent mineral curation, and careful packaging.</p>
   </div>

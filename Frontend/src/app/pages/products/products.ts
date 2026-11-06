@@ -75,6 +75,7 @@ export class Products implements OnInit {
 
   page = signal(1);
   totalPages = signal(1);
+  totalCount = signal<number | undefined>(undefined);
 
   readonly skeletonRows = SKELETON_ROWS;
 
@@ -285,6 +286,7 @@ export class Products implements OnInit {
           next: result => {
             this.products.set(result.items);
             this.totalPages.set(result.totalPages || 1);
+            this.totalCount.set(result.totalCount);
             this.isLoading.set(false);
           },
           error: () => {
@@ -345,6 +347,7 @@ export class Products implements OnInit {
         const totalCount = filtered.length;
         const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
         this.totalPages.set(totalPages);
+        this.totalCount.set(totalCount);
 
         const startIndex = (this.page() - 1) * PAGE_SIZE;
         const pagedItems = filtered.slice(startIndex, startIndex + PAGE_SIZE);

@@ -219,7 +219,7 @@
 }
 
 .cosmic-modal-title {
-  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 600;
   color: #ffffff;
@@ -352,9 +352,9 @@
 .transit-focus-box {
   margin-top: auto;
   background: rgba(0, 0, 0, 0.25);
-  border-left: 3px solid #f7d498;
+  border: 1px solid rgba(247, 212, 152, 0.35);
   padding: 0.75rem 0.9rem;
-  border-radius: 0 6px 6px 0;
+  border-radius: 6px;
 }
 
 .focus-label {
@@ -387,7 +387,7 @@
 }
 
 .crystal-title {
-  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 600;
   color: #ffffff;

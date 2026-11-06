@@ -1781,7 +1781,6 @@
   padding: 1.15rem 1.25rem;
   background: linear-gradient(145deg, #fcfbf9 0%, #f7f3ec 100%);
   border: 1px solid rgba(152, 94, 56, 0.24);
-  border-left: 3px solid var(--color-copper, #985e38);
   border-radius: var(--radius-md, 10px);
   box-shadow: 0 2px 10px rgba(44, 40, 37, 0.03);
   margin-top: 0.25rem;

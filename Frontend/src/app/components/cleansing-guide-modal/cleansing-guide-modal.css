@@ -309,17 +309,17 @@
 
 .moon-charge-card {
   background: linear-gradient(135deg, rgba(244, 240, 248, 0.5) 0%, rgba(255, 255, 255, 0.95) 100%);
-  border-left: 3px solid #8e44ad;
+  border: 1px solid rgba(142, 68, 173, 0.3);
 }
 
 .sun-charge-card {
   background: linear-gradient(135deg, rgba(254, 249, 231, 0.5) 0%, rgba(255, 255, 255, 0.95) 100%);
-  border-left: 3px solid #f39c12;
+  border: 1px solid rgba(243, 156, 18, 0.3);
 }
 
 .earth-charge-card {
   background: linear-gradient(135deg, rgba(240, 244, 238, 0.5) 0%, rgba(255, 255, 255, 0.95) 100%);
-  border-left: 3px solid #27ae60;
+  border: 1px solid rgba(39, 174, 96, 0.3);
 }
 
 .charge-header {
@@ -471,10 +471,10 @@
   font-size: 0.95rem;
   color: var(--color-text, #2c2825);
   background: var(--color-surface-tint, #fcfbf9);
-  border-left: 2px solid var(--color-copper, #985E38);
+  border: 1px solid rgba(152, 94, 56, 0.25);
   padding: 0.55rem 0.85rem;
   margin: 0.5rem 0 0;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
 }
 
 .anchor-list {
@@ -592,7 +592,7 @@
 }
 
 .mineral-card.is-sensitive {
-  border-left: 3px solid #e74c3c;
+  border-color: var(--color-danger-border);
 }
 
 .mineral-card-header {

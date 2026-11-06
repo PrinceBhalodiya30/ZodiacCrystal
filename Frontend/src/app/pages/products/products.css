@@ -551,7 +551,6 @@
   padding: 1.15rem 1.35rem;
   background: linear-gradient(135deg, rgba(251, 248, 242, 0.95) 0%, rgba(246, 241, 232, 0.65) 100%);
   border: 1px solid rgba(152, 94, 56, 0.25);
-  border-left: 3px solid var(--color-copper, #985E38);
   border-radius: var(--radius-sm, 6px);
   margin-top: 0.25rem;
   animation: intentionFadeIn 0.25s ease-out;

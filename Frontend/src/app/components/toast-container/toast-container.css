@@ -173,8 +173,8 @@
 /* --- Mobile Responsiveness --- */
 @media (max-width: 600px) {
   .toast-stack {
-    top: auto;
-    bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+    top: calc(4.5rem + env(safe-area-inset-top, 0px));
+    bottom: auto;
     left: 1rem;
     right: 1rem;
     max-width: none;
@@ -198,7 +198,7 @@
   @keyframes toast-slide-in-mobile {
     from {
       opacity: 0;
-      transform: translateY(12px) scale(0.97);
+      transform: translateY(-12px) scale(0.97);
     }
     to {
       opacity: 1;
@@ -209,7 +209,7 @@
   @keyframes toast-slide-out-mobile {
     to {
       opacity: 0;
-      transform: translateY(8px) scale(0.96);
+      transform: translateY(-8px) scale(0.96);
     }
   }
 }

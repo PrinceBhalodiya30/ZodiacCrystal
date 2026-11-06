@@ -145,15 +145,15 @@
   .wishlist-toggle {
     top: 0.4rem;
     left: 0.4rem;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 
   .compare-toggle {
-    top: 3rem;
+    top: 3.25rem;
     left: 0.4rem;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 
   .sale-badge {
@@ -376,8 +376,8 @@
   background-color: #f4efe5;
   color: #8f5330;
   border: 1px solid rgba(152, 94, 56, 0.22);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: var(--text-xs);
+  font-weight: 500;
   padding: 0.2rem 0.6rem;
   border-radius: var(--radius-pill);
   transition: all var(--transition-fast);
@@ -460,14 +460,14 @@
   .product-actions .btn-add-cart {
     flex: none;
     width: 100%;
-    min-height: 40px;
+    min-height: 44px;
     font-size: var(--text-xs);
   }
 
   .product-actions .btn-buy-now {
     flex: none;
     width: 100%;
-    min-height: 40px;
+    min-height: 44px;
     font-size: var(--text-xs);
     font-weight: 600;
   }

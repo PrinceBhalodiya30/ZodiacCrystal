@@ -40,7 +40,7 @@
   --color-accent-gold-light: #faf5ee;
   --color-copper: #985e38;
   --color-copper-lo: #8f5330;
-  --color-copper-hi: #b87a4b;
+  --color-copper-hi: #a6683c;
   --color-brass: #985e38;
   --color-brass-text: #8f5330;
   --color-brass-light: #faf5ee;
@@ -48,6 +48,16 @@
   --color-amethyst: #4a3656;
   --color-amethyst-light: #f3eff5;
   --color-slate: #3b464f;
+
+  /* Aliases & undeclared fallback tokens */
+  --color-accent: #985e38;
+  --color-copper-light: #faf5ee;
+  --color-surface-sunken: #ede6d9;
+  --color-sand-tint: #f4efe5;
+  --color-bone: #f4efe5;
+  --color-primary-cta: #1d2739;
+  --color-text: #1d2739;
+  --color-amber-bg: #fff5e6;
 
   /* --- Semantic Status Colors (WCAG AA compliant) --- */
   --color-success: #1b6e37;
@@ -541,8 +551,14 @@ textarea:focus-visible {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    transform: none !important;
+  }
+
+  /* Preserve subtle opacity transitions so users retain visual continuity */
+  .fade-in, .reveal-in, .toast, .admin-modal-overlay, .cart-flyout {
+    transition: opacity 0.15s ease !important;
+    transform: none !important;
   }
 
   /* Loading spinners keep turning (slowly) - a frozen one looks like a hang. */
@@ -724,14 +740,4 @@ textarea:focus-visible {
   }
 }
 
-/* --- Universal Accessibility: Reduced Motion --- */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+
