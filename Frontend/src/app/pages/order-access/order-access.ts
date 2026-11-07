@@ -27,10 +27,10 @@ import { Spinner } from '../../components/spinner/spinner';
   styles: [`.order-access-page { padding: 3rem 1.5rem; max-width: 640px; }`]
 })
 export class OrderAccess implements OnInit {
-  private guestSession = inject(GuestSessionService);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private token = inject(ActivatedRoute).snapshot.queryParamMap.get('t') ?? '';
+  private readonly guestSession = inject(GuestSessionService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly token = inject(ActivatedRoute).snapshot.queryParamMap.get('t') ?? '';
 
   errorMessage = signal('');
 
@@ -45,13 +45,13 @@ export class OrderAccess implements OnInit {
         if (response.requiresLogin) {
           const target = `/orders/${response.orderId}`;
           if (this.authService.isLoggedIn()) {
-            this.router.navigateByUrl(target, { replaceUrl: true });
+            void this.router.navigateByUrl(target, { replaceUrl: true });
           } else {
-            this.router.navigate(['/login'], { queryParams: { returnUrl: target }, replaceUrl: true });
+            void this.router.navigate(['/login'], { queryParams: { returnUrl: target }, replaceUrl: true });
           }
           return;
         }
-        this.router.navigate(['/order', response.orderId], { replaceUrl: true });
+        void this.router.navigate(['/order', response.orderId], { replaceUrl: true });
       },
       error: (error: HttpErrorResponse) => {
         this.errorMessage.set(error.error?.message || 'We couldn\'t open this link. Please try again.');

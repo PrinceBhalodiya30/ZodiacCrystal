@@ -33,11 +33,11 @@ function utc(date: string): number {
   styleUrls: ['../admin-shared.css', './coupons.css']
 })
 export class AdminCoupons implements OnInit {
-  private couponService = inject(CouponService);
+  private readonly couponService = inject(CouponService);
 
   isExporting = signal(false);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   coupons = signal<Coupon[]>([]);
   isLoading = signal(true);

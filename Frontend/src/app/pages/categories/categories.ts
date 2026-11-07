@@ -20,7 +20,7 @@ interface CategoryTile {
   styleUrl: './categories.css'
 })
 export class Categories implements OnInit {
-  private categoryService = inject(CategoryService);
+  private readonly categoryService = inject(CategoryService);
 
   categoryTiles = signal<CategoryTile[]>([]);
   isLoading = signal(true);

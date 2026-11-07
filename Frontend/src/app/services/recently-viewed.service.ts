@@ -30,8 +30,8 @@ interface GuestView {
 
 @Injectable({ providedIn: 'root' })
 export class RecentlyViewedService {
-  private http = inject(HttpClient);
-  private auth = inject(AuthService);
+  private readonly http = inject(HttpClient);
+  private readonly auth = inject(AuthService);
   private baseUrl = `${API_BASE_URL}/RecentlyViewed`;
   private userId: number | null | undefined = undefined;
 

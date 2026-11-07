@@ -51,11 +51,11 @@ export interface EnrichedTimelineItem {
 })
 export class OrderDetailDrawer implements OnInit {
   readonly siteName = SITE_NAME;
-  private orderService = inject(OrderService);
-  private auditLogService = inject(AuditLogService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
-  private navCounts = inject(AdminNavCountsService);
+  private readonly orderService = inject(OrderService);
+  private readonly auditLogService = inject(AuditLogService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly navCounts = inject(AdminNavCountsService);
 
   @Input({ required: true }) orderId!: number;
   @Input() backToCustomerEmail?: string;

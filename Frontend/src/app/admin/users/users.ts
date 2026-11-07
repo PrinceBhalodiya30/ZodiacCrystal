@@ -30,16 +30,16 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './users.css']
 })
 export class AdminUsers implements OnInit {
-  private userService = inject(UserService);
-  private router = inject(Router);
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
 
   isExporting = signal(false);
   selectedCustomerEmail = signal<string | null>(null);
   selectedOrderId = signal<number | null>(null);
   previousCustomerEmailForOrder = signal<string | null>(null);
-  private authService = inject(AuthService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly authService = inject(AuthService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   users = signal<AdminUser[]>([]);
   isLoading = signal(true);

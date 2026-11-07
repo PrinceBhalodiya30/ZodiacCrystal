@@ -47,9 +47,9 @@ const STATIC_NAV_COMMANDS: CommandItem[] = [
   styleUrls: ['./admin-command-palette.css']
 })
 export class AdminCommandPalette {
-  private router = inject(Router);
-  private productService = inject(ProductService);
-  private userService = inject(UserService);
+  private readonly router = inject(Router);
+  private readonly productService = inject(ProductService);
+  private readonly userService = inject(UserService);
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 

@@ -17,8 +17,8 @@ import { ToastService } from '../../services/toast.service';
 })
 export class Profile implements OnDestroy {
   authService = inject(AuthService);
-  private userService = inject(UserService);
-  private toast = inject(ToastService);
+  private readonly userService = inject(UserService);
+  private readonly toast = inject(ToastService);
 
   // Profile (name) editing - the email has its own verified flow below.
   isEditingProfile = signal(false);

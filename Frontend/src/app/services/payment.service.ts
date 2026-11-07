@@ -5,7 +5,7 @@ import { API_BASE_URL } from './api-config';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   // Short-lived Braintree client token for the Drop-in UI.
   getClientToken(): Observable<{ clientToken: string; sandbox: boolean }> {

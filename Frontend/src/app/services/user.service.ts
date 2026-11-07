@@ -24,7 +24,7 @@ export interface ChangePasswordRequest {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/Admin/Users`;
   private meBaseUrl = `${API_BASE_URL}/Users/me`;
 

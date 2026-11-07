@@ -21,7 +21,7 @@ const sameText = (a: string, b: string) => a.trim().toLowerCase() === b.trim().t
   ]
 })
 export class StateCitySelect {
-  private elementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef);
 
   state = model('');
   city = model('');

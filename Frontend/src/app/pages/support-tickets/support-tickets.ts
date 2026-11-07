@@ -16,7 +16,7 @@ import { Spinner } from '../../components/spinner/spinner';
   styleUrl: './support-tickets.css'
 })
 export class SupportTickets implements OnInit {
-  private supportService = inject(SupportService);
+  private readonly supportService = inject(SupportService);
 
   tickets = signal<SupportTicket[]>([]);
   isLoading = signal(true);

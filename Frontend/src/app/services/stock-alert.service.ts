@@ -7,7 +7,7 @@ import { API_BASE_URL } from './api-config';
 // sends the email (and a bell notification) once, then drops the request.
 @Injectable({ providedIn: 'root' })
 export class StockAlertService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/StockAlerts`;
 
   isSubscribed(productId: number): Observable<boolean> {

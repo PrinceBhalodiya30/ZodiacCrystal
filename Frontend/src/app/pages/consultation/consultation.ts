@@ -42,11 +42,11 @@ export interface CrystalMatch {
   styleUrl: './consultation.css'
 })
 export class Consultation implements OnInit {
-  private productService = inject(ProductService);
-  private cartService = inject(CartService);
-  private compareService = inject(CompareService);
-  private quizService = inject(QuizService);
-  private router = inject(Router);
+  private readonly productService = inject(ProductService);
+  private readonly cartService = inject(CartService);
+  private readonly compareService = inject(CompareService);
+  private readonly quizService = inject(QuizService);
+  private readonly router = inject(Router);
 
   breadcrumbs: Crumb[] = [
     { label: 'Home', link: '/' },
@@ -245,10 +245,10 @@ export class Consultation implements OnInit {
 
   navigateToProduct(productOrId: Product | number): void {
     if (typeof productOrId === 'object') {
-      this.router.navigate(['/products', getProductSlug(productOrId)]);
+      void this.router.navigate(['/products', getProductSlug(productOrId)]);
     } else {
       const match = this.products().find(p => p.productId === productOrId);
-      this.router.navigate(['/products', match ? getProductSlug(match) : productOrId]);
+      void this.router.navigate(['/products', match ? getProductSlug(match) : productOrId]);
     }
   }
 

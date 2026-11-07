@@ -17,8 +17,8 @@ import { InrPipe } from '../../pipes/inr.pipe';
 })
 export class Cart implements OnInit {
   cartService = inject(CartService);
-  private router = inject(Router);
-  private confirmDialog = inject(ConfirmDialogService);
+  private readonly router = inject(Router);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   readonly giftPackagingFee = GIFT_PACKAGING_FEE;
 
@@ -101,6 +101,6 @@ export class Cart implements OnInit {
     // Checking out from the cart is never a Buy Now purchase - clear any
     // leftover Buy Now item so Checkout shows the actual cart, not a stale item.
     this.cartService.clearBuyNowItem();
-    this.router.navigate(['/checkout']);
+    void this.router.navigate(['/checkout']);
   }
 }

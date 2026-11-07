@@ -13,6 +13,8 @@ namespace Zodiac_Crystal.Controllers
     [ApiController]
     public class ZodiacController : ControllerBase
     {
+        private const string ZodiacNotFoundMessage = "Zodiac sign not found";
+
         private readonly CrystalsDbContext _context;
         private readonly AuditLogService _auditLogService;
 
@@ -62,7 +64,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Zodiac sign not found"
+                    message = ZodiacNotFoundMessage
                 });
             }
 
@@ -81,7 +83,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Zodiac sign not found"
+                    message = ZodiacNotFoundMessage
                 });
             }
 
@@ -174,7 +176,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Zodiac sign not found"
+                    message = ZodiacNotFoundMessage
                 });
             }
 
@@ -215,7 +217,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Zodiac sign not found"
+                    message = ZodiacNotFoundMessage
                 });
             }
 

@@ -16,7 +16,7 @@ const USER_KEY = 'auth_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/Auth`;
 
   currentUser = signal<AuthUser | null>(this.loadValidSession());

@@ -6,7 +6,7 @@ import { API_BASE_URL } from './api-config';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/Categories`;
 
   // Admin only: products directly in each category, keyed by categoryId.

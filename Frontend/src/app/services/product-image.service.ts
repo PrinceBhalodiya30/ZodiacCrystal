@@ -12,7 +12,7 @@ export interface ProductImageRequest {
 
 @Injectable({ providedIn: 'root' })
 export class ProductImageService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/ProductImages`;
 
   getImages(): Observable<ProductImage[]> {

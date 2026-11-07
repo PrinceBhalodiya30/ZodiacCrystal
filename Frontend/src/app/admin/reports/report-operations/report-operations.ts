@@ -31,7 +31,7 @@ export function formatDuration(hours: number | null): string {
   styleUrl: './report-operations.css'
 })
 export class ReportOperations implements OnChanges {
-  private reportService = inject(ReportService);
+  private readonly reportService = inject(ReportService);
 
   @Input({ required: true }) from!: string;
   @Input({ required: true }) to!: string;

@@ -21,7 +21,7 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './product-images.css']
 })
 export class AdminProductImages implements OnInit {
-  private productService = inject(ProductService);
+  private readonly productService = inject(ProductService);
 
   products = signal<Product[]>([]);
   isLoading = signal(true);

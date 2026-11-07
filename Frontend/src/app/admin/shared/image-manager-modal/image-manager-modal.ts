@@ -17,10 +17,10 @@ import { ImgFallbackDirective } from '../../../directives/img-fallback.directive
   styleUrls: ['../../admin-shared.css', './image-manager-modal.css']
 })
 export class ImageManagerModal implements OnChanges {
-  private productImageService = inject(ProductImageService);
-  private productService = inject(ProductService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly productImageService = inject(ProductImageService);
+  private readonly productService = inject(ProductService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   @Input({ required: true }) product!: Product;
   @Output() closed = new EventEmitter<void>();

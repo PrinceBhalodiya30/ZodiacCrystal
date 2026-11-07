@@ -12,7 +12,7 @@ import { BirthdaySignFinder } from '../../components/birthday-sign-finder/birthd
   styleUrl: './zodiac.css'
 })
 export class ZodiacPage implements OnInit {
-  private zodiacService = inject(ZodiacService);
+  private readonly zodiacService = inject(ZodiacService);
 
   zodiacSigns = signal<Zodiac[]>([]);
   isLoading = signal(true);

@@ -17,9 +17,9 @@ import { Spinner } from '../../../components/spinner/spinner';
   styleUrls: ['../../admin-shared.css', './customer-360-drawer.css']
 })
 export class Customer360Drawer implements OnChanges {
-  private orderService = inject(OrderService);
-  private returnService = inject(ReturnService);
-  private supportService = inject(SupportService);
+  private readonly orderService = inject(OrderService);
+  private readonly returnService = inject(ReturnService);
+  private readonly supportService = inject(SupportService);
 
   @Input({ required: true }) customerEmail!: string;
   @Input() customerName?: string;

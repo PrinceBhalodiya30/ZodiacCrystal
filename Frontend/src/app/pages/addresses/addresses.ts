@@ -32,9 +32,9 @@ const EMPTY_FORM: AddressRequest = {
   styleUrl: './addresses.css'
 })
 export class Addresses implements OnInit {
-  private addressService = inject(AddressService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly addressService = inject(AddressService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   addresses = signal<Address[]>([]);
   isLoading = signal(true);

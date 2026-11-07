@@ -30,9 +30,9 @@ const RECENT_LIMIT = 3;
 export class AccountOverview implements OnInit {
   authService = inject(AuthService);
   wishlistService = inject(WishlistService);
-  private orderService = inject(OrderService);
-  private addressService = inject(AddressService);
-  private supportService = inject(SupportService);
+  private readonly orderService = inject(OrderService);
+  private readonly addressService = inject(AddressService);
+  private readonly supportService = inject(SupportService);
 
   orders = signal<OrderSummary[]>([]);
   isLoadingOrders = signal(true);

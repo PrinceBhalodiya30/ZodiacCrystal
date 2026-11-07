@@ -43,7 +43,7 @@ const STORAGE_KEY = 'guest_session';
 // sessionStorage so it ends with the tab.
 @Injectable({ providedIn: 'root' })
 export class GuestSessionService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/guest`;
 
   private session = signal<GuestSession | null>(this.load());

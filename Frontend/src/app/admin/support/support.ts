@@ -58,12 +58,12 @@ const CANNED_REPLIES: { label: string; text: string }[] = [
   styleUrls: ['../admin-shared.css', './support.css']
 })
 export class AdminSupport implements OnInit {
-  private supportService = inject(SupportService);
-  private toast = inject(ToastService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private navCounts = inject(AdminNavCountsService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly supportService = inject(SupportService);
+  private readonly toast = inject(ToastService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly navCounts = inject(AdminNavCountsService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly statuses: { value: string; label: string }[] = [
     { value: 'Active', label: 'Needs attention (open + awaiting)' },

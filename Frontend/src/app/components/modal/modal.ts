@@ -31,7 +31,7 @@ export class Modal implements OnChanges {
 
   @Output() closed = new EventEmitter<void>();
 
-  private platformId = inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
   private previousActiveElement: HTMLElement | null = null;
   private modalContainer = viewChild<ElementRef<HTMLElement>>('dialogEl');

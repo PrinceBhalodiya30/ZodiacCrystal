@@ -46,7 +46,7 @@ import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class QuizService {
-  private router = inject(Router);
+  private readonly router = inject(Router);
   isOpen = signal(false);
 
   private consultations: ConsultationRecord[] = [];
@@ -57,7 +57,7 @@ export class QuizService {
 
   open(): void {
     this.isOpen.set(false);
-    this.router.navigate(['/consultation']);
+    void this.router.navigate(['/consultation']);
   }
 
   close(): void {

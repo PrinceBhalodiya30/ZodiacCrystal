@@ -28,7 +28,7 @@ const DEFAULT_SETTINGS: StoreSettings = {
 
 @Injectable({ providedIn: 'root' })
 export class StoreSettingsService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/Settings`;
 
   readonly settings = signal<StoreSettings>(DEFAULT_SETTINGS);

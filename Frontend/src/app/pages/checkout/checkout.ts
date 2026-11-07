@@ -29,13 +29,13 @@ import { InrPipe } from '../../pipes/inr.pipe';
 })
 export class Checkout implements OnInit, OnDestroy {
   readonly cartService = inject(CartService);
-  private authService = inject(AuthService);
-  private orderService = inject(OrderService);
-  private mysteryBoxService = inject(MysteryBoxService);
-  private couponService = inject(CouponService);
-  private addressService = inject(AddressService);
-  private guestSession = inject(GuestSessionService);
-  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly orderService = inject(OrderService);
+  private readonly mysteryBoxService = inject(MysteryBoxService);
+  private readonly couponService = inject(CouponService);
+  private readonly addressService = inject(AddressService);
+  private readonly guestSession = inject(GuestSessionService);
+  private readonly router = inject(Router);
 
   paymentMethod = signal<PaymentMethod>('COD');
   paymentSelect = viewChild(PaymentMethodSelect);
@@ -439,11 +439,11 @@ export class Checkout implements OnInit, OnDestroy {
 
             if (this.isGuest()) {
               // Guests have no My Orders page; show the confirmation from the response.
-              this.router.navigate(['/order-placed'], { state: { order, email: this.shippingEmail } });
+              void this.router.navigate(['/order-placed'], { state: { order, email: this.shippingEmail } });
               return;
             }
 
-            this.router.navigate(['/orders', order.orderId], {
+            void this.router.navigate(['/orders', order.orderId], {
               state: { justPlaced: true }
             });
           },
@@ -504,11 +504,11 @@ export class Checkout implements OnInit, OnDestroy {
 
           if (this.isGuest()) {
             // Guests have no My Orders page; show the confirmation from the response.
-            this.router.navigate(['/order-placed'], { state: { order, email: this.shippingEmail } });
+            void this.router.navigate(['/order-placed'], { state: { order, email: this.shippingEmail } });
             return;
           }
 
-          this.router.navigate(['/orders', order.orderId], {
+          void this.router.navigate(['/orders', order.orderId], {
             state: { justPlaced: true }
           });
         },

@@ -30,9 +30,9 @@ export class NotificationBell {
   @Input() align: 'left' | 'right' = 'right';
 
   service = inject(NotificationService);
-  private router = inject(Router);
-  private elementRef = inject(ElementRef);
-  private toast = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly elementRef = inject(ElementRef);
+  private readonly toast = inject(ToastService);
 
   isOpen = signal(false);
   isRinging = signal(false);
@@ -107,20 +107,20 @@ export class NotificationBell {
     this.close();
 
     if (notification.type === 'LowStock') {
-      this.router.navigate(['/admin/stock'], { queryParams: { lowStock: 1 } });
+      void this.router.navigate(['/admin/stock'], { queryParams: { lowStock: 1 } });
     } else if (notification.type === 'Coupon') {
       this.copyCouponCode(notification.couponCode);
-      this.router.navigate(['/cart']);
+      void this.router.navigate(['/cart']);
     } else if (notification.type === 'Welcome') {
-      this.router.navigate(['/zodiac']);
+      void this.router.navigate(['/zodiac']);
     } else if (notification.type === 'TicketUpdated') {
-      this.router.navigate(['/support']);
+      void this.router.navigate(['/support']);
     } else if (notification.type === 'SupportTicket') {
-      this.router.navigate(['/admin/support']);
+      void this.router.navigate(['/admin/support']);
     } else if (notification.productId) {
-      this.router.navigate(['/products', notification.productId]);
+      void this.router.navigate(['/products', notification.productId]);
     } else if (notification.orderId) {
-      this.router.navigate(['/orders', notification.orderId]);
+      void this.router.navigate(['/orders', notification.orderId]);
     }
   }
 

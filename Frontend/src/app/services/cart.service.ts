@@ -39,11 +39,11 @@ const GIFT_WRAP_KEY = 'cart_gift_wrap';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
-  private auth = inject(AuthService);
-  private productService = inject(ProductService);
-  private http = inject(HttpClient);
-  private toast = inject(ToastService);
-  private storeSettings = inject(StoreSettingsService);
+  private readonly auth = inject(AuthService);
+  private readonly productService = inject(ProductService);
+  private readonly http = inject(HttpClient);
+  private readonly toast = inject(ToastService);
+  private readonly storeSettings = inject(StoreSettingsService);
   private syncTimer?: ReturnType<typeof setTimeout>;
   private storageKey = cartKey(this.auth.currentUser()?.userId ?? null);
 

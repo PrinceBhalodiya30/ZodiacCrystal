@@ -16,7 +16,7 @@ type GateStep = 'choose' | 'email' | 'code';
   styleUrl: './guest-checkout-gate.css'
 })
 export class GuestCheckoutGate {
-  private guestSession = inject(GuestSessionService);
+  private readonly guestSession = inject(GuestSessionService);
 
   verified = output<void>();
 

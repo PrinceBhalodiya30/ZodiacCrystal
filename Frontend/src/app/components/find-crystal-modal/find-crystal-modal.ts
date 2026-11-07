@@ -42,10 +42,10 @@ export interface CrystalMatch {
 })
 export class FindCrystalModal implements OnInit {
   quizService = inject(QuizService);
-  private productService = inject(ProductService);
-  private cartService = inject(CartService);
-  private compareService = inject(CompareService);
-  private router = inject(Router);
+  private readonly productService = inject(ProductService);
+  private readonly cartService = inject(CartService);
+  private readonly compareService = inject(CompareService);
+  private readonly router = inject(Router);
 
   isOpen = this.quizService.isOpen;
   currentStep = signal<number>(1);
@@ -222,10 +222,10 @@ export class FindCrystalModal implements OnInit {
   navigateToProduct(productOrId: Product | number): void {
     this.close();
     if (typeof productOrId === 'object') {
-      this.router.navigate(['/products', getProductSlug(productOrId)]);
+      void this.router.navigate(['/products', getProductSlug(productOrId)]);
     } else {
       const match = this.products().find(p => p.productId === productOrId);
-      this.router.navigate(['/products', match ? getProductSlug(match) : productOrId]);
+      void this.router.navigate(['/products', match ? getProductSlug(match) : productOrId]);
     }
   }
 

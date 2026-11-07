@@ -30,8 +30,8 @@ export interface MoonEventPreset {
   styleUrl: './settings.css'
 })
 export class AdminSettings implements OnInit {
-  private storeSettingsService = inject(StoreSettingsService);
-  private toastService = inject(ToastService);
+  private readonly storeSettingsService = inject(StoreSettingsService);
+  private readonly toastService = inject(ToastService);
 
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);

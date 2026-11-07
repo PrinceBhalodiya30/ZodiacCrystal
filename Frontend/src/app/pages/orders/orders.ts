@@ -32,11 +32,11 @@ export interface PurchasedCrystalSummary {
   styleUrl: './orders.css'
 })
 export class Orders implements OnInit {
-  private orderService = inject(OrderService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly orderService = inject(OrderService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
   cartService = inject(CartService);
-  private productService = inject(ProductService);
+  private readonly productService = inject(ProductService);
 
   orders = signal<OrderSummary[]>([]);
   isLoading = signal(true);

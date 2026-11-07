@@ -80,28 +80,28 @@ export interface BundleItem {
 })
 export class ProductDetails implements OnInit {
   readonly siteName = SITE_NAME;
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private location = inject(Location);
-  private productService = inject(ProductService);
-  private pageTitle = inject(PageTitleService);
-  private seo = inject(SeoService);
-  private stockAlertService = inject(StockAlertService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly productService = inject(ProductService);
+  private readonly pageTitle = inject(PageTitleService);
+  private readonly seo = inject(SeoService);
+  private readonly stockAlertService = inject(StockAlertService);
 
   // "Notify me when it's back" for out-of-stock products (customers only).
   stockAlertSubscribed = signal(false);
   isStockAlertBusy = signal(false);
-  private cartService = inject(CartService);
-  private authService = inject(AuthService);
-  private toast = inject(ToastService);
+  private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
+  private readonly toast = inject(ToastService);
   wishlistService = inject(WishlistService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private reviewService = inject(ReviewService);
-  private recentlyViewedService = inject(RecentlyViewedService);
-  private destroyRef = inject(DestroyRef);
-  private notificationService = inject(NotificationService);
-  private couponService = inject(CouponService);
-  private cleansingGuideService = inject(CleansingGuideService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly reviewService = inject(ReviewService);
+  private readonly recentlyViewedService = inject(RecentlyViewedService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly notificationService = inject(NotificationService);
+  private readonly couponService = inject(CouponService);
+  private readonly cleansingGuideService = inject(CleansingGuideService);
 
   readonly freeShippingThreshold = computed(() => this.cartService.freeShippingThreshold());
   readonly flatShippingFee = computed(() => this.cartService.flatShippingFee());
@@ -807,7 +807,7 @@ export class ProductDetails implements OnInit {
     this.cartService.setBuyNowItem(product, this.quantity());
 
     // Buy Now is an isolated instant checkout (Amazon/Shopify model).
-    this.router.navigate(['/checkout']);
+    void this.router.navigate(['/checkout']);
   }
 
   shareOnWhatsApp(): void {
@@ -853,7 +853,7 @@ export class ProductDetails implements OnInit {
     }
 
     this.toast.error(message);
-    this.router.navigate(['/login'], { queryParams: { returnUrl } });
+    void this.router.navigate(['/login'], { queryParams: { returnUrl } });
     return false;
   }
 }

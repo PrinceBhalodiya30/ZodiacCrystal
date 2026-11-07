@@ -7,7 +7,7 @@ import { API_BASE_URL } from './api-config';
 
 @Injectable({ providedIn: 'root' })
 export class SupportService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/SupportTickets`;
   private adminBaseUrl = `${API_BASE_URL}/Admin/SupportTickets`;
 

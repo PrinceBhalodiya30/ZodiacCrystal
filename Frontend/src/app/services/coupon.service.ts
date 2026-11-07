@@ -14,7 +14,7 @@ import { API_BASE_URL } from './api-config';
 
 @Injectable({ providedIn: 'root' })
 export class CouponService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/Coupons`;
 
   // status: 'active' | 'scheduled' | 'expired' | 'usedup' | 'inactive' ('' = any).

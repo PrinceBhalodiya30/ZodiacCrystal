@@ -35,7 +35,7 @@ const LINKS: AccountLink[] = [
 export class AccountLayout {
   authService = inject(AuthService);
   wishlistService = inject(WishlistService);
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   // Admins have no orders/addresses/wishlist (those routes are customer-only).
   links = computed(() => (this.authService.isAdmin() ? LINKS.filter(l => !l.customerOnly) : LINKS));
@@ -54,6 +54,6 @@ export class AccountLayout {
   logout(): void {
     this.authService.logout();
     this.wishlistService.clear();
-    this.router.navigate(['/']);
+    void this.router.navigate(['/']);
   }
 }

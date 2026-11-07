@@ -16,8 +16,8 @@ import { RETURN_REASONS, ReturnReason } from '../../models/return-request';
   styleUrl: './return-request-panel.css'
 })
 export class ReturnRequestPanel {
-  private returnService = inject(ReturnService);
-  private toast = inject(ToastService);
+  private readonly returnService = inject(ReturnService);
+  private readonly toast = inject(ToastService);
 
   order = input.required<Order>();
   returnRequested = output<void>();

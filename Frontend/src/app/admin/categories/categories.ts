@@ -19,9 +19,9 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './categories.css']
 })
 export class AdminCategories implements OnInit {
-  private categoryService = inject(CategoryService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   categories = signal<Category[]>([]);
   isLoading = signal(true);

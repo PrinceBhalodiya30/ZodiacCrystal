@@ -30,9 +30,9 @@ const STEP_ORDER = ['Pending', 'Confirmed', 'Shipped', 'Delivered'];
   styleUrl: './track-order.css'
 })
 export class TrackOrder implements OnInit {
-  private route = inject(ActivatedRoute);
-  private orderService = inject(OrderService);
-  private toast = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly orderService = inject(OrderService);
+  private readonly toast = inject(ToastService);
 
   readonly orderId = Number(this.route.snapshot.paramMap.get('id'));
   // Guest order link (/order/:id/track): back link instead of My Account breadcrumbs.

@@ -32,8 +32,8 @@ import { CleansingGuideModal } from './components/cleansing-guide-modal/cleansin
   styleUrl: './app.css'
 })
 export class App {
-  private router = inject(Router);
-  private injector = inject(Injector);
+  private readonly router = inject(Router);
+  private readonly injector = inject(Injector);
 
   // The admin section has its own sidebar/nav and logout, so the customer
   // site chrome would just be redundant duplicate navigation there.
@@ -45,7 +45,7 @@ export class App {
     inject(AuthService).sessionExpired.subscribe(() => {
       wishlistService.clear();
       const returnUrl = this.router.url.startsWith('/login') ? undefined : this.router.url;
-      this.router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+      void this.router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
     });
 
     this.router.events

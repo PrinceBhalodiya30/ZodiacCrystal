@@ -10,9 +10,9 @@ import { API_BASE_URL } from './api-config';
 
 @Injectable({ providedIn: 'root' })
 export class WishlistService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private toast = inject(ToastService);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private readonly toast = inject(ToastService);
   private baseUrl = `${API_BASE_URL}/Wishlist`;
 
   items = signal<WishlistItem[]>([]);

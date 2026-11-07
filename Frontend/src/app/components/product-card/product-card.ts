@@ -29,10 +29,10 @@ export class ProductCard implements OnInit {
   @Input({ required: true }) product!: Product;
   @Input() variant: 'default' | 'wishlist' = 'default';
 
-  private cartService = inject(CartService);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private toast = inject(ToastService);
+  private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
   wishlistService = inject(WishlistService);
   compareService = inject(CompareService);
 
@@ -183,7 +183,7 @@ export class ProductCard implements OnInit {
     this.cartService.setBuyNowItem(this.product, 1);
 
     // Checkout itself offers log in or guest checkout.
-    this.router.navigate(['/checkout']);
+    void this.router.navigate(['/checkout']);
   }
 
   private requireLogin(returnUrl: string = this.router.url, message = 'Please log in to continue.'): boolean {
@@ -192,7 +192,7 @@ export class ProductCard implements OnInit {
     }
 
     this.toast.error(message);
-    this.router.navigate(['/login'], { queryParams: { returnUrl } });
+    void this.router.navigate(['/login'], { queryParams: { returnUrl } });
     return false;
   }
 }

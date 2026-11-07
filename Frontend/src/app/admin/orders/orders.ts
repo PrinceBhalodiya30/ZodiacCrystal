@@ -45,9 +45,9 @@ function validPayment(value: string | null): string {
   styleUrls: ['../admin-shared.css', './orders.css']
 })
 export class AdminOrders implements OnInit {
-  private orderService = inject(OrderService);
-  private toast = inject(ToastService);
-  private confirmDialog = inject(ConfirmDialogService);
+  private readonly orderService = inject(OrderService);
+  private readonly toast = inject(ToastService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   statuses = STATUSES;
   orders = signal<AdminOrder[]>([]);

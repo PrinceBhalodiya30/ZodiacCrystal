@@ -7,7 +7,7 @@ import { API_BASE_URL } from './api-config';
 
 @Injectable({ providedIn: 'root' })
 export class MysteryBoxService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/mysterybox`;
 
   getInfo(): Observable<MysteryBoxInfo> {

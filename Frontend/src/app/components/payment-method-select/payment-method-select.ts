@@ -19,7 +19,7 @@ type CardFormStatus = 'idle' | 'loading' | 'ready' | 'error';
 })
 export class PaymentMethodSelect {
   readonly siteName = SITE_NAME;
-  private paymentService = inject(PaymentService);
+  private readonly paymentService = inject(PaymentService);
 
   method = model<PaymentMethod>('COD');
   // Pages that already show their own "Payment" heading hide the legend

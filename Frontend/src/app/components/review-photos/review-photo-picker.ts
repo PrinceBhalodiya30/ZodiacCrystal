@@ -19,7 +19,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
   styleUrl: './review-photos.css'
 })
 export class ReviewPhotoPicker {
-  private toast = inject(ToastService);
+  private readonly toast = inject(ToastService);
 
   photos = model<PickedPhoto[]>([]);
   max = input(3);

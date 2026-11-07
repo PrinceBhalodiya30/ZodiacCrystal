@@ -20,11 +20,11 @@ import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
   styleUrl: './mystery-box.css'
 })
 export class MysteryBox implements OnInit {
-  private mysteryBoxService = inject(MysteryBoxService);
-  private zodiacService = inject(ZodiacService);
-  private authService = inject(AuthService);
-  private cartService = inject(CartService);
-  private router = inject(Router);
+  private readonly mysteryBoxService = inject(MysteryBoxService);
+  private readonly zodiacService = inject(ZodiacService);
+  private readonly authService = inject(AuthService);
+  private readonly cartService = inject(CartService);
+  private readonly router = inject(Router);
 
   zodiacSigns = signal<Zodiac[]>([]);
   selectedZodiacId = signal<number | null>(null);
@@ -87,6 +87,6 @@ export class MysteryBox implements OnInit {
       minimumValue: info.minimumValue
     });
 
-    this.router.navigate(['/checkout']);
+    void this.router.navigate(['/checkout']);
   }
 }

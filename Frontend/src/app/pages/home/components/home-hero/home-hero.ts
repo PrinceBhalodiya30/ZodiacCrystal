@@ -22,10 +22,10 @@ import { getProductSlug } from '../../../../utils/product-slug.util';
 })
 export class HomeHero implements OnInit, OnDestroy {
   readonly siteName = SITE_NAME;
-  private storeSettings = inject(StoreSettingsService);
-  private quizService = inject(QuizService);
-  private productService = inject(ProductService);
-  private cartService = inject(CartService);
+  private readonly storeSettings = inject(StoreSettingsService);
+  private readonly quizService = inject(QuizService);
+  private readonly productService = inject(ProductService);
+  private readonly cartService = inject(CartService);
 
   readonly heroEyebrow = computed(() => this.storeSettings.heroEyebrow());
   readonly heroTitle = computed(() => this.storeSettings.heroTitle());

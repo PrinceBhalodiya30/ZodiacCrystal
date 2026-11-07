@@ -17,9 +17,9 @@ import { SITE_NAME } from '../../services/page-title.service';
   styleUrl: './guide-detail.css'
 })
 export class GuideDetail implements OnInit, OnDestroy {
-  private route = inject(ActivatedRoute);
-  private seo = inject(SeoService);
-  private cleansingGuideService = inject(CleansingGuideService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly seo = inject(SeoService);
+  private readonly cleansingGuideService = inject(CleansingGuideService);
   private routeSub?: Subscription;
 
   guide = signal<Guide | null>(null);

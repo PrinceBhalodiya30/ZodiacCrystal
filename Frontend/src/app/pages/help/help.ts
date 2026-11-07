@@ -45,11 +45,11 @@ type Step = 'start' | 'issue' | 'answer' | 'form' | 'sent';
 })
 export class Help implements OnInit {
   authService = inject(AuthService);
-  private orderService = inject(OrderService);
-  private supportService = inject(SupportService);
-  private toast = inject(ToastService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly orderService = inject(OrderService);
+  private readonly supportService = inject(SupportService);
+  private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly categories = TICKET_CATEGORIES;
   readonly replyWithinHours = SUPPORT_REPLY_WITHIN_HOURS;
@@ -155,7 +155,7 @@ export class Help implements OnInit {
 
   stillNeedHelp(): void {
     if (!this.isCustomer()) {
-      this.router.navigate(['/login'], { queryParams: { returnUrl: '/help' } });
+      void this.router.navigate(['/login'], { queryParams: { returnUrl: '/help' } });
       return;
     }
     const order = this.selectedOrder();

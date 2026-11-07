@@ -15,7 +15,7 @@ export interface AuditLogFilters {
 
 @Injectable({ providedIn: 'root' })
 export class AuditLogService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/Admin/AuditLogs`;
 
   getPaged(pageNumber: number, pageSize: number, filters: AuditLogFilters = {}): Observable<PagedResult<AuditLog>> {

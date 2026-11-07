@@ -32,11 +32,11 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './products.css']
 })
 export class AdminProducts implements OnInit {
-  private productService = inject(ProductService);
-  private categoryService = inject(CategoryService);
-  private zodiacService = inject(ZodiacService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly productService = inject(ProductService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly zodiacService = inject(ZodiacService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);

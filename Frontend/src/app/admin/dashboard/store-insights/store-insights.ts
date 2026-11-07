@@ -47,8 +47,8 @@ import { VedicZodiacPipe } from '../../../pipes/vedic-zodiac.pipe';
   styleUrl: './store-insights.css'
 })
 export class StoreInsights implements OnChanges {
-  private reportService = inject(ReportService);
-  private zodiacService = inject(ZodiacService);
+  private readonly reportService = inject(ReportService);
+  private readonly zodiacService = inject(ZodiacService);
 
   // Changes whenever the dashboard reloads (including live SignalR refreshes).
   @Input() refresh = 0;

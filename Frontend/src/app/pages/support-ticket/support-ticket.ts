@@ -23,8 +23,8 @@ import { SITE_NAME } from '../../services/page-title.service';
 })
 export class SupportTicketPage implements OnInit {
   readonly siteName = SITE_NAME;
-  private supportService = inject(SupportService);
-  private toast = inject(ToastService);
+  private readonly supportService = inject(SupportService);
+  private readonly toast = inject(ToastService);
   private ticketId = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
 
   readonly maxPhotos = SUPPORT_MAX_PHOTOS;

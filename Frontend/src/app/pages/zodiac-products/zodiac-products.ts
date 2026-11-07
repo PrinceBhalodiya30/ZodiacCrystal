@@ -21,10 +21,10 @@ import { formatZodiacDual } from '../../utils/zodiac-names.util';
   styleUrl: './zodiac-products.css'
 })
 export class ZodiacProducts implements OnInit {
-  private route = inject(ActivatedRoute);
-  private zodiacService = inject(ZodiacService);
-  private pageTitle = inject(PageTitleService);
-  private seo = inject(SeoService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly zodiacService = inject(ZodiacService);
+  private readonly pageTitle = inject(PageTitleService);
+  private readonly seo = inject(SeoService);
 
   zodiac = signal<Zodiac | null>(null);
   products = signal<Product[]>([]);

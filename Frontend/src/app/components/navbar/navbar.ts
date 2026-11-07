@@ -30,7 +30,7 @@ export class Navbar {
   wishlistService = inject(WishlistService);
   quizService = inject(QuizService);
   storeSettings = inject(StoreSettingsService);
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   openQuiz(): void {
     this.quizService.open();
@@ -39,7 +39,7 @@ export class Navbar {
   // Checkout gets a focused header (logo + "Secure checkout" only) so shoppers
   // aren't tempted away mid-purchase; the logo still links home.
   // Pages with an inline checkout (Mystery Box) turn it on via CheckoutModeService.
-  private checkoutMode = inject(CheckoutModeService);
+  private readonly checkoutMode = inject(CheckoutModeService);
   private isCheckoutRoute = toSignal(
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
@@ -171,7 +171,7 @@ export class Navbar {
       return;
     }
 
-    this.router.navigate(['/products'], { queryParams: { search: term } });
+    void this.router.navigate(['/products'], { queryParams: { search: term } });
     this.searchTerm.set('');
     this.isSearchOpen.set(false);
     this.closeMenu();
@@ -180,7 +180,7 @@ export class Navbar {
   onCartClick(): void {
     this.closeMenu();
     if (this.cartService.totalQuantity() === 0) {
-      this.router.navigate(['/cart']);
+      void this.router.navigate(['/cart']);
     } else {
       this.cartService.toggleDrawer();
     }
@@ -191,6 +191,6 @@ export class Navbar {
     this.authService.logout();
     this.wishlistService.clear();
     this.closeMenu();
-    this.router.navigate(['/']);
+    void this.router.navigate(['/']);
   }
 }

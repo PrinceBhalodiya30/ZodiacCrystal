@@ -31,9 +31,9 @@ const HUB_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/hubs/notifications`;
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private toastService = inject(ToastService);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
 
   notifications = signal<AppNotification[]>([]);
   unreadCount = signal(0);

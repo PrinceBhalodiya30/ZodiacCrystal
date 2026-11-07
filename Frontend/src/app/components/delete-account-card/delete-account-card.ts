@@ -18,12 +18,12 @@ import { CartService } from '../../services/cart.service';
   styleUrl: './delete-account-card.css'
 })
 export class DeleteAccountCard {
-  private userService = inject(UserService);
-  private authService = inject(AuthService);
-  private cartService = inject(CartService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
-  private router = inject(Router);
+  private readonly userService = inject(UserService);
+  private readonly authService = inject(AuthService);
+  private readonly cartService = inject(CartService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
 
   isOpen = signal(false);
   isDeleting = signal(false);
@@ -60,7 +60,7 @@ export class DeleteAccountCard {
         this.cartService.clearBuyNowItem();
         this.authService.logout();
         this.toast.success('Your account has been deleted.');
-        this.router.navigate(['/']);
+        void this.router.navigate(['/']);
       },
       error: error => {
         this.isDeleting.set(false);

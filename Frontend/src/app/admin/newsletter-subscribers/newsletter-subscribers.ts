@@ -24,9 +24,9 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './newsletter-subscribers.css']
 })
 export class AdminNewsletterSubscribers implements OnInit {
-  private newsletterService = inject(NewsletterService);
-  private toast = inject(ToastService);
-  private confirmDialog = inject(ConfirmDialogService);
+  private readonly newsletterService = inject(NewsletterService);
+  private readonly toast = inject(ToastService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   isExporting = signal(false);
 

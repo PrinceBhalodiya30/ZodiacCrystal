@@ -20,7 +20,7 @@ import { ZodiacIcon } from '../zodiac-icon/zodiac-icon';
 })
 export class CompareModal {
   compareService = inject(CompareService);
-  private cartService = inject(CartService);
+  private readonly cartService = inject(CartService);
 
   isOpen = this.compareService.isModalOpen;
   items = this.compareService.items;

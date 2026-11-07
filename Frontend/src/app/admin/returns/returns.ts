@@ -33,16 +33,16 @@ import { blobErrorMessage, downloadBlob } from '../../utils/download.util';
   styleUrls: ['../admin-shared.css', './returns.css']
 })
 export class AdminReturns implements OnInit {
-  private returnService = inject(ReturnService);
-  private confirmDialog = inject(ConfirmDialogService);
+  private readonly returnService = inject(ReturnService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   isExporting = signal(false);
   selectedOrderId = signal<number | null>(null);
   selectedCustomerEmail = signal<string | null>(null);
   previousCustomerEmailForOrder = signal<string | null>(null);
-  private toast = inject(ToastService);
-  private navCounts = inject(AdminNavCountsService);
-  private injector = inject(Injector);
+  private readonly toast = inject(ToastService);
+  private readonly navCounts = inject(AdminNavCountsService);
+  private readonly injector = inject(Injector);
 
   private actionPanel = viewChild<ElementRef<HTMLDivElement>>('actionPanel');
 

@@ -28,9 +28,9 @@ const STATUSES: ReviewStatus[] = ['Approved', 'Rejected'];
   styleUrls: ['../admin-shared.css', './reviews.css']
 })
 export class AdminReviews implements OnInit {
-  private reviewService = inject(ReviewService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly reviewService = inject(ReviewService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   statuses = STATUSES;
 

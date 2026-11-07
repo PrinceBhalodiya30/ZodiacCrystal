@@ -26,9 +26,9 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './stock.css']
 })
 export class AdminStock implements OnInit {
-  private productService = inject(ProductService);
-  private toast = inject(ToastService);
-  private confirmDialog = inject(ConfirmDialogService);
+  private readonly productService = inject(ProductService);
+  private readonly toast = inject(ToastService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   products = signal<Product[]>([]);
   isLoading = signal(true);

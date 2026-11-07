@@ -14,8 +14,8 @@ import { ProductCard } from '../product-card/product-card';
   styleUrl: './recently-viewed.css'
 })
 export class RecentlyViewed implements OnInit, OnChanges {
-  private productService = inject(ProductService);
-  private recentlyViewedService = inject(RecentlyViewedService);
+  private readonly productService = inject(ProductService);
+  private readonly recentlyViewedService = inject(RecentlyViewedService);
 
   // The product currently being viewed, if any - excluded from this list so a
   // product is never shown alongside itself on its own details page.

@@ -13,7 +13,7 @@ export interface SubscribeResponse {
 
 @Injectable({ providedIn: 'root' })
 export class NewsletterService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private baseUrl = `${API_BASE_URL}/newsletter`;
   private adminBaseUrl = `${API_BASE_URL}/Admin/Newsletter-Subscribers`;
 

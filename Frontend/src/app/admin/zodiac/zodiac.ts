@@ -22,9 +22,9 @@ import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
   styleUrls: ['../admin-shared.css', './zodiac.css']
 })
 export class AdminZodiac implements OnInit {
-  private zodiacService = inject(ZodiacService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
+  private readonly zodiacService = inject(ZodiacService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
 
   zodiacSigns = signal<Zodiac[]>([]);
   isLoading = signal(true);

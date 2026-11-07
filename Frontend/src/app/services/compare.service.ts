@@ -6,7 +6,7 @@ const MAX_COMPARE_ITEMS = 3;
 
 @Injectable({ providedIn: 'root' })
 export class CompareService {
-  private toast = inject(ToastService);
+  private readonly toast = inject(ToastService);
 
   readonly max = MAX_COMPARE_ITEMS;
   items = signal<Product[]>([]);

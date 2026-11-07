@@ -7,12 +7,12 @@ export const customerGuard: CanActivateFn = (_route, state) => {
   const router = inject(Router);
 
   if (!authService.isLoggedIn()) {
-    router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+    void router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false;
   }
 
   if (authService.isAdmin()) {
-    router.navigate(['/admin']);
+    void router.navigate(['/admin']);
     return false;
   }
 

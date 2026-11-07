@@ -14,7 +14,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
   styleUrl: './order-placed.css'
 })
 export class OrderPlaced {
-  private state = inject(Router).getCurrentNavigation()?.extras.state
+  private readonly state = inject(Router).getCurrentNavigation()?.extras.state
     ?? (typeof history !== 'undefined' ? history.state : null);
 
   order: Order | null = this.state?.order ?? null;

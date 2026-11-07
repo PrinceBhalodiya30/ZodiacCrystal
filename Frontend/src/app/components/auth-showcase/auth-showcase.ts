@@ -47,11 +47,11 @@ export class AuthShowcase implements OnInit {
   @Input() mode: 'login' | 'register' = 'login';
   readonly siteName = SITE_NAME;
 
-  private productService = inject(ProductService);
-  private reviewService = inject(ReviewService);
-  private couponService = inject(CouponService);
+  private readonly productService = inject(ProductService);
+  private readonly reviewService = inject(ReviewService);
+  private readonly couponService = inject(CouponService);
 
-  private storeSettings = inject(StoreSettingsService);
+  private readonly storeSettings = inject(StoreSettingsService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
   readonly fallbackImage = HERO_IMAGE_URL;
 

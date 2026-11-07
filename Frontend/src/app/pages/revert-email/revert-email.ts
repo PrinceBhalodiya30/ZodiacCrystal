@@ -15,9 +15,9 @@ import { SITE_NAME } from '../../services/page-title.service';
 })
 export class RevertEmail {
   readonly siteName = SITE_NAME;
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
 
-  private token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
+  private readonly token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
   readonly hasToken = this.token.length > 0;
 
   state = signal<'confirm' | 'done'>('confirm');

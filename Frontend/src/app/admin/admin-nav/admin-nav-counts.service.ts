@@ -10,12 +10,12 @@ import { NotificationService } from '../../services/notification.service';
 // being re-created on every admin page (no flicker back to empty).
 @Injectable({ providedIn: 'root' })
 export class AdminNavCountsService {
-  private orderService = inject(OrderService);
-  private returnService = inject(ReturnService);
-  private productService = inject(ProductService);
-  private supportService = inject(SupportService);
+  private readonly orderService = inject(OrderService);
+  private readonly returnService = inject(ReturnService);
+  private readonly productService = inject(ProductService);
+  private readonly supportService = inject(SupportService);
 
-  private document = inject(DOCUMENT);
+  private readonly document = inject(DOCUMENT);
 
   pendingOrders = signal(0);
   requestedReturns = signal(0);

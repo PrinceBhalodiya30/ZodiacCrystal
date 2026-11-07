@@ -50,15 +50,15 @@ export interface CategoryTile {
 })
 export class Home implements OnInit, OnDestroy {
   readonly siteName = SITE_NAME;
-  private zodiacService = inject(ZodiacService);
-  private productService = inject(ProductService);
-  private categoryService = inject(CategoryService);
-  private storeSettings = inject(StoreSettingsService);
+  private readonly zodiacService = inject(ZodiacService);
+  private readonly productService = inject(ProductService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly storeSettings = inject(StoreSettingsService);
   readonly heroEyebrow = computed(() => this.storeSettings.heroEyebrow());
   readonly heroTitle = computed(() => this.storeSettings.heroTitle());
   readonly heroSubtitle = computed(() => this.storeSettings.heroSubtitle());
   quizService = inject(QuizService);
-  private cleansingGuideService = inject(CleansingGuideService);
+  private readonly cleansingGuideService = inject(CleansingGuideService);
 
   // Featured Products Horizontal Slider (E-Commerce Luxury Pattern)
   @ViewChild('featuredTrack') featuredTrack?: ElementRef<HTMLDivElement>;

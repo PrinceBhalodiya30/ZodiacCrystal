@@ -19,8 +19,8 @@ export class Footer {
   readonly siteName = SITE_NAME;
   readonly currentYear = new Date().getFullYear();
   authService = inject(AuthService);
-  private newsletterService = inject(NewsletterService);
-  private storeSettings = inject(StoreSettingsService);
+  private readonly newsletterService = inject(NewsletterService);
+  private readonly storeSettings = inject(StoreSettingsService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
 
   newsletterEmail = signal('');

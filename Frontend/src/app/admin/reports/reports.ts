@@ -78,9 +78,9 @@ import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
   styleUrls: ['../admin-shared.css', './reports.css']
 })
 export class AdminReports implements OnInit {
-  private reportService = inject(ReportService);
-  private quizService = inject(QuizService);
-  private toast = inject(ToastService);
+  private readonly reportService = inject(ReportService);
+  private readonly quizService = inject(QuizService);
+  private readonly toast = inject(ToastService);
 
   isExporting = signal(false);
   isExportingConsultation = signal(false);

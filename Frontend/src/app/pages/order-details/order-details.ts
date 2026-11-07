@@ -39,13 +39,13 @@ import { InrPipe } from '../../pipes/inr.pipe';
   styleUrl: './order-details.css'
 })
 export class OrderDetails implements OnInit {
-  private route = inject(ActivatedRoute);
-  private orderService = inject(OrderService);
-  private confirmDialog = inject(ConfirmDialogService);
-  private toast = inject(ToastService);
-  private productService = inject(ProductService);
-  private cartService = inject(CartService);
-  private router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly orderService = inject(OrderService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toast = inject(ToastService);
+  private readonly productService = inject(ProductService);
+  private readonly cartService = inject(CartService);
+  private readonly router = inject(Router);
 
   // Opened from a guest's emailed order link (/order/:id): no My Account
   // breadcrumbs or links, and returns aren't available to guests yet.
@@ -184,7 +184,7 @@ export class OrderDetails implements OnInit {
       if (skipped > 0) {
         this.toast.info(`Added ${added} item${added === 1 ? '' : 's'} to your cart (${skipped} unavailable).`);
       }
-      this.router.navigate(['/cart']);
+      void this.router.navigate(['/cart']);
     });
   }
 

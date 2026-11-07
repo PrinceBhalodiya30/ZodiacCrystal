@@ -18,9 +18,9 @@ const DISMISS_STORAGE_PREFIX = 'crystal_studio_topbar_dismissed_';
   styleUrl: './moon-transit-bar.css'
 })
 export class MoonTransitBar implements OnInit {
-  private router = inject(Router);
-  private checkoutMode = inject(CheckoutModeService);
-  private destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly checkoutMode = inject(CheckoutModeService);
+  private readonly destroyRef = inject(DestroyRef);
   storeSettings = inject(StoreSettingsService);
 
   readonly transitData = signal<LunarTransitData>(getMoonPhaseAndTransit(new Date()));
@@ -242,9 +242,9 @@ export class MoonTransitBar implements OnInit {
       (this.isCustomMode() ? customLink || this.crystalName() : this.transitData().crystal.searchTerm);
 
     if (query.startsWith('/')) {
-      this.router.navigateByUrl(query);
+      void this.router.navigateByUrl(query);
     } else {
-      this.router.navigate(['/products'], {
+      void this.router.navigate(['/products'], {
         queryParams: { search: query }
       });
     }
@@ -252,7 +252,7 @@ export class MoonTransitBar implements OnInit {
 
   navigateToZodiac(): void {
     this.closeDetails();
-    this.router.navigate(['/zodiac']);
+    void this.router.navigate(['/zodiac']);
   }
 
   @HostListener('document:keydown.escape')

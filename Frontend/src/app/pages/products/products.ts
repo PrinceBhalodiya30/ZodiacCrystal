@@ -27,11 +27,11 @@ import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
   styleUrl: './products.css'
 })
 export class Products implements OnInit {
-  private productService = inject(ProductService);
-  private categoryService = inject(CategoryService);
-  private zodiacService = inject(ZodiacService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private readonly productService = inject(ProductService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly zodiacService = inject(ZodiacService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -175,7 +175,7 @@ export class Products implements OnInit {
 
   selectSuggestion(product: Product): void {
     this.showSuggestions.set(false);
-    this.router.navigate(['/products', getProductSlug(product)]);
+    void this.router.navigate(['/products', getProductSlug(product)]);
   }
 
   onIntentionChange(intentionId: string | null): void {
@@ -202,7 +202,7 @@ export class Products implements OnInit {
     if (this.searchTerm().trim()) {
       qParams['search'] = this.searchTerm().trim();
     }
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: qParams,
       queryParamsHandling: 'merge'
@@ -272,7 +272,7 @@ export class Products implements OnInit {
     this.maxPrice.set(null);
     this.inStockOnly.set(false);
     this.page.set(1);
-    this.router.navigate([], { relativeTo: this.route, queryParams: {} });
+    void this.router.navigate([], { relativeTo: this.route, queryParams: {} });
     this.loadProducts();
   }
 

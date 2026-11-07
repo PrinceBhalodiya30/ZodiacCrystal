@@ -13,8 +13,8 @@ export const SUPPORT_EMAIL = 'support@crystalstudio.com';
 // data (a product, a zodiac sign) call setPageTitle() once it arrives.
 @Injectable({ providedIn: 'root' })
 export class PageTitleService extends TitleStrategy {
-  private title = inject(Title);
-  private seo = inject(SeoService);
+  private readonly title = inject(Title);
+  private readonly seo = inject(SeoService);
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const data = deepestChild(snapshot.root).data;

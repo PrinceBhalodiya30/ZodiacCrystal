@@ -16,7 +16,7 @@ import { SUPPORT_EMAIL } from '../../services/page-title.service';
 })
 export class Unsubscribe {
   readonly supportEmail = SUPPORT_EMAIL;
-  private newsletterService = inject(NewsletterService);
+  private readonly newsletterService = inject(NewsletterService);
 
   token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
   state = signal<'confirm' | 'working' | 'done' | 'error'>(this.token ? 'confirm' : 'error');

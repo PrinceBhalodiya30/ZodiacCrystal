@@ -38,7 +38,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         // Come back to the same page (e.g. checkout) after signing in again.
         // Each user has their own saved cart, so it's still there afterwards.
         const returnUrl = router.url.startsWith('/login') ? undefined : router.url;
-        router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+        void router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
       }
 
       return throwError(() => error);

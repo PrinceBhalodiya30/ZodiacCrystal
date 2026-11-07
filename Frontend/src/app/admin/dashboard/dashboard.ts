@@ -51,13 +51,13 @@ const NEW_ORDER_HIGHLIGHT_MS = 8000;
   styleUrls: ['../admin-shared.css', './dashboard.css']
 })
 export class Dashboard implements OnInit {
-  private productService = inject(ProductService);
-  private orderService = inject(OrderService);
-  private userService = inject(UserService);
-  private returnService = inject(ReturnService);
-  private reportService = inject(ReportService);
-  private toast = inject(ToastService);
-  private authService = inject(AuthService);
+  private readonly productService = inject(ProductService);
+  private readonly orderService = inject(OrderService);
+  private readonly userService = inject(UserService);
+  private readonly returnService = inject(ReturnService);
+  private readonly reportService = inject(ReportService);
+  private readonly toast = inject(ToastService);
+  private readonly authService = inject(AuthService);
 
   dayPart(): 'morning' | 'afternoon' | 'evening' {
     const hour = new Date().getHours();

@@ -14,7 +14,7 @@ import { GuestSessionService } from '../../services/guest-session.service';
   styleUrl: './find-order.css'
 })
 export class FindOrder {
-  private guestSession = inject(GuestSessionService);
+  private readonly guestSession = inject(GuestSessionService);
 
   orderId = inject(ActivatedRoute).snapshot.queryParamMap.get('orderId') ?? '';
   email = '';

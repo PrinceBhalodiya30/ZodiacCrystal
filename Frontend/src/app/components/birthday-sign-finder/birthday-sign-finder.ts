@@ -23,7 +23,7 @@ import { getProductSlug } from '../../utils/product-slug.util';
   styleUrl: './birthday-sign-finder.css'
 })
 export class BirthdaySignFinder implements OnInit {
-  private zodiacService = inject(ZodiacService);
+  private readonly zodiacService = inject(ZodiacService);
 
   readonly months = MONTH_OPTIONS;
 

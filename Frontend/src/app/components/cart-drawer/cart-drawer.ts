@@ -18,8 +18,8 @@ import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 })
 export class CartDrawer {
   cartService = inject(CartService);
-  private storeSettings = inject(StoreSettingsService);
-  private router = inject(Router);
+  private readonly storeSettings = inject(StoreSettingsService);
+  private readonly router = inject(Router);
 
   readonly threshold = computed(() => this.storeSettings.freeShippingThreshold());
 
@@ -88,16 +88,16 @@ export class CartDrawer {
   proceedToCheckout(): void {
     this.close();
     if (!this.router.url.startsWith('/cart')) {
-      this.router.navigateByUrl('/cart').then(() => {
-        this.router.navigateByUrl('/checkout');
+      void this.router.navigateByUrl('/cart').then(() => {
+        void this.router.navigateByUrl('/checkout');
       });
     } else {
-      this.router.navigate(['/checkout']);
+      void this.router.navigate(['/checkout']);
     }
   }
 
   viewFullCart(): void {
     this.close();
-    this.router.navigate(['/cart']);
+    void this.router.navigate(['/cart']);
   }
 }

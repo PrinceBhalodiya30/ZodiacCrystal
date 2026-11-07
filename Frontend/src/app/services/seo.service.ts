@@ -23,11 +23,11 @@ export interface PageMeta {
 // (a product, a zodiac sign, a guide) call update()/setJsonLd() afterwards.
 @Injectable({ providedIn: 'root' })
 export class SeoService {
-  private meta = inject(Meta);
-  private document = inject(DOCUMENT);
+  private readonly meta = inject(Meta);
+  private readonly document = inject(DOCUMENT);
   // Router is looked up on use, not injected: the Router itself depends on
   // PageTitleService -> SeoService, so injecting it here is a cycle (NG0200).
-  private injector = inject(Injector);
+  private readonly injector = inject(Injector);
 
   // `path` is passed during navigation, before router.url has caught up.
   update(page: PageMeta, path?: string): void {
