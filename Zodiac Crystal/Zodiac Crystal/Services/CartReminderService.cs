@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Data;
 
@@ -41,7 +41,7 @@ namespace Zodiac_Crystal.Services
             while (await timer.WaitForNextTickAsync(stoppingToken));
         }
 
-        private record Line(int ProductId, int Quantity);
+        private sealed record Line(int ProductId, int Quantity);
 
         // Internal so tests can run a single pass without waiting for the timer.
         internal async Task SendDueRemindersAsync(CancellationToken ct)

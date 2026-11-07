@@ -64,13 +64,35 @@ namespace Zodiac_Crystal.Services
                 _context.StoreSettings.Add(setting);
             }
 
+            var changes = DetectSettingChanges(setting, dto);
+            ApplySettingUpdates(setting, dto, adminUserId);
+
+            if (adminUserId.HasValue && changes.Count > 0)
+            {
+                _auditLogService.Log(
+                    adminUserId.Value,
+                    "UpdateStoreSettings",
+                    "StoreSettings",
+                    setting.Id,
+                    string.Join("; ", changes)
+                );
+            }
+
+            await _context.SaveChangesAsync();
+            _cache.Remove(CacheKey);
+
+            return await GetSettingsAsync();
+        }
+
+        private static List<string> DetectSettingChanges(StoreSetting setting, UpdateStoreSettingsDto dto)
+        {
             var changes = new List<string>();
 
             if (setting.AnnouncementEnabled != dto.AnnouncementEnabled)
                 changes.Add($"AnnouncementEnabled: {setting.AnnouncementEnabled} → {dto.AnnouncementEnabled}");
 
             if (setting.AnnouncementText != dto.AnnouncementText)
-                changes.Add($"AnnouncementText updated");
+                changes.Add("AnnouncementText updated");
 
             if (setting.AnnouncementStyle != dto.AnnouncementStyle)
                 changes.Add($"AnnouncementStyle: {setting.AnnouncementStyle} → {dto.AnnouncementStyle}");
@@ -93,42 +115,37 @@ namespace Zodiac_Crystal.Services
             if (setting.MoonBannerStyle != dto.MoonBannerStyle)
                 changes.Add($"MoonBannerStyle: {setting.MoonBannerStyle} → {dto.MoonBannerStyle}");
 
+            return changes;
+        }
+
+        private static void ApplySettingUpdates(StoreSetting setting, UpdateStoreSettingsDto dto, int? adminUserId)
+        {
             setting.AnnouncementEnabled = dto.AnnouncementEnabled;
             setting.AnnouncementText = dto.AnnouncementText?.Trim() ?? string.Empty;
-            setting.AnnouncementLink = string.IsNullOrWhiteSpace(dto.AnnouncementLink) ? null : dto.AnnouncementLink.Trim();
-            setting.AnnouncementStyle = string.IsNullOrWhiteSpace(dto.AnnouncementStyle) ? "emerald" : dto.AnnouncementStyle.Trim().ToLowerInvariant();
+            setting.AnnouncementLink = TrimOrNull(dto.AnnouncementLink);
+            setting.AnnouncementStyle = NormalizeOrDefault(dto.AnnouncementStyle, "emerald");
             setting.FreeShippingThreshold = Math.Max(0, dto.FreeShippingThreshold);
             setting.FlatShippingRate = Math.Max(0, dto.FlatShippingRate);
             setting.HeroEyebrow = dto.HeroEyebrow?.Trim() ?? string.Empty;
             setting.HeroTitle = dto.HeroTitle?.Trim() ?? string.Empty;
             setting.HeroSubtitle = dto.HeroSubtitle?.Trim() ?? string.Empty;
             setting.MoonBannerEnabled = dto.MoonBannerEnabled;
-            setting.MoonBannerMode = string.IsNullOrWhiteSpace(dto.MoonBannerMode) ? "auto" : dto.MoonBannerMode.Trim().ToLowerInvariant();
-            setting.MoonBannerCustomText = string.IsNullOrWhiteSpace(dto.MoonBannerCustomText) ? null : dto.MoonBannerCustomText.Trim();
-            setting.MoonBannerCustomCrystal = string.IsNullOrWhiteSpace(dto.MoonBannerCustomCrystal) ? null : dto.MoonBannerCustomCrystal.Trim();
-            setting.MoonBannerCustomBenefit = string.IsNullOrWhiteSpace(dto.MoonBannerCustomBenefit) ? null : dto.MoonBannerCustomBenefit.Trim();
-            setting.MoonBannerCustomLink = string.IsNullOrWhiteSpace(dto.MoonBannerCustomLink) ? null : dto.MoonBannerCustomLink.Trim();
+            setting.MoonBannerMode = NormalizeOrDefault(dto.MoonBannerMode, "auto");
+            setting.MoonBannerCustomText = TrimOrNull(dto.MoonBannerCustomText);
+            setting.MoonBannerCustomCrystal = TrimOrNull(dto.MoonBannerCustomCrystal);
+            setting.MoonBannerCustomBenefit = TrimOrNull(dto.MoonBannerCustomBenefit);
+            setting.MoonBannerCustomLink = TrimOrNull(dto.MoonBannerCustomLink);
             setting.MoonBannerShowModal = dto.MoonBannerShowModal;
-            setting.MoonBannerStyle = string.IsNullOrWhiteSpace(dto.MoonBannerStyle) ? "midnight" : dto.MoonBannerStyle.Trim().ToLowerInvariant();
+            setting.MoonBannerStyle = NormalizeOrDefault(dto.MoonBannerStyle, "midnight");
             setting.UpdatedAt = DateTime.UtcNow;
             setting.UpdatedByUserId = adminUserId;
-
-            if (adminUserId.HasValue && changes.Count > 0)
-            {
-                _auditLogService.Log(
-                    adminUserId.Value,
-                    "UpdateStoreSettings",
-                    "StoreSettings",
-                    setting.Id,
-                    string.Join("; ", changes)
-                );
-            }
-
-            await _context.SaveChangesAsync();
-            _cache.Remove(CacheKey);
-
-            return await GetSettingsAsync();
         }
+
+        private static string? TrimOrNull(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+        private static string NormalizeOrDefault(string? value, string defaultValue) =>
+            string.IsNullOrWhiteSpace(value) ? defaultValue : value.Trim().ToLowerInvariant();
 
         public void InvalidateCache()
         {

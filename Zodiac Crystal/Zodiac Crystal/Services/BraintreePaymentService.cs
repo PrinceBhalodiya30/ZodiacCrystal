@@ -96,9 +96,9 @@ namespace Zodiac_Crystal.Services
             {
                 transaction = await _gateway.Value.Transaction.FindAsync(transactionId);
             }
-            catch (Braintree.Exceptions.NotFoundException)
+            catch (Braintree.Exceptions.NotFoundException ex)
             {
-                _logger.LogWarning("Transaction {TransactionId} was not found in Braintree", transactionId);
+                _logger.LogWarning(ex, "Transaction {TransactionId} was not found in Braintree", transactionId);
                 return PaymentResult.Fail("This payment could not be found at the payment provider. Please check it in the Braintree dashboard.");
             }
 

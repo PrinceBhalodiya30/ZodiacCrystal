@@ -51,7 +51,7 @@ namespace Zodiac_Crystal.Services
                 && endpoint!.Metadata.GetMetadata<AllowGuestAttribute>() == null)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsJsonAsync(new { message = "Please log in or create an account to use this feature." });
+                await context.Response.WriteAsJsonAsync(new { message = "Please log in or create an account to use this feature." }, context.RequestAborted);
                 return;
             }
 

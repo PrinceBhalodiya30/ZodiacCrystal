@@ -30,11 +30,7 @@ namespace Zodiac_Crystal.Controllers
         // GET: api/settings/admin
         [HttpGet("admin")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<StoreSettingsDto>> GetAdminSettings()
-        {
-            var settings = await _settingsService.GetSettingsAsync();
-            return Ok(settings);
-        }
+        public Task<ActionResult<StoreSettingsDto>> GetAdminSettings() => GetPublicSettings();
 
         // PUT: api/settings/admin
         [HttpPut("admin")]

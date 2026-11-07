@@ -22,7 +22,6 @@ namespace Zodiac_Crystal.Controllers
         private readonly CrystalsDbContext _context;
         private readonly ILogger<OrdersController> _logger;
         private readonly CouponValidationService _couponValidationService;
-        private readonly InvoicePdfService _invoicePdfService;
         private readonly NotificationService _notificationService;
         private readonly IEmailService _emailService;
         private readonly BraintreePaymentService _paymentService;
@@ -34,7 +33,6 @@ namespace Zodiac_Crystal.Controllers
             CrystalsDbContext context,
             ILogger<OrdersController> logger,
             CouponValidationService couponValidationService,
-            InvoicePdfService invoicePdfService,
             NotificationService notificationService,
             IEmailService emailService,
             BraintreePaymentService paymentService,
@@ -46,7 +44,6 @@ namespace Zodiac_Crystal.Controllers
             _context = context;
             _logger = logger;
             _couponValidationService = couponValidationService;
-            _invoicePdfService = invoicePdfService;
             _notificationService = notificationService;
             _emailService = emailService;
             _paymentService = paymentService;
@@ -62,6 +59,116 @@ namespace Zodiac_Crystal.Controllers
         {
             var userId = GetCurrentUserId();
 
+            var validationResult = await ValidateCreateOrderRequestAsync(dto);
+            if (validationResult != null)
+            {
+                return validationResult;
+            }
+
+            var duplicateOrder = await CheckIdempotentOrderAsync(userId, dto.IdempotencyKey);
+            if (duplicateOrder != null)
+            {
+                return duplicateOrder;
+            }
+
+            var itemsResult = await ValidateOrderItemsAsync(dto.Items);
+            if (itemsResult.Error != null)
+            {
+                return itemsResult.Error;
+            }
+
+            var (validatedItems, productsById, quantityByProduct) = (itemsResult.Items, itemsResult.ProductsById, itemsResult.QuantityByProduct);
+            var total = validatedItems.Sum(i => i.Subtotal);
+
+            var (freeShippingThreshold, flatShippingFee) = await _storeSettingsService.GetShippingRulesAsync();
+            var shippingFee = total >= freeShippingThreshold ? 0m : flatShippingFee;
+            var payByCard = dto.PaymentMethod == PaymentMethods.Card;
+
+            // Step 2: everything is valid - create the order, order items, and reduce
+            // stock together as one transaction. If anything fails, none of it saves.
+            // The transaction is opened before any coupon handling so that a coupon
+            // that turns out to be invalid (or races another request for the last
+            // remaining use) can be cleanly rolled back with no partial writes.
+            using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+            Order order;
+            string? chargedTransactionId = null;
+            decimal chargedAmount = 0m;
+            var stockBefore = new Dictionary<int, (Product Product, int Stock)>();
+
+            try
+            {
+                var couponResult = await ApplyCouponInTransactionAsync(dto.CouponCode, total, userId, dto.ShippingEmail);
+                if (couponResult.Error != null)
+                {
+                    await transaction.RollbackAsync();
+                    return couponResult.Error;
+                }
+
+                var pricing = new OrderPricing(total, couponResult.DiscountAmount, couponResult.AppliedCouponCode, shippingFee);
+                order = BuildOrderEntity(userId, dto, pricing, validatedItems);
+
+                var reservationError = await ReserveStockInTransactionAsync(quantityByProduct, productsById, stockBefore);
+                if (reservationError != null)
+                {
+                    await transaction.RollbackAsync();
+                    return reservationError;
+                }
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                var paymentResult = await ProcessCardPaymentIfNeededAsync(order, dto, payByCard);
+                if (paymentResult.Error != null)
+                {
+                    await transaction.RollbackAsync();
+                    return paymentResult.Error;
+                }
+
+                chargedTransactionId = paymentResult.TransactionId;
+                chargedAmount = paymentResult.ChargedAmount;
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex) when (chargedTransactionId == null
+                && dto.IdempotencyKey != null
+                && CheckoutSafety.IsDuplicateIdempotencyKey(ex))
+            {
+                // A simultaneous request with the same key placed the order first.
+                // This can only happen at the first SaveChanges, before any card is
+                // charged, so rolling back (stock, coupon use) is all that's needed.
+                await transaction.RollbackAsync();
+                _context.ChangeTracker.Clear();
+
+                var existing = await CheckIdempotentOrderAsync(userId, dto.IdempotencyKey);
+                if (existing != null)
+                {
+                    return existing;
+                }
+
+                _logger.LogError(ex, "Order creation failed for user {UserId}", userId);
+                return StatusCode(500, new { message = "Your order could not be placed. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return await HandleCreateOrderExceptionAsync(ex, userId, chargedTransactionId, chargedAmount);
+            }
+
+            // The order is committed at this point - it exists regardless of what
+            // happens below. A failure here (e.g. the notification email) must not
+            // roll back or report the order as failed; it's already placed.
+            var createdOrder = await ReloadOrderOrFallbackAsync(order);
+            await DispatchOrderNotificationsAsync(order, createdOrder, userId, stockBefore);
+
+            return CreatedAtAction(
+                nameof(GetOrder),
+                new { id = order.OrderId },
+                MapToOrderDto(createdOrder)
+            );
+        }
+
+        private async Task<ActionResult?> ValidateCreateOrderRequestAsync(CreateOrderDto dto)
+        {
             if (User.IsGuest())
             {
                 // Guest order emails go to the verified address, never a typed one.
@@ -71,18 +178,6 @@ namespace Zodiac_Crystal.Controllers
                 if (dto.PaymentMethod != PaymentMethods.Card)
                 {
                     return BadRequest(new { message = "Guest orders are paid by card. Log in or create an account to use Cash on Delivery." });
-                }
-            }
-
-            // A retry or double-submit of an attempt that already placed its order
-            // gets that order back, before any validation or charge. Checked first
-            // so a later stock change can't make the replay look like a failure.
-            if (dto.IdempotencyKey != null)
-            {
-                var existingId = await FindOrderByIdempotencyKeyAsync(userId, dto.IdempotencyKey!);
-                if (existingId != null)
-                {
-                    return await CreatedOrderResponseAsync(existingId.Value);
                 }
             }
 
@@ -105,301 +200,306 @@ namespace Zodiac_Crystal.Controllers
                 return BadRequest(new { message = addressError });
             }
 
-            // Step 1: validate every item and calculate real prices from the database
-            // BEFORE writing anything, so a bad item never leaves a partial order behind.
+            return null;
+        }
+
+        private async Task<ActionResult<OrderDto>?> CheckIdempotentOrderAsync(int userId, string? idempotencyKey)
+        {
+            if (idempotencyKey == null)
+            {
+                return null;
+            }
+
+            var existingId = await FindOrderByIdempotencyKeyAsync(userId, idempotencyKey);
+            if (existingId != null)
+            {
+                return await CreatedOrderResponseAsync(existingId.Value);
+            }
+
+            return null;
+        }
+
+        private async Task<(List<(Product Product, int Quantity, decimal Subtotal)> Items, Dictionary<int, Product> ProductsById, Dictionary<int, int> QuantityByProduct, ActionResult? Error)> ValidateOrderItemsAsync(List<OrderItemInputDto> items)
+        {
             var validatedItems = new List<(Product Product, int Quantity, decimal Subtotal)>();
 
-            var productIds = dto.Items.Select(i => i.ProductId).Distinct().ToList();
+            var productIds = items.Select(i => i.ProductId).Distinct().ToList();
             var productsById = await _context.Products
                 .Where(p => productIds.Contains(p.ProductId))
                 .ToDictionaryAsync(p => p.ProductId);
 
             // Total requested per product, so the same product split across several
             // lines is checked (and later deducted) against its combined quantity.
-            var quantityByProduct = dto.Items
+            var quantityByProduct = items
                 .GroupBy(i => i.ProductId)
                 .ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity));
 
-            foreach (var item in dto.Items)
+            foreach (var item in items)
             {
                 productsById.TryGetValue(item.ProductId, out var product);
 
                 if (product == null)
                 {
-                    return BadRequest(new { message = $"Product {item.ProductId} does not exist" });
+                    return (validatedItems, productsById, quantityByProduct, BadRequest(new { message = $"Product {item.ProductId} does not exist" }));
                 }
 
                 if (!product.IsActive)
                 {
-                    return BadRequest(new { message = $"{product.Name} is currently unavailable" });
+                    return (validatedItems, productsById, quantityByProduct, BadRequest(new { message = $"{product.Name} is currently unavailable" }));
                 }
 
                 if (product.StockQuantity < quantityByProduct[item.ProductId])
                 {
-                    return BadRequest(new
+                    return (validatedItems, productsById, quantityByProduct, BadRequest(new
                     {
                         message = $"Only {product.StockQuantity} item(s) of {product.Name} are available"
-                    });
+                    }));
                 }
 
                 validatedItems.Add((product, item.Quantity, product.Price * item.Quantity));
             }
 
-            var total = validatedItems.Sum(i => i.Subtotal);
+            return (validatedItems, productsById, quantityByProduct, null);
+        }
 
-            // Threshold-based shipping: free at/above ₹999 item subtotal (before any
-            // coupon/points discount), flat ₹50 otherwise. Computed here and stored on
-            // the order itself, so historical orders keep whatever fee actually applied
-            // even if this threshold/rate changes later.
-            var (freeShippingThreshold, flatShippingFee) = await _storeSettingsService.GetShippingRulesAsync();
-
-            var shippingFee = total >= freeShippingThreshold ? 0m : flatShippingFee;
-
-            // Step 2: everything is valid - create the order, order items, and reduce
-            // stock together as one transaction. If anything fails, none of it saves.
-            // The transaction is opened before any coupon handling so that a coupon
-            // that turns out to be invalid (or races another request for the last
-            // remaining use) can be cleanly rolled back with no partial writes.
-            using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
-            Order order;
-            string? chargedTransactionId = null;
-            decimal chargedAmount = 0m;
-            // Each product's stock before this order, for the low-stock alert.
-            var stockBefore = new Dictionary<int, (Product Product, int Stock)>();
-
-            try
+        private async Task<(decimal DiscountAmount, string? AppliedCouponCode, ActionResult? Error)> ApplyCouponInTransactionAsync(
+            string? couponCode,
+            decimal total,
+            int userId,
+            string shippingEmail)
+        {
+            if (string.IsNullOrWhiteSpace(couponCode))
             {
-                decimal discountAmount = 0m;
-                string? appliedCouponCode = null;
-
-                if (!string.IsNullOrWhiteSpace(dto.CouponCode))
-                {
-                    var normalizedCode = dto.CouponCode.Trim().ToUpperInvariant();
-
-                    // Re-fetch fresh (not cached) and re-validate with the exact same
-                    // rules used by the /api/coupons/validate preview endpoint, so the
-                    // authoritative check at checkout can never disagree with the UX check.
-                    // Read with UPDLOCK: this transaction updates the row below (UsedCount),
-                    // and under Serializable two checkouts that both read it with a plain
-                    // shared lock deadlock when they each try to update it - one customer
-                    // then gets a generic error. With UPDLOCK, checkouts using the same
-                    // coupon queue briefly instead, and each sees the previous one's use.
-                    var coupon = await _context.Coupons
-                        .FromSql($"SELECT * FROM dbo.Coupons WITH (UPDLOCK, ROWLOCK) WHERE Code = {normalizedCode}")
-                        .FirstOrDefaultAsync();
-
-                    // Per-customer limit: counted under a lock, so two simultaneous
-                    // checkouts by this customer can't both see room for one more use.
-                    var userUses = coupon?.MaxUsesPerUser != null
-                        ? await CouponValidationService.CountUsesByUserAsync(_context, userId, coupon.Code, dto.ShippingEmail, lockRows: true)
-                        : 0;
-
-                    var validation = _couponValidationService.Validate(coupon, total, userUses);
-
-                    if (!validation.Valid)
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest(new { message = validation.Message });
-                    }
-
-                    // Atomically claim one use of the coupon. The WHERE clause re-checks
-                    // UsedCount < UsageLimit at the database level so that two concurrent
-                    // checkouts racing for the last remaining use can't both succeed -
-                    // whichever request's UPDATE runs first wins the row and the other
-                    // gets rowsAffected == 0 and rolls back cleanly.
-                    //
-                    // NOTE (business rule): cancelling an order never decrements
-                    // UsedCount (see OrdersController.CancelOrder / AdminOrdersController).
-                    // "Used" means "was successfully applied at checkout", not "is
-                    // attached to a non-cancelled order" - decrementing on cancel would
-                    // let someone apply a limited coupon, cancel, and reapply indefinitely.
-                    var rowsAffected = await _context.Coupons
-                        .Where(c => c.CouponId == coupon!.CouponId && c.UsedCount < c.UsageLimit)
-                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.UsedCount, c => c.UsedCount + 1));
-
-                    if (rowsAffected == 0)
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest(new { message = "This coupon just reached its usage limit. Please try again without it." });
-                    }
-
-                    discountAmount = validation.DiscountAmount;
-                    appliedCouponCode = coupon!.Code;
-                }
-
-                const decimal GiftPackagingFee = 99m;
-                var giftFee = dto.IsGiftWrap ? GiftPackagingFee : 0m;
-
-                order = new Order
-                {
-                    UserId = userId,
-                    TotalAmount = total - discountAmount + shippingFee + giftFee,
-                    CouponCode = appliedCouponCode,
-                    DiscountAmount = discountAmount,
-                    ShippingFee = shippingFee,
-                    IsGiftWrap = dto.IsGiftWrap,
-                    GiftFee = giftFee,
-                    GiftRecipient = dto.IsGiftWrap ? dto.GiftRecipient?.Trim() : null,
-                    GiftMessage = dto.IsGiftWrap ? dto.GiftMessage?.Trim() : null,
-                    Status = "Pending",
-                    ShippingName = dto.ShippingName,
-                    ShippingEmail = dto.ShippingEmail,
-                    ShippingAddress = dto.ShippingAddress,
-                    City = dto.City,
-                    State = dto.State,
-                    PostalCode = dto.PostalCode,
-                    Phone = dto.Phone,
-                    DeliveryInstructions = string.IsNullOrWhiteSpace(dto.DeliveryInstructions) ? null : dto.DeliveryInstructions.Trim(),
-                    // Only keep a complete pin; half a coordinate is useless.
-                    Latitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Latitude.Value, 6) : null,
-                    Longitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Longitude.Value, 6) : null,
-                    PaymentMethod = payByCard ? PaymentMethods.Card : PaymentMethods.CashOnDelivery,
-                    PaymentStatus = PaymentStatuses.Pending,
-                    IdempotencyKey = dto.IdempotencyKey
-                };
-
-                foreach (var (product, quantity, subtotal) in validatedItems)
-                {
-                    order.OrderItems.Add(new OrderItem
-                    {
-                        ProductId = product.ProductId,
-                        Quantity = quantity,
-                        UnitPrice = product.Price,
-                        Subtotal = subtotal
-                    });
-                }
-
-                // Atomically reserve stock. The check above ran outside the transaction
-                // and can be stale, so the WHERE clause re-checks availability at the
-                // database level - two checkouts racing for the last unit can't both
-                // succeed; the loser gets rowsAffected == 0 and rolls back cleanly.
-                foreach (var (productId, quantity) in quantityByProduct)
-                {
-                    var rowsAffected = await _context.Products
-                        .Where(p => p.ProductId == productId && p.StockQuantity >= quantity)
-                        .ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, p => p.StockQuantity - quantity));
-
-                    var product = productsById[productId];
-
-                    if (rowsAffected == 0)
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest(new { message = $"Sorry, {product.Name} just sold out or has less stock than requested. Please update your cart." });
-                    }
-
-                    // ExecuteUpdate bypasses the change tracker - reload so the tracked
-                    // entity reflects the real stock (and SaveChanges won't overwrite it).
-                    await _context.Entry(product).ReloadAsync();
-                    stockBefore[productId] = (product, product.StockQuantity + quantity);
-                }
-
-                _context.Orders.Add(order);
-
-                await _context.SaveChangesAsync();
-
-                // Card payments are charged inside the transaction, once the order
-                // has an id (sent to Braintree as its OrderId) but before commit. A
-                // declined card rolls everything back - order, stock, coupon use -
-                // so nothing is left behind and the customer can simply retry.
-                // Trade-off: the transaction's locks are held for the length of the
-                // Braintree call (typically ~1-2s), acceptable at this scale.
-                if (payByCard)
-                {
-                    var payment = await _paymentService.ChargeAsync(
-                        order.TotalAmount, dto.PaymentNonce!, dto.DeviceData, order.OrderId);
-
-                    if (!payment.Success)
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest(new { message = payment.ErrorMessage, paymentFailed = true });
-                    }
-
-                    chargedTransactionId = payment.TransactionId;
-                    chargedAmount = order.TotalAmount;
-                    order.PaymentStatus = PaymentStatuses.Paid;
-                    order.PaymentTransactionId = payment.TransactionId;
-                    order.PaidAt = DateTime.Now;
-
-                    await _context.SaveChangesAsync();
-                }
-
-                await transaction.CommitAsync();
+                return (0m, null, null);
             }
-            catch (DbUpdateException ex) when (chargedTransactionId == null
-                && dto.IdempotencyKey != null
-                && CheckoutSafety.IsDuplicateIdempotencyKey(ex))
+
+            var normalizedCode = couponCode.Trim().ToUpperInvariant();
+
+            // Re-fetch fresh (not cached) and re-validate with the exact same
+            // rules used by the /api/coupons/validate preview endpoint, so the
+            // authoritative check at checkout can never disagree with the UX check.
+            // Read with UPDLOCK: this transaction updates the row below (UsedCount),
+            // and under Serializable two checkouts that both read it with a plain
+            // shared lock deadlock when they each try to update it - one customer
+            // then gets a generic error. With UPDLOCK, checkouts using the same
+            // coupon queue briefly instead, and each sees the previous one's use.
+            var coupon = await _context.Coupons
+                .FromSql($"SELECT * FROM dbo.Coupons WITH (UPDLOCK, ROWLOCK) WHERE Code = {normalizedCode}")
+                .FirstOrDefaultAsync();
+
+            // Per-customer limit: counted under a lock, so two simultaneous
+            // checkouts by this customer can't both see room for one more use.
+            var userUses = coupon?.MaxUsesPerUser != null
+                ? await CouponValidationService.CountUsesByUserAsync(_context, userId, coupon.Code, shippingEmail, lockRows: true)
+                : 0;
+
+            var validation = _couponValidationService.Validate(coupon, total, userUses);
+
+            if (!validation.Valid)
             {
-                // A simultaneous request with the same key placed the order first.
-                // This can only happen at the first SaveChanges, before any card is
-                // charged, so rolling back (stock, coupon use) is all that's needed.
-                await transaction.RollbackAsync();
-                _context.ChangeTracker.Clear();
-
-                var existingId = await FindOrderByIdempotencyKeyAsync(userId, dto.IdempotencyKey!);
-                if (existingId != null)
-                {
-                    return await CreatedOrderResponseAsync(existingId.Value);
-                }
-
-                _logger.LogError(ex, "Order creation failed for user {UserId}", userId);
-                return StatusCode(500, new { message = "Your order could not be placed. Please try again." });
+                return (0m, null, BadRequest(new { message = validation.Message }));
             }
-            catch (Exception ex)
+
+            // Atomically claim one use of the coupon. The WHERE clause re-checks
+            // UsedCount < UsageLimit at the database level so that two concurrent
+            // checkouts racing for the last remaining use can't both succeed -
+            // whichever request's UPDATE runs first wins the row and the other
+            // gets rowsAffected == 0 and rolls back cleanly.
+            //
+            // NOTE (business rule): cancelling an order never decrements
+            // UsedCount (see OrdersController.CancelOrder / AdminOrdersController).
+            // "Used" means "was successfully applied at checkout", not "is
+            // attached to a non-cancelled order" - decrementing on cancel would
+            // let someone apply a limited coupon, cancel, and reapply indefinitely.
+            var rowsAffected = await _context.Coupons
+                .Where(c => c.CouponId == coupon!.CouponId && c.UsedCount < c.UsageLimit)
+                .ExecuteUpdateAsync(s => s.SetProperty(c => c.UsedCount, c => c.UsedCount + 1));
+
+            if (rowsAffected == 0)
             {
-                _logger.LogError(ex, "Order creation failed for user {UserId}", userId);
-                await transaction.RollbackAsync();
+                return (0m, null, BadRequest(new { message = "This coupon just reached its usage limit. Please try again without it." }));
+            }
 
-                // The card was charged but the order couldn't be saved - give the
-                // money back so the customer is never charged for a missing order.
-                var reversed = false;
-                if (chargedTransactionId != null)
+            return (validation.DiscountAmount, coupon!.Code, null);
+        }
+
+        private readonly record struct OrderPricing(decimal Total, decimal DiscountAmount, string? AppliedCouponCode, decimal ShippingFee);
+
+        private static Order BuildOrderEntity(
+            int userId,
+            CreateOrderDto dto,
+            OrderPricing pricing,
+            List<(Product Product, int Quantity, decimal Subtotal)> validatedItems)
+        {
+            const decimal GiftPackagingFee = 99m;
+            var giftFee = dto.IsGiftWrap ? GiftPackagingFee : 0m;
+            var payByCard = dto.PaymentMethod == PaymentMethods.Card;
+
+            var order = new Order
+            {
+                UserId = userId,
+                TotalAmount = pricing.Total - pricing.DiscountAmount + pricing.ShippingFee + giftFee,
+                CouponCode = pricing.AppliedCouponCode,
+                DiscountAmount = pricing.DiscountAmount,
+                ShippingFee = pricing.ShippingFee,
+                IsGiftWrap = dto.IsGiftWrap,
+                GiftFee = giftFee,
+                GiftRecipient = dto.IsGiftWrap ? dto.GiftRecipient?.Trim() : null,
+                GiftMessage = dto.IsGiftWrap ? dto.GiftMessage?.Trim() : null,
+                Status = "Pending",
+                ShippingName = dto.ShippingName,
+                ShippingEmail = dto.ShippingEmail,
+                ShippingAddress = dto.ShippingAddress,
+                City = dto.City,
+                State = dto.State,
+                PostalCode = dto.PostalCode,
+                Phone = dto.Phone,
+                DeliveryInstructions = string.IsNullOrWhiteSpace(dto.DeliveryInstructions) ? null : dto.DeliveryInstructions.Trim(),
+                // Only keep a complete pin; half a coordinate is useless.
+                Latitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Latitude.Value, 6) : null,
+                Longitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Longitude.Value, 6) : null,
+                PaymentMethod = payByCard ? PaymentMethods.Card : PaymentMethods.CashOnDelivery,
+                PaymentStatus = PaymentStatuses.Pending,
+                IdempotencyKey = dto.IdempotencyKey
+            };
+
+            foreach (var (product, quantity, subtotal) in validatedItems)
+            {
+                order.OrderItems.Add(new OrderItem
                 {
-                    try
-                    {
-                        var reversal = await _paymentService.RefundAsync(chargedTransactionId);
-                        reversed = reversal.Success;
-                        if (!reversal.Success)
-                        {
-                            _logger.LogCritical("Charged transaction {TransactionId} could not be reversed after a failed order save",
-                                chargedTransactionId);
-                        }
-                    }
-                    catch (Exception reverseEx)
-                    {
-                        _logger.LogCritical(reverseEx, "Charged transaction {TransactionId} could not be reversed after a failed order save",
-                            chargedTransactionId);
-                    }
-
-                    // The transaction above is already rolled back, so this row
-                    // saves on its own and stays even though the order didn't.
-                    if (!reversed)
-                    {
-                        await CheckoutSafety.RecordPaymentFailureAsync(_context, _logger, userId, chargedTransactionId,
-                            chargedAmount, $"Order save failed and the charge could not be reversed: {ex.Message}");
-                    }
-                }
-
-                // Tell the customer what actually happened to their money. If the
-                // reversal failed, they get the transaction reference to quote; the
-                // LogCritical above alerts staff, and RefundAsync is safe to retry.
-                return StatusCode(500, new
-                {
-                    message = chargedTransactionId == null
-                        ? "Your order could not be placed. Please try again."
-                        : reversed
-                            ? "Your order could not be placed and your payment has been reversed. Please try again."
-                            : $"Your order could not be placed, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@crystalstudio.com quoting payment reference {chargedTransactionId}.",
-                    paymentReference = chargedTransactionId != null && !reversed ? chargedTransactionId : null
+                    ProductId = product.ProductId,
+                    Quantity = quantity,
+                    UnitPrice = product.Price,
+                    Subtotal = subtotal
                 });
             }
 
-            // The order is committed at this point - it exists regardless of what
-            // happens below. A failure here (e.g. the notification email) must not
-            // roll back or report the order as failed; it's already placed.
-            Order createdOrder;
+            return order;
+        }
+
+        private async Task<ActionResult?> ReserveStockInTransactionAsync(
+            Dictionary<int, int> quantityByProduct,
+            Dictionary<int, Product> productsById,
+            Dictionary<int, (Product Product, int Stock)> stockBefore)
+        {
+            foreach (var (productId, quantity) in quantityByProduct)
+            {
+                var rowsAffected = await _context.Products
+                    .Where(p => p.ProductId == productId && p.StockQuantity >= quantity)
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, p => p.StockQuantity - quantity));
+
+                var product = productsById[productId];
+
+                if (rowsAffected == 0)
+                {
+                    return BadRequest(new { message = $"Sorry, {product.Name} just sold out or has less stock than requested. Please update your cart." });
+                }
+
+                // ExecuteUpdate bypasses the change tracker - reload so the tracked
+                // entity reflects the real stock (and SaveChanges won't overwrite it).
+                await _context.Entry(product).ReloadAsync();
+                stockBefore[productId] = (product, product.StockQuantity + quantity);
+            }
+
+            return null;
+        }
+
+        private async Task<(string? TransactionId, decimal ChargedAmount, ActionResult? Error)> ProcessCardPaymentIfNeededAsync(
+            Order order,
+            CreateOrderDto dto,
+            bool payByCard)
+        {
+            if (!payByCard)
+            {
+                return (null, 0m, null);
+            }
+
+            var payment = await _paymentService.ChargeAsync(
+                order.TotalAmount, dto.PaymentNonce!, dto.DeviceData, order.OrderId);
+
+            if (!payment.Success)
+            {
+                return (null, 0m, BadRequest(new { message = payment.ErrorMessage, paymentFailed = true }));
+            }
+
+            var chargedTransactionId = payment.TransactionId;
+            var chargedAmount = order.TotalAmount;
+            order.PaymentStatus = PaymentStatuses.Paid;
+            order.PaymentTransactionId = payment.TransactionId;
+            order.PaidAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return (chargedTransactionId, chargedAmount, null);
+        }
+
+        private static string GetOrderFailureMessage(string? chargedTransactionId, bool reversed)
+        {
+            if (chargedTransactionId == null)
+            {
+                return "Your order could not be placed. Please try again.";
+            }
+
+            if (reversed)
+            {
+                return "Your order could not be placed and your payment has been reversed. Please try again.";
+            }
+
+            return $"Your order could not be placed, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@crystalstudio.com quoting payment reference {chargedTransactionId}.";
+        }
+
+        private async Task<ActionResult<OrderDto>> HandleCreateOrderExceptionAsync(
+            Exception ex,
+            int userId,
+            string? chargedTransactionId,
+            decimal chargedAmount)
+        {
+            _logger.LogError(ex, "Order creation failed for user {UserId}", userId);
+
+            // The card was charged but the order couldn't be saved - give the
+            // money back so the customer is never charged for a missing order.
+            var reversed = false;
+            if (chargedTransactionId != null)
+            {
+                try
+                {
+                    var reversal = await _paymentService.RefundAsync(chargedTransactionId);
+                    reversed = reversal.Success;
+                    if (!reversal.Success)
+                    {
+                        _logger.LogCritical("Charged transaction {TransactionId} could not be reversed after a failed order save",
+                            chargedTransactionId);
+                    }
+                }
+                catch (Exception reverseEx)
+                {
+                    _logger.LogCritical(reverseEx, "Charged transaction {TransactionId} could not be reversed after a failed order save",
+                        chargedTransactionId);
+                }
+
+                // The transaction above is already rolled back, so this row
+                // saves on its own and stays even though the order didn't.
+                if (!reversed)
+                {
+                    await CheckoutSafety.RecordPaymentFailureAsync(_context, _logger, userId, chargedTransactionId,
+                        chargedAmount, $"Order save failed and the charge could not be reversed: {ex.Message}");
+                }
+            }
+
+            var message = GetOrderFailureMessage(chargedTransactionId, reversed);
+            var paymentReference = chargedTransactionId != null && !reversed ? chargedTransactionId : null;
+
+            return StatusCode(500, new
+            {
+                message,
+                paymentReference
+            });
+        }
+
+        private async Task<Order> ReloadOrderOrFallbackAsync(Order order)
+        {
             try
             {
-                createdOrder = await _context.Orders
+                return await _context.Orders
                     .Include(o => o.User)
                     .Include(o => o.OrderItems)
                         .ThenInclude(oi => oi.Product)
@@ -410,9 +510,16 @@ namespace Zodiac_Crystal.Controllers
                 // Fall back to the tracked order (its items and products are
                 // already loaded) rather than reporting a placed order as failed.
                 _logger.LogError(ex, "Order {OrderId} placed but reloading it failed", order.OrderId);
-                createdOrder = order;
+                return order;
             }
+        }
 
+        private async Task DispatchOrderNotificationsAsync(
+            Order order,
+            Order createdOrder,
+            int userId,
+            Dictionary<int, (Product Product, int Stock)> stockBefore)
+        {
             _logger.LogInformation("Order {OrderId} created for user {UserId}, total {TotalAmount}",
                 order.OrderId, userId, order.TotalAmount);
 
@@ -466,12 +573,6 @@ namespace Zodiac_Crystal.Controllers
             {
                 _logger.LogError(ex, "Order {OrderId} placed but saved cart cleanup failed", order.OrderId);
             }
-
-            return CreatedAtAction(
-                nameof(GetOrder),
-                new { id = order.OrderId },
-                MapToOrderDto(createdOrder)
-            );
         }
 
         private Task<int?> FindOrderByIdempotencyKeyAsync(int userId, string idempotencyKey)
@@ -611,7 +712,7 @@ namespace Zodiac_Crystal.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.OrderId == order.OrderId);
 
-            var pdfBytes = _invoicePdfService.GenerateInvoice(order, returnRequest);
+            var pdfBytes = InvoicePdfService.GenerateInvoice(order, returnRequest);
 
             return File(pdfBytes, "application/pdf", $"invoice-{order.OrderId}.pdf");
         }
@@ -679,11 +780,7 @@ namespace Zodiac_Crystal.Controllers
                     return Conflict(new { message = "This order has just been updated and can no longer be cancelled. Please refresh." });
                 }
 
-                foreach (var item in order.OrderItems)
-                {
-                    await _context.Products.RestoreAsync(item.ProductId, item.Quantity);
-                    await _context.Entry(item.Product).ReloadAsync();
-                }
+                await RestockCancelledOrderItemsAsync(order.OrderItems);
 
                 order.Status = "Cancelled";
                 order.CancellationReason = string.IsNullOrEmpty(reason) ? null : reason;
@@ -691,23 +788,13 @@ namespace Zodiac_Crystal.Controllers
                 // A paid card order is refunded (or voided, if not yet settled)
                 // before the cancellation is committed - if the refund fails the
                 // order stays as it was, so it's never cancelled without a refund.
-                if (order.PaymentStatus == PaymentStatuses.Paid && order.PaymentTransactionId != null)
+                var refundResult = await ProcessCancellationRefundAsync(order);
+                if (!refundResult.Success)
                 {
-                    var refund = await _paymentService.RefundAsync(order.PaymentTransactionId);
-
-                    if (!refund.Success)
-                    {
-                        await transaction.RollbackAsync();
-                        return StatusCode(502, new { message = refund.ErrorMessage });
-                    }
-
-                    refundedTransactionId = order.PaymentTransactionId;
-                    order.PaymentStatus = PaymentStatuses.Refunded;
+                    await transaction.RollbackAsync();
+                    return StatusCode(502, new { message = refundResult.ErrorMessage });
                 }
-                else if (order.PaymentStatus == PaymentStatuses.Pending)
-                {
-                    order.PaymentStatus = PaymentStatuses.Cancelled;
-                }
+                refundedTransactionId = refundResult.TransactionId;
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -715,26 +802,69 @@ namespace Zodiac_Crystal.Controllers
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-
-                if (refundedTransactionId != null)
-                {
-                    // The money went back but the order still shows Paid. Retrying is
-                    // safe: RefundAsync sees the refund/void and won't repay it.
-                    _logger.LogCritical(ex, "Refund {TransactionId} issued for order {OrderId} but saving the cancellation failed",
-                        refundedTransactionId, order.OrderId);
-                    return StatusCode(500, new
-                    {
-                        message = "Your payment has been refunded, but we couldn't finish cancelling the order. Please try again - you won't be refunded twice."
-                    });
-                }
-
-                _logger.LogError(ex, "Customer cancellation failed for order {OrderId}", order.OrderId);
-                return StatusCode(500, new { message = "Could not cancel this order. Please try again." });
+                return HandleCancellationException(ex, order, refundedTransactionId);
             }
 
             // The cancellation (and any refund) is committed - confirm it by email,
             // including the refund, using the same status email admins trigger.
             // A failure here is only logged; the order is already cancelled.
+            await SendCancellationNotificationsAsync(order, previousStatus);
+
+            return NoContent();
+        }
+
+        private async Task RestockCancelledOrderItemsAsync(IEnumerable<OrderItem> orderItems)
+        {
+            foreach (var item in orderItems)
+            {
+                await _context.Products.RestoreAsync(item.ProductId, item.Quantity);
+                await _context.Entry(item.Product).ReloadAsync();
+            }
+        }
+
+        private async Task<(bool Success, string? TransactionId, string? ErrorMessage)> ProcessCancellationRefundAsync(Order order)
+        {
+            if (order.PaymentStatus == PaymentStatuses.Paid && order.PaymentTransactionId != null)
+            {
+                var refund = await _paymentService.RefundAsync(order.PaymentTransactionId);
+
+                if (!refund.Success)
+                {
+                    return (false, null, refund.ErrorMessage);
+                }
+
+                order.PaymentStatus = PaymentStatuses.Refunded;
+                return (true, order.PaymentTransactionId, null);
+            }
+
+            if (order.PaymentStatus == PaymentStatuses.Pending)
+            {
+                order.PaymentStatus = PaymentStatuses.Cancelled;
+            }
+
+            return (true, null, null);
+        }
+
+        private IActionResult HandleCancellationException(Exception ex, Order order, string? refundedTransactionId)
+        {
+            if (refundedTransactionId != null)
+            {
+                // The money went back but the order still shows Paid. Retrying is
+                // safe: RefundAsync sees the refund/void and won't repay it.
+                _logger.LogCritical(ex, "Refund {TransactionId} issued for order {OrderId} but saving the cancellation failed",
+                    refundedTransactionId, order.OrderId);
+                return StatusCode(500, new
+                {
+                    message = "Your payment has been refunded, but we couldn't finish cancelling the order. Please try again - you won't be refunded twice."
+                });
+            }
+
+            _logger.LogError(ex, "Customer cancellation failed for order {OrderId}", order.OrderId);
+            return StatusCode(500, new { message = "Could not cancel this order. Please try again." });
+        }
+
+        private async Task SendCancellationNotificationsAsync(Order order, string previousStatus)
+        {
             try
             {
                 await _emailService.SendOrderStatusUpdateAsync(order, previousStatus);
@@ -746,8 +876,6 @@ namespace Zodiac_Crystal.Controllers
 
             await _notificationService.BroadcastAdminChangeAsync("order", order.OrderId, "cancelled");
             await _notificationService.BroadcastStockAsync(order.OrderItems.Select(i => i.Product));
-
-            return NoContent();
         }
 
         // Removes only the ordered products, so a Buy Now order keeps the rest of the cart

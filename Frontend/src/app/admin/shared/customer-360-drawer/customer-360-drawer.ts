@@ -49,7 +49,7 @@ export class Customer360Drawer implements OnChanges {
   });
 
   displayName = computed(() => {
-    if (this.customerName && this.customerName.trim()) {
+    if (this.customerName?.trim()) {
       return this.customerName;
     }
     const firstOrder = this.orders()[0];

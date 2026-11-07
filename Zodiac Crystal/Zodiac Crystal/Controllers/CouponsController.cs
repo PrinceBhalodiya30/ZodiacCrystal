@@ -14,21 +14,21 @@ namespace Zodiac_Crystal.Controllers
     [ApiController]
     public class CouponsController : ControllerBase
     {
+        private const string CouponEntityType = "Coupon";
+        private const string CouponNotFoundMessage = "Coupon not found";
+
         private readonly CrystalsDbContext _context;
         private readonly CouponValidationService _validationService;
         private readonly AuditLogService _auditLogService;
-        private readonly CsvExportService _csvExportService;
 
         public CouponsController(
             CrystalsDbContext context,
             CouponValidationService validationService,
-            AuditLogService auditLogService,
-            CsvExportService csvExportService)
+            AuditLogService auditLogService)
         {
             _context = context;
             _validationService = validationService;
             _auditLogService = auditLogService;
-            _csvExportService = csvExportService;
         }
 
         // GET: api/coupons/paged?pageNumber=1&pageSize=20&search=
@@ -101,7 +101,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (coupon == null)
             {
-                return NotFound(new { message = "Coupon not found" });
+                return NotFound(new { message = CouponNotFoundMessage });
             }
 
             return Ok(MapToDto(coupon));
@@ -146,7 +146,7 @@ namespace Zodiac_Crystal.Controllers
             _context.Coupons.Add(coupon);
             await _context.SaveChangesAsync();
 
-            _auditLogService.Log(GetCurrentUserId(), "CouponCreated", "Coupon", coupon.CouponId, $"Code: {coupon.Code}");
+            _auditLogService.Log(GetCurrentUserId(), "CouponCreated", CouponEntityType, coupon.CouponId, $"Code: {coupon.Code}");
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
@@ -165,7 +165,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (coupon == null)
             {
-                return NotFound(new { message = "Coupon not found" });
+                return NotFound(new { message = CouponNotFoundMessage });
             }
 
             var code = dto.Code.Trim().ToUpperInvariant();
@@ -195,7 +195,7 @@ namespace Zodiac_Crystal.Controllers
             coupon.MaxUsesPerUser = dto.MaxUsesPerUser;
             coupon.IsActive = dto.IsActive;
 
-            _auditLogService.Log(GetCurrentUserId(), "CouponUpdated", "Coupon", coupon.CouponId, $"Code: {coupon.Code}");
+            _auditLogService.Log(GetCurrentUserId(), "CouponUpdated", CouponEntityType, coupon.CouponId, $"Code: {coupon.Code}");
 
             await _context.SaveChangesAsync();
 
@@ -211,7 +211,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (coupon == null)
             {
-                return NotFound(new { message = "Coupon not found" });
+                return NotFound(new { message = CouponNotFoundMessage });
             }
 
             if (coupon.UsedCount > 0)
@@ -222,7 +222,7 @@ namespace Zodiac_Crystal.Controllers
                 });
             }
 
-            _auditLogService.Log(GetCurrentUserId(), "CouponDeleted", "Coupon", coupon.CouponId, $"Code: {coupon.Code}");
+            _auditLogService.Log(GetCurrentUserId(), "CouponDeleted", CouponEntityType, coupon.CouponId, $"Code: {coupon.Code}");
 
             _context.Coupons.Remove(coupon);
             await _context.SaveChangesAsync();
@@ -241,7 +241,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (coupon == null)
             {
-                return NotFound(new { message = "Coupon not found" });
+                return NotFound(new { message = CouponNotFoundMessage });
             }
 
             if (coupon.NotifiedAt != null)
@@ -260,7 +260,7 @@ namespace Zodiac_Crystal.Controllers
 
             var recipients = await notificationService.NotifyCouponAsync(coupon);
 
-            _auditLogService.Log(GetCurrentUserId(), "CouponNotified", "Coupon", coupon.CouponId, $"Code: {coupon.Code}, Recipients: {recipients}");
+            _auditLogService.Log(GetCurrentUserId(), "CouponNotified", CouponEntityType, coupon.CouponId, $"Code: {coupon.Code}, Recipients: {recipients}");
             await _context.SaveChangesAsync();
 
             return Ok(new { recipients, notifiedAt = DateTime.SpecifyKind(now, DateTimeKind.Utc) });
@@ -413,7 +413,7 @@ namespace Zodiac_Crystal.Controllers
                 c.NotifiedAt
             });
 
-            var csv = _csvExportService.BuildCsv(headers, rows);
+            var csv = CsvExportService.BuildCsv(headers, rows);
 
             return File(csv, "text/csv", "coupons-export.csv");
         }

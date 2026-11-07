@@ -14,6 +14,8 @@ namespace Zodiac_Crystal.Controllers
     [Authorize(Roles = "User")]
     public class AddressesController : ControllerBase
     {
+        private const string AddressNotFoundMessage = "Address not found";
+
         private readonly CrystalsDbContext _context;
         private readonly AddressCheckService _addressCheckService;
 
@@ -53,7 +55,7 @@ namespace Zodiac_Crystal.Controllers
             // confirming to an attacker that a given address ID even exists.
             if (address == null || address.UserId != userId)
             {
-                return NotFound(new { message = "Address not found" });
+                return NotFound(new { message = AddressNotFoundMessage });
             }
 
             return Ok(MapToDto(address));
@@ -115,7 +117,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (address == null || address.UserId != userId)
             {
-                return NotFound(new { message = "Address not found" });
+                return NotFound(new { message = AddressNotFoundMessage });
             }
 
             var addressError = await _addressCheckService.ValidateAsync(
@@ -158,7 +160,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (address == null || address.UserId != userId)
             {
-                return NotFound(new { message = "Address not found" });
+                return NotFound(new { message = AddressNotFoundMessage });
             }
 
             await ClearOtherDefaults(userId, excludeAddressId: id);
@@ -179,7 +181,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (address == null || address.UserId != userId)
             {
-                return NotFound(new { message = "Address not found" });
+                return NotFound(new { message = AddressNotFoundMessage });
             }
 
             var wasDefault = address.IsDefault;

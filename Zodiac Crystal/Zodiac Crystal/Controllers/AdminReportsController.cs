@@ -27,16 +27,15 @@ namespace Zodiac_Crystal.Controllers
     {
         private const string CancelledStatus = "Cancelled";
         private const string DeliveredStatus = "Delivered";
+        private const string RevenueLabel = "Revenue";
         private const int DefaultTopProductsLimit = 10;
 
         private readonly CrystalsDbContext _context;
-        private readonly CsvExportService _csvExportService;
         private readonly ReportOperationsService _operationsService;
 
-        public AdminReportsController(CrystalsDbContext context, CsvExportService csvExportService, ReportOperationsService operationsService)
+        public AdminReportsController(CrystalsDbContext context, ReportOperationsService operationsService)
         {
             _context = context;
-            _csvExportService = csvExportService;
             _operationsService = operationsService;
         }
 
@@ -186,7 +185,7 @@ namespace Zodiac_Crystal.Controllers
             var builder = new System.Text.StringBuilder();
 
             builder.AppendLine("Report Period");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "From", "To", "RankedBy" },
                 new[]
                 {
@@ -194,13 +193,13 @@ namespace Zodiac_Crystal.Controllers
                     {
                         from?.ToString("yyyy-MM-dd") ?? "All time",
                         to?.ToString("yyyy-MM-dd") ?? "All time",
-                        byUnits ? "Units" : "Revenue"
+                        byUnits ? "Units" : RevenueLabel
                     }
                 }));
             builder.AppendLine();
 
             builder.AppendLine("Summary");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[]
                 {
                     "TotalRevenue", "CollectedRevenue", "PendingCodRevenue", "RefundedAmount",
@@ -217,25 +216,25 @@ namespace Zodiac_Crystal.Controllers
             builder.AppendLine();
 
             builder.AppendLine("Top-Selling Products");        
-            builder.Append(_csvExportService.BuildCsvSection(
-                new[] { "ProductId", "ProductName", "QuantitySold", "Revenue" },
+            builder.Append(CsvExportService.BuildCsvSection(
+                new[] { "ProductId", "ProductName", "QuantitySold", RevenueLabel },
                 topProducts.Select(p => new object?[] { p.ProductId, p.ProductName, p.QuantitySold, p.Revenue }))); 
             builder.AppendLine();
 
             builder.AppendLine("Sales by Category");
-            builder.Append(_csvExportService.BuildCsvSection( 
-                new[] { "CategoryId", "CategoryName", "QuantitySold", "Revenue" },
+            builder.Append(CsvExportService.BuildCsvSection( 
+                new[] { "CategoryId", "CategoryName", "QuantitySold", RevenueLabel },
                 categorySales.Select(c => new object?[] { c.CategoryId, c.CategoryName, c.QuantitySold, c.Revenue })));
             builder.AppendLine();
 
             builder.AppendLine("Sales by Zodiac Sign (a product linked to several signs counts for each)");
-            builder.Append(_csvExportService.BuildCsvSection(
-                new[] { "ZodiacSign", "VedicRashi", "DisplayName", "QuantitySold", "Revenue" },
+            builder.Append(CsvExportService.BuildCsvSection(
+                new[] { "ZodiacSign", "VedicRashi", "DisplayName", "QuantitySold", RevenueLabel },
                 zodiacSales.Select(z => new object?[] { z.ZodiacName, z.VedicRashi, z.DisplayName, z.QuantitySold, z.Revenue })));
             builder.AppendLine();
 
             builder.AppendLine("Coupon Performance");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "Coupon", "Orders", "DiscountGiven", "Sales", "Active" },
                 couponPerformance.Select(c => new object?[] { c.Code, c.OrderCount, c.DiscountGiven, c.Sales, c.IsActive })));
             builder.AppendLine();
@@ -243,54 +242,54 @@ namespace Zodiac_Crystal.Controllers
             builder.AppendLine(unsold.TotalCount > unsold.Items.Count
                 ? $"Products Not Selling (first {unsold.Items.Count} of {unsold.TotalCount})"
                 : "Products Not Selling");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "SKU", "Product", "Category", "Price", "InStock", "StockValue" },
                 unsold.Items.Select(p => new object?[] { p.Sku, p.ProductName, p.CategoryName, p.Price, p.StockQuantity, p.Price * p.StockQuantity })));
             builder.AppendLine();
 
             var speed = operations.Fulfilment;
             builder.AppendLine("Fulfilment Speed (average hours)");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "OrderToConfirmed", "ToShipped", "ShippedToDelivered", "OrderToDelivered", "DeliveredOrders" },
                 new[] { new object?[] { speed.HoursToConfirm, speed.HoursToShip, speed.HoursToDeliver, speed.HoursEndToEnd, speed.DeliveredCount } }));
             builder.AppendLine();
 
             var cancellations = operations.Cancellations;
             builder.AppendLine("Cancellations");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "Cancelled", "TotalOrders", "CancellationRatePercent", "ByCustomer", "ByAdmin", "CardRatePercent", "CodRatePercent" },
                 new[] { new object?[] { cancellations.Cancelled, cancellations.TotalOrders, cancellations.CancellationRate, cancellations.ByCustomer, cancellations.ByAdmin, cancellations.CardCancellationRate, cancellations.CodCancellationRate } }));
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "CancellationReason", "Count" },
                 cancellations.Reasons.Select(r => new object?[] { r.Reason, r.Count })));
             builder.AppendLine();
 
             var returns = operations.Returns;
             builder.AppendLine("Returns (orders placed in the period)");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "Requested", "Approved", "Rejected", "Refunded", "DeliveredOrders", "ReturnRatePercent", "RefundedAmount" },
                 new[] { new object?[] { returns.Requested, returns.Approved, returns.Rejected, returns.Refunded, returns.DeliveredOrders, returns.ReturnRate, returns.RefundedAmount } }));
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "ReturnReason", "Count" },
                 returns.Reasons.Select(r => new object?[] { r.Reason, r.Count })));
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "MostReturnedProduct", "Returns", "UnitsReturned" },
                 returns.TopProducts.Select(p => new object?[] { p.ProductName, p.ReturnCount, p.UnitsReturned })));
             builder.AppendLine();
 
             var customers = operations.Customers;
             builder.AppendLine("Customers");
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "Customers", "NewCustomers", "ReturningCustomers", "RepeatRatePercent" },
                 new[] { new object?[] { customers.Customers, customers.NewCustomers, customers.ReturningCustomers, customers.RepeatRate } }));
-            builder.Append(_csvExportService.BuildCsvSection(
+            builder.Append(CsvExportService.BuildCsvSection(
                 new[] { "TopCustomer", "Email", "Orders", "Spent" },
                 customers.TopCustomers.Select(t => new object?[] { t.Name, t.Email, t.Orders, t.Spent })));
             builder.AppendLine();
 
             builder.AppendLine("Sales by State");
-            builder.Append(_csvExportService.BuildCsvSection(
-                new[] { "State", "Orders", "Revenue" },
+            builder.Append(CsvExportService.BuildCsvSection(
+                new[] { "State", "Orders", RevenueLabel },
                 operations.States.Select(s => new object?[] { s.State, s.Orders, s.Revenue })));
             builder.AppendLine();
 
@@ -308,11 +307,11 @@ namespace Zodiac_Crystal.Controllers
             }
 
             builder.AppendLine("Daily Sales");
-            builder.Append(_csvExportService.BuildCsvSection(
-                new[] { "Date", "Revenue", "OrderCount" },
+            builder.Append(CsvExportService.BuildCsvSection(
+                new[] { "Date", RevenueLabel, "OrderCount" },
                 dailyRows.Select(d => new object?[] { d.Date.ToString("yyyy-MM-dd"), d.Revenue, d.OrderCount })));
 
-            var csv = _csvExportService.WrapWithBom(builder.ToString());
+            var csv = CsvExportService.WrapWithBom(builder.ToString());
 
             return File(csv, "text/csv", "sales-report-export.csv");
         }

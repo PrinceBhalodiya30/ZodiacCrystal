@@ -19,6 +19,8 @@ namespace Zodiac_Crystal.Services
     /// </summary>
     public static class NewsletterEmailValidator
     {
+        private const string GmailDomain = "gmail.com";
+
         // Common disposable / burner email domains
         private static readonly HashSet<string> DisposableDomains = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -40,10 +42,10 @@ namespace Zodiac_Crystal.Services
         // Common domain typo corrections
         private static readonly Dictionary<string, string> TypoSuggestions = new(StringComparer.OrdinalIgnoreCase)
         {
-            { "gmaill.com", "gmail.com" },
-            { "gamil.com", "gmail.com" },
-            { "gmai.com", "gmail.com" },
-            { "gmial.com", "gmail.com" },
+            { "gmaill.com", GmailDomain },
+            { "gamil.com", GmailDomain },
+            { "gmai.com", GmailDomain },
+            { "gmial.com", GmailDomain },
             { "yaho.com", "yahoo.com" },
             { "yahooo.com", "yahoo.com" },
             { "hotmial.com", "hotmail.com" },
@@ -113,7 +115,7 @@ namespace Zodiac_Crystal.Services
             }
 
             // 5. Gmail username constraints: Google strictly requires 6 to 30 characters
-            if ((domain == "gmail.com" || domain == "googlemail.com") && local.Length < 6)
+            if ((domain == GmailDomain || domain == "googlemail.com") && local.Length < 6)
             {
                 return EmailValidationResult.Fail("Gmail addresses require at least 6 characters before the @ symbol.");
             }

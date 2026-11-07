@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -102,12 +102,10 @@ namespace Zodiac_Crystal.Controllers
                 var queue = new Queue<int>(subtree);
                 while (queue.Count > 0)
                 {
-                    foreach (var childId in childrenOf[queue.Dequeue()])
+                    // subtree.Add returns true if newly added, filtering out already visited categories
+                    foreach (var childId in childrenOf[queue.Dequeue()].Where(subtree.Add))
                     {
-                        if (subtree.Add(childId))
-                        {
-                            queue.Enqueue(childId);
-                        }
+                        queue.Enqueue(childId);
                     }
                 }
 

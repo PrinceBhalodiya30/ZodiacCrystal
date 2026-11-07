@@ -9,9 +9,9 @@ namespace Zodiac_Crystal.Services
     /// uses the exact same formatting rules instead of hand-rolling string
     /// concatenation separately in each controller.
     /// </summary>
-    public class CsvExportService
+    public static class CsvExportService
     {
-        public byte[] BuildCsv(IEnumerable<string> headers, IEnumerable<IEnumerable<object?>> rows)
+        public static byte[] BuildCsv(IEnumerable<string> headers, IEnumerable<IEnumerable<object?>> rows)
         {
             return WrapWithBom(BuildCsvSection(headers, rows));
         }
@@ -20,7 +20,7 @@ namespace Zodiac_Crystal.Services
         // when several sections need to be concatenated into a single combined file
         // (e.g. the Sales Reports export), so the BOM is only added once, at the
         // very start of the final file, rather than once per section.
-        public string BuildCsvSection(IEnumerable<string> headers, IEnumerable<IEnumerable<object?>> rows)
+        public static string BuildCsvSection(IEnumerable<string> headers, IEnumerable<IEnumerable<object?>> rows)
         {
             var builder = new StringBuilder();
 
@@ -34,7 +34,7 @@ namespace Zodiac_Crystal.Services
             return builder.ToString();
         }
 
-        public byte[] WrapWithBom(string csvText)
+        public static byte[] WrapWithBom(string csvText)
         {
             // A UTF-8 BOM is included so Excel (which otherwise guesses the wrong
             // encoding) correctly displays non-ASCII characters like the rupee sign.

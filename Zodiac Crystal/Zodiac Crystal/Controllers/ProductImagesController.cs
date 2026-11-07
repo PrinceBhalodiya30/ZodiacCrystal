@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Data;
@@ -16,6 +16,7 @@ namespace Zodiac_Crystal.Controllers
         private static readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
         private static readonly string[] AllowedContentTypes = { "image/jpeg", "image/png", "image/webp" };
         private const long MaxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
+        private const string ProductImageNotFoundMessage = "Product image not found";
 
         private readonly CrystalsDbContext _context;
         private readonly IWebHostEnvironment _environment;
@@ -62,7 +63,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product image not found"
+                    message = ProductImageNotFoundMessage
                 });
             }
 
@@ -226,7 +227,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product image not found"
+                    message = ProductImageNotFoundMessage
                 });
             }
 
@@ -266,7 +267,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product image not found"
+                    message = ProductImageNotFoundMessage
                 });
             }
 
@@ -290,7 +291,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product image not found"
+                    message = ProductImageNotFoundMessage
                 });
             }
 
@@ -323,13 +324,14 @@ namespace Zodiac_Crystal.Controllers
         // One-off backfill: creates WebP/responsive variants for existing uploads that
         // don't have them yet. Safe to re-run - files that already have variants are skipped.
         [HttpPost("generate-variants")]
-        public IActionResult GenerateMissingVariants()
+        [ProducesResponseType(typeof(GenerateMissingVariantsResultDto), StatusCodes.Status200OK)]
+        public ActionResult<GenerateMissingVariantsResultDto> GenerateMissingVariants()
         {
             var uploadsFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "uploads", "products");
 
             if (!Directory.Exists(uploadsFolder))
             {
-                return Ok(new { generated = 0, failed = 0 });
+                return Ok(new GenerateMissingVariantsResultDto(0, 0));
             }
 
             int generated = 0, failed = 0;
@@ -355,7 +357,7 @@ namespace Zodiac_Crystal.Controllers
                 else failed++;
             }
 
-            return Ok(new { generated, failed });
+            return Ok(new GenerateMissingVariantsResultDto(generated, failed));
         }
 
         // A product should have at most one primary image - unset any others

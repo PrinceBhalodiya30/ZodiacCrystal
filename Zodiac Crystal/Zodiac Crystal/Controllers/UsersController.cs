@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +16,8 @@ namespace Zodiac_Crystal.Controllers
     [Authorize]
     public class UsersController : ControllerBase
     {
+        private const string UserNotFoundMessage = "User not found";
+
         private readonly CrystalsDbContext _context;
         private readonly TokenService _tokenService;
         private readonly IEmailService _emailService;
@@ -52,7 +54,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { message = UserNotFoundMessage });
             }
 
             // Name only - the email changes through the verified flow below.
@@ -74,7 +76,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { message = UserNotFoundMessage });
             }
 
             if (_emailChangeOtpService.IsPasswordLocked(userId))
@@ -157,7 +159,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { message = UserNotFoundMessage });
             }
 
             var (result, pendingEmail, remaining) = await _emailChangeOtpService.VerifyAsync(userId, dto.Otp);
@@ -240,7 +242,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { message = UserNotFoundMessage });
             }
 
             var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
@@ -284,7 +286,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found" });
+                return NotFound(new { message = UserNotFoundMessage });
             }
 
             if (user.Role == "Admin")

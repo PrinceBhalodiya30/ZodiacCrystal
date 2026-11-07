@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -190,26 +190,17 @@ namespace Zodiac_Crystal.Controllers
 
                 // Card: refund through Braintree before committing, so the return is
                 // never marked refunded without the money actually going back.
-                if (order.PaymentMethod == PaymentMethods.Card && order.PaymentTransactionId != null)
+                var refundResult = await ProcessCardRefundIfNeededAsync(order);
+                if (!refundResult.Success)
                 {
-                    var refund = await _paymentService.RefundAsync(order.PaymentTransactionId);
-
-                    if (!refund.Success)
-                    {
-                        await transaction.RollbackAsync();
-                        return StatusCode(502, new { message = refund.ErrorMessage });
-                    }
-
-                    refundedTransactionId = order.PaymentTransactionId;
+                    await transaction.RollbackAsync();
+                    return StatusCode(502, new { message = refundResult.ErrorMessage });
                 }
+                refundedTransactionId = refundResult.TransactionId;
 
                 if (dto.Restock)
                 {
-                    foreach (var item in order.OrderItems)
-                    {
-                        await _context.Products.RestoreAsync(item.ProductId, item.Quantity);
-                        await _context.Entry(item.Product).ReloadAsync();
-                    }
+                    await RestockOrderItemsAsync(order.OrderItems);
                 }
 
                 order.PaymentStatus = PaymentStatuses.Refunded;
@@ -231,32 +222,67 @@ namespace Zodiac_Crystal.Controllers
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-
-                if (refundedTransactionId != null)
-                {
-                    // Refunded at the gateway, but the return still shows Approved.
-                    // Retrying is safe: RefundAsync won't repay an existing refund.
-                    _logger.LogCritical(ex, "Refund {TransactionId} issued for return {ReturnRequestId} but saving it failed",
-                        refundedTransactionId, id);
-                    return StatusCode(500, new
-                    {
-                        message = $"The payment was refunded (reference {refundedTransactionId}) but the return couldn't be updated. Retry the refund - it won't refund twice."
-                    });
-                }
-
-                _logger.LogError(ex, "Refund failed for return {ReturnRequestId}", id);
-                return StatusCode(500, new { message = "The refund could not be completed. Please try again." });
+                return HandleRefundException(ex, id, refundedTransactionId);
             }
 
+            await SendRefundNotificationsAsync(returnRequest, order, dto.Restock);
+
+            return Ok(ReturnMapper.ToDto(returnRequest));
+        }
+
+        private async Task<(bool Success, string? ErrorMessage, string? TransactionId)> ProcessCardRefundIfNeededAsync(Order order)
+        {
+            if (order.PaymentMethod == PaymentMethods.Card && order.PaymentTransactionId != null)
+            {
+                var refund = await _paymentService.RefundAsync(order.PaymentTransactionId);
+
+                if (!refund.Success)
+                {
+                    return (false, refund.ErrorMessage, null);
+                }
+
+                return (true, null, order.PaymentTransactionId);
+            }
+
+            return (true, null, null);
+        }
+
+        private async Task RestockOrderItemsAsync(IEnumerable<OrderItem> orderItems)
+        {
+            foreach (var item in orderItems)
+            {
+                await _context.Products.RestoreAsync(item.ProductId, item.Quantity);
+                await _context.Entry(item.Product).ReloadAsync();
+            }
+        }
+
+        private IActionResult HandleRefundException(Exception ex, int id, string? refundedTransactionId)
+        {
+            if (refundedTransactionId != null)
+            {
+                // Refunded at the gateway, but the return still shows Approved.
+                // Retrying is safe: RefundAsync won't repay an existing refund.
+                _logger.LogCritical(ex, "Refund {TransactionId} issued for return {ReturnRequestId} but saving it failed",
+                    refundedTransactionId, id);
+                return StatusCode(500, new
+                {
+                    message = $"The payment was refunded (reference {refundedTransactionId}) but the return couldn't be updated. Retry the refund - it won't refund twice."
+                });
+            }
+
+            _logger.LogError(ex, "Refund failed for return {ReturnRequestId}", id);
+            return StatusCode(500, new { message = "The refund could not be completed. Please try again." });
+        }
+
+        private async Task SendRefundNotificationsAsync(ReturnRequest returnRequest, Order order, bool restocked)
+        {
             await ReturnMapper.NotifyCustomerAsync(returnRequest, order, _emailService, _notificationService, _logger);
             await _notificationService.BroadcastAdminChangeAsync("return", returnRequest.ReturnRequestId, "refunded");
             await _notificationService.BroadcastAdminChangeAsync("order", order.OrderId, "refunded");
-            if (dto.Restock)
+            if (restocked)
             {
                 await _notificationService.BroadcastStockAsync(order.OrderItems.Select(i => i.Product));
             }
-
-            return Ok(ReturnMapper.ToDto(returnRequest));
         }
 
         private Task<ReturnRequest?> LoadAsync(int id) =>
@@ -277,7 +303,7 @@ namespace Zodiac_Crystal.Controllers
         // GET: api/admin/returns/export?status=
         // Same status filter as the Returns page. Times are UTC, as stored.
         [HttpGet("export")]
-        public async Task<IActionResult> ExportReturns([FromServices] CsvExportService csv, string? status = null, string? search = null)
+        public async Task<IActionResult> ExportReturns(string? status = null, string? search = null)
         {
             var query = ApplyFilters(
                 _context.ReturnRequests.AsNoTracking().Include(r => r.Order).ThenInclude(o => o.User),
@@ -285,7 +311,7 @@ namespace Zodiac_Crystal.Controllers
 
             var returns = await query.OrderByDescending(r => r.CreatedAt).ToListAsync();
 
-            var file = csv.BuildCsv(
+            var file = CsvExportService.BuildCsv(
                 new[]
                 {
                     "ReturnId", "OrderId", "Customer", "CustomerEmail", "Reason", "Details", "Status", "AdminNote",

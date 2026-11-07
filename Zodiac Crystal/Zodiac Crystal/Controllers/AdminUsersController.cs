@@ -211,7 +211,7 @@ namespace Zodiac_Crystal.Controllers
         // GET: api/admin/users/export?search=
         // Same search as the Users page; deleted accounts are left out there too.
         [HttpGet("export")]
-        public async Task<IActionResult> ExportUsers([FromServices] CsvExportService csv, string? search = null, string? role = null, string? status = null)
+        public async Task<IActionResult> ExportUsers(string? search = null, string? role = null, string? status = null)
         {
             var query = ApplyFilters(_context.Users.AsNoTracking().Where(u => !u.IsDeleted), search, role, status);
 
@@ -220,7 +220,7 @@ namespace Zodiac_Crystal.Controllers
                 .Select(u => new { u.UserId, u.Name, u.Email, u.Role, u.IsActive, u.CreatedAt })
                 .ToListAsync();
 
-            var file = csv.BuildCsv(
+            var file = CsvExportService.BuildCsv(
                 new[] { "UserId", "Name", "Email", "Role", "Active", "JoinedAt" },
                 users.Select(u => new object?[] { u.UserId, u.Name, u.Email, u.Role, u.IsActive, u.CreatedAt }));
 

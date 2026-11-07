@@ -117,7 +117,6 @@ namespace Zodiac_Crystal.Controllers
         // in a newsletter tool such as Brevo.
         [HttpGet("export")]
         public async Task<IActionResult> ExportSubscribers(
-            [FromServices] CsvExportService csv,
             [FromServices] IOptions<EmailSettings> emailSettings,
             string? search = null,
             string? status = "active")
@@ -138,7 +137,7 @@ namespace Zodiac_Crystal.Controllers
                 })
                 .ToListAsync();
 
-            var file = csv.BuildCsv(
+            var file = CsvExportService.BuildCsv(
                 new[] { "Email", "Status", "SubscribedAt", "UnsubscribedAt", "RegisteredCustomer", "UnsubscribeLink" },
                 subscribers.Select(s => new object?[]
                 {

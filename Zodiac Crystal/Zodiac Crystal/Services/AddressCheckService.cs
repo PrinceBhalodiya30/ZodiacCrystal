@@ -13,8 +13,6 @@ namespace Zodiac_Crystal.Services
     // blocking every checkout.
     public partial class AddressCheckService
     {
-        public const string IndiaPostUrl = "https://api.postalpincode.in/";
-
         // Same box the map is restricted to (south-west and north-east corners).
         private const decimal MinLat = 6m, MaxLat = 37.5m, MinLng = 68m, MaxLng = 97.5m;
 
@@ -157,19 +155,13 @@ namespace Zodiac_Crystal.Services
 
         private sealed record PinPlace(string State, IReadOnlyList<string> Names);
 
-        private sealed class IndiaPostResponse
-        {
-            public string? Status { get; set; }
-            public List<PostOffice>? PostOffice { get; set; }
-        }
+        private sealed record IndiaPostResponse(List<PostOffice>? PostOffice);
 
-        private sealed class PostOffice
-        {
-            public string? Name { get; set; }
-            public string? District { get; set; }
-            public string? Block { get; set; }
-            public string? Division { get; set; }
-            public string? State { get; set; }
-        }
+        private sealed record PostOffice(
+            string? Name,
+            string? District,
+            string? Block,
+            string? Division,
+            string? State);
     }
 }

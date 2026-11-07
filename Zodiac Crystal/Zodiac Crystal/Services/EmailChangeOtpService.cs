@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -38,7 +38,7 @@ namespace Zodiac_Crystal.Services
             _cache = cache;
         }
 
-        private class PasswordFailures
+        private sealed class PasswordFailures
         {
             public int Count { get; set; }
         }

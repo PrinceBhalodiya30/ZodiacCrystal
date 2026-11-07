@@ -59,7 +59,6 @@ public sealed class OrdersHarness
             ctx,
             NullLogger<OrdersController>.Instance,
             new CouponValidationService(),
-            new InvoicePdfService(),
             notifications,
             Email.Object,
             payments,

@@ -73,6 +73,100 @@ namespace Zodiac_Crystal.Controllers
         {
             var userId = GetCurrentUserId();
 
+            var validationError = await ValidatePurchaseRequestAsync(dto);
+            if (validationError != null)
+            {
+                return validationError;
+            }
+
+            var duplicateOrder = await CheckIdempotentOrderAsync(userId, dto.IdempotencyKey);
+            if (duplicateOrder != null)
+            {
+                return duplicateOrder;
+            }
+
+            var payByCard = dto.PaymentMethod == PaymentMethods.Card;
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            string? chargedTransactionId = null;
+            decimal chargedAmount = 0m;
+            Order order;
+            decimal actualValue;
+            var stockBefore = new List<(Product Product, int Stock)>();
+
+            try
+            {
+                var (createdOrderEntity, calculatedValue, setupError) = await SetupAndReserveBoxOrderAsync(userId, dto, payByCard, stockBefore);
+                if (setupError != null)
+                {
+                    await transaction.RollbackAsync();
+                    return setupError;
+                }
+
+                order = createdOrderEntity!;
+                actualValue = calculatedValue;
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                // Same approach as OrdersController.CreateOrder: charge inside the
+                // transaction so a declined card leaves no order or stock change behind.
+                if (payByCard)
+                {
+                    var paymentResult = await ProcessCardPaymentAsync(order, dto);
+                    if (!paymentResult.Success)
+                    {
+                        await transaction.RollbackAsync();
+                        return BadRequest(new { message = paymentResult.ErrorMessage, paymentFailed = true });
+                    }
+
+                    chargedTransactionId = paymentResult.TransactionId;
+                    chargedAmount = order.TotalAmount;
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex) when (chargedTransactionId == null
+                && dto.IdempotencyKey != null
+                && CheckoutSafety.IsDuplicateIdempotencyKey(ex))
+            {
+                // A simultaneous request with the same key placed the box first.
+                // Only possible at the first SaveChanges, before any charge, so
+                // rolling back the stock reservation is all that's needed.
+                await transaction.RollbackAsync();
+                _context.ChangeTracker.Clear();
+
+                var existing = await CheckIdempotentOrderAsync(userId, dto.IdempotencyKey);
+                if (existing != null)
+                {
+                    return existing;
+                }
+
+                _logger.LogError(ex, "Mystery box purchase failed for user {UserId}", userId);
+                return StatusCode(500, new { message = "Your Mystery Crystal Box could not be created. Please try again." });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return await HandlePurchaseExceptionAsync(ex, userId, chargedTransactionId, chargedAmount);
+            }
+
+            // The order (and any card payment) is committed at this point. Nothing
+            // below may roll it back or report it as failed - a notification or
+            // email failure is only logged.
+            var createdOrder = await ReloadOrderOrFallbackAsync(order);
+            await DispatchOrderNotificationsAsync(order, createdOrder, userId, actualValue, stockBefore);
+
+            return CreatedAtAction(
+                "GetOrder",
+                "Orders",
+                new { id = order.OrderId },
+                MapToOrderDto(createdOrder)
+            );
+        }
+
+        private async Task<ActionResult?> ValidatePurchaseRequestAsync(CreateMysteryBoxOrderDto dto)
+        {
             if (User.IsGuest())
             {
                 // Guest order emails go to the verified address, never a typed one.
@@ -82,17 +176,6 @@ namespace Zodiac_Crystal.Controllers
                 if (dto.PaymentMethod != PaymentMethods.Card)
                 {
                     return BadRequest(new { message = "Guest orders are paid by card. Log in or create an account to use Cash on Delivery." });
-                }
-            }
-
-            // Same as OrdersController.CreateOrder: a repeat of an attempt that
-            // already placed its box gets that order back, without a new charge.
-            if (dto.IdempotencyKey != null)
-            {
-                var existingId = await FindOrderByIdempotencyKeyAsync(userId, dto.IdempotencyKey);
-                if (existingId != null)
-                {
-                    return await CreatedOrderResponseAsync(existingId.Value);
                 }
             }
 
@@ -120,189 +203,187 @@ namespace Zodiac_Crystal.Controllers
                 return BadRequest(new { message = "Selected zodiac sign does not exist." });
             }
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            string? chargedTransactionId = null;
-            decimal chargedAmount = 0m;
-            Order order;
-            decimal actualValue;
-            // Each product's stock before this order, for the low-stock alert.
-            var stockBefore = new List<(Product Product, int Stock)>();
+            return null;
+        }
 
-            try
+        private async Task<ActionResult<OrderDto>?> CheckIdempotentOrderAsync(int userId, string? idempotencyKey)
+        {
+            if (idempotencyKey == null)
             {
-                // Re-checked inside the transaction (not just at selection time) so a
-                // product that sold out between selection and commit can't be double-sold.
-                var eligibleProducts = await _context.Products
-                    .Include(p => p.Zodiacs)
-                    .Where(p => p.IsActive && p.StockQuantity > 0)
-                    .ToListAsync();
-
-                var selected = SelectBoxProducts(eligibleProducts, dto.ZodiacId);
-
-                if (selected == null)
-                {
-                    await transaction.RollbackAsync();
-                    return BadRequest(new
-                    {
-                        message = "Mystery Crystal Box is currently unavailable. Please check back later."
-                    });
-                }
-
-                actualValue = selected.Sum(p => p.Price);
-                var discountAmount = actualValue - Price;
-
-                order = new Order
-                {
-                    UserId = userId,
-                    TotalAmount = Price,
-                    CouponCode = MysteryBoxCouponCode,
-                    DiscountAmount = discountAmount,
-                    Status = "Pending",
-                    ShippingName = dto.ShippingName,
-                    ShippingEmail = dto.ShippingEmail,
-                    ShippingAddress = dto.ShippingAddress,
-                    City = dto.City,
-                    State = dto.State,
-                    PostalCode = dto.PostalCode,
-                    Phone = dto.Phone,
-                    DeliveryInstructions = string.IsNullOrWhiteSpace(dto.DeliveryInstructions) ? null : dto.DeliveryInstructions.Trim(),
-                    // Only keep a complete pin; half a coordinate is useless.
-                    Latitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Latitude.Value, 6) : null,
-                    Longitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Longitude.Value, 6) : null,
-                    PaymentMethod = payByCard ? PaymentMethods.Card : PaymentMethods.CashOnDelivery,
-                    PaymentStatus = PaymentStatuses.Pending,
-                    IdempotencyKey = dto.IdempotencyKey
-                };
-
-                foreach (var product in selected)
-                {
-                    order.OrderItems.Add(new OrderItem
-                    {
-                        ProductId = product.ProductId,
-                        Quantity = 1,
-                        UnitPrice = product.Price,
-                        Subtotal = product.Price
-                    });
-
-                    // Atomic, like CreateOrder: the list above can be stale by now,
-                    // so the unit is only taken if it's still in stock. Losing the
-                    // race rolls the whole box back rather than overselling.
-                    if (!await _context.Products.TryReserveAsync(product.ProductId, 1))
-                    {
-                        await transaction.RollbackAsync();
-                        return Conflict(new
-                        {
-                            message = "One of the crystals for your box just sold out. Please try again."
-                        });
-                    }
-
-                    // ExecuteUpdate bypasses the change tracker - reload so the tracked
-                    // entity reflects the real stock (and SaveChanges won't overwrite it).
-                    await _context.Entry(product).ReloadAsync();
-                    stockBefore.Add((product, product.StockQuantity + 1));
-                }
-
-                _context.Orders.Add(order);
-
-                await _context.SaveChangesAsync();
-
-                // Same approach as OrdersController.CreateOrder: charge inside the
-                // transaction so a declined card leaves no order or stock change behind.
-                if (payByCard)
-                {
-                    var payment = await _paymentService.ChargeAsync(
-                        order.TotalAmount, dto.PaymentNonce!, dto.DeviceData, order.OrderId);
-
-                    if (!payment.Success)
-                    {
-                        await transaction.RollbackAsync();
-                        return BadRequest(new { message = payment.ErrorMessage, paymentFailed = true });
-                    }
-
-                    chargedTransactionId = payment.TransactionId;
-                    chargedAmount = order.TotalAmount;
-                    order.PaymentStatus = PaymentStatuses.Paid;
-                    order.PaymentTransactionId = payment.TransactionId;
-                    order.PaidAt = DateTime.Now;
-
-                    await _context.SaveChangesAsync();
-                }
-
-                await transaction.CommitAsync();
+                return null;
             }
-            catch (DbUpdateException ex) when (chargedTransactionId == null
-                && dto.IdempotencyKey != null
-                && CheckoutSafety.IsDuplicateIdempotencyKey(ex))
-            {
-                // A simultaneous request with the same key placed the box first.
-                // Only possible at the first SaveChanges, before any charge, so
-                // rolling back the stock reservation is all that's needed.
-                await transaction.RollbackAsync();
-                _context.ChangeTracker.Clear();
 
-                var existingId = await FindOrderByIdempotencyKeyAsync(userId, dto.IdempotencyKey!);
-                if (existingId != null)
+            var existingId = await FindOrderByIdempotencyKeyAsync(userId, idempotencyKey);
+            if (existingId != null)
+            {
+                return await CreatedOrderResponseAsync(existingId.Value);
+            }
+
+            return null;
+        }
+
+        private async Task<(Order? Order, decimal ActualValue, ActionResult? Error)> SetupAndReserveBoxOrderAsync(
+            int userId,
+            CreateMysteryBoxOrderDto dto,
+            bool payByCard,
+            List<(Product Product, int Stock)> stockBefore)
+        {
+            // Re-checked inside the transaction (not just at selection time) so a
+            // product that sold out between selection and commit can't be double-sold.
+            var eligibleProducts = await _context.Products
+                .Include(p => p.Zodiacs)
+                .Where(p => p.IsActive && p.StockQuantity > 0)
+                .ToListAsync();
+
+            var selected = SelectBoxProducts(eligibleProducts, dto.ZodiacId);
+            if (selected == null)
+            {
+                return (null, 0m, BadRequest(new
                 {
-                    return await CreatedOrderResponseAsync(existingId.Value);
+                    message = "Mystery Crystal Box is currently unavailable. Please check back later."
+                }));
+            }
+
+            var actualValue = selected.Sum(p => p.Price);
+            var discountAmount = actualValue - Price;
+
+            var order = new Order
+            {
+                UserId = userId,
+                TotalAmount = Price,
+                CouponCode = MysteryBoxCouponCode,
+                DiscountAmount = discountAmount,
+                Status = "Pending",
+                ShippingName = dto.ShippingName,
+                ShippingEmail = dto.ShippingEmail,
+                ShippingAddress = dto.ShippingAddress,
+                City = dto.City,
+                State = dto.State,
+                PostalCode = dto.PostalCode,
+                Phone = dto.Phone,
+                DeliveryInstructions = string.IsNullOrWhiteSpace(dto.DeliveryInstructions) ? null : dto.DeliveryInstructions.Trim(),
+                Latitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Latitude.Value, 6) : null,
+                Longitude = dto.Latitude.HasValue && dto.Longitude.HasValue ? Math.Round(dto.Longitude.Value, 6) : null,
+                PaymentMethod = payByCard ? PaymentMethods.Card : PaymentMethods.CashOnDelivery,
+                PaymentStatus = PaymentStatuses.Pending,
+                IdempotencyKey = dto.IdempotencyKey
+            };
+
+            foreach (var product in selected)
+            {
+                order.OrderItems.Add(new OrderItem
+                {
+                    ProductId = product.ProductId,
+                    Quantity = 1,
+                    UnitPrice = product.Price,
+                    Subtotal = product.Price
+                });
+
+                // Atomic, like CreateOrder: the list above can be stale by now,
+                // so the unit is only taken if it's still in stock. Losing the
+                // race rolls the whole box back rather than overselling.
+                if (!await _context.Products.TryReserveAsync(product.ProductId, 1))
+                {
+                    return (null, 0m, Conflict(new
+                    {
+                        message = "One of the crystals for your box just sold out. Please try again."
+                    }));
                 }
 
-                _logger.LogError(ex, "Mystery box purchase failed for user {UserId}", userId);
-                return StatusCode(500, new { message = "Your Mystery Crystal Box could not be created. Please try again." });
+                // ExecuteUpdate bypasses the change tracker - reload so the tracked
+                // entity reflects the real stock (and SaveChanges won't overwrite it).
+                await _context.Entry(product).ReloadAsync();
+                stockBefore.Add((product, product.StockQuantity + 1));
             }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                _logger.LogError(ex, "Mystery box purchase failed for user {UserId}", userId);
 
-                var reversed = false;
-                if (chargedTransactionId != null)
+            return (order, actualValue, null);
+        }
+
+        private async Task<(bool Success, string? TransactionId, string? ErrorMessage)> ProcessCardPaymentAsync(
+            Order order,
+            CreateMysteryBoxOrderDto dto)
+        {
+            var payment = await _paymentService.ChargeAsync(
+                order.TotalAmount, dto.PaymentNonce!, dto.DeviceData, order.OrderId);
+
+            if (!payment.Success)
+            {
+                return (false, null, payment.ErrorMessage);
+            }
+
+            order.PaymentStatus = PaymentStatuses.Paid;
+            order.PaymentTransactionId = payment.TransactionId;
+            order.PaidAt = DateTime.Now;
+
+            return (true, payment.TransactionId, null);
+        }
+
+        private static string GetPurchaseFailureMessage(string? chargedTransactionId, bool reversed)
+        {
+            if (chargedTransactionId == null)
+            {
+                return "Your Mystery Crystal Box could not be created. Please try again.";
+            }
+
+            if (reversed)
+            {
+                return "Your Mystery Crystal Box could not be created and your payment has been reversed. Please try again.";
+            }
+
+            return $"Your Mystery Crystal Box could not be created, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@crystalstudio.com quoting payment reference {chargedTransactionId}.";
+        }
+
+        private async Task<ActionResult<OrderDto>> HandlePurchaseExceptionAsync(
+            Exception ex,
+            int userId,
+            string? chargedTransactionId,
+            decimal chargedAmount)
+        {
+            _logger.LogError(ex, "Mystery box purchase failed for user {UserId}", userId);
+
+            var reversed = false;
+            if (chargedTransactionId != null)
+            {
+                try
                 {
-                    try
+                    var reversal = await _paymentService.RefundAsync(chargedTransactionId);
+                    reversed = reversal.Success;
+                    if (!reversal.Success)
                     {
-                        var reversal = await _paymentService.RefundAsync(chargedTransactionId);
-                        reversed = reversal.Success;
-                        if (!reversal.Success)
-                        {
-                            _logger.LogCritical("Charged transaction {TransactionId} could not be reversed after a failed mystery box save",
-                                chargedTransactionId);
-                        }
-                    }
-                    catch (Exception reverseEx)
-                    {
-                        _logger.LogCritical(reverseEx, "Charged transaction {TransactionId} could not be reversed after a failed mystery box save",
+                        _logger.LogCritical("Charged transaction {TransactionId} could not be reversed after a failed mystery box save",
                             chargedTransactionId);
                     }
-
-                    // The transaction above is already rolled back, so this row
-                    // saves on its own and stays even though the order didn't.
-                    if (!reversed)
-                    {
-                        await CheckoutSafety.RecordPaymentFailureAsync(_context, _logger, userId, chargedTransactionId,
-                            chargedAmount, $"Mystery box save failed and the charge could not be reversed: {ex.Message}");
-                    }
+                }
+                catch (Exception reverseEx)
+                {
+                    _logger.LogCritical(reverseEx, "Charged transaction {TransactionId} could not be reversed after a failed mystery box save",
+                        chargedTransactionId);
                 }
 
-                // Tell the customer what actually happened to their money. If the
-                // reversal failed, they get the transaction reference to quote; the
-                // LogCritical above alerts staff, and RefundAsync is safe to retry.
-                return StatusCode(500, new
+                // The transaction above is already rolled back, so this row
+                // saves on its own and stays even though the order didn't.
+                if (!reversed)
                 {
-                    message = chargedTransactionId == null
-                        ? "Your Mystery Crystal Box could not be created. Please try again."
-                        : reversed
-                            ? "Your Mystery Crystal Box could not be created and your payment has been reversed. Please try again."
-                            : $"Your Mystery Crystal Box could not be created, and we couldn't reverse your card payment automatically. Our team has been alerted and will refund it - please contact support@crystalstudio.com quoting payment reference {chargedTransactionId}.",
-                    paymentReference = chargedTransactionId != null && !reversed ? chargedTransactionId : null
-                });
+                    await CheckoutSafety.RecordPaymentFailureAsync(_context, _logger, userId, chargedTransactionId,
+                        chargedAmount, $"Mystery box save failed and the charge could not be reversed: {ex.Message}");
+                }
             }
 
-            // The order (and any card payment) is committed at this point. Nothing
-            // below may roll it back or report it as failed - a notification or
-            // email failure is only logged.
-            Order createdOrder;
+            var message = GetPurchaseFailureMessage(chargedTransactionId, reversed);
+            var paymentReference = chargedTransactionId != null && !reversed ? chargedTransactionId : null;
+
+            return StatusCode(500, new
+            {
+                message,
+                paymentReference
+            });
+        }
+
+        private async Task<Order> ReloadOrderOrFallbackAsync(Order order)
+        {
             try
             {
-                createdOrder = await _context.Orders
+                return await _context.Orders
                     .Include(o => o.User)
                     .Include(o => o.OrderItems)
                         .ThenInclude(oi => oi.Product)
@@ -313,9 +394,17 @@ namespace Zodiac_Crystal.Controllers
                 // Fall back to the tracked order (its items and products are
                 // already loaded) rather than reporting a placed order as failed.
                 _logger.LogError(ex, "Mystery box order {OrderId} placed but reloading it failed", order.OrderId);
-                createdOrder = order;
+                return order;
             }
+        }
 
+        private async Task DispatchOrderNotificationsAsync(
+            Order order,
+            Order createdOrder,
+            int userId,
+            decimal actualValue,
+            List<(Product Product, int Stock)> stockBefore)
+        {
             _logger.LogInformation(
                 "Mystery box order {OrderId} created for user {UserId}, value {ActualValue}, paid {Price}",
                 order.OrderId, userId, actualValue, Price);
@@ -357,13 +446,6 @@ namespace Zodiac_Crystal.Controllers
             {
                 _logger.LogError(ex, "Mystery box order {OrderId} placed but stock broadcast failed", order.OrderId);
             }
-
-            return CreatedAtAction(
-                "GetOrder",
-                "Orders",
-                new { id = order.OrderId },
-                MapToOrderDto(createdOrder)
-            );
         }
 
         private Task<int?> FindOrderByIdempotencyKeyAsync(int userId, string idempotencyKey)
@@ -421,40 +503,54 @@ namespace Zodiac_Crystal.Controllers
                 // prioritize matching zodiac products and fill remaining slots with non-zodiac products
                 if (zodiacMatching.Count > 0)
                 {
-                    var otherProducts = eligibleProducts
-                        .Where(p => !p.Zodiacs.Any(z => z.ZodiacId == zodiacId.Value))
-                        .ToList();
-
-                    var random = Random.Shared;
-                    var takeZodiac = Math.Min(zodiacMatching.Count, ItemCount - 1);
-
-                    for (var attempt = 0; attempt < RandomAttempts; attempt++)
+                    var mixedZodiac = TryPickMixedZodiac(eligibleProducts, zodiacMatching, zodiacId.Value);
+                    if (mixedZodiac != null)
                     {
-                        var sampleZodiac = zodiacMatching.OrderBy(_ => random.Next()).Take(takeZodiac).ToList();
-                        var needed = ItemCount - sampleZodiac.Count;
-                        var sampleOther = otherProducts.OrderBy(_ => random.Next()).Take(needed).ToList();
-                        var combined = sampleZodiac.Concat(sampleOther).ToList();
-
-                        if (combined.Count == ItemCount && combined.Sum(p => p.Price) >= MinValue)
-                        {
-                            return combined;
-                        }
-                    }
-
-                    // Greedy combination: highest priced zodiac items + highest priced others
-                    var topZodiac = zodiacMatching.OrderByDescending(p => p.Price).Take(takeZodiac).ToList();
-                    var topOther = otherProducts.OrderByDescending(p => p.Price).Take(ItemCount - topZodiac.Count).ToList();
-                    var topCombined = topZodiac.Concat(topOther).ToList();
-
-                    if (topCombined.Count == ItemCount && topCombined.Sum(p => p.Price) >= MinValue)
-                    {
-                        return topCombined;
+                        return mixedZodiac;
                     }
                 }
             }
 
             // Fallback: general catalog selection
             return TryPick(eligibleProducts);
+        }
+
+        private static List<Product>? TryPickMixedZodiac(
+            List<Product> eligibleProducts,
+            List<Product> zodiacMatching,
+            int zodiacId)
+        {
+            var otherProducts = eligibleProducts
+                .Where(p => !p.Zodiacs.Any(z => z.ZodiacId == zodiacId))
+                .ToList();
+
+            var random = Random.Shared;
+            var takeZodiac = Math.Min(zodiacMatching.Count, ItemCount - 1);
+
+            for (var attempt = 0; attempt < RandomAttempts; attempt++)
+            {
+                var sampleZodiac = zodiacMatching.OrderBy(_ => random.Next()).Take(takeZodiac).ToList();
+                var needed = ItemCount - sampleZodiac.Count;
+                var sampleOther = otherProducts.OrderBy(_ => random.Next()).Take(needed).ToList();
+                var combined = sampleZodiac.Concat(sampleOther).ToList();
+
+                if (combined.Count == ItemCount && combined.Sum(p => p.Price) >= MinValue)
+                {
+                    return combined;
+                }
+            }
+
+            // Greedy combination: highest priced zodiac items + highest priced others
+            var topZodiac = zodiacMatching.OrderByDescending(p => p.Price).Take(takeZodiac).ToList();
+            var topOther = otherProducts.OrderByDescending(p => p.Price).Take(ItemCount - topZodiac.Count).ToList();
+            var topCombined = topZodiac.Concat(topOther).ToList();
+
+            if (topCombined.Count == ItemCount && topCombined.Sum(p => p.Price) >= MinValue)
+            {
+                return topCombined;
+            }
+
+            return null;
         }
 
         private static List<Product>? TryPick(List<Product> pool)

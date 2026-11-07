@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Data;
 using Zodiac_Crystal.DTOs;
+using Zodiac_Crystal.Models;
 using Zodiac_Crystal.Services;
 
 namespace Zodiac_Crystal.Controllers
@@ -13,23 +14,27 @@ namespace Zodiac_Crystal.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminOrdersController : ControllerBase
     {
+        private const string StatusPending = "Pending";
+        private const string StatusConfirmed = "Confirmed";
+        private const string StatusShipped = "Shipped";
+        private const string StatusDelivered = "Delivered";
+        private const string StatusCancelled = "Cancelled";
+
         private static readonly string[] ValidStatuses =
-            { "Pending", "Confirmed", "Shipped", "Delivered", "Cancelled" };
+            { StatusPending, StatusConfirmed, StatusShipped, StatusDelivered, StatusCancelled };
 
         // Maps each status to the set of statuses it may move to. Delivered and
         // Cancelled are terminal - nothing can move out of them.
         private static readonly Dictionary<string, string[]> AllowedTransitions = new()
         {
-            ["Pending"] = new[] { "Confirmed", "Cancelled" },
-            ["Confirmed"] = new[] { "Shipped", "Cancelled" },
-            ["Shipped"] = new[] { "Delivered", "Cancelled" },
-            ["Delivered"] = Array.Empty<string>(),
-            ["Cancelled"] = Array.Empty<string>()
+            [StatusPending] = new[] { StatusConfirmed, StatusCancelled },
+            [StatusConfirmed] = new[] { StatusShipped, StatusCancelled },
+            [StatusShipped] = new[] { StatusDelivered, StatusCancelled },
+            [StatusDelivered] = Array.Empty<string>(),
+            [StatusCancelled] = Array.Empty<string>()
         };
 
         private readonly CrystalsDbContext _context;
-        private readonly InvoicePdfService _invoicePdfService;
-        private readonly CsvExportService _csvExportService;
         private readonly AuditLogService _auditLogService;
         private readonly NotificationService _notificationService;
         private readonly IEmailService _emailService;
@@ -38,8 +43,6 @@ namespace Zodiac_Crystal.Controllers
 
         public AdminOrdersController(
             CrystalsDbContext context,
-            InvoicePdfService invoicePdfService,
-            CsvExportService csvExportService,
             AuditLogService auditLogService,
             NotificationService notificationService,
             IEmailService emailService,
@@ -47,8 +50,6 @@ namespace Zodiac_Crystal.Controllers
             ILogger<AdminOrdersController> logger)
         {
             _context = context;
-            _invoicePdfService = invoicePdfService;
-            _csvExportService = csvExportService;
             _auditLogService = auditLogService;
             _notificationService = notificationService;
             _emailService = emailService;
@@ -153,9 +154,32 @@ namespace Zodiac_Crystal.Controllers
                 .AsNoTracking()
                 .Where(a => a.EntityType == "Order" && a.EntityId == order.OrderId && a.Action == "OrderStatusChanged")
                 .OrderBy(a => a.CreatedAt)
-                .Select(a => new { a.CreatedAt, a.Details, AdminName = a.AdminUser.Name })
+                .Select(a => new OrderStatusChangeLog
+                {
+                    CreatedAt = a.CreatedAt,
+                    Details = a.Details,
+                    AdminName = a.AdminUser.Name
+                })
                 .ToListAsync();
 
+            var timeline = BuildOrderTimeline(order, statusChanges, returnRequest);
+
+            return Ok(new AdminOrderDetailDto
+            {
+                Order = OrdersController.MapToOrderDto(order, returnRequest),
+                CustomerUserId = order.UserId,
+                CustomerName = order.User.Name,
+                CustomerEmail = order.User.Email,
+                AllowedNextStatuses = AllowedTransitions.TryGetValue(order.Status, out var next) ? next.ToList() : new List<string>(),
+                Timeline = timeline
+            });
+        }
+
+        private static List<OrderTimelineEventDto> BuildOrderTimeline(
+            Order order,
+            List<OrderStatusChangeLog> statusChanges,
+            ReturnRequest? returnRequest)
+        {
             var timeline = new List<OrderTimelineEventDto>
             {
                 new()
@@ -174,69 +198,86 @@ namespace Zodiac_Crystal.Controllers
                 timeline.Add(new OrderTimelineEventDto { At = order.PaidAt, Title = "Payment collected", Kind = "paid" });
             }
 
-            foreach (var change in statusChanges)
-            {
-                // Details look like "Pending -> Confirmed".
-                var newStatus = change.Details?.Split("->").LastOrDefault()?.Trim() ?? "Updated";
-                timeline.Add(new OrderTimelineEventDto
-                {
-                    At = change.CreatedAt,
-                    Title = newStatus == "Cancelled" ? "Cancelled" : $"Marked {newStatus}",
-                    Detail = $"by {change.AdminName}",
-                    Kind = newStatus == "Cancelled" ? "cancelled" : "status"
-                });
-            }
-
-            // A customer cancelling their own order isn't audit-logged.
-            if (order.Status == "Cancelled" && !statusChanges.Any(c => c.Details != null && c.Details.EndsWith("Cancelled")))
-            {
-                timeline.Add(new OrderTimelineEventDto { At = null, Title = "Cancelled", Detail = order.CancellationReason == null ? "by the customer" : $"by the customer · {order.CancellationReason}", Kind = "cancelled" });
-            }
-
-            if (order.PaymentStatus == PaymentStatuses.Refunded && returnRequest?.Status != ReturnStatuses.Refunded)
-            {
-                timeline.Add(new OrderTimelineEventDto { At = null, Title = "Card payment refunded", Kind = "refund" });
-            }
-
-            if (returnRequest != null)
-            {
-                timeline.Add(new OrderTimelineEventDto
-                {
-                    At = returnRequest.CreatedAt,
-                    Title = "Return requested",
-                    Detail = ReturnReasons.Label(returnRequest.Reason),
-                    Kind = "return"
-                });
-
-                if (returnRequest.Status != ReturnStatuses.Requested)
-                {
-                    timeline.Add(new OrderTimelineEventDto
-                    {
-                        At = returnRequest.ResolvedAt,
-                        Title = $"Return {returnRequest.Status.ToLowerInvariant()}",
-                        Detail = returnRequest.AdminNote,
-                        Kind = returnRequest.Status == ReturnStatuses.Refunded ? "refund" : "return"
-                    });
-                }
-            }
+            AddStatusChangeEvents(timeline, statusChanges, order);
+            AddRefundAndReturnEvents(timeline, order, returnRequest);
 
             // Undated events keep their logical place at the end.
-            timeline = timeline
+            return timeline
                 .Select((e, index) => (e, index))
                 .OrderBy(x => x.e.At ?? DateTime.MaxValue)
                 .ThenBy(x => x.index)
                 .Select(x => x.e)
                 .ToList();
+        }
 
-            return Ok(new AdminOrderDetailDto
+        private static void AddStatusChangeEvents(
+            List<OrderTimelineEventDto> timeline,
+            List<OrderStatusChangeLog> statusChanges,
+            Order order)
+        {
+            foreach (var change in statusChanges)
             {
-                Order = OrdersController.MapToOrderDto(order, returnRequest),
-                CustomerUserId = order.UserId,
-                CustomerName = order.User.Name,
-                CustomerEmail = order.User.Email,
-                AllowedNextStatuses = AllowedTransitions.TryGetValue(order.Status, out var next) ? next.ToList() : new List<string>(),
-                Timeline = timeline
+                // Details look like "Pending -> Confirmed".
+                var newStatus = change.Details?.Split("->").LastOrDefault()?.Trim() ?? "Updated";
+                var isCancelled = newStatus == StatusCancelled;
+                timeline.Add(new OrderTimelineEventDto
+                {
+                    At = change.CreatedAt,
+                    Title = isCancelled ? StatusCancelled : $"Marked {newStatus}",
+                    Detail = $"by {change.AdminName}",
+                    Kind = isCancelled ? "cancelled" : "status"
+                });
+            }
+
+            // A customer cancelling their own order isn't audit-logged.
+            var hasAdminCancellation = statusChanges.Any(c => c.Details != null && c.Details.EndsWith(StatusCancelled));
+            if (order.Status == StatusCancelled && !hasAdminCancellation)
+            {
+                var detail = order.CancellationReason == null ? "by the customer" : $"by the customer · {order.CancellationReason}";
+                timeline.Add(new OrderTimelineEventDto { At = null, Title = StatusCancelled, Detail = detail, Kind = "cancelled" });
+            }
+        }
+
+        private static void AddRefundAndReturnEvents(
+            List<OrderTimelineEventDto> timeline,
+            Order order,
+            ReturnRequest? returnRequest)
+        {
+            if (order.PaymentStatus == PaymentStatuses.Refunded && returnRequest?.Status != ReturnStatuses.Refunded)
+            {
+                timeline.Add(new OrderTimelineEventDto { At = null, Title = "Card payment refunded", Kind = "refund" });
+            }
+
+            if (returnRequest == null)
+            {
+                return;
+            }
+
+            timeline.Add(new OrderTimelineEventDto
+            {
+                At = returnRequest.CreatedAt,
+                Title = "Return requested",
+                Detail = ReturnReasons.Label(returnRequest.Reason),
+                Kind = "return"
             });
+
+            if (returnRequest.Status != ReturnStatuses.Requested)
+            {
+                timeline.Add(new OrderTimelineEventDto
+                {
+                    At = returnRequest.ResolvedAt,
+                    Title = $"Return {returnRequest.Status.ToLowerInvariant()}",
+                    Detail = returnRequest.AdminNote,
+                    Kind = returnRequest.Status == ReturnStatuses.Refunded ? "refund" : "return"
+                });
+            }
+        }
+
+        private sealed class OrderStatusChangeLog
+        {
+            public DateTime CreatedAt { get; set; }
+            public string? Details { get; set; }
+            public string AdminName { get; set; } = string.Empty;
         }
 
         // GET: api/admin/orders/paged?pageNumber=1&pageSize=20&search=&status=&payment=
@@ -398,7 +439,7 @@ namespace Zodiac_Crystal.Controllers
                 };
             });
 
-            var csv = _csvExportService.BuildCsv(headers, rows);
+            var csv = CsvExportService.BuildCsv(headers, rows);
 
             return File(csv, "text/csv", "orders-export.csv");
         }
@@ -422,7 +463,7 @@ namespace Zodiac_Crystal.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.OrderId == order.OrderId);
 
-            var pdfBytes = _invoicePdfService.GenerateInvoice(order, returnRequest);
+            var pdfBytes = InvoicePdfService.GenerateInvoice(order, returnRequest);
 
             return File(pdfBytes, "application/pdf", $"invoice-{order.OrderId}.pdf");
         }
@@ -447,33 +488,15 @@ namespace Zodiac_Crystal.Controllers
                 return NotFound(new { message = "Order not found" });
             }
 
-            if (order.Status == dto.Status)
+            var transitionError = ValidateStatusTransition(order, dto.Status);
+            if (transitionError != null)
             {
-                return BadRequest(new { message = $"Order is already {order.Status}" });
+                return BadRequest(new { message = transitionError });
             }
 
-            if (!AllowedTransitions.TryGetValue(order.Status, out var allowed) || !allowed.Contains(dto.Status))
+            if (!TryPrepareShippingDetails(dto, order.OrderId, out var courierName, out var trackingNumber, out var shippingError))
             {
-                return BadRequest(new
-                {
-                    message = $"Cannot change order status from {order.Status} to {dto.Status}"
-                });
-            }
-
-            var courierName = dto.CourierName?.Trim();
-            var trackingNumber = dto.TrackingNumber?.Trim();
-
-            if (dto.Status == "Shipped")
-            {
-                if (string.IsNullOrEmpty(courierName))
-                {
-                    return BadRequest(new { message = "Choose a courier before marking the order as shipped." });
-                }
-
-                if (string.IsNullOrEmpty(trackingNumber))
-                {
-                    trackingNumber = GenerateTrackingNumber(order.OrderId);
-                }
+                return BadRequest(new { message = shippingError });
             }
 
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -499,68 +522,18 @@ namespace Zodiac_Crystal.Controllers
                     return Conflict(new { message = "This order was just updated by someone else. Refresh and try again." });
                 }
 
-                if (dto.Status == "Cancelled")
+                if (dto.Status == StatusCancelled)
                 {
-                    // A shipped order's items are with the courier, not on the shelf,
-                    // so cancelling it doesn't put them back on sale. Stock comes back
-                    // through the Stock page once the parcel is actually returned.
-                    if (previousStatus != "Shipped")
+                    var cancelResult = await HandleOrderCancellationAsync(order, previousStatus);
+                    if (!cancelResult.Success)
                     {
-                        foreach (var item in order.OrderItems)
-                        {
-                            await _context.Products.RestoreAsync(item.ProductId, item.Quantity);
-                            await _context.Entry(item.Product).ReloadAsync();
-                        }
+                        await transaction.RollbackAsync();
+                        return StatusCode(502, new { message = cancelResult.ErrorMessage });
                     }
-
-                    // Refund (or void) a paid card order before committing the
-                    // cancellation; if the refund fails nothing changes.
-                    if (order.PaymentStatus == PaymentStatuses.Paid && order.PaymentTransactionId != null)
-                    {
-                        var refund = await _paymentService.RefundAsync(order.PaymentTransactionId);
-
-                        if (!refund.Success)
-                        {
-                            await transaction.RollbackAsync();
-                            return StatusCode(502, new { message = refund.ErrorMessage });
-                        }
-
-                        refundedTransactionId = order.PaymentTransactionId;
-                        order.PaymentStatus = PaymentStatuses.Refunded;
-                    }
-                    else if (order.PaymentStatus == PaymentStatuses.Pending)
-                    {
-                        order.PaymentStatus = PaymentStatuses.Cancelled;
-                    }
+                    refundedTransactionId = cancelResult.RefundedTransactionId;
                 }
 
-                if (dto.Status == "Confirmed")
-                {
-                    order.ConfirmedAt = DateTime.Now;
-                }
-
-                if (dto.Status == "Shipped")
-                {
-                    order.ShippedAt = DateTime.Now;
-                    order.CourierName = courierName;
-                    order.TrackingNumber = trackingNumber;
-                }
-
-                // The return window is measured from this.
-                if (dto.Status == "Delivered")
-                {
-                    order.DeliveredAt = DateTime.Now;
-                }
-
-                // Cash on Delivery is collected when the order is delivered.
-                if (dto.Status == "Delivered" &&
-                    order.PaymentMethod == PaymentMethods.CashOnDelivery &&
-                    order.PaymentStatus == PaymentStatuses.Pending)
-                {
-                    order.PaymentStatus = PaymentStatuses.Paid;
-                    order.PaidAt = DateTime.Now;
-                }
-
+                ApplyStatusTimestampsAndPayment(order, dto.Status, courierName, trackingNumber);
                 order.Status = dto.Status;
 
                 _auditLogService.Log(
@@ -568,11 +541,7 @@ namespace Zodiac_Crystal.Controllers
                     "OrderStatusChanged",
                     "Order",
                     order.OrderId,
-                    dto.Status == "Shipped"
-                        ? $"{previousStatus} -> {dto.Status} ({courierName} {trackingNumber})"
-                        : dto.Status == "Cancelled" && previousStatus == "Shipped"
-                            ? $"{previousStatus} -> {dto.Status} (in transit, not restocked)"
-                            : $"{previousStatus} -> {dto.Status}");
+                    BuildAuditLogDetails(previousStatus, dto.Status, courierName, trackingNumber));
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -580,23 +549,167 @@ namespace Zodiac_Crystal.Controllers
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-
-                if (refundedTransactionId != null)
-                {
-                    // Refunded at the gateway, but the order still shows Paid. Retrying
-                    // is safe: RefundAsync sees the refund/void and won't repay it.
-                    _logger.LogCritical(ex, "Refund {TransactionId} issued for order {OrderId} but saving the cancellation failed",
-                        refundedTransactionId, order.OrderId);
-                    return StatusCode(500, new
-                    {
-                        message = $"The payment was refunded (reference {refundedTransactionId}) but the order couldn't be updated. Retry the cancellation - it won't refund twice."
-                    });
-                }
-
-                _logger.LogError(ex, "Failed to update status for order {OrderId}", order.OrderId);
-                return StatusCode(500, new { message = "Could not update order status. Please try again." });
+                return HandleUpdateStatusException(ex, order, refundedTransactionId);
             }
 
+            await SendStatusChangeNotificationsAsync(order, previousStatus);
+
+            return NoContent();
+        }
+
+        private static string? ValidateStatusTransition(Order order, string newStatus)
+        {
+            if (order.Status == newStatus)
+            {
+                return $"Order is already {order.Status}";
+            }
+
+            if (!AllowedTransitions.TryGetValue(order.Status, out var allowed) || !allowed.Contains(newStatus))
+            {
+                return $"Cannot change order status from {order.Status} to {newStatus}";
+            }
+
+            return null;
+        }
+
+        private static bool TryPrepareShippingDetails(
+            UpdateOrderStatusDto dto,
+            int orderId,
+            out string? courierName,
+            out string? trackingNumber,
+            out string? errorMessage)
+        {
+            courierName = dto.CourierName?.Trim();
+            trackingNumber = dto.TrackingNumber?.Trim();
+            errorMessage = null;
+
+            if (dto.Status != StatusShipped)
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(courierName))
+            {
+                errorMessage = "Choose a courier before marking the order as shipped.";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(trackingNumber))
+            {
+                trackingNumber = GenerateTrackingNumber(orderId);
+            }
+
+            return true;
+        }
+
+        private async Task<(bool Success, string? ErrorMessage, string? RefundedTransactionId)> HandleOrderCancellationAsync(
+            Order order,
+            string previousStatus)
+        {
+            // A shipped order's items are with the courier, not on the shelf,
+            // so cancelling it doesn't put them back on sale. Stock comes back
+            // through the Stock page once the parcel is actually returned.
+            if (previousStatus != StatusShipped)
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    await _context.Products.RestoreAsync(item.ProductId, item.Quantity);
+                    await _context.Entry(item.Product).ReloadAsync();
+                }
+            }
+
+            // Refund (or void) a paid card order before committing the
+            // cancellation; if the refund fails nothing changes.
+            if (order.PaymentStatus == PaymentStatuses.Paid && order.PaymentTransactionId != null)
+            {
+                var refund = await _paymentService.RefundAsync(order.PaymentTransactionId);
+
+                if (!refund.Success)
+                {
+                    return (false, refund.ErrorMessage, null);
+                }
+
+                order.PaymentStatus = PaymentStatuses.Refunded;
+                return (true, null, order.PaymentTransactionId);
+            }
+
+            if (order.PaymentStatus == PaymentStatuses.Pending)
+            {
+                order.PaymentStatus = PaymentStatuses.Cancelled;
+            }
+
+            return (true, null, null);
+        }
+
+        private static void ApplyStatusTimestampsAndPayment(
+            Order order,
+            string newStatus,
+            string? courierName,
+            string? trackingNumber)
+        {
+            if (newStatus == StatusConfirmed)
+            {
+                order.ConfirmedAt = DateTime.Now;
+            }
+            else if (newStatus == StatusShipped)
+            {
+                order.ShippedAt = DateTime.Now;
+                order.CourierName = courierName;
+                order.TrackingNumber = trackingNumber;
+            }
+            else if (newStatus == StatusDelivered)
+            {
+                order.DeliveredAt = DateTime.Now;
+
+                // Cash on Delivery is collected when the order is delivered.
+                if (order.PaymentMethod == PaymentMethods.CashOnDelivery &&
+                    order.PaymentStatus == PaymentStatuses.Pending)
+                {
+                    order.PaymentStatus = PaymentStatuses.Paid;
+                    order.PaidAt = DateTime.Now;
+                }
+            }
+        }
+
+        private static string BuildAuditLogDetails(
+            string previousStatus,
+            string newStatus,
+            string? courierName,
+            string? trackingNumber)
+        {
+            if (newStatus == StatusShipped)
+            {
+                return $"{previousStatus} -> {newStatus} ({courierName} {trackingNumber})";
+            }
+
+            if (newStatus == StatusCancelled && previousStatus == StatusShipped)
+            {
+                return $"{previousStatus} -> {newStatus} (in transit, not restocked)";
+            }
+
+            return $"{previousStatus} -> {newStatus}";
+        }
+
+        private IActionResult HandleUpdateStatusException(Exception ex, Order order, string? refundedTransactionId)
+        {
+            if (refundedTransactionId != null)
+            {
+                // Refunded at the gateway, but the order still shows Paid. Retrying
+                // is safe: RefundAsync sees the refund/void and won't repay it.
+                _logger.LogCritical(ex, "Refund {TransactionId} issued for order {OrderId} but saving the cancellation failed",
+                    refundedTransactionId, order.OrderId);
+                return StatusCode(500, new
+                {
+                    message = $"The payment was refunded (reference {refundedTransactionId}) but the order couldn't be updated. Retry the cancellation - it won't refund twice."
+                });
+            }
+
+            _logger.LogError(ex, "Failed to update status for order {OrderId}", order.OrderId);
+            return StatusCode(500, new { message = "Could not update order status. Please try again." });
+        }
+
+        private async Task SendStatusChangeNotificationsAsync(Order order, string previousStatus)
+        {
             // The status change is committed at this point regardless of what
             // happens below. A notification failure must not be reported as a
             // failed status update - it already succeeded.
@@ -619,12 +732,10 @@ namespace Zodiac_Crystal.Controllers
             }
 
             await _notificationService.BroadcastAdminChangeAsync("order", order.OrderId, "status");
-            if (order.Status == "Cancelled")
+            if (order.Status == StatusCancelled)
             {
                 await _notificationService.BroadcastStockAsync(order.OrderItems.Select(i => i.Product));
             }
-
-            return NoContent();
         }
 
         // Demo tracking number, e.g. ZC000042-7K3Q9M. Not registered with any courier.

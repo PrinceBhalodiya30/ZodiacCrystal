@@ -17,12 +17,17 @@ namespace Zodiac_Crystal.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminSupportTicketsController : ControllerBase
     {
+        private const string TicketBroadcastEntity = "ticket";
+        private const string SupportTicketEntityType = "SupportTicket";
+
         private readonly CrystalsDbContext _context;
         private readonly AuditLogService _auditLogService;
         private readonly IEmailService _emailService;
         private readonly NotificationService _notificationService;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<AdminSupportTicketsController> _logger;
+
+        private TicketNotificationServices NotificationServices => new(_emailService, _notificationService, _logger);
 
         public AdminSupportTicketsController(
             CrystalsDbContext context,
@@ -143,7 +148,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 ticket.AdminUnread = false;
                 await _context.SaveChangesAsync();
-                await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, "read");
+                await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, "read");
             }
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: true, GetCurrentAdminId()));
@@ -163,15 +168,10 @@ namespace Zodiac_Crystal.Controllers
                 return NotFound(new { message = "Support request not found" });
             }
 
-            if (ticket.Status == TicketStatuses.Closed && !dto.IsInternal)
+            var validationError = ValidateReplyRequest(ticket, dto, out var newStatus);
+            if (validationError != null)
             {
-                return BadRequest(new { message = "This ticket is closed. Reopen it before replying." });
-            }
-
-            var newStatus = dto.Status ?? TicketStatuses.AwaitingCustomer;
-            if (!dto.IsInternal && newStatus != TicketStatuses.AwaitingCustomer && newStatus != TicketStatuses.Resolved)
-            {
-                return BadRequest(new { message = "A reply can leave the ticket awaiting the customer or resolve it." });
+                return BadRequest(new { message = validationError });
             }
 
             var (urls, error) = await TicketMapper.SaveAttachmentsAsync(dto.Files, _environment, Request);
@@ -197,13 +197,11 @@ namespace Zodiac_Crystal.Controllers
 
             if (!dto.IsInternal)
             {
-                ticket.Status = newStatus;
-                ticket.CustomerUnread = true;
-                ticket.LastMessageAt = now;
-                ticket.ResolvedAt = newStatus == TicketStatuses.Resolved ? now : null;
+                ApplyReplyState(ticket, newStatus, now);
             }
 
-            _auditLogService.Log(adminId, dto.IsInternal ? "TicketNoteAdded" : "TicketReplied", "SupportTicket",
+            var actionName = dto.IsInternal ? "TicketNoteAdded" : "TicketReplied";
+            _auditLogService.Log(adminId, actionName, SupportTicketEntityType,
                 ticket.SupportTicketId, $"ZC-{ticket.SupportTicketId}");
 
             await _context.SaveChangesAsync();
@@ -212,25 +210,58 @@ namespace Zodiac_Crystal.Controllers
             // the email is throttled (SupportPolicy.ShouldEmailCustomer).
             if (!dto.IsInternal)
             {
-                var emailed = await TicketMapper.NotifyCustomerAsync(ticket, ticket.User, body,
-                    newStatus == TicketStatuses.Resolved
-                        ? ("Request Resolved", $"We've replied and resolved \"{ticket.Subject}\".")
-                        : ("New Reply from Support", $"We've replied to \"{ticket.Subject}\"."),
-                    _emailService, _notificationService, _logger,
-                    sendEmail: SupportPolicy.ShouldEmailCustomer(ticket, now));
-
-                if (emailed)
-                {
-                    ticket.CustomerEmailedAt = now;
-                    await _context.SaveChangesAsync();
-                }
+                await NotifyCustomerOnReplyAsync(ticket, newStatus, body, now);
             }
 
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, dto.IsInternal ? "noted" : "replied");
+            var changeType = dto.IsInternal ? "noted" : "replied";
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, changeType);
 
             // Reload so the new message has its sender name.
             var reloaded = await TicketMapper.LoadAsync(_context, id, includeInternal: true);
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, reloaded!, forAdmin: true, GetCurrentAdminId()));
+        }
+
+        private static string? ValidateReplyRequest(SupportTicket ticket, TicketReplyDto dto, out string newStatus)
+        {
+            newStatus = dto.Status ?? TicketStatuses.AwaitingCustomer;
+
+            if (ticket.Status == TicketStatuses.Closed && !dto.IsInternal)
+            {
+                return "This ticket is closed. Reopen it before replying.";
+            }
+
+            if (!dto.IsInternal && newStatus != TicketStatuses.AwaitingCustomer && newStatus != TicketStatuses.Resolved)
+            {
+                return "A reply can leave the ticket awaiting the customer or resolve it.";
+            }
+
+            return null;
+        }
+
+        private static void ApplyReplyState(SupportTicket ticket, string newStatus, DateTime now)
+        {
+            ticket.Status = newStatus;
+            ticket.CustomerUnread = true;
+            ticket.LastMessageAt = now;
+            ticket.ResolvedAt = newStatus == TicketStatuses.Resolved ? now : null;
+        }
+
+        private async Task NotifyCustomerOnReplyAsync(SupportTicket ticket, string newStatus, string body, DateTime now)
+        {
+            var (subject, preview) = newStatus == TicketStatuses.Resolved
+                ? ("Request Resolved", $"We've replied and resolved \"{ticket.Subject}\".")
+                : ("New Reply from Support", $"We've replied to \"{ticket.Subject}\".");
+
+            var emailed = await TicketMapper.NotifyCustomerAsync(ticket, ticket.User, body,
+                (subject, preview),
+                NotificationServices,
+                sendEmail: SupportPolicy.ShouldEmailCustomer(ticket, now));
+
+            if (emailed)
+            {
+                ticket.CustomerEmailedAt = now;
+                await _context.SaveChangesAsync();
+            }
         }
 
         // PUT: api/admin/supporttickets/5/messages/12   (body: { message })
@@ -248,11 +279,11 @@ namespace Zodiac_Crystal.Controllers
             message!.Body = dto.Message.Trim();
             message.EditedAt = DateTime.UtcNow;
 
-            _auditLogService.Log(GetCurrentAdminId(), message.IsInternal ? "TicketNoteEdited" : "TicketReplyEdited", "SupportTicket",
+            _auditLogService.Log(GetCurrentAdminId(), message.IsInternal ? "TicketNoteEdited" : "TicketReplyEdited", SupportTicketEntityType,
                 ticket!.SupportTicketId, $"ZC-{ticket.SupportTicketId} message {message.TicketMessageId}");
 
             await _context.SaveChangesAsync();
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, "edited");
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, "edited");
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: true, GetCurrentAdminId()));
         }
@@ -271,11 +302,11 @@ namespace Zodiac_Crystal.Controllers
 
             message!.DeletedAt = DateTime.UtcNow;
 
-            _auditLogService.Log(GetCurrentAdminId(), message.IsInternal ? "TicketNoteDeleted" : "TicketReplyDeleted", "SupportTicket",
+            _auditLogService.Log(GetCurrentAdminId(), message.IsInternal ? "TicketNoteDeleted" : "TicketReplyDeleted", SupportTicketEntityType,
                 ticket!.SupportTicketId, $"ZC-{ticket.SupportTicketId} message {message.TicketMessageId}");
 
             await _context.SaveChangesAsync();
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, "deleted");
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, "deleted");
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: true, GetCurrentAdminId()));
         }
@@ -292,14 +323,21 @@ namespace Zodiac_Crystal.Controllers
 
             if (!SupportPolicy.CanModify(message, GetCurrentAdminId(), DateTime.UtcNow))
             {
-                return (null, null, BadRequest(new
+                string errorMessage;
+                if (!message.IsFromAdmin || message.SenderUserId != GetCurrentAdminId())
                 {
-                    message = !message.IsFromAdmin || message.SenderUserId != GetCurrentAdminId()
-                        ? "You can only change your own messages."
-                        : message.DeletedAt != null
-                            ? "This message was already deleted."
-                            : $"Replies can only be changed within {SupportPolicy.EditWindowMinutes} minutes of sending."
-                }));
+                    errorMessage = "You can only change your own messages.";
+                }
+                else if (message.DeletedAt != null)
+                {
+                    errorMessage = "This message was already deleted.";
+                }
+                else
+                {
+                    errorMessage = $"Replies can only be changed within {SupportPolicy.EditWindowMinutes} minutes of sending.";
+                }
+
+                return (null, null, BadRequest(new { message = errorMessage }));
             }
 
             return (ticket, message, null);
@@ -324,10 +362,23 @@ namespace Zodiac_Crystal.Controllers
             var now = DateTime.UtcNow;
             ticket.Status = dto.Status;
             ticket.AdminUnread = false;
-            ticket.ResolvedAt = dto.Status == TicketStatuses.Resolved ? now : dto.Status == TicketStatuses.Closed ? ticket.ResolvedAt ?? now : null;
+
+            if (dto.Status == TicketStatuses.Resolved)
+            {
+                ticket.ResolvedAt = now;
+            }
+            else if (dto.Status == TicketStatuses.Closed)
+            {
+                ticket.ResolvedAt = ticket.ResolvedAt ?? now;
+            }
+            else
+            {
+                ticket.ResolvedAt = null;
+            }
+
             ticket.ClosedAt = dto.Status == TicketStatuses.Closed ? now : null;
 
-            _auditLogService.Log(GetCurrentAdminId(), "TicketStatusChanged", "SupportTicket", ticket.SupportTicketId,
+            _auditLogService.Log(GetCurrentAdminId(), "TicketStatusChanged", SupportTicketEntityType, ticket.SupportTicketId,
                 $"ZC-{ticket.SupportTicketId} -> {dto.Status}");
 
             if (dto.Status == TicketStatuses.Resolved || dto.Status == TicketStatuses.Closed)
@@ -343,7 +394,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 var emailed = await TicketMapper.NotifyCustomerAsync(ticket, ticket.User, null,
                     ($"Request {dto.Status}", $"Your request \"{ticket.Subject}\" is now {dto.Status.ToLowerInvariant()}."),
-                    _emailService, _notificationService, _logger,
+                    NotificationServices,
                     sendEmail: dto.Status == TicketStatuses.Resolved && SupportPolicy.ShouldEmailCustomer(ticket, now));
 
                 if (emailed)
@@ -353,7 +404,7 @@ namespace Zodiac_Crystal.Controllers
                 }
             }
 
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, dto.Status.ToLowerInvariant());
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, dto.Status.ToLowerInvariant());
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: true, GetCurrentAdminId()));
         }

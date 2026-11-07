@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Zodiac_Crystal.DTOs;
 using Zodiac_Crystal.Services;
@@ -71,11 +71,11 @@ namespace Zodiac_Crystal.Controllers
         // GET: api/admin/auditlogs/export?search=&action=&from=&to=
         // Times are UTC, as stored.
         [HttpGet("export")]
-        public async Task<IActionResult> Export([FromServices] CsvExportService csv, string? search = null, string? action = null, DateTime? from = null, DateTime? to = null)
+        public async Task<IActionResult> Export(string? search = null, string? action = null, DateTime? from = null, DateTime? to = null)
         {
             var logs = await _auditLogService.GetAllAsync(search, action, from, to);
 
-            var file = csv.BuildCsv(
+            var file = CsvExportService.BuildCsv(
                 new[] { "Time (UTC)", "Admin", "Action", "EntityType", "EntityId", "Details" },
                 logs.Select(a => new object?[] { a.CreatedAt, a.AdminUser.Name, a.Action, a.EntityType, a.EntityId, a.Details ?? "" }));
 

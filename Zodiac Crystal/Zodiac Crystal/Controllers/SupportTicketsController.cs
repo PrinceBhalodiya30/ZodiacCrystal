@@ -17,11 +17,16 @@ namespace Zodiac_Crystal.Controllers
     [Authorize(Roles = "User")]
     public class SupportTicketsController : ControllerBase
     {
+        private const string SupportRequestNotFoundMessage = "Support request not found";
+        private const string TicketBroadcastEntity = "ticket";
+
         private readonly CrystalsDbContext _context;
         private readonly IEmailService _emailService;
         private readonly NotificationService _notificationService;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<SupportTicketsController> _logger;
+
+        private TicketNotificationServices NotificationServices => new(_emailService, _notificationService, _logger);
 
         public SupportTicketsController(
             CrystalsDbContext context,
@@ -63,7 +68,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (ticket == null || ticket.UserId != userId)
             {
-                return NotFound(new { message = "Support request not found" });
+                return NotFound(new { message = SupportRequestNotFoundMessage });
             }
 
             if (ticket.CustomerUnread)
@@ -132,9 +137,9 @@ namespace Zodiac_Crystal.Controllers
 
             _logger.LogInformation("Support ticket {TicketId} opened by user {UserId}", ticket.SupportTicketId, userId);
 
-            await TicketMapper.NotifyCustomerAsync(ticket, user, null, null, _emailService, _notificationService, _logger);
-            await TicketMapper.NotifyAdminsAsync(_context, ticket, user, dto.Message.Trim(), isNewTicket: true, _emailService, _notificationService, _logger);
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, "opened");
+            await TicketMapper.NotifyCustomerAsync(ticket, user, null, null, NotificationServices);
+            await TicketMapper.NotifyAdminsAsync(_context, ticket, user, dto.Message.Trim(), isNewTicket: true, NotificationServices);
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, "opened");
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: false));
         }
@@ -150,7 +155,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (ticket == null || ticket.UserId != userId)
             {
-                return NotFound(new { message = "Support request not found" });
+                return NotFound(new { message = SupportRequestNotFoundMessage });
             }
 
             if (ticket.Status == TicketStatuses.Closed)
@@ -182,8 +187,8 @@ namespace Zodiac_Crystal.Controllers
 
             await _context.SaveChangesAsync();
 
-            await TicketMapper.NotifyAdminsAsync(_context, ticket, ticket.User, dto.Message.Trim(), isNewTicket: false, _emailService, _notificationService, _logger);
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, reopened ? "reopened" : "replied");
+            await TicketMapper.NotifyAdminsAsync(_context, ticket, ticket.User, dto.Message.Trim(), isNewTicket: false, NotificationServices);
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, reopened ? "reopened" : "replied");
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: false));
         }
@@ -197,7 +202,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (ticket == null || ticket.UserId != userId)
             {
-                return NotFound(new { message = "Support request not found" });
+                return NotFound(new { message = SupportRequestNotFoundMessage });
             }
 
             if (!TicketStatuses.Active.Contains(ticket.Status))
@@ -210,7 +215,7 @@ namespace Zodiac_Crystal.Controllers
             ticket.AdminUnread = false;
             await _context.SaveChangesAsync();
 
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, "resolved");
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, "resolved");
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: false));
         }
@@ -224,7 +229,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (ticket == null || ticket.UserId != userId)
             {
-                return NotFound(new { message = "Support request not found" });
+                return NotFound(new { message = SupportRequestNotFoundMessage });
             }
 
             if (TicketStatuses.Active.Contains(ticket.Status))
@@ -236,7 +241,7 @@ namespace Zodiac_Crystal.Controllers
             ticket.RatingComment = string.IsNullOrWhiteSpace(dto.Comment) ? null : dto.Comment.Trim();
             await _context.SaveChangesAsync();
 
-            await _notificationService.BroadcastAdminChangeAsync("ticket", ticket.SupportTicketId, "rated");
+            await _notificationService.BroadcastAdminChangeAsync(TicketBroadcastEntity, ticket.SupportTicketId, "rated");
 
             return Ok(await TicketMapper.ToDetailDtoAsync(_context, ticket, forAdmin: false));
         }
@@ -292,13 +297,27 @@ namespace Zodiac_Crystal.Controllers
                 CreatedAt = Utc(t.CreatedAt),
                 LastMessageAt = Utc(t.LastMessageAt),
                 ResolvedAt = t.ResolvedAt == null ? null : Utc(t.ResolvedAt.Value),
-                LastMessagePreview = lastMessage == null
-                    ? null
-                    : lastMessage.DeletedAt != null ? "Message removed"
-                    : lastMessage.Body.Length > 120 ? lastMessage.Body[..120] + "..." : lastMessage.Body,
+                LastMessagePreview = GetLastMessagePreview(lastMessage),
                 CustomerName = t.User.Name,
                 CustomerEmail = t.User.Email
             };
+        }
+
+        private static string? GetLastMessagePreview(TicketMessage? lastMessage)
+        {
+            if (lastMessage == null)
+            {
+                return null;
+            }
+
+            if (lastMessage.DeletedAt != null)
+            {
+                return "Message removed";
+            }
+
+            return lastMessage.Body.Length > 120
+                ? lastMessage.Body[..120] + "..."
+                : lastMessage.Body;
         }
 
         // Ticket + messages + linked order (status, tracking, return state).
@@ -306,68 +325,98 @@ namespace Zodiac_Crystal.Controllers
         public static async Task<SupportTicketDto> ToDetailDtoAsync(CrystalsDbContext context, SupportTicket t, bool forAdmin, int? viewerAdminId = null)
         {
             var dto = ToDto(t, forAdmin);
-            var now = DateTime.UtcNow;
-
-            dto.Messages = t.Messages
-                .Where(m => forAdmin || !m.IsInternal)
-                .OrderBy(m => m.CreatedAt)
-                .Select(m =>
-                {
-                    // Customers never see the text or photos of a removed message.
-                    var hidden = m.DeletedAt != null && !forAdmin;
-                    var canModify = forAdmin && viewerAdminId != null && SupportPolicy.CanModify(m, viewerAdminId.Value, now);
-                    return new TicketMessageDto
-                    {
-                        TicketMessageId = m.TicketMessageId,
-                        IsFromAdmin = m.IsFromAdmin,
-                        IsInternal = m.IsInternal,
-                        // Customers see "Crystal Studio Support", not the admin's own name.
-                        SenderName = m.IsFromAdmin && !forAdmin ? "Crystal Studio Support" : m.Sender?.Name ?? (m.IsFromAdmin ? "Support" : t.User.Name),
-                        Body = hidden ? "This message was removed." : m.Body,
-                        Attachments = hidden ? new List<string>() : SplitUrls(m.AttachmentUrls),
-                        CreatedAt = Utc(m.CreatedAt),
-                        IsEdited = m.EditedAt != null,
-                        IsDeleted = m.DeletedAt != null,
-                        CanModify = canModify,
-                        EditableUntil = canModify && !m.IsInternal ? Utc(m.CreatedAt.AddMinutes(SupportPolicy.EditWindowMinutes)) : null
-                    };
-                })
-                .ToList();
+            dto.Messages = MapTicketMessages(t, forAdmin, viewerAdminId);
 
             if (t.OrderId != null)
             {
-                var order = await context.Orders
-                    .AsNoTracking()
-                    .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
-                    .FirstOrDefaultAsync(o => o.OrderId == t.OrderId);
-
-                if (order != null)
-                {
-                    var returnRequest = await context.ReturnRequests
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(r => r.OrderId == order.OrderId);
-                    var windowEndsAt = ReturnPolicy.WindowEndsAt(order);
-
-                    dto.Order = new TicketOrderContextDto
-                    {
-                        OrderId = order.OrderId,
-                        OrderDate = order.OrderDate,
-                        Status = order.Status,
-                        TotalAmount = order.TotalAmount,
-                        PaymentMethod = order.PaymentMethod,
-                        PaymentStatus = order.PaymentStatus,
-                        TrackingNumber = order.TrackingNumber,
-                        CourierName = order.CourierName,
-                        DeliveredAt = order.DeliveredAt,
-                        ReturnStatus = returnRequest?.Status,
-                        // Same rule as OrdersController.MapToOrderDto.
-                        CanRequestReturn = returnRequest == null && windowEndsAt != null && DateTime.Now <= windowEndsAt.Value,
-                        ProductNames = order.OrderItems.Select(i => i.Product?.Name ?? $"Product #{i.ProductId}").ToList()
-                    };
-                }
+                dto.Order = await LoadTicketOrderContextAsync(context, t.OrderId.Value);
             }
 
             return dto;
+        }
+
+        private static List<TicketMessageDto> MapTicketMessages(SupportTicket t, bool forAdmin, int? viewerAdminId)
+        {
+            var now = DateTime.UtcNow;
+
+            return t.Messages
+                .Where(m => forAdmin || !m.IsInternal)
+                .OrderBy(m => m.CreatedAt)
+                .Select(m => MapTicketMessage(m, t, forAdmin, viewerAdminId, now))
+                .ToList();
+        }
+
+        private static TicketMessageDto MapTicketMessage(TicketMessage m, SupportTicket t, bool forAdmin, int? viewerAdminId, DateTime now)
+        {
+            // Customers never see the text or photos of a removed message.
+            var hidden = m.DeletedAt != null && !forAdmin;
+            var canModify = forAdmin && viewerAdminId != null && SupportPolicy.CanModify(m, viewerAdminId.Value, now);
+            var senderName = GetSenderDisplayName(m, t, forAdmin);
+
+            return new TicketMessageDto
+            {
+                TicketMessageId = m.TicketMessageId,
+                IsFromAdmin = m.IsFromAdmin,
+                IsInternal = m.IsInternal,
+                SenderName = senderName,
+                Body = hidden ? "This message was removed." : m.Body,
+                Attachments = hidden ? new List<string>() : SplitUrls(m.AttachmentUrls),
+                CreatedAt = Utc(m.CreatedAt),
+                IsEdited = m.EditedAt != null,
+                IsDeleted = m.DeletedAt != null,
+                CanModify = canModify,
+                EditableUntil = canModify && !m.IsInternal ? Utc(m.CreatedAt.AddMinutes(SupportPolicy.EditWindowMinutes)) : null
+            };
+        }
+
+        private static string GetSenderDisplayName(TicketMessage m, SupportTicket t, bool forAdmin)
+        {
+            if (m.IsFromAdmin && !forAdmin)
+            {
+                return "Crystal Studio Support";
+            }
+
+            if (m.Sender?.Name != null)
+            {
+                return m.Sender.Name;
+            }
+
+            return m.IsFromAdmin ? "Support" : t.User.Name;
+        }
+
+        private static async Task<TicketOrderContextDto?> LoadTicketOrderContextAsync(CrystalsDbContext context, int orderId)
+        {
+            var order = await context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            var returnRequest = await context.ReturnRequests
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.OrderId == order.OrderId);
+            var windowEndsAt = ReturnPolicy.WindowEndsAt(order);
+
+            return new TicketOrderContextDto
+            {
+                OrderId = order.OrderId,
+                OrderDate = order.OrderDate,
+                Status = order.Status,
+                TotalAmount = order.TotalAmount,
+                PaymentMethod = order.PaymentMethod,
+                PaymentStatus = order.PaymentStatus,
+                TrackingNumber = order.TrackingNumber,
+                CourierName = order.CourierName,
+                DeliveredAt = order.DeliveredAt,
+                ReturnStatus = returnRequest?.Status,
+                // Same rule as OrdersController.MapToOrderDto.
+                CanRequestReturn = returnRequest == null && windowEndsAt != null && DateTime.Now <= windowEndsAt.Value,
+                ProductNames = order.OrderItems.Select(i => i.Product?.Name ?? $"Product #{i.ProductId}").ToList()
+            };
         }
 
         // Validates every photo before saving any (same rules as review photos),
@@ -389,53 +438,87 @@ namespace Zodiac_Crystal.Controllers
             var contents = new List<MemoryStream>();
             try
             {
-                foreach (var file in files)
+                var (streams, error) = await BufferAndValidateAttachmentsAsync(files);
+                contents = streams;
+                if (error != null)
                 {
-                    if (file.Length == 0 || file.Length > ReviewPhotoService.MaxFileSizeBytes)
-                    {
-                        return (urls, "Each photo must be 5 MB or smaller.");
-                    }
-
-                    var content = new MemoryStream();
-                    contents.Add(content);
-                    await file.CopyToAsync(content);
-                    content.Position = 0;
-
-                    var invalid = ImageUploadValidator.Validate(content, Path.GetExtension(file.FileName).ToLowerInvariant());
-                    if (invalid != null)
-                    {
-                        return (urls, invalid);
-                    }
-                    content.Position = 0;
+                    return (urls, error);
                 }
 
                 var folder = SupportPolicy.Folder(environment.ContentRootPath);
-                var savedFiles = new List<string>();
-
-                foreach (var content in contents)
+                var savedUrls = SaveAttachmentFiles(contents, folder, request);
+                if (savedUrls == null)
                 {
-                    var fileName = ReviewPhotoService.Save(content, folder);
-                    if (fileName == null)
-                    {
-                        foreach (var saved in savedFiles)
-                        {
-                            File.Delete(Path.Combine(folder, saved));
-                        }
-                        return (new List<string>(), "One of the photos could not be read. Please try another.");
-                    }
-
-                    savedFiles.Add(fileName);
-                    urls.Add($"{request.Scheme}://{request.Host}{SupportPolicy.UrlFolder}{fileName}");
+                    return (new List<string>(), "One of the photos could not be read. Please try another.");
                 }
 
-                return (urls, null);
+                return (savedUrls, null);
             }
             finally
             {
                 foreach (var content in contents)
                 {
-                    content.Dispose();
+                    await content.DisposeAsync();
                 }
+            }
+        }
+
+        private static async Task<(List<MemoryStream> Contents, string? Error)> BufferAndValidateAttachmentsAsync(List<IFormFile> files)
+        {
+            var contents = new List<MemoryStream>();
+
+            foreach (var file in files)
+            {
+                if (file.Length == 0 || file.Length > ReviewPhotoService.MaxFileSizeBytes)
+                {
+                    return (contents, "Each photo must be 5 MB or smaller.");
+                }
+
+                var content = new MemoryStream();
+                contents.Add(content);
+                await file.CopyToAsync(content);
+                content.Position = 0;
+
+                var invalid = ImageUploadValidator.Validate(content, Path.GetExtension(file.FileName).ToLowerInvariant());
+                if (invalid != null)
+                {
+                    return (contents, invalid);
+                }
+                content.Position = 0;
+            }
+
+            return (contents, null);
+        }
+
+        private static List<string>? SaveAttachmentFiles(
+            List<MemoryStream> contents,
+            string folder,
+            HttpRequest request)
+        {
+            var urls = new List<string>();
+            var savedFiles = new List<string>();
+
+            foreach (var content in contents)
+            {
+                var fileName = ReviewPhotoService.Save(content, folder);
+                if (fileName == null)
+                {
+                    RollbackSavedFiles(savedFiles, folder);
+                    return null;
+                }
+
+                savedFiles.Add(fileName);
+                urls.Add($"{request.Scheme}://{request.Host}{SupportPolicy.UrlFolder}{fileName}");
+            }
+
+            return urls;
+        }
+
+        private static void RollbackSavedFiles(List<string> savedFiles, string folder)
+        {
+            foreach (var saved in savedFiles)
+            {
+                File.Delete(Path.Combine(folder, saved));
             }
         }
 
@@ -448,19 +531,22 @@ namespace Zodiac_Crystal.Controllers
         // never throws, because the ticket change it describes is already
         // committed. Returns whether the email was sent.
         public static async Task<bool> NotifyCustomerAsync(
-            SupportTicket ticket, User customer, string? message, (string Title, string Text)? bell,
-            IEmailService emailService, NotificationService notificationService, ILogger logger,
+            SupportTicket ticket,
+            User customer,
+            string? message,
+            (string Title, string Text)? bell,
+            TicketNotificationServices services,
             bool sendEmail = true)
         {
             if (bell != null)
             {
                 try
                 {
-                    await notificationService.NotifyTicketUpdatedAsync(ticket, bell.Value.Title, bell.Value.Text);
+                    await services.Notification.NotifyTicketUpdatedAsync(ticket, bell.Value.Title, bell.Value.Text);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Ticket {TicketId} notification failed", ticket.SupportTicketId);
+                    services.Logger.LogError(ex, "Ticket {TicketId} notification failed", ticket.SupportTicketId);
                 }
             }
 
@@ -471,20 +557,24 @@ namespace Zodiac_Crystal.Controllers
 
             try
             {
-                await emailService.SendTicketUpdateAsync(ticket, customer, message);
+                await services.Email.SendTicketUpdateAsync(ticket, customer, message);
                 return true;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Ticket {TicketId} email failed", ticket.SupportTicketId);
+                services.Logger.LogError(ex, "Ticket {TicketId} email failed", ticket.SupportTicketId);
                 return false;
             }
         }
 
         // Bell + email to every active admin. Best effort, like NotifyCustomerAsync.
         public static async Task NotifyAdminsAsync(
-            CrystalsDbContext context, SupportTicket ticket, User customer, string message, bool isNewTicket,
-            IEmailService emailService, NotificationService notificationService, ILogger logger)
+            CrystalsDbContext context,
+            SupportTicket ticket,
+            User customer,
+            string message,
+            bool isNewTicket,
+            TicketNotificationServices services)
         {
             try
             {
@@ -498,24 +588,29 @@ namespace Zodiac_Crystal.Controllers
                 {
                     try
                     {
-                        await notificationService.NotifyAdminTicketAsync(
+                        await services.Notification.NotifyAdminTicketAsync(
                             admin.UserId, ticket,
                             isNewTicket ? "New Support Request" : "Customer Replied",
                             $"{customer.Name}: {ticket.Subject}");
-                        await emailService.SendTicketAdminAlertAsync(admin.Email, admin.Name, ticket, customer, message, isNewTicket);
+                        await services.Email.SendTicketAdminAlertAsync(admin.Email, admin.Name, ticket, customer, message, isNewTicket);
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError(ex, "Ticket {TicketId} alert failed for admin {AdminUserId}", ticket.SupportTicketId, admin.UserId);
+                        services.Logger.LogError(ex, "Ticket {TicketId} alert failed for admin {AdminUserId}", ticket.SupportTicketId, admin.UserId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Ticket {TicketId} admin alerts failed", ticket.SupportTicketId);
+                services.Logger.LogError(ex, "Ticket {TicketId} admin alerts failed", ticket.SupportTicketId);
             }
         }
 
         private static DateTime Utc(DateTime value) => DateTime.SpecifyKind(value, DateTimeKind.Utc);
     }
+
+    public readonly record struct TicketNotificationServices(
+        IEmailService Email,
+        NotificationService Notification,
+        ILogger Logger);
 }

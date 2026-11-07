@@ -20,20 +20,7 @@ builder.Services.AddControllers()
     {
         // Validation failures return { message, errors } so the frontend's
         // error.error.message shows the real reason instead of a generic toast.
-        options.InvalidModelStateResponseFactory = context =>
-        {
-            var errors = context.ModelState
-                .Where(e => e.Value?.Errors.Count > 0)
-                .ToDictionary(
-                    e => e.Key,
-                    e => e.Value!.Errors
-                        .Select(x => string.IsNullOrEmpty(x.ErrorMessage) ? $"The value for {e.Key} is invalid." : x.ErrorMessage)
-                        .ToArray());
-
-            var message = errors.Values.SelectMany(v => v).FirstOrDefault() ?? "The request is invalid.";
-
-            return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new { message, errors });
-        };
+        options.InvalidModelStateResponseFactory = CreateInvalidModelStateResponse;
     });
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -57,8 +44,6 @@ builder.Services.AddDbContext<CrystalsDbContext>(options =>
 
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.CouponValidationService>();
-builder.Services.AddScoped<Zodiac_Crystal.Services.InvoicePdfService>();
-builder.Services.AddScoped<Zodiac_Crystal.Services.CsvExportService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.ReportOperationsService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.AuditLogService>();
 builder.Services.AddScoped<Zodiac_Crystal.Services.NotificationService>();
@@ -82,7 +67,11 @@ builder.Services.AddScoped<LowStockAlertService>();
 // PIN/state check on every shipping address (India Post lookup).
 builder.Services.AddHttpClient<AddressCheckService>(client =>
 {
-    client.BaseAddress = new Uri(AddressCheckService.IndiaPostUrl);
+    var baseUrl = builder.Configuration["IndiaPost:BaseUrl"];
+    if (!string.IsNullOrEmpty(baseUrl))
+    {
+        client.BaseAddress = new Uri(baseUrl);
+    }
     client.Timeout = TimeSpan.FromSeconds(5);
 });
 
@@ -101,85 +90,7 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<HubConnectionRegistry>();
 
 // JWT Authentication
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-
-// The signing key comes from User Secrets (dev) or the Jwt__Key environment
-// variable / key vault (prod), never appsettings.json. Refuse to start without
-// a strong one rather than silently issuing forgeable tokens.
-var jwtKey = jwtSettings["Key"];
-if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
-{
-    throw new InvalidOperationException(
-        "Jwt:Key is missing or too short (min 32 chars). Set it via User Secrets or the Jwt__Key environment variable.");
-}
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-    };
-
-    // Browsers can't set an Authorization header on the WebSocket handshake
-    // SignalR uses, so the token is passed as ?access_token=... instead - but
-    // only for requests actually hitting the notification hub, so this never
-    // weakens normal header-based auth on the REST API.
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            var accessToken = context.Request.Query["access_token"];
-            var path = context.HttpContext.Request.Path;
-
-            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
-            {
-                context.Token = accessToken;
-            }
-
-            return Task.CompletedTask;
-        },
-
-        // A token is only good while its session version matches the user's:
-        // changing the email (or undoing a change) bumps it, which signs out
-        // every other device. Tokens from before this check carry no claim and
-        // count as version 0, so nobody is logged out by the deploy itself.
-        OnTokenValidated = async context =>
-        {
-            var principal = context.Principal!;
-            if (!int.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
-            {
-                context.Fail("Invalid token.");
-                return;
-            }
-
-            var tokenVersion = int.TryParse(principal.FindFirstValue(TokenService.SessionVersionClaim), out var v) ? v : 0;
-
-            var db = context.HttpContext.RequestServices.GetRequiredService<CrystalsDbContext>();
-            // A deactivated or deleted account is treated as having no session
-            // at all, so its tokens stop working immediately.
-            var currentVersion = await db.Users
-                .Where(u => u.UserId == userId && u.IsActive && !u.IsDeleted)
-                .Select(u => (int?)u.SessionVersion)
-                .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
-
-            if (currentVersion != tokenVersion)
-            {
-                context.Fail("Session has been signed out.");
-            }
-        }
-    };
-});
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddAuthorization();
 
@@ -264,4 +175,19 @@ app.UseMiddleware<GuestAccessMiddleware>();
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
 
-app.Run();
+await app.RunAsync();
+
+static Microsoft.AspNetCore.Mvc.IActionResult CreateInvalidModelStateResponse(Microsoft.AspNetCore.Mvc.ActionContext context)
+{
+    var errors = context.ModelState
+        .Where(e => e.Value?.Errors.Count > 0)
+        .ToDictionary(
+            e => e.Key,
+            e => e.Value!.Errors
+                .Select(x => string.IsNullOrEmpty(x.ErrorMessage) ? $"The value for {e.Key} is invalid." : x.ErrorMessage)
+                .ToArray());
+
+    var message = errors.Values.SelectMany(v => v).FirstOrDefault() ?? "The request is invalid.";
+
+    return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new { message, errors });
+}

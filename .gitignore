@@ -40,3 +40,6 @@ Thumbs.db
 
 # Ignore agents
 .agent/
+
+# Ignore sonarqube
+sonarqube-26.11.0.134175

@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -20,7 +20,7 @@ namespace Zodiac_Crystal.Services
             _cache = cache;
         }
 
-        private class PendingReset
+        private sealed class PendingReset
         {
             public int UserId { get; init; }
             public byte[] CodeHash { get; init; } = null!;

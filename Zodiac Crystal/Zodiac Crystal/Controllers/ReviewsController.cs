@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -219,6 +219,57 @@ namespace Zodiac_Crystal.Controllers
                 .Include(r => r.Images)
                 .FirstOrDefaultAsync(r => r.ReviewId == reviewId && r.ProductId == productId && !r.IsDeleted);
 
+            var validationError = await ValidateUploadPhotosRequestAsync(review, userId, productId, files);
+            if (validationError != null)
+            {
+                return validationError;
+            }
+
+            // Check every file before saving any, so a bad one doesn't leave half an upload.
+            var contents = new List<MemoryStream>();
+            try
+            {
+                var (streams, streamError) = await BufferAndValidateFilesAsync(files);
+                contents = streams;
+                if (streamError != null)
+                {
+                    return streamError;
+                }
+
+                var folder = ReviewPhotoService.Folder(_environment.ContentRootPath);
+                var added = SaveReviewPhotos(contents, review!, folder);
+                if (added == null)
+                {
+                    return BadRequest(new { message = "One of the photos could not be read. Please try another." });
+                }
+
+                _context.ReviewImages.AddRange(added);
+                await _context.SaveChangesAsync();
+
+                await _notificationService.BroadcastAdminChangeAsync("review", review!.ReviewId, "photos");
+
+                return Ok(added.Select(i => new ReviewPhotoDto
+                {
+                    ReviewImageId = i.ReviewImageId,
+                    ImageUrl = i.ImageUrl,
+                    Status = i.Status
+                }).ToList());
+            }
+            finally
+            {
+                foreach (var content in contents)
+                {
+                    await content.DisposeAsync();
+                }
+            }
+        }
+
+        private async Task<ActionResult?> ValidateUploadPhotosRequestAsync(
+            ProductReview? review,
+            int userId,
+            int productId,
+            List<IFormFile>? files)
+        {
             if (review == null || review.UserId != userId)
             {
                 return NotFound(new { message = "Review not found" });
@@ -239,74 +290,71 @@ namespace Zodiac_Crystal.Controllers
                 return BadRequest(new { message = $"You can add up to {ReviewPhotoService.MaxPhotosPerReview} photos to a review." });
             }
 
-            // Check every file before saving any, so a bad one doesn't leave half an upload.
+            return null;
+        }
+
+        private static async Task<(List<MemoryStream> Streams, ActionResult? Error)> BufferAndValidateFilesAsync(List<IFormFile> files)
+        {
             var contents = new List<MemoryStream>();
-            try
+
+            foreach (var file in files)
             {
-                foreach (var file in files)
+                if (file.Length == 0 || file.Length > ReviewPhotoService.MaxFileSizeBytes)
                 {
-                    if (file.Length == 0 || file.Length > ReviewPhotoService.MaxFileSizeBytes)
-                    {
-                        return BadRequest(new { message = "Each photo must be 5 MB or smaller." });
-                    }
-
-                    var content = new MemoryStream();
-                    contents.Add(content);
-                    await file.CopyToAsync(content);
-                    content.Position = 0;
-
-                    var invalid = ImageUploadValidator.Validate(content, Path.GetExtension(file.FileName).ToLowerInvariant());
-                    if (invalid != null)
-                    {
-                        return BadRequest(new { message = invalid });
-                    }
-                    content.Position = 0;
+                    return (contents, new BadRequestObjectResult(new { message = "Each photo must be 5 MB or smaller." }));
                 }
 
-                var folder = ReviewPhotoService.Folder(_environment.ContentRootPath);
-                var sortOrder = review.Images.Count == 0 ? 0 : review.Images.Max(i => i.SortOrder) + 1;
-                var added = new List<ReviewImage>();
+                var content = new MemoryStream();
+                contents.Add(content);
+                await file.CopyToAsync(content);
+                content.Position = 0;
 
-                foreach (var content in contents)
+                var invalid = ImageUploadValidator.Validate(content, Path.GetExtension(file.FileName).ToLowerInvariant());
+                if (invalid != null)
                 {
-                    var fileName = ReviewPhotoService.Save(content, folder);
-                    if (fileName == null)
-                    {
-                        foreach (var saved in added)
-                        {
-                            ReviewPhotoService.DeleteFile(saved.ImageUrl, folder);
-                        }
-                        return BadRequest(new { message = "One of the photos could not be read. Please try another." });
-                    }
-
-                    // Absolute URL, like product images, so it works as an <img src> as-is.
-                    added.Add(new ReviewImage
-                    {
-                        ReviewId = review.ReviewId,
-                        ImageUrl = $"{Request.Scheme}://{Request.Host}{ReviewPhotoService.UrlFolder}{fileName}",
-                        Status = ReviewPhotoStatuses.Pending,
-                        SortOrder = sortOrder++
-                    });
+                    return (contents, new BadRequestObjectResult(new { message = invalid }));
                 }
-
-                _context.ReviewImages.AddRange(added);
-                await _context.SaveChangesAsync();
-
-                await _notificationService.BroadcastAdminChangeAsync("review", review.ReviewId, "photos");
-
-                return Ok(added.Select(i => new ReviewPhotoDto
-                {
-                    ReviewImageId = i.ReviewImageId,
-                    ImageUrl = i.ImageUrl,
-                    Status = i.Status
-                }).ToList());
+                content.Position = 0;
             }
-            finally
+
+            return (contents, null);
+        }
+
+        private List<ReviewImage>? SaveReviewPhotos(
+            List<MemoryStream> contents,
+            ProductReview review,
+            string folder)
+        {
+            var sortOrder = review.Images.Count == 0 ? 0 : review.Images.Max(i => i.SortOrder) + 1;
+            var added = new List<ReviewImage>();
+
+            foreach (var content in contents)
             {
-                foreach (var content in contents)
+                var fileName = ReviewPhotoService.Save(content, folder);
+                if (fileName == null)
                 {
-                    content.Dispose();
+                    RollbackSavedPhotos(added, folder);
+                    return null;
                 }
+
+                // Absolute URL, like product images, so it works as an <img src> as-is.
+                added.Add(new ReviewImage
+                {
+                    ReviewId = review.ReviewId,
+                    ImageUrl = $"{Request.Scheme}://{Request.Host}{ReviewPhotoService.UrlFolder}{fileName}",
+                    Status = ReviewPhotoStatuses.Pending,
+                    SortOrder = sortOrder++
+                });
+            }
+
+            return added;
+        }
+
+        private static void RollbackSavedPhotos(List<ReviewImage> photos, string folder)
+        {
+            foreach (var saved in photos)
+            {
+                ReviewPhotoService.DeleteFile(saved.ImageUrl, folder);
             }
         }
 

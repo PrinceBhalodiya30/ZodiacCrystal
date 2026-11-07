@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Zodiac_Crystal.Data;
 
 namespace Zodiac_Crystal.Services
@@ -135,6 +135,16 @@ namespace Zodiac_Crystal.Services
             }
         }
 
+        private sealed record PriceDropItem(
+            int WishlistId,
+            int UserId,
+            string Email,
+            string UserName,
+            int ProductId,
+            string ProductName,
+            decimal OldPrice,
+            decimal NewPrice);
+
         private async Task SendPriceDropsAsync(
             CrystalsDbContext context, IEmailService email, NotificationService notifications, CancellationToken ct)
         {
@@ -157,54 +167,71 @@ namespace Zodiac_Crystal.Services
                 .Where(w => w.User.IsActive && !w.User.IsDeleted && w.User.Role == UserRoles.User)
                 .OrderBy(w => w.WishlistId)
                 .Take(BatchSize)
-                .Select(w => new
-                {
+                .Select(w => new PriceDropItem(
                     w.WishlistId,
                     w.UserId,
                     w.User.Email,
-                    UserName = w.User.Name,
+                    w.User.Name,
                     w.ProductId,
-                    ProductName = w.Product.Name,
-                    OldPrice = w.AlertPrice!.Value,
-                    NewPrice = w.Product.Price
-                })
+                    w.Product.Name,
+                    w.AlertPrice!.Value,
+                    w.Product.Price
+                ))
                 .ToListAsync(ct);
 
             foreach (var customer in due.GroupBy(w => w.UserId))
             {
-                // Claim by moving the baseline down to the new price, only if no
-                // other run has moved it since this one read it.
-                var claimed = new List<(int ProductId, string Name, decimal OldPrice, decimal NewPrice)>();
-                foreach (var item in customer)
-                {
-                    var updated = await context.Wishlists
-                        .Where(w => w.WishlistId == item.WishlistId && w.AlertPrice == item.OldPrice)
-                        .ExecuteUpdateAsync(s => s.SetProperty(w => w.AlertPrice, item.NewPrice), ct);
-                    if (updated > 0)
-                    {
-                        claimed.Add((item.ProductId, item.ProductName, item.OldPrice, item.NewPrice));
-                    }
-                }
+                await ProcessCustomerPriceDropGroupAsync(context, email, notifications, customer, ct);
+            }
+        }
 
-                if (claimed.Count == 0)
-                {
-                    continue;
-                }
+        private async Task ProcessCustomerPriceDropGroupAsync(
+            CrystalsDbContext context,
+            IEmailService email,
+            NotificationService notifications,
+            IGrouping<int, PriceDropItem> customer,
+            CancellationToken ct)
+        {
+            var claimed = await ClaimPriceDropItemsAsync(context, customer, ct);
+            if (claimed.Count == 0)
+            {
+                return;
+            }
 
-                var first = customer.First();
-                try
+            var first = customer.First();
+            try
+            {
+                foreach (var product in claimed)
                 {
-                    foreach (var product in claimed)
-                    {
-                        await notifications.NotifyPriceDropAsync(first.UserId, product.ProductId, product.Name, product.OldPrice, product.NewPrice);
-                    }
-                    await email.SendPriceDropAsync(first.Email, first.UserName, claimed);
+                    await notifications.NotifyPriceDropAsync(first.UserId, product.ProductId, product.Name, product.OldPrice, product.NewPrice);
                 }
-                catch (Exception ex) when (!ct.IsCancellationRequested)
+                await email.SendPriceDropAsync(first.Email, first.UserName, claimed);
+            }
+            catch (Exception ex) when (!ct.IsCancellationRequested)
+            {
+                _logger.LogWarning(ex, "Could not send price-drop alert to user {UserId}", first.UserId);
+            }
+        }
+
+        private static async Task<List<(int ProductId, string Name, decimal OldPrice, decimal NewPrice)>> ClaimPriceDropItemsAsync(
+            CrystalsDbContext context,
+            IEnumerable<PriceDropItem> items,
+            CancellationToken ct)
+        {
+            // Claim by moving the baseline down to the new price, only if no
+            // other run has moved it since this one read it.
+            var claimed = new List<(int ProductId, string Name, decimal OldPrice, decimal NewPrice)>();
+            foreach (var item in items)
+            {
+                var updated = await context.Wishlists
+                    .Where(w => w.WishlistId == item.WishlistId && w.AlertPrice == item.OldPrice)
+                    .ExecuteUpdateAsync(s => s.SetProperty(w => w.AlertPrice, item.NewPrice), ct);
+                if (updated > 0)
                 {
-                    _logger.LogWarning(ex, "Could not send price-drop alert to user {UserId}", first.UserId);
+                    claimed.Add((item.ProductId, item.ProductName, item.OldPrice, item.NewPrice));
                 }
             }
+            return claimed;
         }
     }
 }

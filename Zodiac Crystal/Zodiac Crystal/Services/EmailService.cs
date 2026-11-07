@@ -16,6 +16,8 @@ namespace Zodiac_Crystal.Services
     {
         private static readonly CultureInfo IndianCulture = new("en-IN");
 
+        private const string LogBanner = "==========================================================================";
+
         private readonly EmailSettings _settings;
         private readonly ILogger<EmailService> _logger;
         private readonly OrderAccessService _orderAccess;
@@ -48,11 +50,9 @@ namespace Zodiac_Crystal.Services
         {
             if (string.IsNullOrWhiteSpace(_settings.Username) || string.IsNullOrWhiteSpace(_settings.Password))
             {
-                _logger.LogWarning("==========================================================================");
-                _logger.LogWarning("[DEV MODE - EMAIL NOT SENT: Brevo SMTP credentials not configured]");
-                _logger.LogWarning("To: {ToEmail} ({ToName}) | Subject: {Subject}", toEmail, toName, subject);
-                _logger.LogWarning("Email Body:\n{HtmlBody}", htmlBody);
-                _logger.LogWarning("==========================================================================");
+                _logger.LogWarning(
+                    "{BannerTop}\n[DEV MODE - EMAIL NOT SENT: Brevo SMTP credentials not configured]\nTo: {ToEmail} ({ToName}) | Subject: {Subject}\nEmail Body:\n{HtmlBody}\n{BannerBottom}",
+                    LogBanner, toEmail, toName, subject, htmlBody, LogBanner);
                 return;
             }
 
@@ -76,11 +76,9 @@ namespace Zodiac_Crystal.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send email via Brevo SMTP to {ToEmail}", toEmail);
-                _logger.LogWarning("==========================================================================");
-                _logger.LogWarning("[DEV MODE - EMAIL FALLBACK]");
-                _logger.LogWarning("To: {ToEmail} ({ToName}) | Subject: {Subject}", toEmail, toName, subject);
-                _logger.LogWarning("Email Body:\n{HtmlBody}", htmlBody);
-                _logger.LogWarning("==========================================================================");
+                _logger.LogWarning(
+                    "{BannerTop}\n[DEV MODE - EMAIL FALLBACK]\nTo: {ToEmail} ({ToName}) | Subject: {Subject}\nEmail Body:\n{HtmlBody}\n{BannerBottom}",
+                    LogBanner, toEmail, toName, subject, htmlBody, LogBanner);
             }
         }
 
@@ -135,12 +133,7 @@ namespace Zodiac_Crystal.Services
               <p>Hi {Encode(customerName)},</p>
               <p>The status of your order {orderText} has changed from
                  <strong>{Encode(previousStatus)}</strong> to <strong>{Encode(order.Status)}</strong>.</p>
-              {(order.Status == "Shipped" && order.TrackingNumber != null
-                  ? $@"<p>Courier: <strong>{Encode(order.CourierName ?? "")}</strong><br>
-                 Tracking number: <strong>{Encode(order.TrackingNumber)}</strong><br>
-                 {(DeliveryEstimate.Window(order) is var (from, to) ? $"Estimated delivery: <strong>{from:ddd, dd MMM} – {to:ddd, dd MMM yyyy}</strong><br>" : "")}
-                 You can follow your package from {(order.User.Role == UserRoles.Guest ? "the link below" : "<em>My Orders</em> on our website")}.</p>"
-                  : "")}
+              {GetShippedOrderDetailsHtml(order)}
               {SummaryTable(order)}
               {await GuestOrderLinkHtmlAsync(order)}";
 
@@ -151,6 +144,25 @@ namespace Zodiac_Crystal.Services
                     ? $"{label} {OrderItemsLabel.Verb(label)} now {order.Status} (Order #{order.OrderId})"
                     : $"Order #{order.OrderId} is now {order.Status}",
                 Layout("Order Status Update", content));
+        }
+
+        private static string GetShippedOrderDetailsHtml(Order order)
+        {
+            if (order.Status != "Shipped" || order.TrackingNumber == null)
+            {
+                return "";
+            }
+
+            var window = DeliveryEstimate.Window(order);
+            var deliveryEstimate = window != null
+                ? $"Estimated delivery: <strong>{window.Value.From:ddd, dd MMM} – {window.Value.To:ddd, dd MMM yyyy}</strong><br>"
+                : "";
+            var trackingDestination = order.User.Role == UserRoles.Guest ? "the link below" : "<em>My Orders</em> on our website";
+
+            return $@"<p>Courier: <strong>{Encode(order.CourierName ?? "")}</strong><br>
+                 Tracking number: <strong>{Encode(order.TrackingNumber)}</strong><br>
+                 {deliveryEstimate}
+                 You can follow your package from {trackingDestination}.</p>";
         }
 
         public async Task SendRegistrationOtpAsync(string toEmail, string toName, string otp, TimeSpan validFor)
@@ -501,15 +513,7 @@ namespace Zodiac_Crystal.Services
             var siteUrl = _settings.SiteUrl.TrimEnd('/');
             var reference = $"ZC-{ticket.SupportTicketId}";
 
-            var (headline, body) = message == null && ticket.Status == TicketStatuses.Open
-                ? ("We've Got Your Request",
-                    $"Thanks for contacting us. Our team usually replies within {SupportPolicy.ReplyWithinHours} hours, and we'll email you as soon as we do.")
-                : ticket.Status == TicketStatuses.Resolved
-                    ? ("Your Request Is Resolved",
-                        $"We've marked your request as resolved. If anything still isn't right, just reply on the website within {SupportPolicy.AutoCloseAfterDays} days and we'll pick it up again.")
-                    : ticket.Status == TicketStatuses.Closed
-                        ? ("Your Request Is Closed", "This request is now closed. If you need anything else, you can open a new request from our Help Center.")
-                        : ("We've Replied to Your Request", "Our support team has replied to your request.");
+            var (headline, body) = GetTicketUpdateHeadlineAndBody(ticket, message);
 
             var messageHtml = string.IsNullOrWhiteSpace(message)
                 ? ""
@@ -529,6 +533,29 @@ namespace Zodiac_Crystal.Services
               </p>";
 
             await SendEmailAsync(customer.Email, customer.Name, $"[{reference}] {headline}", Layout(headline, content));
+        }
+
+        private static (string Headline, string Body) GetTicketUpdateHeadlineAndBody(SupportTicket ticket, string? message)
+        {
+            if (message == null && ticket.Status == TicketStatuses.Open)
+            {
+                return ("We've Got Your Request",
+                    $"Thanks for contacting us. Our team usually replies within {SupportPolicy.ReplyWithinHours} hours, and we'll email you as soon as we do.");
+            }
+
+            if (ticket.Status == TicketStatuses.Resolved)
+            {
+                return ("Your Request Is Resolved",
+                    $"We've marked your request as resolved. If anything still isn't right, just reply on the website within {SupportPolicy.AutoCloseAfterDays} days and we'll pick it up again.");
+            }
+
+            if (ticket.Status == TicketStatuses.Closed)
+            {
+                return ("Your Request Is Closed",
+                    "This request is now closed. If you need anything else, you can open a new request from our Help Center.");
+            }
+
+            return ("We've Replied to Your Request", "Our support team has replied to your request.");
         }
 
         public async Task SendTicketAdminAlertAsync(string toEmail, string toName, SupportTicket ticket, User customer, string message, bool isNewTicket)
@@ -562,8 +589,9 @@ namespace Zodiac_Crystal.Services
             const string label = "padding:6px 8px;color:#6f695f;";
             const string value = "padding:6px 8px;text-align:right;";
 
+            var couponLabel = string.IsNullOrEmpty(order.CouponCode) ? "" : $" ({Encode(order.CouponCode)})";
             var discountRow = order.DiscountAmount > 0
-                ? $@"<tr><td style=""{label}"">Discount{(string.IsNullOrEmpty(order.CouponCode) ? "" : $" ({Encode(order.CouponCode)})")}</td><td style=""{value}color:#2f6b3a;"">-{Money(order.DiscountAmount)}</td></tr>"
+                ? $@"<tr><td style=""{label}"">Discount{couponLabel}</td><td style=""{value}color:#2f6b3a;"">-{Money(order.DiscountAmount)}</td></tr>"
                 : "";
 
             return $@"

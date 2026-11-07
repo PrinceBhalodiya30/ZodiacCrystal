@@ -48,11 +48,7 @@ namespace Zodiac_Crystal.Controllers
                 .FirstOrDefaultAsync();
 
             string? activeCouponCode = welcomeCoupon?.Code;
-            string? activeDiscountText = welcomeCoupon != null
-                ? (string.Equals(welcomeCoupon.DiscountType, "Percentage", StringComparison.OrdinalIgnoreCase)
-                    ? $"{welcomeCoupon.DiscountValue:0}%"
-                    : $"₹{welcomeCoupon.DiscountValue:0}")
-                : null;
+            string? activeDiscountText = FormatDiscountText(welcomeCoupon);
 
             var existing = await _context.NewsletterSubscribers
                 .FirstOrDefaultAsync(s => s.Email == email);
@@ -143,6 +139,18 @@ namespace Zodiac_Crystal.Controllers
             }
 
             return Ok(new { message = "You've been unsubscribed. You won't receive any more newsletters from us." });
+        }
+
+        private static string? FormatDiscountText(Coupon? coupon)
+        {
+            if (coupon == null)
+            {
+                return null;
+            }
+
+            return string.Equals(coupon.DiscountType, "Percentage", StringComparison.OrdinalIgnoreCase)
+                ? $"{coupon.DiscountValue:0}%"
+                : $"₹{coupon.DiscountValue:0}";
         }
 
         // 64 hex characters (256 bits) - unguessable.

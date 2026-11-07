@@ -15,7 +15,6 @@ namespace Zodiac_Crystal.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly CrystalsDbContext _context;
-        private readonly CsvExportService _csvExportService;
         private readonly AuditLogService _auditLogService;
         private readonly NotificationService _notificationService;
 
@@ -52,10 +51,9 @@ namespace Zodiac_Crystal.Controllers
             bool InStockOnly = false,
             bool MatchSku = true);
 
-        public ProductsController(CrystalsDbContext context, CsvExportService csvExportService, AuditLogService auditLogService, NotificationService notificationService)
+        public ProductsController(CrystalsDbContext context, AuditLogService auditLogService, NotificationService notificationService)
         {
             _context = context;
-            _csvExportService = csvExportService;
             _auditLogService = auditLogService;
             _notificationService = notificationService;
         }
@@ -426,7 +424,7 @@ namespace Zodiac_Crystal.Controllers
                 string.Join("; ", p.Zodiacs.OrderBy(z => z)), p.IsActive, p.CreatedAt
             });
 
-            var csv = _csvExportService.BuildCsv(headers, rows);
+            var csv = CsvExportService.BuildCsv(headers, rows);
 
             return File(csv, "text/csv", "products-export.csv");
         }
@@ -466,7 +464,7 @@ namespace Zodiac_Crystal.Controllers
                 p.SKU, p.Name, p.CategoryName, p.StockQuantity, GetStockStatusLabel(p.StockQuantity)
             });
 
-            var csv = _csvExportService.BuildCsv(headers, rows);
+            var csv = CsvExportService.BuildCsv(headers, rows);
 
             return File(csv, "text/csv", "stock-export.csv");
         }

@@ -14,6 +14,7 @@ namespace Zodiac_Crystal.Controllers
     // robots.txt on the storefront points here.
     [ApiController]
     [AllowAnonymous]
+    [Route("sitemap.xml")]
     public class SitemapController : ControllerBase
     {
         // Public pages with no data behind them. Keep in sync with app.routes.ts.
@@ -39,7 +40,7 @@ namespace Zodiac_Crystal.Controllers
             _siteUrl = emailSettings.Value.SiteUrl.TrimEnd('/');
         }
 
-        [HttpGet("/sitemap.xml")]
+        [HttpGet]
         // Short cache so newly added or deactivated products show up quickly.
         [ResponseCache(Duration = 300)]
         public async Task<IActionResult> GetSitemap()

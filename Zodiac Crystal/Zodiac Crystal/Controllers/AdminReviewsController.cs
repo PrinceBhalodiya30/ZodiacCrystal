@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +14,9 @@ namespace Zodiac_Crystal.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminReviewsController : ControllerBase
     {
+        private const string ReviewEntityType = "Review";
+        private const string ReviewNotFoundMessage = "Review not found";
+
         private static readonly string[] ValidStatuses = { "Approved", "Rejected" };
 
         private readonly CrystalsDbContext _context;
@@ -100,7 +103,6 @@ namespace Zodiac_Crystal.Controllers
         // matches the list the admin is looking at. Times are UTC, as stored.
         [HttpGet("export")]
         public async Task<IActionResult> ExportReviews(
-            [FromServices] CsvExportService csv,
             string? search = null,
             int? minRating = null,
             string? status = null,
@@ -127,7 +129,7 @@ namespace Zodiac_Crystal.Controllers
                 })
                 .ToListAsync();
 
-            var file = csv.BuildCsv(
+            var file = CsvExportService.BuildCsv(
                 new[]
                 {
                     "ReviewId", "ProductId", "Product", "SKU", "Reviewer", "ReviewerEmail", "Rating", "Comment",
@@ -168,7 +170,7 @@ namespace Zodiac_Crystal.Controllers
             var previousStatus = photo.Status;
             photo.Status = dto.Status;
 
-            _auditLogService.Log(GetCurrentAdminId(), "ReviewPhotoStatusChanged", "Review", photo.ReviewId,
+            _auditLogService.Log(GetCurrentAdminId(), "ReviewPhotoStatusChanged", ReviewEntityType, photo.ReviewId,
                 $"Photo {photo.ReviewImageId}: {previousStatus} -> {dto.Status}");
             await _context.SaveChangesAsync();
 
@@ -228,13 +230,13 @@ namespace Zodiac_Crystal.Controllers
             var review = await _context.ProductReviews.FirstOrDefaultAsync(r => r.ReviewId == id);
             if (review == null)
             {
-                return NotFound(new { message = "Review not found" });
+                return NotFound(new { message = ReviewNotFoundMessage });
             }
 
             var previousStatus = review.Status;
             review.Status = dto.Status;
 
-            _auditLogService.Log(GetCurrentAdminId(), "ReviewStatusChanged", "Review", review.ReviewId, $"{previousStatus} -> {dto.Status}");
+            _auditLogService.Log(GetCurrentAdminId(), "ReviewStatusChanged", ReviewEntityType, review.ReviewId, $"{previousStatus} -> {dto.Status}");
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -263,7 +265,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 var previousStatus = review.Status;
                 review.Status = dto.Status;
-                _auditLogService.Log(adminId, "ReviewStatusChanged", "Review", review.ReviewId, $"{previousStatus} -> {dto.Status}");
+                _auditLogService.Log(adminId, "ReviewStatusChanged", ReviewEntityType, review.ReviewId, $"{previousStatus} -> {dto.Status}");
             }
 
             await _context.SaveChangesAsync();
@@ -278,13 +280,13 @@ namespace Zodiac_Crystal.Controllers
             var review = await _context.ProductReviews.FirstOrDefaultAsync(r => r.ReviewId == id);
             if (review == null)
             {
-                return NotFound(new { message = "Review not found" });
+                return NotFound(new { message = ReviewNotFoundMessage });
             }
 
             review.AdminReply = string.IsNullOrWhiteSpace(dto.Reply) ? null : dto.Reply;
             review.AdminReplyAt = review.AdminReply != null ? DateTime.UtcNow : null;
 
-            _auditLogService.Log(GetCurrentAdminId(), "ReviewReplyUpdated", "Review", review.ReviewId, null);
+            _auditLogService.Log(GetCurrentAdminId(), "ReviewReplyUpdated", ReviewEntityType, review.ReviewId, null);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -297,13 +299,13 @@ namespace Zodiac_Crystal.Controllers
             var review = await _context.ProductReviews.FirstOrDefaultAsync(r => r.ReviewId == id);
             if (review == null)
             {
-                return NotFound(new { message = "Review not found" });
+                return NotFound(new { message = ReviewNotFoundMessage });
             }
 
             review.IsDeleted = true;
             review.DeletedAt = DateTime.UtcNow;
 
-            _auditLogService.Log(GetCurrentAdminId(), "ReviewDeleted", "Review", review.ReviewId, $"Review by user {review.UserId} on product {review.ProductId}");
+            _auditLogService.Log(GetCurrentAdminId(), "ReviewDeleted", ReviewEntityType, review.ReviewId, $"Review by user {review.UserId} on product {review.ProductId}");
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -316,13 +318,13 @@ namespace Zodiac_Crystal.Controllers
             var review = await _context.ProductReviews.FirstOrDefaultAsync(r => r.ReviewId == id);
             if (review == null)
             {
-                return NotFound(new { message = "Review not found" });
+                return NotFound(new { message = ReviewNotFoundMessage });
             }
 
             review.IsDeleted = false;
             review.DeletedAt = null;
 
-            _auditLogService.Log(GetCurrentAdminId(), "ReviewRestored", "Review", review.ReviewId, null);
+            _auditLogService.Log(GetCurrentAdminId(), "ReviewRestored", ReviewEntityType, review.ReviewId, null);
             await _context.SaveChangesAsync();
 
             return NoContent();
