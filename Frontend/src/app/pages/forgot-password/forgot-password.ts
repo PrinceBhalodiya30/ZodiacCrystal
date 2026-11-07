@@ -4,15 +4,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { getPasswordStrength, PasswordStrength } from '../../utils/password-strength.util';
-import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
-import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../services/page-title.service';
 
 // Two steps: 'email' asks where to send a code; 'reset' takes the code plus the new password.
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [FormsModule, RouterLink, ImgFallbackDirective],
+  imports: [FormsModule, RouterLink],
   templateUrl: './forgot-password.html',
   styleUrls: ['../register/register.css', './forgot-password.css']
 })
@@ -35,8 +33,6 @@ export class ForgotPassword {
   infoMessage = signal('');
   resendIn = signal(0);
   private resendTimer: ReturnType<typeof setInterval> | null = null;
-
-  readonly heroImageUrl = HERO_IMAGE_URL;
 
   constructor() {
     // Prefilled when arriving from the "this wasn't me" email-change undo page.

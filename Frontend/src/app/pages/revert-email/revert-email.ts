@@ -1,8 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
-import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../services/page-title.service';
 
 // Landing page for the "this wasn't me" link in the email-changed notice.
@@ -11,9 +9,8 @@ import { SITE_NAME } from '../../services/page-title.service';
 @Component({
   selector: 'app-revert-email',
   standalone: true,
-  imports: [RouterLink, ImgFallbackDirective],
+  imports: [RouterLink],
   templateUrl: './revert-email.html',
-  // Same split-panel auth layout as forgot password.
   styleUrls: ['../register/register.css', '../forgot-password/forgot-password.css']
 })
 export class RevertEmail {
@@ -28,8 +25,6 @@ export class RevertEmail {
   errorMessage = signal(this.token ? '' : 'This link is incomplete. Please open it again from the email.');
   restoredEmail = signal('');
   message = signal('');
-
-  readonly heroImageUrl = HERO_IMAGE_URL;
 
   restore(): void {
     if (!this.token || this.isSubmitting()) {

@@ -126,7 +126,7 @@
   font-weight: 400;
   color: var(--color-muted, #4E5A70);
   line-height: 1.45;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Single line mode (when no title is present) */
@@ -211,5 +211,13 @@
       opacity: 0;
       transform: translateY(-8px) scale(0.96);
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast.toast-leaving {
+    animation: none;
+    transition: none;
   }
 }

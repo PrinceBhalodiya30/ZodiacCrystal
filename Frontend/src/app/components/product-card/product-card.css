@@ -180,7 +180,6 @@
   border-radius: 50%;
   border: 1px solid var(--color-border);
   background-color: var(--color-surface, #ffffff);
-  box-shadow: 0 2px 6px rgba(28, 26, 23, 0.08);
   color: var(--color-muted);
   line-height: 1;
   display: flex;
@@ -487,9 +486,12 @@
 @media (prefers-reduced-motion: reduce) {
   .product-card,
   .product-image img,
-  .product-actions .btn {
-    transition: none !important;
-    transform: none !important;
-    animation: none !important;
+  .product-actions .btn,
+  .product-actions .btn.btn-added,
+  .wishlist-toggle,
+  .wishlist-toggle.active svg {
+    transition: none;
+    transform: none;
+    animation: none;
   }
 }
