@@ -205,7 +205,7 @@ export class AdminSupport implements OnInit {
       this.isInternal = false;
       this.files.set([]);
     }
-    this.router.navigate([], { queryParams: { ticket: id }, queryParamsHandling: 'merge', replaceUrl: true });
+    void this.router.navigate([], { queryParams: { ticket: id }, queryParamsHandling: 'merge', replaceUrl: true });
     this.supportService.getTicketAdmin(id).subscribe({
       next: ticket => {
         this.selected.set(ticket);
@@ -223,7 +223,7 @@ export class AdminSupport implements OnInit {
 
   closePanel(): void {
     this.selected.set(null);
-    this.router.navigate([], { queryParams: { ticket: null }, queryParamsHandling: 'merge', replaceUrl: true });
+    void this.router.navigate([], { queryParams: { ticket: null }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
   useCanned(text: string): void {

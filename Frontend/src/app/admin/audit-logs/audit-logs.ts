@@ -26,8 +26,8 @@ const PAGE_SIZE = 20;
   styleUrls: ['../admin-shared.css', './audit-logs.css']
 })
 export class AdminAuditLogs implements OnInit {
-  private auditLogService = inject(AuditLogService);
-  private toast = inject(ToastService);
+  private readonly auditLogService = inject(AuditLogService);
+  private readonly toast = inject(ToastService);
 
   isExporting = signal(false);
 
@@ -136,6 +136,19 @@ export class AdminAuditLogs implements OnInit {
     this.loadLogs();
   }
 
+  private getAuditDateRange(preset: DatePreset): { from: string; to: string } | null {
+    if (preset === 'all') {
+      return null;
+    }
+    if (preset === 'custom') {
+      if (this.customFrom && this.customTo && this.customFrom <= this.customTo) {
+        return { from: this.customFrom, to: this.customTo };
+      }
+      return null;
+    }
+    return rangeForPreset(preset);
+  }
+
   // The admin's local days as exact instants (CreatedAt is stored in UTC).
   private filters(): AuditLogFilters {
     const filters: AuditLogFilters = {
@@ -143,11 +156,7 @@ export class AdminAuditLogs implements OnInit {
       action: this.actionFilter() || undefined
     };
 
-    const preset = this.datePreset();
-    const range =
-      preset === 'all' ? null
-      : preset === 'custom' ? (this.customFrom && this.customTo && this.customFrom <= this.customTo ? { from: this.customFrom, to: this.customTo } : null)
-      : rangeForPreset(preset);
+    const range = this.getAuditDateRange(this.datePreset());
 
     if (range) {
       const start = new Date(range.from + 'T00:00:00');
@@ -204,7 +213,7 @@ export class AdminAuditLogs implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export audit logs.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export audit logs.').then(message => this.toast.error(message));
       }
     });
   }

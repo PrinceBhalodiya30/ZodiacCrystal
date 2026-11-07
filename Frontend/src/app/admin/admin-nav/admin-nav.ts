@@ -37,13 +37,13 @@ const ICONS = ADMIN_NAV_ICONS;
 export class AdminNav implements OnInit {
   private static lastNavScrollTop = 0;
   private static lastNavScrollLeft = 0;
-  private el = inject(ElementRef);
+  private readonly el = inject(ElementRef);
 
   @ViewChild(AdminCommandPalette) commandPalette?: AdminCommandPalette;
   readonly siteName = SITE_NAME;
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private counts = inject(AdminNavCountsService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly counts = inject(AdminNavCountsService);
 
   constructor() {
     afterNextRender(() => {
@@ -123,6 +123,6 @@ export class AdminNav implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    void this.router.navigate(['/login']);
   }
 }

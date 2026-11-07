@@ -163,7 +163,7 @@ export class AdminCommandPalette {
 
   executeCommand(item: CommandItem): void {
     this.close();
-    this.router.navigate([item.path], { queryParams: item.queryParams });
+    void this.router.navigate([item.path], { queryParams: item.queryParams });
   }
 
   private fetchDynamicResults(q: string): void {
