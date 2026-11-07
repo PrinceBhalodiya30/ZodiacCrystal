@@ -16,9 +16,9 @@ import { SITE_NAME } from '../../services/page-title.service';
 })
 export class ForgotPassword {
   readonly siteName = SITE_NAME;
-  private authService = inject(AuthService);
-  private toast = inject(ToastService);
-  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
 
   email = '';
   code = '';
@@ -57,7 +57,7 @@ export class ForgotPassword {
   }
 
   sendCode(form?: NgForm): void {
-    if (form && form.invalid) {
+    if (form?.invalid) {
       Object.values(form.controls).forEach(control => control.markAsTouched());
       const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
       firstInvalid?.focus();
@@ -87,7 +87,7 @@ export class ForgotPassword {
   }
 
   resetPassword(form?: NgForm): void {
-    if (form && form.invalid) {
+    if (form?.invalid) {
       Object.values(form.controls).forEach(control => control.markAsTouched());
       const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
       firstInvalid?.focus();
@@ -108,7 +108,7 @@ export class ForgotPassword {
         this.isSubmitting.set(false);
         this.clearCooldown();
         this.toast.success(response.message);
-        this.router.navigate(['/login']);
+        void this.router.navigate(['/login']);
       },
       error: error => {
         this.isSubmitting.set(false);

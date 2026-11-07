@@ -15,10 +15,10 @@ import { SITE_NAME } from '../../services/page-title.service';
 })
 export class Login {
   readonly siteName = SITE_NAME;
-  private authService = inject(AuthService);
-  private wishlistService = inject(WishlistService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly authService = inject(AuthService);
+  private readonly wishlistService = inject(WishlistService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   email = '';
   password = '';
@@ -32,7 +32,7 @@ export class Login {
   }
 
   onSubmit(form?: NgForm): void {
-    if (form && form.invalid) {
+    if (form?.invalid) {
       Object.values(form.controls).forEach(control => control.markAsTouched());
       const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
       firstInvalid?.focus();
@@ -48,19 +48,25 @@ export class Login {
         this.wishlistService.loadWishlist();
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
         const defaultUrl = this.authService.isAdmin() ? '/admin/dashboard' : '/';
-        this.router.navigateByUrl(returnUrl || defaultUrl);
+        void this.router.navigateByUrl(returnUrl || defaultUrl);
       },
       error: error => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(
-          error.status === 401
-            ? 'Invalid email or password.'
-            : (error.error?.message ||
-                (error.status === 0
-                  ? 'Unable to connect to the server. Please check your connection or verify the backend is running.'
-                  : 'Unable to log in right now. Please try again.'))
-        );
+        this.errorMessage.set(this.getLoginErrorMessage(error));
       }
     });
+  }
+
+  private getLoginErrorMessage(error: { status?: number; error?: { message?: string } }): string {
+    if (error.status === 401) {
+      return 'Invalid email or password.';
+    }
+    if (error.error?.message) {
+      return error.error.message;
+    }
+    if (error.status === 0) {
+      return 'Unable to connect to the server. Please check your connection or verify the backend is running.';
+    }
+    return 'Unable to log in right now. Please try again.';
   }
 }

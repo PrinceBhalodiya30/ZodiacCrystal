@@ -38,6 +38,20 @@ namespace Zodiac_Crystal.Controllers
             "energy"
         };
 
+        private const string ReviewApprovedStatus = "Approved";
+        private const string EntityTypeProduct = "Product";
+        private const string ProductNotFoundMessage = "Product not found";
+
+        private sealed record ProductFilterCriteria(
+            string? Search = null,
+            List<int>? CategoryIds = null,
+            bool ActiveOnly = false,
+            decimal? MinPrice = null,
+            decimal? MaxPrice = null,
+            int? ZodiacId = null,
+            bool InStockOnly = false,
+            bool MatchSku = true);
+
         public ProductsController(CrystalsDbContext context, CsvExportService csvExportService, AuditLogService auditLogService, NotificationService notificationService)
         {
             _context = context;
@@ -74,60 +88,63 @@ namespace Zodiac_Crystal.Controllers
             return ids;
         }
 
+        private static IQueryable<Product> ApplySearchFilter(IQueryable<Product> query, string? search, bool matchSku)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return query;
+            }
+
+            var s = search.Trim();
+            if (matchSku)
+            {
+                return query.Where(p => p.Name.Contains(s)
+                    || p.Sku.Contains(s)
+                    || (p.Description != null && p.Description.Contains(s))
+                    || (p.Chakra != null && p.Chakra.Contains(s))
+                    || (p.Element != null && p.Element.Contains(s))
+                    || (p.Category != null && p.Category.Name.Contains(s)));
+            }
+
+            return query.Where(p => p.Name.Contains(s)
+                || (p.Description != null && p.Description.Contains(s))
+                || (p.Chakra != null && p.Chakra.Contains(s))
+                || (p.Element != null && p.Element.Contains(s))
+                || (p.Category != null && p.Category.Name.Contains(s)));
+        }
+
         private static IQueryable<Product> ApplyFilters(
             IQueryable<Product> query,
-            string? search,
-            List<int>? categoryIds,
-            bool activeOnly,
-            decimal? minPrice,
-            decimal? maxPrice,
-            int? zodiacId,
-            bool inStockOnly,
-            bool matchSku = true)
+            ProductFilterCriteria criteria)
         {
-            if (!string.IsNullOrWhiteSpace(search))
+            query = ApplySearchFilter(query, criteria.Search, criteria.MatchSku);
+
+            if (criteria.CategoryIds != null)
             {
-                var s = search.Trim();
-                query = matchSku
-                    ? query.Where(p => p.Name.Contains(s)
-                        || p.Sku.Contains(s)
-                        || (p.Description != null && p.Description.Contains(s))
-                        || (p.Chakra != null && p.Chakra.Contains(s))
-                        || (p.Element != null && p.Element.Contains(s))
-                        || (p.Category != null && p.Category.Name.Contains(s)))
-                    : query.Where(p => p.Name.Contains(s)
-                        || (p.Description != null && p.Description.Contains(s))
-                        || (p.Chakra != null && p.Chakra.Contains(s))
-                        || (p.Element != null && p.Element.Contains(s))
-                        || (p.Category != null && p.Category.Name.Contains(s)));
+                query = query.Where(p => criteria.CategoryIds.Contains(p.CategoryId));
             }
 
-            if (categoryIds != null)
-            {
-                query = query.Where(p => categoryIds.Contains(p.CategoryId));
-            }
-
-            if (activeOnly)
+            if (criteria.ActiveOnly)
             {
                 query = query.Where(p => p.IsActive);
             }
 
-            if (minPrice.HasValue)
+            if (criteria.MinPrice.HasValue)
             {
-                query = query.Where(p => p.Price >= minPrice.Value);
+                query = query.Where(p => p.Price >= criteria.MinPrice.Value);
             }
 
-            if (maxPrice.HasValue)
+            if (criteria.MaxPrice.HasValue)
             {
-                query = query.Where(p => p.Price <= maxPrice.Value);
+                query = query.Where(p => p.Price <= criteria.MaxPrice.Value);
             }
 
-            if (zodiacId.HasValue)
+            if (criteria.ZodiacId.HasValue)
             {
-                query = query.Where(p => p.Zodiacs.Any(z => z.ZodiacId == zodiacId.Value));
+                query = query.Where(p => p.Zodiacs.Any(z => z.ZodiacId == criteria.ZodiacId.Value));
             }
 
-            if (inStockOnly)
+            if (criteria.InStockOnly)
             {
                 query = query.Where(p => p.StockQuantity > 0);
             }
@@ -229,28 +246,10 @@ namespace Zodiac_Crystal.Controllers
         // GET: api/products/paged?pageNumber=1&pageSize=12&search=&categoryId=
         [EnableRateLimiting(RateLimitPolicies.Search)]
         [HttpGet("paged")]
-        public async Task<ActionResult<PagedResult<ProductDto>>> GetProductsPaged(
-            int pageNumber = 1,
-            int pageSize = 12,
-            string? search = null,
-            int? categoryId = null,
-            bool activeOnly = false,
-            decimal? minPrice = null,
-            decimal? maxPrice = null,
-            int? zodiacId = null,
-            bool inStockOnly = false,
-            string? sortBy = null,
-            bool lowStockOnly = false,
-            string? status = null,
-            string? stock = null,
-            bool missingImagesOnly = false,
-            string? intention = null)
+        public async Task<ActionResult<PagedResult<ProductDto>>> GetProductsPaged([FromQuery] ProductPagedQueryDto queryParams)
         {
-            if (pageNumber < 1)
-            {
-                pageNumber = 1;
-            }
-
+            var pageNumber = queryParams.PageNumber < 1 ? 1 : queryParams.PageNumber;
+            var pageSize = queryParams.PageSize;
             if (pageSize < 1)
             {
                 pageSize = 12;
@@ -261,24 +260,34 @@ namespace Zodiac_Crystal.Controllers
             }
 
             // Non-admins only ever see active products, whatever they ask for.
-            var query = ApplyFilters(_context.Products.AsQueryable(), search, await CategoryWithDescendantsAsync(categoryId), activeOnly || !IsAdmin, minPrice, maxPrice, zodiacId, inStockOnly, matchSku: IsAdmin);
-            query = ApplyAdminFilters(query, status, stock, missingImagesOnly);
+            var filterCriteria = new ProductFilterCriteria(
+                Search: queryParams.Search,
+                CategoryIds: await CategoryWithDescendantsAsync(queryParams.CategoryId),
+                ActiveOnly: queryParams.ActiveOnly || !IsAdmin,
+                MinPrice: queryParams.MinPrice,
+                MaxPrice: queryParams.MaxPrice,
+                ZodiacId: queryParams.ZodiacId,
+                InStockOnly: queryParams.InStockOnly,
+                MatchSku: IsAdmin);
 
-            if (!string.IsNullOrWhiteSpace(intention))
+            var query = ApplyFilters(_context.Products.AsQueryable(), filterCriteria);
+            query = ApplyAdminFilters(query, queryParams.Status, queryParams.Stock, queryParams.MissingImagesOnly);
+
+            if (!string.IsNullOrWhiteSpace(queryParams.Intention))
             {
-                var trimmedIntention = intention.Trim().ToLowerInvariant();
+                var trimmedIntention = queryParams.Intention.Trim().ToLowerInvariant();
                 query = query.Where(p => p.Intention == trimmedIntention);
             }
 
             // Admin Stock page's "Low stock only" filter.
-            if (lowStockOnly)
+            if (queryParams.LowStockOnly)
             {
                 query = query.Where(p => p.StockQuantity <= StockRules.LowStockThreshold);
             }
 
             var totalCount = await query.CountAsync();
 
-            query = sortBy switch
+            query = queryParams.SortBy switch
             {
                 "price_asc" => query.OrderBy(p => p.Price),
                 "price_desc" => query.OrderByDescending(p => p.Price),
@@ -287,7 +296,7 @@ namespace Zodiac_Crystal.Controllers
                 // Same reviews the product page shows: approved and not deleted.
                 "rating" => query.OrderByDescending(p =>
                     _context.ProductReviews
-                        .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved")
+                        .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == ReviewApprovedStatus)
                         .Average(r => (double?)r.Rating) ?? 0),
                 _ => query.OrderBy(p => p.ProductId)
             };
@@ -319,11 +328,11 @@ namespace Zodiac_Crystal.Controllers
                     Intention = p.Intention,
 
                     AverageRating = _context.ProductReviews
-                        .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved")
+                        .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == ReviewApprovedStatus)
                         .Average(r => (double?)r.Rating),
 
                     ReviewCount = _context.ProductReviews
-                        .Count(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved"),
+                        .Count(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == ReviewApprovedStatus),
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -363,26 +372,24 @@ namespace Zodiac_Crystal.Controllers
         // filtered on the Products page.
         [Authorize(Roles = "Admin")]
         [HttpGet("export")]
-        public async Task<IActionResult> ExportProducts(
-            string? search = null,
-            int? categoryId = null,
-            bool activeOnly = false,
-            decimal? minPrice = null,
-            decimal? maxPrice = null,
-            int? zodiacId = null,
-            bool inStockOnly = false,
-            string? status = null,
-            string? stock = null,
-            bool missingImagesOnly = false,
-            string? intention = null)
+        public async Task<IActionResult> ExportProducts([FromQuery] ProductExportQueryDto queryParams)
         {
-            var query = ApplyAdminFilters(
-                    ApplyFilters(_context.Products.AsQueryable(), search, await CategoryWithDescendantsAsync(categoryId), activeOnly, minPrice, maxPrice, zodiacId, inStockOnly),
-                    status, stock, missingImagesOnly);
+            var filterCriteria = new ProductFilterCriteria(
+                Search: queryParams.Search,
+                CategoryIds: await CategoryWithDescendantsAsync(queryParams.CategoryId),
+                ActiveOnly: queryParams.ActiveOnly,
+                MinPrice: queryParams.MinPrice,
+                MaxPrice: queryParams.MaxPrice,
+                ZodiacId: queryParams.ZodiacId,
+                InStockOnly: queryParams.InStockOnly);
 
-            if (!string.IsNullOrWhiteSpace(intention))
+            var query = ApplyAdminFilters(
+                    ApplyFilters(_context.Products.AsQueryable(), filterCriteria),
+                    queryParams.Status, queryParams.Stock, queryParams.MissingImagesOnly);
+
+            if (!string.IsNullOrWhiteSpace(queryParams.Intention))
             {
-                var trimmedIntention = intention.Trim().ToLowerInvariant();
+                var trimmedIntention = queryParams.Intention.Trim().ToLowerInvariant();
                 query = query.Where(p => p.Intention == trimmedIntention);
             }
 
@@ -431,7 +438,7 @@ namespace Zodiac_Crystal.Controllers
         [HttpGet("export-stock")]
         public async Task<IActionResult> ExportStock(string? search = null, bool lowStockOnly = false)
         {
-            var query = ApplyFilters(_context.Products.AsQueryable(), search, null, false, null, null, null, false);
+            var query = ApplyFilters(_context.Products.AsQueryable(), new ProductFilterCriteria(Search: search, MatchSku: false));
 
             if (lowStockOnly)
             {
@@ -452,7 +459,7 @@ namespace Zodiac_Crystal.Controllers
                 })
                 .ToListAsync();
 
-            var headers = new[] { "SKU", "Product", "Category", "StockQuantity", "StockStatus" };
+            var headers = new[] { "SKU", EntityTypeProduct, "Category", "StockQuantity", "StockStatus" };
 
             var rows = products.Select(p => new object?[]
             {
@@ -514,11 +521,11 @@ namespace Zodiac_Crystal.Controllers
                     // Approved, not-deleted reviews only (same as the list endpoints);
                     // the product page's JSON-LD rating comes from these.
                     AverageRating = _context.ProductReviews
-                        .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved")
+                        .Where(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == ReviewApprovedStatus)
                         .Average(r => (double?)r.Rating),
 
                     ReviewCount = _context.ProductReviews
-                        .Count(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == "Approved"),
+                        .Count(r => r.ProductId == p.ProductId && !r.IsDeleted && r.Status == ReviewApprovedStatus),
 
                     Images = p.ProductImages
                         .Select(i => new ProductImageDto
@@ -547,7 +554,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product not found"
+                    message = ProductNotFoundMessage
                 });
             }
 
@@ -583,7 +590,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (current == null)
             {
-                return NotFound(new { message = "Product not found" });
+                return NotFound(new { message = ProductNotFoundMessage });
             }
 
             var rankedIds = await _context.Products
@@ -764,7 +771,7 @@ namespace Zodiac_Crystal.Controllers
             await _context.SaveChangesAsync();
 
             // Logged after the first save so the new ProductId is known.
-            _auditLogService.Log(CurrentAdminId(), "ProductCreated", "Product", product.ProductId,
+            _auditLogService.Log(CurrentAdminId(), "ProductCreated", EntityTypeProduct, product.ProductId,
                 $"{product.Name} ({product.Sku}), ₹{product.Price:0.00}, stock {product.StockQuantity}");
             await _context.SaveChangesAsync();
 
@@ -781,105 +788,87 @@ namespace Zodiac_Crystal.Controllers
             );
         }
 
-        // PUT: api/products/1
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(
-            int id,
-            UpdateProductDto dto)
+        private async Task<string?> ValidateProductUpdateAsync(int id, UpdateProductDto dto)
         {
-            var product = await _context.Products
-                .Include(p => p.Zodiacs)
-                .FirstOrDefaultAsync(p => p.ProductId == id);
-
-            if (product == null)
-            {
-                return NotFound(new
-                {
-                    message = "Product not found"
-                });
-            }
-
             var categoryExists = await _context.Categories
                 .AnyAsync(c => c.CategoryId == dto.CategoryId);
-
             if (!categoryExists)
             {
-                return BadRequest(new
-                {
-                    message = "Category does not exist"
-                });
+                return "Category does not exist";
             }
 
             var skuExists = await _context.Products
-                .AnyAsync(p =>
-                    p.Sku == dto.SKU &&
-                    p.ProductId != id);
-
+                .AnyAsync(p => p.Sku == dto.SKU && p.ProductId != id);
             if (skuExists)
             {
-                return BadRequest(new
-                {
-                    message = "SKU already exists"
-                });
+                return "SKU already exists";
             }
 
             if (dto.CompareAtPrice.HasValue && dto.CompareAtPrice.Value <= dto.Price)
             {
-                return BadRequest(new
-                {
-                    message = "Compare-at price must be greater than the selling price"
-                });
-            }
-
-            var zodiacs = await _context.ZodiacSigns
-                .Where(z => dto.ZodiacIds.Contains(z.ZodiacId))
-                .ToListAsync();
-
-            if (zodiacs.Count != dto.ZodiacIds.Distinct().Count())
-            {
-                return BadRequest(new
-                {
-                    message = "One or more zodiac signs do not exist"
-                });
+                return "Compare-at price must be greater than the selling price";
             }
 
             if (!string.IsNullOrWhiteSpace(dto.MarketingBadge) && !AllowedMarketingBadges.Contains(dto.MarketingBadge.Trim()))
             {
-                return BadRequest(new
-                {
-                    message = $"Invalid marketing badge '{dto.MarketingBadge}'. Allowed values: {string.Join(", ", AllowedMarketingBadges)}"
-                });
+                return $"Invalid marketing badge '{dto.MarketingBadge}'. Allowed values: {string.Join(", ", AllowedMarketingBadges)}";
             }
 
             if (!string.IsNullOrWhiteSpace(dto.Intention) && !AllowedIntentions.Contains(dto.Intention.Trim()))
             {
-                return BadRequest(new
-                {
-                    message = $"Invalid sacred intention '{dto.Intention}'. Allowed values: {string.Join(", ", AllowedIntentions)}"
-                });
+                return $"Invalid sacred intention '{dto.Intention}'. Allowed values: {string.Join(", ", AllowedIntentions)}";
             }
 
-            // What changed, for the audit log (e.g. "Price ₹899.00 → ₹799.00").
-            var changes = new List<string>();
+            return null;
+        }
+
+        private static void TrackBasicInfoChanges(List<string> changes, Product product, UpdateProductDto dto)
+        {
             if (product.Name != dto.Name) changes.Add($"Name \"{product.Name}\" → \"{dto.Name}\"");
             if (product.Sku != dto.SKU) changes.Add($"SKU {product.Sku} → {dto.SKU}");
+            if (product.CategoryId != dto.CategoryId) changes.Add($"Category #{product.CategoryId} → #{dto.CategoryId}");
+            if (product.Description != dto.Description) changes.Add("Description edited");
+        }
+
+        private static void TrackPricingAndStatusChanges(List<string> changes, Product product, UpdateProductDto dto)
+        {
             if (product.Price != dto.Price) changes.Add($"Price ₹{product.Price:0.00} → ₹{dto.Price:0.00}");
             if (product.CompareAtPrice != dto.CompareAtPrice) changes.Add($"Compare-at ₹{product.CompareAtPrice:0.00} → ₹{dto.CompareAtPrice:0.00}");
-            if (product.CategoryId != dto.CategoryId) changes.Add($"Category #{product.CategoryId} → #{dto.CategoryId}");
             if (product.IsActive != dto.IsActive) changes.Add(dto.IsActive ? "Activated" : "Deactivated");
-            if (product.Description != dto.Description) changes.Add("Description edited");
-            if (!product.Zodiacs.Select(z => z.ZodiacId).OrderBy(x => x).SequenceEqual(dto.ZodiacIds.Distinct().OrderBy(x => x)))
+        }
+
+        private static void TrackMetadataChanges(List<string> changes, Product product, UpdateProductDto dto, string? newIntention)
+        {
+            var currentZodiacs = product.Zodiacs.Select(z => z.ZodiacId).OrderBy(x => x);
+            var newZodiacs = dto.ZodiacIds.Distinct().OrderBy(x => x);
+            if (!currentZodiacs.SequenceEqual(newZodiacs))
+            {
                 changes.Add("Zodiac signs changed");
-            if (product.MarketingBadge != (string.IsNullOrWhiteSpace(dto.MarketingBadge) ? null : dto.MarketingBadge.Trim()))
-                changes.Add($"Badge \"{product.MarketingBadge ?? "None"}\" → \"{(string.IsNullOrWhiteSpace(dto.MarketingBadge) ? "None" : dto.MarketingBadge.Trim())}\"");
-            var newIntention = string.IsNullOrWhiteSpace(dto.Intention) ? null : dto.Intention.Trim().ToLowerInvariant();
+            }
+
+            var newBadge = string.IsNullOrWhiteSpace(dto.MarketingBadge) ? null : dto.MarketingBadge.Trim();
+            if (product.MarketingBadge != newBadge)
+            {
+                changes.Add($"Badge \"{product.MarketingBadge ?? "None"}\" → \"{newBadge ?? "None"}\"");
+            }
+
             if (product.Intention != newIntention)
+            {
                 changes.Add($"Intention \"{product.Intention ?? "None"}\" → \"{newIntention ?? "None"}\"");
+            }
+        }
 
-            _auditLogService.Log(CurrentAdminId(), "ProductUpdated", "Product", product.ProductId,
-                $"{dto.Name}: " + (changes.Count > 0 ? string.Join("; ", changes) : "no changes"));
+        private static List<string> TrackProductChanges(Product product, UpdateProductDto dto, string? newIntention)
+        {
+            var changes = new List<string>();
+            TrackBasicInfoChanges(changes, product, dto);
+            TrackPricingAndStatusChanges(changes, product, dto);
+            TrackMetadataChanges(changes, product, dto, newIntention);
+            return changes;
+        }
 
+        private static void ApplyProductProperties(Product product, UpdateProductDto dto, List<ZodiacSign> zodiacs, string? newIntention)
+        {
             product.Sku = dto.SKU;
             product.Name = dto.Name;
             product.Description = dto.Description;
@@ -899,6 +888,52 @@ namespace Zodiac_Crystal.Controllers
             {
                 product.Zodiacs.Add(zodiac);
             }
+        }
+
+        // PUT: api/products/1
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(
+            int id,
+            UpdateProductDto dto)
+        {
+            var product = await _context.Products
+                .Include(p => p.Zodiacs)
+                .FirstOrDefaultAsync(p => p.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound(new
+                {
+                    message = ProductNotFoundMessage
+                });
+            }
+
+            var validationError = await ValidateProductUpdateAsync(id, dto);
+            if (validationError != null)
+            {
+                return BadRequest(new { message = validationError });
+            }
+
+            var zodiacs = await _context.ZodiacSigns
+                .Where(z => dto.ZodiacIds.Contains(z.ZodiacId))
+                .ToListAsync();
+
+            if (zodiacs.Count != dto.ZodiacIds.Distinct().Count())
+            {
+                return BadRequest(new
+                {
+                    message = "One or more zodiac signs do not exist"
+                });
+            }
+
+            var newIntention = string.IsNullOrWhiteSpace(dto.Intention) ? null : dto.Intention.Trim().ToLowerInvariant();
+            var changes = TrackProductChanges(product, dto, newIntention);
+
+            _auditLogService.Log(CurrentAdminId(), "ProductUpdated", EntityTypeProduct, product.ProductId,
+                $"{dto.Name}: " + (changes.Count > 0 ? string.Join("; ", changes) : "no changes"));
+
+            ApplyProductProperties(product, dto, zodiacs, newIntention);
 
             await _context.SaveChangesAsync();
             await _notificationService.BroadcastStockAsync(new[] { product });
@@ -913,73 +948,68 @@ namespace Zodiac_Crystal.Controllers
             "setPrice", "increasePercent", "decreasePercent", "increaseAmount", "decreaseAmount", "startSale"
         };
 
-        // POST: api/products/bulk-update
-        // One change (price, sale, status or category) applied to the ticked
-        // products or to everything matching the admin list's filters. With
-        // Preview the result is computed but nothing is saved, so the admin can
-        // check old → new before applying. The commit recomputes from the current
-        // values, saves all rows in one SaveChanges, writes an audit entry per
-        // product, and pokes the alert job so wishlist price drops go out batched.
-        [Authorize(Roles = "Admin")]
-        [HttpPost("bulk-update")]
-        public async Task<ActionResult<BulkUpdateResultDto>> BulkUpdate(BulkUpdateProductsDto dto)
+        private static string? ValidateBulkAction(string action, BulkUpdateProductsDto dto)
         {
-            var action = dto.Action?.Trim() ?? "";
             var known = PriceActions.Contains(action) ||
                 new[] { "endSale", "activate", "deactivate", "setCategory" }.Contains(action, StringComparer.OrdinalIgnoreCase);
             if (!known)
             {
-                return BadRequest(new { message = "Unknown bulk action" });
+                return "Unknown bulk action";
             }
 
             var needsValue = PriceActions.Contains(action);
             if (needsValue && (!dto.Value.HasValue || dto.Value.Value <= 0))
             {
-                return BadRequest(new { message = "Enter a value greater than 0" });
+                return "Enter a value greater than 0";
             }
             if (action.Equals("startSale", StringComparison.OrdinalIgnoreCase) && dto.Value >= 95)
             {
-                return BadRequest(new { message = "Sale discount must be below 95%" });
+                return "Sale discount must be below 95%";
             }
             if (action.Equals("decreasePercent", StringComparison.OrdinalIgnoreCase) && dto.Value >= 100)
             {
-                return BadRequest(new { message = "Decrease must be below 100%" });
+                return "Decrease must be below 100%";
             }
 
-            Category? newCategory = null;
-            if (action.Equals("setCategory", StringComparison.OrdinalIgnoreCase))
-            {
-                newCategory = dto.CategoryId.HasValue ? await _context.Categories.FindAsync(dto.CategoryId.Value) : null;
-                if (newCategory == null)
-                {
-                    return BadRequest(new { message = "Category does not exist" });
-                }
-            }
+            return null;
+        }
 
+        private async Task<(List<Product>? products, string? error)> GetBulkTargetProductsAsync(BulkUpdateProductsDto dto)
+        {
             IQueryable<Product> query = _context.Products.Include(p => p.Category);
             if (dto.ProductIds != null)
             {
                 var ids = dto.ProductIds.Distinct().ToList();
                 if (ids.Count == 0)
                 {
-                    return BadRequest(new { message = "Select at least one product" });
+                    return (null, "Select at least one product");
                 }
                 query = query.Where(p => ids.Contains(p.ProductId));
             }
             else
             {
                 var f = dto.Filter ?? new BulkProductFilterDto();
+                var filterCriteria = new ProductFilterCriteria(
+                    Search: f.Search,
+                    CategoryIds: await CategoryWithDescendantsAsync(f.CategoryId),
+                    MatchSku: false);
+
                 query = ApplyAdminFilters(
-                    ApplyFilters(query, f.Search, await CategoryWithDescendantsAsync(f.CategoryId), false, null, null, null, false),
+                    ApplyFilters(query, filterCriteria),
                     f.Status, f.Stock, false);
             }
 
             var products = await query.OrderBy(p => p.ProductId).Take(BulkUpdateLimit + 1).ToListAsync();
             if (products.Count > BulkUpdateLimit)
             {
-                return BadRequest(new { message = $"Bulk updates are limited to {BulkUpdateLimit} products at a time. Narrow the filters." });
+                return (null, $"Bulk updates are limited to {BulkUpdateLimit} products at a time. Narrow the filters.");
             }
 
+            return (products, null);
+        }
+
+        private static BulkUpdateResultDto ComputeBulkUpdateResult(List<Product> products, string action, BulkUpdateProductsDto dto, Category? newCategory)
+        {
             var result = new BulkUpdateResultDto();
             foreach (var p in products)
             {
@@ -1010,12 +1040,11 @@ namespace Zodiac_Crystal.Controllers
 
                 result.Rows.Add(row);
             }
+            return result;
+        }
 
-            if (dto.Preview || result.ChangedCount == 0)
-            {
-                return Ok(result);
-            }
-
+        private async Task ApplyBulkChangesAsync(List<Product> products, BulkUpdateResultDto result, string action, Category? newCategory)
+        {
             var adminId = CurrentAdminId();
             var changedProducts = new List<Product>();
             foreach (var (p, row) in products.Zip(result.Rows))
@@ -1031,7 +1060,7 @@ namespace Zodiac_Crystal.Controllers
                 if (row.NewIsActive != row.OldIsActive) changes.Add(row.NewIsActive ? "Activated" : "Deactivated");
                 if (newCategory != null && p.CategoryId != newCategory.CategoryId) changes.Add($"Category #{p.CategoryId} → #{newCategory.CategoryId}");
 
-                _auditLogService.Log(adminId, "ProductBulkUpdated", "Product", p.ProductId,
+                _auditLogService.Log(adminId, "ProductBulkUpdated", EntityTypeProduct, p.ProductId,
                     $"{p.Name} (bulk {action}): {string.Join("; ", changes)}");
 
                 p.Price = row.NewPrice;
@@ -1046,6 +1075,50 @@ namespace Zodiac_Crystal.Controllers
 
             await _context.SaveChangesAsync();
             await _notificationService.BroadcastStockAsync(changedProducts);
+        }
+
+        // POST: api/products/bulk-update
+        // One change (price, sale, status or category) applied to the ticked
+        // products or to everything matching the admin list's filters. With
+        // Preview the result is computed but nothing is saved, so the admin can
+        // check old → new before applying. The commit recomputes from the current
+        // values, saves all rows in one SaveChanges, writes an audit entry per
+        // product, and pokes the alert job so wishlist price drops go out batched.
+        [Authorize(Roles = "Admin")]
+        [HttpPost("bulk-update")]
+        public async Task<ActionResult<BulkUpdateResultDto>> BulkUpdate(BulkUpdateProductsDto dto)
+        {
+            var action = dto.Action?.Trim() ?? "";
+            var actionError = ValidateBulkAction(action, dto);
+            if (actionError != null)
+            {
+                return BadRequest(new { message = actionError });
+            }
+
+            Category? newCategory = null;
+            if (action.Equals("setCategory", StringComparison.OrdinalIgnoreCase))
+            {
+                newCategory = dto.CategoryId.HasValue ? await _context.Categories.FindAsync(dto.CategoryId.Value) : null;
+                if (newCategory == null)
+                {
+                    return BadRequest(new { message = "Category does not exist" });
+                }
+            }
+
+            var (products, queryError) = await GetBulkTargetProductsAsync(dto);
+            if (queryError != null || products == null)
+            {
+                return BadRequest(new { message = queryError });
+            }
+
+            var result = ComputeBulkUpdateResult(products, action, dto, newCategory);
+
+            if (dto.Preview || result.ChangedCount == 0)
+            {
+                return Ok(result);
+            }
+
+            await ApplyBulkChangesAsync(products, result, action, newCategory);
 
             result.Applied = true;
             return Ok(result);
@@ -1139,7 +1212,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product not found"
+                    message = ProductNotFoundMessage
                 });
             }
 
@@ -1150,7 +1223,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var adminUserId))
             {
-                _auditLogService.Log(adminUserId, "StockAdded", "Product", id, $"+{dto.Quantity} (now {stockQuantity})");
+                _auditLogService.Log(adminUserId, "StockAdded", EntityTypeProduct, id, $"+{dto.Quantity} (now {stockQuantity})");
                 await _context.SaveChangesAsync();
             }
 
@@ -1171,7 +1244,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product not found"
+                    message = ProductNotFoundMessage
                 });
             }
 
@@ -1195,7 +1268,7 @@ namespace Zodiac_Crystal.Controllers
 
             if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var adminUserId))
             {
-                _auditLogService.Log(adminUserId, "StockAdjusted", "Product", id, $"{dto.Delta:+#;-#;0} (now {stockQuantity})");
+                _auditLogService.Log(adminUserId, "StockAdjusted", EntityTypeProduct, id, $"{dto.Delta:+#;-#;0} (now {stockQuantity})");
                 await _context.SaveChangesAsync();
             }
 
@@ -1218,7 +1291,7 @@ namespace Zodiac_Crystal.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Product not found"
+                    message = ProductNotFoundMessage
                 });
             }
 
@@ -1240,7 +1313,7 @@ namespace Zodiac_Crystal.Controllers
                 _context.Products.Remove(product);
             }
 
-            _auditLogService.Log(CurrentAdminId(), "ProductDeleted", "Product", product.ProductId,
+            _auditLogService.Log(CurrentAdminId(), "ProductDeleted", EntityTypeProduct, product.ProductId,
                 isReferenced ? $"{product.Name} ({product.Sku}) - hidden, it has order/review history" : $"{product.Name} ({product.Sku})");
 
             await _context.SaveChangesAsync();

@@ -15,9 +15,9 @@ import { SITE_NAME } from '../../services/page-title.service';
 })
 export class Register {
   readonly siteName = SITE_NAME;
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   name = '';
   email = '';
@@ -56,7 +56,7 @@ export class Register {
   }
 
   onSubmit(form?: NgForm): void {
-    if (form && form.invalid) {
+    if (form?.invalid) {
       Object.values(form.controls).forEach(control => control.markAsTouched());
       const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
       firstInvalid?.focus();
@@ -82,7 +82,7 @@ export class Register {
   }
 
   onVerify(form?: NgForm): void {
-    if (form && form.invalid) {
+    if (form?.invalid) {
       Object.values(form.controls).forEach(control => control.markAsTouched());
       const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
       firstInvalid?.focus();
@@ -99,7 +99,7 @@ export class Register {
           this.isSubmitting.set(false);
           this.clearCooldown();
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
-          this.router.navigateByUrl(returnUrl);
+          void this.router.navigateByUrl(returnUrl);
         },
         error: error => {
           this.isSubmitting.set(false);

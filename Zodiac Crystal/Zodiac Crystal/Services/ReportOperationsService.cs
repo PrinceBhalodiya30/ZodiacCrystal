@@ -188,7 +188,7 @@ namespace Zodiac_Crystal.Services
             return hours.Count > 0 ? Math.Round(hours.Average(), 1) : null;
         }
 
-        private record OrderRow(
+        private sealed record OrderRow(
             int OrderId, int UserId, DateTime OrderDate, string Status, string PaymentMethod, string PaymentStatus,
             decimal TotalAmount, string State, DateTime? ConfirmedAt, DateTime? ShippedAt, DateTime? DeliveredAt,
             string? CancellationReason, string CustomerName, string CustomerEmail);
