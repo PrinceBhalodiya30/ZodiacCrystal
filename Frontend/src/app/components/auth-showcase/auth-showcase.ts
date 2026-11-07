@@ -11,6 +11,7 @@ import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { StoreSettingsService } from '../../services/store-settings.service';
+import { SITE_NAME } from '../../services/page-title.service';
 import { PublicCoupon } from '../../models/coupon';
 import { Review } from '../../models/review';
 
@@ -44,6 +45,7 @@ const REVIEW_SOURCE_COUNT = 12;
 })
 export class AuthShowcase implements OnInit {
   @Input() mode: 'login' | 'register' = 'login';
+  readonly siteName = SITE_NAME;
 
   private productService = inject(ProductService);
   private reviewService = inject(ReviewService);

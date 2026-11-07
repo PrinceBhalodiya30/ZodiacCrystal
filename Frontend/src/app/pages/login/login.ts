@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { WishlistService } from '../../services/wishlist.service';
@@ -27,12 +27,18 @@ export class Login {
   isSubmitting = signal(false);
   errorMessage = signal('');
 
-
   togglePassword(): void {
     this.showPassword.set(!this.showPassword());
   }
 
-  onSubmit(): void {
+  onSubmit(form?: NgForm): void {
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
+      firstInvalid?.focus();
+      return;
+    }
+
     this.isSubmitting.set(true);
     this.errorMessage.set('');
 

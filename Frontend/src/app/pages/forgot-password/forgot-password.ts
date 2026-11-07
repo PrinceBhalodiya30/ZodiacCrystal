@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
@@ -8,14 +8,12 @@ import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../services/page-title.service';
 
-// Two steps, like registration: 'email' asks where to send a code; 'reset'
-// takes the code plus the new password.
+// Two steps: 'email' asks where to send a code; 'reset' takes the code plus the new password.
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
   imports: [FormsModule, RouterLink, ImgFallbackDirective],
   templateUrl: './forgot-password.html',
-  // Same split-panel auth layout as the register page.
   styleUrls: ['../register/register.css', './forgot-password.css']
 })
 export class ForgotPassword {
@@ -31,6 +29,7 @@ export class ForgotPassword {
 
   step = signal<'email' | 'reset'>('email');
   showPassword = signal(false);
+  showConfirmPassword = signal(false);
   isSubmitting = signal(false);
   errorMessage = signal('');
   infoMessage = signal('');
@@ -57,7 +56,18 @@ export class ForgotPassword {
     this.showPassword.set(!this.showPassword());
   }
 
-  sendCode(): void {
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
+  }
+
+  sendCode(form?: NgForm): void {
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
+      firstInvalid?.focus();
+      return;
+    }
+
     if (this.isSubmitting() || this.resendIn() > 0) {
       return;
     }
@@ -80,8 +90,17 @@ export class ForgotPassword {
     });
   }
 
-  resetPassword(): void {
+  resetPassword(form?: NgForm): void {
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
+      firstInvalid?.focus();
+      return;
+    }
+
     if (this.passwordsMismatch) {
+      const confirmInput = document.getElementById('confirmPassword');
+      confirmInput?.focus();
       return;
     }
 
@@ -91,6 +110,7 @@ export class ForgotPassword {
     this.authService.resetPassword(this.email.trim(), this.code.trim(), this.newPassword).subscribe({
       next: response => {
         this.isSubmitting.set(false);
+        this.clearCooldown();
         this.toast.success(response.message);
         this.router.navigate(['/login']);
       },
@@ -104,20 +124,28 @@ export class ForgotPassword {
   changeEmail(): void {
     this.stopResendTimer();
     this.resendIn.set(0);
+    this.clearCooldown();
     this.errorMessage.set('');
     this.step.set('email');
   }
 
   private startResendTimer(seconds: number): void {
     this.stopResendTimer();
-    this.resendIn.set(seconds);
-    this.resendTimer = setInterval(() => {
-      const next = this.resendIn() - 1;
-      this.resendIn.set(Math.max(next, 0));
-      if (next <= 0) {
+    const expireAt = Date.now() + seconds * 1000;
+    try {
+      sessionStorage.setItem(`pwd_reset_cooldown_${this.email.toLowerCase()}`, expireAt.toString());
+    } catch {}
+
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((expireAt - Date.now()) / 1000));
+      this.resendIn.set(remaining);
+      if (remaining <= 0) {
         this.stopResendTimer();
+        this.clearCooldown();
       }
-    }, 1000);
+    };
+    tick();
+    this.resendTimer = setInterval(tick, 1000);
   }
 
   private stopResendTimer(): void {
@@ -125,5 +153,11 @@ export class ForgotPassword {
       clearInterval(this.resendTimer);
       this.resendTimer = null;
     }
+  }
+
+  private clearCooldown(): void {
+    try {
+      sessionStorage.removeItem(`pwd_reset_cooldown_${this.email.toLowerCase()}`);
+    } catch {}
   }
 }

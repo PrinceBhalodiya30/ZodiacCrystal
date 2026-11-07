@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { getPasswordStrength, PasswordStrength } from '../../utils/password-strength.util';
@@ -25,6 +25,7 @@ export class Register {
   confirmPassword = '';
   otp = '';
   showPassword = signal(false);
+  showConfirmPassword = signal(false);
   isSubmitting = signal(false);
   errorMessage = signal('');
 
@@ -34,13 +35,16 @@ export class Register {
   resendIn = signal(0);
   private resendTimer: ReturnType<typeof setInterval> | null = null;
 
-
   constructor() {
     inject(DestroyRef).onDestroy(() => this.stopResendTimer());
   }
 
   togglePassword(): void {
     this.showPassword.set(!this.showPassword());
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 
   get passwordsMismatch(): boolean {
@@ -51,8 +55,17 @@ export class Register {
     return getPasswordStrength(this.password);
   }
 
-  onSubmit(): void {
+  onSubmit(form?: NgForm): void {
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
+      firstInvalid?.focus();
+      return;
+    }
+
     if (this.passwordsMismatch) {
+      const confirmInput = document.getElementById('confirmPassword');
+      confirmInput?.focus();
       return;
     }
 
@@ -68,7 +81,14 @@ export class Register {
     this.sendCode();
   }
 
-  onVerify(): void {
+  onVerify(form?: NgForm): void {
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      const firstInvalid = document.querySelector('input.ng-invalid') as HTMLElement | null;
+      firstInvalid?.focus();
+      return;
+    }
+
     this.isSubmitting.set(true);
     this.errorMessage.set('');
 
@@ -77,6 +97,7 @@ export class Register {
       .subscribe({
         next: () => {
           this.isSubmitting.set(false);
+          this.clearCooldown();
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
           this.router.navigateByUrl(returnUrl);
         },
@@ -92,6 +113,7 @@ export class Register {
   changeDetails(): void {
     this.stopResendTimer();
     this.resendIn.set(0);
+    this.clearCooldown();
     this.otp = '';
     this.errorMessage.set('');
     this.infoMessage.set('');
@@ -125,14 +147,21 @@ export class Register {
 
   private startResendTimer(seconds: number): void {
     this.stopResendTimer();
-    this.resendIn.set(seconds);
-    this.resendTimer = setInterval(() => {
-      const next = this.resendIn() - 1;
-      this.resendIn.set(Math.max(next, 0));
-      if (next <= 0) {
+    const expireAt = Date.now() + seconds * 1000;
+    try {
+      sessionStorage.setItem(`otp_resend_${this.email.toLowerCase()}`, expireAt.toString());
+    } catch {}
+
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((expireAt - Date.now()) / 1000));
+      this.resendIn.set(remaining);
+      if (remaining <= 0) {
         this.stopResendTimer();
+        this.clearCooldown();
       }
-    }, 1000);
+    };
+    tick();
+    this.resendTimer = setInterval(tick, 1000);
   }
 
   private stopResendTimer(): void {
@@ -140,5 +169,11 @@ export class Register {
       clearInterval(this.resendTimer);
       this.resendTimer = null;
     }
+  }
+
+  private clearCooldown(): void {
+    try {
+      sessionStorage.removeItem(`otp_resend_${this.email.toLowerCase()}`);
+    } catch {}
   }
 }
