@@ -11,7 +11,7 @@
   letter-spacing: 0.025em;
   position: relative;
   z-index: var(--z-header, 500);
-  transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease, background 0.35s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .moon-transit-content {
@@ -98,7 +98,7 @@
 }
 
 .cosmic-details-btn {
-  background: rgba(255, 255, 255, 0.08);
+  background: #29263c;
   border: 1px solid rgba(226, 217, 243, 0.22);
   color: #e8e2f6;
   font-family: inherit;
@@ -115,7 +115,7 @@
 }
 
 .cosmic-details-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: #3b3754;
   border-color: rgba(247, 212, 152, 0.45);
   color: #ffffff;
   transform: translateY(-1px);
@@ -143,7 +143,7 @@
 
 .moon-bar-close:hover {
   color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #3b3754;
 }
 
 .moon-bar-close:focus-visible {
@@ -173,6 +173,8 @@
 .cosmic-modal-card {
   position: relative;
   width: 100%;
+  margin: 0;
+  padding: 0;
   max-width: 780px;
   background: #141126;
   color: #ede7f8;
@@ -237,7 +239,7 @@
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: #231f3c;
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #bfb5d8;
   width: 34px;
@@ -251,7 +253,7 @@
 }
 
 .cosmic-modal-close:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: #353055;
   color: #ffffff;
 }
 
@@ -293,30 +295,30 @@
 }
 
 .phase-pill {
-  background: rgba(216, 201, 242, 0.14);
+  background: #2e2743;
   color: #f1edfa;
 }
 
 .element-pill[data-element="earth"] {
-  background: rgba(100, 150, 90, 0.18);
+  background: #1d2b1f;
   color: #bde0b5;
   border: 1px solid rgba(100, 150, 90, 0.3);
 }
 
 .element-pill[data-element="fire"] {
-  background: rgba(215, 95, 60, 0.18);
+  background: #361719;
   color: #ffb8a0;
   border: 1px solid rgba(215, 95, 60, 0.3);
 }
 
 .element-pill[data-element="water"] {
-  background: rgba(60, 140, 215, 0.18);
+  background: #13253b;
   color: #aae0ff;
   border: 1px solid rgba(60, 140, 215, 0.3);
 }
 
 .element-pill[data-element="air"] {
-  background: rgba(180, 160, 220, 0.18);
+  background: #2d2442;
   color: #e6dbff;
   border: 1px solid rgba(180, 160, 220, 0.3);
 }
@@ -476,7 +478,7 @@
 }
 
 .btn-all-zodiac:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: #28243e;
   color: #ffffff;
 }
 
@@ -528,18 +530,6 @@
     line-height: 1.35;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .moon-transit-bar,
-  .cosmic-modal-overlay,
-  .cosmic-modal-card,
-  .btn-shop-crystal,
-  .cosmic-details-btn {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
 
 /* ==========================================================================
    Unified Top Bar Carousel Styles
@@ -629,7 +619,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, width 0.25s ease, border-radius 0.25s ease, box-shadow 0.25s ease;
 }
 
 .slide-dot:hover {
@@ -646,10 +636,6 @@
 /* ==========================================================================
    Color Palette & Holiday Themes (Applied when Announcement slide is shown)
    ========================================================================== */
-
-.moon-transit-bar {
-  transition: background 0.35s ease, color 0.3s ease, border-color 0.3s ease;
-}
 
 /* Emerald / Parchment Sage (Default) */
 .moon-transit-bar[data-slide="1"][data-style="emerald"],
@@ -873,7 +859,7 @@
 }
 
 .moon-transit-bar[data-slide="0"][data-moon-style="amethyst"] .cosmic-details-btn {
-  background: rgba(139, 79, 199, 0.22);
+  background: #381a5c;
   border-color: rgba(192, 132, 252, 0.4);
   color: #f3ebfc;
 }
@@ -896,7 +882,7 @@
 }
 
 .moon-transit-bar[data-slide="0"][data-moon-style="gold"] .cosmic-details-btn {
-  background: rgba(245, 158, 11, 0.2);
+  background: #423214;
   border-color: rgba(251, 191, 36, 0.4);
   color: #fef08a;
 }
@@ -919,7 +905,7 @@
 }
 
 .moon-transit-bar[data-slide="0"][data-moon-style="sapphire"] .cosmic-details-btn {
-  background: rgba(59, 130, 246, 0.2);
+  background: #142f50;
   border-color: rgba(96, 165, 250, 0.4);
   color: #bfdbfe;
 }
@@ -942,7 +928,7 @@
 }
 
 .moon-transit-bar[data-slide="0"][data-moon-style="ruby"] .cosmic-details-btn {
-  background: rgba(220, 38, 38, 0.2);
+  background: #4e141f;
   border-color: rgba(248, 113, 113, 0.4);
   color: #fecaca;
 }
@@ -950,4 +936,20 @@
 .moon-transit-bar[data-slide="0"][data-moon-style="ruby"] .slide-dot.active {
   background: #ef4444;
   box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moon-transit-bar,
+  .cosmic-modal-overlay,
+  .cosmic-modal-card,
+  .btn-shop-crystal,
+  .cosmic-details-btn,
+  .ticker-slide,
+  .slide-dot,
+  .moon-bar-close,
+  .cosmic-modal-close,
+  .btn-all-zodiac {
+    animation: none;
+    transition: none;
+  }
 }

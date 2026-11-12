@@ -38,8 +38,8 @@ function niceStep(raw: number): number {
 // ₹950, ₹1.5K, ₹2.4L - short labels for the value axis.
 function compact(value: number): string {
   const trim = (n: number) => n.toFixed(1).replace(/\.0$/, '');
-  if (value >= 1_00_00_000) return `${trim(value / 1_00_00_000)}Cr`;
-  if (value >= 1_00_000) return `${trim(value / 1_00_000)}L`;
+  if (value >= 10_000_000) return `${trim(value / 10_000_000)}Cr`;
+  if (value >= 100_000) return `${trim(value / 100_000)}L`;
   if (value >= 1_000) return `${trim(value / 1_000)}K`;
   return `${Math.round(value)}`;
 }
@@ -100,9 +100,9 @@ export class AreaChart implements OnChanges, AfterViewInit {
 
   // Constructor-injected so the chart also works as `new AreaChart()` in tests.
   constructor(
-    private host?: ElementRef<HTMLElement>,
-    private cdr?: ChangeDetectorRef,
-    private destroyRef?: DestroyRef
+    private readonly host?: ElementRef<HTMLElement>,
+    private readonly cdr?: ChangeDetectorRef,
+    private readonly destroyRef?: DestroyRef
   ) {}
 
   ngAfterViewInit(): void {
@@ -127,7 +127,7 @@ export class AreaChart implements OnChanges, AfterViewInit {
   }
 
   private layout(): void {
-    const previous = this.previous && this.previous.length === this.data.length ? this.previous : null;
+    const previous = this.previous?.length === this.data.length ? this.previous : null;
     this.hasValues = this.data.some(d => d.value > 0) || (previous?.some(v => v > 0) ?? false);
 
     if (this.data.length === 0) {
@@ -157,7 +157,7 @@ export class AreaChart implements OnChanges, AfterViewInit {
 
     this.linePath = smoothPath(this.points);
     const first = this.points[0];
-    const last = this.points[this.points.length - 1];
+    const last = this.points.at(-1)!;
     this.areaPath = `${this.linePath} L${last.x},${this.plotBottom} L${first.x},${this.plotBottom} Z`;
     this.previousPath = previous ? smoothPath(this.points.map(p => ({ x: p.x, y: p.previousY! }))) : '';
 
@@ -195,7 +195,13 @@ export class AreaChart implements OnChanges, AfterViewInit {
       return 'middle';
     }
     const ratio = p.x / this.width;
-    return ratio < 0.2 ? 'start' : ratio > 0.8 ? 'end' : 'middle';
+    if (ratio < 0.2) {
+      return 'start';
+    }
+    if (ratio > 0.8) {
+      return 'end';
+    }
+    return 'middle';
   }
 
   formatValue(value: number): string {

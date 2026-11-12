@@ -1,7 +1,6 @@
 @if (isVisible()) {
   <aside
     class="moon-transit-bar unified-top-bar"
-    role="complementary"
     aria-label="Daily Moon Phase and Store Announcements"
     [attr.data-slide]="currentSlide()"
     [attr.data-style]="announcementStyle()"
@@ -12,7 +11,7 @@
       <div class="unified-slides-container">
         <!-- Slide 0: Cosmic Moon Transit (Home, Zodiac, Guides, Consultation, or when toggled) -->
         @if (currentSlide() === 0) {
-          <div class="ticker-slide ticker-slide--moon" role="region" aria-label="Daily Moon Transit">
+          <section class="ticker-slide ticker-slide--moon" aria-label="Daily Moon Transit">
             <div class="ticker-text-wrapper">
               <span class="moon-icon" aria-hidden="true">{{ transitData().phaseIcon }}</span>
               
@@ -51,27 +50,27 @@
                 <span class="sparkle" aria-hidden="true">✦</span> Cosmic Alignment
               </button>
             }
-          </div>
+          </section>
         }
 
         <!-- Slide 1: Store Announcement Promo (Products, Cart, Categories, Orders, or when toggled) -->
         @if (currentSlide() === 1) {
-          <div class="ticker-slide ticker-slide--promo" role="region" aria-label="Store Announcement">
+          <section class="ticker-slide ticker-slide--promo" aria-label="Store Announcement">
             <svg class="promo-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
             @if (effectiveAnnouncementLink(); as link) {
-              @if (isAnnouncementLinkExternal()) {
-                <a [href]="link" target="_blank" rel="noopener noreferrer" class="announcement-link">
-                  <span class="announcement-text">{{ announcementText() }}</span>
-                </a>
-              } @else {
-                <a [routerLink]="link" class="announcement-link">
-                  <span class="announcement-text">{{ announcementText() }}</span>
-                </a>
-              }
+              <a
+                [attr.href]="isAnnouncementLinkExternal() ? link : null"
+                [routerLink]="isAnnouncementLinkExternal() ? null : link"
+                [attr.target]="isAnnouncementLinkExternal() ? '_blank' : null"
+                [attr.rel]="isAnnouncementLinkExternal() ? 'noopener noreferrer' : null"
+                class="announcement-link"
+              >
+                <span class="announcement-text">{{ announcementText() }}</span>
+              </a>
             } @else {
               <span class="announcement-text">{{ announcementText() }}</span>
             }
-          </div>
+          </section>
         }
       </div>
 
@@ -115,8 +114,19 @@
 }
 
 @if (isDetailsOpen()) {
-  <div class="cosmic-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cosmic-modal-title" (click)="closeDetails()">
-    <div class="cosmic-modal-card" (click)="$event.stopPropagation()">
+  <div
+    class="cosmic-modal-overlay"
+    tabindex="-1"
+    (click)="closeDetails()"
+    (keydown)="$event.key === 'Escape' && closeDetails()"
+  >
+    <dialog
+      open
+      class="cosmic-modal-card"
+      aria-labelledby="cosmic-modal-title"
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.key === 'Escape' && closeDetails()"
+    >
       <header class="cosmic-modal-header">
         <div class="header-eyebrow">
           <span class="sparkle" aria-hidden="true">✦</span>
@@ -212,6 +222,6 @@
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   </div>
 }

@@ -35,24 +35,26 @@
 
   <!-- Live Relevant Address Suggestions Dropdown -->
   @if (showSuggestions() && suggestions().length > 0) {
-    <ul class="address-suggestions-menu" role="listbox" (mousedown)="$event.preventDefault()">
+    <ul class="address-suggestions-menu" (mousedown)="$event.preventDefault()">
       @for (item of suggestions(); track item.id; let idx = $index) {
-        <li
-          class="address-suggestion-item"
-          [class.active]="selectedSuggestionIndex() === idx"
-          role="option"
-          (mousedown)="selectSuggestion(item)"
-        >
-          <span class="suggestion-pin" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-          </span>
-          <div class="suggestion-text">
-            <strong class="suggestion-primary">{{ item.primaryText }}</strong>
-            <small class="suggestion-secondary">{{ item.secondaryText }}</small>
-          </div>
+        <li>
+          <button
+            type="button"
+            class="address-suggestion-item"
+            [class.active]="selectedSuggestionIndex() === idx"
+            (click)="selectSuggestion(item)"
+          >
+            <span class="suggestion-pin" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <div class="suggestion-text">
+              <strong class="suggestion-primary">{{ item.primaryText }}</strong>
+              <small class="suggestion-secondary">{{ item.secondaryText }}</small>
+            </div>
+          </button>
         </li>
       }
     </ul>

@@ -42,8 +42,8 @@ function niceStep(raw: number): number {
 // ₹950, ₹1.5K, ₹2.4L - short labels for the value axis.
 function compact(value: number): string {
   const trim = (n: number) => n.toFixed(1).replace(/\.0$/, '');
-  if (value >= 1_00_00_000) return `${trim(value / 1_00_00_000)}Cr`;
-  if (value >= 1_00_000) return `${trim(value / 1_00_000)}L`;
+  if (value >= 10_000_000) return `${trim(value / 10_000_000)}Cr`;
+  if (value >= 100_000) return `${trim(value / 100_000)}L`;
   if (value >= 1_000) return `${trim(value / 1_000)}K`;
   return `${Math.round(value)}`;
 }
@@ -60,9 +60,9 @@ export class ColumnChart implements OnChanges, AfterViewInit {
   // Constructor-injected (not inject()) so the chart can also be built with
   // `new ColumnChart()` in plain unit tests, where it just keeps its default width.
   constructor(
-    private host?: ElementRef<HTMLElement>,
-    private cdr?: ChangeDetectorRef,
-    private destroyRef?: DestroyRef
+    private readonly host?: ElementRef<HTMLElement>,
+    private readonly cdr?: ChangeDetectorRef,
+    private readonly destroyRef?: DestroyRef
   ) {}
 
   @Input() data: ColumnChartPoint[] = [];
@@ -152,7 +152,13 @@ export class ColumnChart implements OnChanges, AfterViewInit {
       return 'middle';
     }
     const ratio = c.center / this.width;
-    return ratio < 0.2 ? 'start' : ratio > 0.8 ? 'end' : 'middle';
+    if (ratio < 0.2) {
+      return 'start';
+    }
+    if (ratio > 0.8) {
+      return 'end';
+    }
+    return 'middle';
   }
 
   formatValue(value: number): string {

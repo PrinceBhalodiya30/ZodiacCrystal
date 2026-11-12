@@ -55,9 +55,9 @@ export class AuthShowcase implements OnInit {
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
   readonly fallbackImage = HERO_IMAGE_URL;
 
-  featured = signal<FeaturedProduct | null>(null);
-  review = signal<(Review & { productName: string }) | null>(null);
-  offer = signal<PublicCoupon | null>(null);
+  readonly featured = signal<FeaturedProduct | null>(null);
+  readonly review = signal<(Review & { productName: string }) | null>(null);
+  readonly offer = signal<PublicCoupon | null>(null);
 
   getProductSlug(product: FeaturedProduct): string {
     return getProductSlug(product);
@@ -128,6 +128,6 @@ export class AuthShowcase implements OnInit {
   // "Priya Sharma" -> "Priya S." - enough to feel real without showing a full name.
   shortName(name: string): string {
     const parts = name.trim().split(/\s+/);
-    return parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1][0]}.` : parts[0];
+    return parts.length > 1 ? `${parts[0]} ${parts.at(-1)?.[0] ?? ''}.` : parts[0];
   }
 }

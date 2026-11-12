@@ -31,7 +31,9 @@
       <div class="footer-form-wrapper">
         <form class="footer-newsletter-form" (ngSubmit)="subscribeNewsletter()">
           <!-- Honeypot Bot Trap -->
+          <label for="newsletterHoneypot" class="honeypot-field">Leave this field blank</label>
           <input
+            id="newsletterHoneypot"
             type="text"
             name="b_website"
             class="honeypot-field"
@@ -150,7 +152,7 @@
     </div>
 
     <!-- Column 1: Explore & Align -->
-    <nav class="footer-links">
+    <nav class="footer-links" aria-label="Explore &amp; Align">
       <h4>Explore &amp; Align</h4>
       <a routerLink="/consultation">Crystal Quiz &amp; Blueprint</a>
       <a routerLink="/products" [queryParams]="{ intention: 'wealth' }">Wealth &amp; Success</a>
@@ -162,7 +164,7 @@
     </nav>
 
     <!-- Column 2: Rituals & Guides -->
-    <nav class="footer-links">
+    <nav class="footer-links" aria-label="Rituals &amp; Guides">
       <h4>Rituals &amp; Guides</h4>
       <a routerLink="/guides">Crystal Guides Library</a>
       <a routerLink="/guides/cleansing-and-moon-rituals">Cleansing &amp; Moon Ritual Guide</a>
@@ -173,7 +175,7 @@
     </nav>
 
     <!-- Column 3: Customer Care -->
-    <nav class="footer-links">
+    <nav class="footer-links" aria-label="Customer Care">
       <h4>Customer Care</h4>
       <a routerLink="/find-order">Track Your Package</a>
       <a routerLink="/help">Help Center &amp; FAQs</a>
@@ -183,7 +185,7 @@
     </nav>
 
     <!-- Column 4: My Sanctuary / Account -->
-    <nav class="footer-links">
+    <nav class="footer-links" aria-label="My Sanctuary">
       <h4>My Sanctuary</h4>
       @if (authService.isAdmin()) {
         <a routerLink="/admin/dashboard">Admin Dashboard</a>

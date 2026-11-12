@@ -14,6 +14,9 @@
 }
 
 .compare-modal {
+  margin: 0;
+  padding: 0;
+  color: inherit;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -72,7 +75,7 @@
   background: #ffffff;
   color: var(--color-muted, #4e5a70);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .compare-modal-close:hover {
@@ -155,13 +158,13 @@
   border-radius: 50%;
   border: 1px solid #e2ddd3;
   background: #ffffff;
-  color: #888;
+  color: var(--color-muted, #4e5a70);
   font-size: var(--text-xs, 0.75rem);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .product-head-remove:hover {
@@ -335,6 +338,7 @@
   line-height: 1.45;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -363,5 +367,18 @@
   .compare-modal-footer {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compare-modal-overlay,
+  .compare-modal {
+    animation: none;
+  }
+
+  .compare-modal-close,
+  .product-head-img {
+    transition: none;
+    transform: none;
   }
 }

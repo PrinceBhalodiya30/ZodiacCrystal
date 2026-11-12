@@ -8,6 +8,9 @@
 
 /* Floating Top-Right Bag Flyout */
 .cart-flyout {
+  margin: 0;
+  padding: 0;
+  color: inherit;
   position: fixed;
   top: 76px;
   right: 24px;
@@ -63,6 +66,13 @@
 @keyframes flyout-countdown {
   from { transform: scaleX(1); }
   to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-flyout,
+  .flyout-autoclose-bar {
+    animation: none;
+  }
 }
 
 /* Header */

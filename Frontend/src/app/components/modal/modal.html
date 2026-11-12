@@ -1,14 +1,19 @@
 @if (isOpen) {
-  <div class="app-modal-overlay" (click)="onBackdropClick()" role="presentation">
-    <div
+  <div
+    class="app-modal-overlay"
+    tabindex="-1"
+    (click)="onBackdropClick()"
+    (keydown)="$event.key === 'Escape' && onBackdropClick()"
+  >
+    <dialog
       #dialogEl
+      open
       class="app-modal-dialog"
       [style.max-width]="maxWidth"
-      role="dialog"
-      aria-modal="true"
       [attr.aria-label]="title ? undefined : (ariaLabel || 'Dialog window')"
       [attr.aria-labelledby]="title ? 'modal-dialog-title' : undefined"
       (click)="$event.stopPropagation()"
+      (keydown)="$event.key === 'Escape' && close()"
     >
       @if (title || showCloseButton) {
         <header class="app-modal-header">
@@ -44,7 +49,7 @@
       <div class="app-modal-footer">
         <ng-content select="[footer]"></ng-content>
       </div>
-    </div>
+    </dialog>
   </div>
 }
 

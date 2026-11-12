@@ -1,11 +1,16 @@
 @if (isOpen()) {
-  <div class="compare-modal-overlay" (click)="close()">
-    <div
+  <div
+    class="compare-modal-overlay"
+    tabindex="-1"
+    (click)="close()"
+    (keydown)="$event.key === 'Escape' && close()"
+  >
+    <dialog
       class="compare-modal"
-      role="dialog"
-      aria-modal="true"
+      open
       aria-labelledby="compareModalTitle"
       (click)="$event.stopPropagation()"
+      (keydown)="$event.key === 'Escape' && close()"
     >
       <header class="compare-modal-header">
         <div>
@@ -162,6 +167,6 @@
       <footer class="compare-modal-footer">
         <button type="button" class="btn btn-outline" (click)="close()">Close Comparison</button>
       </footer>
-    </div>
+    </dialog>
   </div>
 }

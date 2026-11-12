@@ -25,11 +25,11 @@ const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
 })
 export class Navbar {
   readonly siteName = SITE_NAME;
-  authService = inject(AuthService);
-  cartService = inject(CartService);
-  wishlistService = inject(WishlistService);
-  quizService = inject(QuizService);
-  storeSettings = inject(StoreSettingsService);
+  readonly authService = inject(AuthService);
+  readonly cartService = inject(CartService);
+  readonly wishlistService = inject(WishlistService);
+  readonly quizService = inject(QuizService);
+  readonly storeSettings = inject(StoreSettingsService);
   private readonly router = inject(Router);
 
   openQuiz(): void {
@@ -40,23 +40,23 @@ export class Navbar {
   // aren't tempted away mid-purchase; the logo still links home.
   // Pages with an inline checkout (Mystery Box) turn it on via CheckoutModeService.
   private readonly checkoutMode = inject(CheckoutModeService);
-  private isCheckoutRoute = toSignal(
+  private readonly isCheckoutRoute = toSignal(
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(() => this.router.url.startsWith('/checkout'))
     ),
     { initialValue: this.router.url.startsWith('/checkout') }
   );
-  isCheckout = computed(() => this.isCheckoutRoute() || this.checkoutMode.active());
+  readonly isCheckout = computed(() => this.isCheckoutRoute() || this.checkoutMode.active());
 
-  isMenuOpen = signal(false);
-  isScrolled = signal(false);
-  isSearchOpen = signal(false);
-  searchTerm = signal('');
-  isShopDropdownOpen = signal(false);
-  isAccountDropdownOpen = signal(false);
+  readonly isMenuOpen = signal(false);
+  readonly isScrolled = signal(false);
+  readonly isSearchOpen = signal(false);
+  readonly searchTerm = signal('');
+  readonly isShopDropdownOpen = signal(false);
+  readonly isAccountDropdownOpen = signal(false);
 
-  userInitials = computed(() => {
+  readonly userInitials = computed(() => {
     const name = this.authService.currentUser()?.name;
     if (!name) return '';
     return name
@@ -67,14 +67,14 @@ export class Navbar {
       .join('')
       .toUpperCase();
   });
-  announcementDismissed = signal(this.readAnnouncementDismissed());
-  isAnnouncementVisible = computed(() => this.storeSettings.announcementEnabled() && !this.announcementDismissed());
-  announcementText = computed(() => this.storeSettings.announcementText());
-  announcementLink = computed(() => this.storeSettings.announcementLink());
-  announcementStyle = computed(() => this.storeSettings.announcementStyle());
+  readonly announcementDismissed = signal(this.readAnnouncementDismissed());
+  readonly isAnnouncementVisible = computed(() => this.storeSettings.announcementEnabled() && !this.announcementDismissed());
+  readonly announcementText = computed(() => this.storeSettings.announcementText());
+  readonly announcementLink = computed(() => this.storeSettings.announcementLink());
+  readonly announcementStyle = computed(() => this.storeSettings.announcementStyle());
 
-  cartBump = signal(false);
-  wishlistBump = signal(false);
+  readonly cartBump = signal(false);
+  readonly wishlistBump = signal(false);
   private previousCartCount = this.cartService.totalQuantity();
   private previousWishlistCount = this.wishlistService.count();
 

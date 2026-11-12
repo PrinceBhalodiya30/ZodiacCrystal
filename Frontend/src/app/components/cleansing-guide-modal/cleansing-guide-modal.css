@@ -18,6 +18,9 @@
 }
 
 .cleansing-modal-container {
+  margin: 0;
+  padding: 0;
+  color: inherit;
   background: var(--color-surface, #ffffff);
   width: 100%;
   max-width: 920px;
@@ -209,10 +212,10 @@
   flex-shrink: 0;
 }
 
-.smoke-icon { background: rgba(155, 89, 182, 0.1); color: #8e44ad; }
-.selenite-icon { background: rgba(52, 152, 219, 0.1); color: #2980b9; }
-.water-icon { background: rgba(26, 188, 156, 0.1); color: #16a085; }
-.sound-icon { background: rgba(243, 156, 18, 0.1); color: #d35400; }
+.smoke-icon { background: #f5eef8; color: #6c2d8a; }
+.selenite-icon { background: #ebf5fb; color: #1b5a82; }
+.water-icon { background: #e8f8f5; color: #0e6251; }
+.sound-icon { background: #fef5e7; color: #9c3c00; }
 
 .protocol-tag {
   font-size: 0.65rem;
@@ -277,8 +280,8 @@
 
 .safe-badge {
   font-size: 0.6875rem;
-  background: rgba(39, 174, 96, 0.1);
-  color: #27ae60;
+  background: #eaf4ee;
+  color: #145a2c;
   font-weight: 600;
   padding: 0.2rem 0.55rem;
   border-radius: 4px;
@@ -286,8 +289,8 @@
 
 .danger-badge {
   font-size: 0.6875rem;
-  background: rgba(231, 76, 60, 0.1);
-  color: #c0392b;
+  background: #fceceb;
+  color: #962115;
   font-weight: 600;
   padding: 0.2rem 0.55rem;
   border-radius: 4px;
@@ -628,23 +631,23 @@
 }
 
 .badge-water-safe {
-  background: rgba(39, 174, 96, 0.1);
-  color: #27ae60;
+  background: #eaf4ee;
+  color: #145a2c;
 }
 
 .badge-water-warn {
-  background: rgba(231, 76, 60, 0.1);
-  color: #c0392b;
+  background: #fceceb;
+  color: #962115;
 }
 
 .badge-sun-safe {
-  background: rgba(243, 156, 18, 0.1);
-  color: #d35400;
+  background: #fef5e7;
+  color: #9c3c00;
 }
 
 .badge-sun-warn {
-  background: rgba(142, 68, 173, 0.1);
-  color: #8e44ad;
+  background: #f5eef8;
+  color: #6c2d8a;
 }
 
 .mineral-specs {
@@ -734,5 +737,13 @@
     flex-direction: column-reverse;
     align-items: stretch;
     gap: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cleansing-modal-backdrop,
+  .cleansing-modal-container,
+  .tab-pane-content {
+    animation: none;
   }
 }

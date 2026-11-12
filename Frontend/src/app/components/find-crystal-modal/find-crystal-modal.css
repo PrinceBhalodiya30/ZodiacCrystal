@@ -14,6 +14,9 @@
 }
 
 .consultation-modal {
+  margin: 0;
+  padding: 0;
+  color: inherit;
   position: relative;
   width: 100%;
   max-width: 880px;
@@ -590,6 +593,8 @@
 }
 
 .specimen-image-container {
+  border: none;
+  padding: 0;
   width: 100%;
   aspect-ratio: 1;
   background-color: var(--color-surface-tint, #f4efe5);
@@ -764,5 +769,14 @@
 
   .stepper-label {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consultation-overlay,
+  .consultation-modal,
+  .crystal-silhouette,
+  .animate-fade-in {
+    animation: none;
   }
 }

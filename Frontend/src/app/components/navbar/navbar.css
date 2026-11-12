@@ -296,6 +296,10 @@
   box-shadow: 0 0 0 2px var(--color-surface, #ffffff);
 }
 
+.icon-badge::after {
+  content: attr(data-count);
+}
+
 .icon-badge.bump {
   animation: badge-bump 0.35s ease;
 }
@@ -521,8 +525,9 @@
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
+.navbar-links .nav-dropdown-menu a::after,
 .nav-dropdown-menu a::after {
-  display: none !important;
+  display: none;
 }
 
 .nav-dropdown-menu a:hover {
@@ -614,6 +619,10 @@
   letter-spacing: 0.04em;
   border: 2px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.avatar-initials-badge::after {
+  content: attr(data-initials);
 }
 
 .account-menu-popover {
@@ -733,11 +742,11 @@
 
 .popover-item.popover-logout:hover {
   background-color: #fef2f2;
-  color: #dc2626;
+  color: #b91c1c;
 }
 
 .popover-item.popover-logout:hover svg {
-  color: #dc2626;
+  color: #b91c1c;
 }
 
 .popover-item.admin-highlight {
@@ -906,7 +915,7 @@
   }
 
   .nav-dropdown-toggle::after {
-    display: none !important;
+    display: none;
   }
 
   .nav-dropdown-menu {
@@ -931,8 +940,20 @@
   .nav-dropdown-menu a {
     padding: 0.65rem 1.5rem;
   }
+}
 
+@media (prefers-reduced-motion: reduce) {
+  .icon-badge.bump,
+  .navbar-search-expanded {
+    animation: none;
+  }
 
-
-
+  .navbar-links,
+  .navbar-search-input,
+  .navbar-actions button,
+  .navbar-action-btn,
+  .nav-dropdown-menu,
+  .popover-panel {
+    transition: none;
+  }
 }

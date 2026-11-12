@@ -2,21 +2,22 @@
   <div
     class="app-drawer-backdrop"
     [class.transparent]="backdropType === 'transparent'"
+    tabindex="-1"
     (click)="onBackdropClick()"
-    role="presentation"
+    (keydown)="$event.key === 'Escape' && onBackdropClick()"
   ></div>
 
-  <aside
+  <dialog
     #drawerEl
     class="app-drawer"
+    open
     [class.drawer-left]="placement === 'left'"
     [class.drawer-right]="placement === 'right'"
-    [style.width]="width"
-    role="dialog"
-    aria-modal="true"
+    [style.--drawer-width]="width"
     [attr.aria-label]="title ? undefined : (ariaLabel || 'Drawer panel')"
     [attr.aria-labelledby]="title ? 'drawer-panel-title' : undefined"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.key === 'Escape' && close()"
   >
     @if (title || showCloseButton) {
       <header class="app-drawer-header">
@@ -52,6 +53,6 @@
     <div class="app-drawer-footer">
       <ng-content select="[drawer-footer]"></ng-content>
     </div>
-  </aside>
+  </dialog>
 }
 

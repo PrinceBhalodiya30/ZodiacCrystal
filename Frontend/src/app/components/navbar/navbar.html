@@ -57,7 +57,7 @@
           </svg>
         </button>
 
-        <div class="nav-dropdown-menu" (click)="$event.stopPropagation()">
+        <div class="nav-dropdown-menu" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
           <a routerLink="/products" routerLinkActive="active" (click)="closeMenu()">
             <span class="dropdown-item-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -134,12 +134,13 @@
       }
 
       @if (authService.isLoggedIn() && !authService.isAdmin()) {
-        <a routerLink="/wishlist" routerLinkActive="active" class="icon-link" aria-label="Wishlist" (click)="closeMenu()">
+        <a routerLink="/wishlist" routerLinkActive="active" class="icon-link" (click)="closeMenu()">
+          <span class="visually-hidden">Wishlist</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
           </svg>
           @if (wishlistService.count() > 0) {
-            <span class="icon-badge" [class.bump]="wishlistBump()">{{ wishlistService.count() }}</span>
+            <span class="icon-badge" aria-hidden="true" [class.bump]="wishlistBump()" [attr.data-count]="wishlistService.count()"></span>
           }
         </a>
       }
@@ -148,16 +149,16 @@
         <button
           type="button"
           class="icon-link"
-          aria-label="Open cart bag"
           (click)="onCartClick()"
         >
+          <span class="visually-hidden">Shopping Cart</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
             <path d="M3 6h18"/>
             <path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
           @if (cartService.totalQuantity() > 0) {
-            <span class="icon-badge" [class.bump]="cartBump()">{{ cartService.totalQuantity() }}</span>
+            <span class="icon-badge" aria-hidden="true" [class.bump]="cartBump()" [attr.data-count]="cartService.totalQuantity()"></span>
           }
         </button>
       }
@@ -170,11 +171,10 @@
           (click)="toggleAccountDropdown($event)"
           [attr.aria-expanded]="isAccountDropdownOpen()"
           aria-haspopup="true"
-          aria-label="My Account"
-          title="My Account"
         >
+          <span class="visually-hidden">My Account</span>
           @if (authService.isLoggedIn() && userInitials()) {
-            <span class="avatar-initials-badge">{{ userInitials() }}</span>
+            <span class="avatar-initials-badge" aria-hidden="true" [attr.data-initials]="userInitials()"></span>
           } @else {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -183,7 +183,7 @@
           }
         </button>
 
-        <div class="account-menu-popover" (click)="$event.stopPropagation()">
+        <div class="account-menu-popover" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
           @if (authService.isLoggedIn()) {
             @if (authService.currentUser(); as user) {
               <div class="account-popover-header">

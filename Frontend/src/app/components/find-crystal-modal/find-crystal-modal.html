@@ -1,6 +1,17 @@
 @if (isOpen()) {
-  <div class="consultation-overlay" (click)="close()">
-    <div class="consultation-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="consultation-modal-title">
+  <div
+    class="consultation-overlay"
+    tabindex="-1"
+    (click)="close()"
+    (keydown)="$event.key === 'Escape' && close()"
+  >
+    <dialog
+      class="consultation-modal"
+      open
+      aria-labelledby="consultation-modal-title"
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.key === 'Escape' && close()"
+    >
       <!-- Consultation Header -->
       <header class="consultation-header">
         <div class="consultation-brand-line">
@@ -294,12 +305,11 @@
                       {{ match.matchScore }}% Astrological Affinity
                     </div>
 
-                    <div
+                    <button
+                      type="button"
                       class="specimen-image-container"
+                      [attr.aria-label]="'View ' + match.product.name"
                       (click)="navigateToProduct(match.product.productId)"
-                      (keydown.enter)="navigateToProduct(match.product.productId)"
-                      role="button"
-                      tabindex="0"
                     >
                       @if (getImage(match.product); as url) {
                         <img [imgSrc]="url" [alt]="match.product.name" imgFallback loading="lazy" />
@@ -310,7 +320,7 @@
                           </svg>
                         </div>
                       }
-                    </div>
+                    </button>
 
                     <div class="specimen-body">
                       <h4 class="specimen-title">
@@ -363,6 +373,6 @@
           }
         </div>
       }
-    </div>
+    </dialog>
   </div>
 }

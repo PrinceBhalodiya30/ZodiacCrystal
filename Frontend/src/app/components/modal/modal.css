@@ -16,6 +16,9 @@
 .app-modal-dialog {
   position: relative;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  color: inherit;
   max-height: calc(100vh - 2.5rem);
   background: var(--color-surface, #ffffff);
   border: 1px solid var(--color-border-subtle, #eae4d8);
@@ -71,7 +74,9 @@
   color: var(--color-subtle, #4e5a70);
   cursor: pointer;
   flex-shrink: 0;
-  transition: all var(--transition-fast, 150ms ease);
+  transition: background-color var(--transition-fast, 150ms ease),
+              color var(--transition-fast, 150ms ease),
+              border-color var(--transition-fast, 150ms ease);
 }
 
 .app-modal-close:hover {

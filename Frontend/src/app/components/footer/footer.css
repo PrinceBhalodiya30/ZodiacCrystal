@@ -50,11 +50,12 @@
   flex-wrap: wrap;
 }
 
+.footer-newsletter-form .honeypot-field,
 .honeypot-field {
-  display: none !important;
-  visibility: hidden !important;
-  position: absolute !important;
-  left: -9999px !important;
+  display: none;
+  visibility: hidden;
+  position: absolute;
+  left: -9999px;
 }
 
 .footer-newsletter-form input:not(.honeypot-field) {

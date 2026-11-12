@@ -1,11 +1,16 @@
 @if (isOpen()) {
-  <div class="cleansing-modal-backdrop" (click)="close()">
-    <div
+  <div
+    class="cleansing-modal-backdrop"
+    tabindex="-1"
+    (click)="close()"
+    (keydown)="$event.key === 'Escape' && close()"
+  >
+    <dialog
       class="cleansing-modal-container"
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
+      open
       aria-labelledby="cleansing-modal-title"
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.key === 'Escape' && close()"
     >
       <!-- Modal Header -->
       <header class="cleansing-modal-header">
@@ -35,13 +40,12 @@
       </header>
 
       <!-- Tab Navigation -->
-      <nav class="cleansing-tabs" role="tablist" aria-label="Cleansing guide sections">
+      <nav class="cleansing-tabs" aria-label="Cleansing guide sections">
         <button
           type="button"
-          role="tab"
           class="cleansing-tab"
           [class.active]="activeTab() === 'cleansing'"
-          [attr.aria-selected]="activeTab() === 'cleansing'"
+          [attr.aria-pressed]="activeTab() === 'cleansing'"
           (click)="setTab('cleansing')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -51,10 +55,9 @@
         </button>
         <button
           type="button"
-          role="tab"
           class="cleansing-tab"
           [class.active]="activeTab() === 'charging'"
-          [attr.aria-selected]="activeTab() === 'charging'"
+          [attr.aria-pressed]="activeTab() === 'charging'"
           (click)="setTab('charging')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -65,10 +68,9 @@
         </button>
         <button
           type="button"
-          role="tab"
           class="cleansing-tab"
           [class.active]="activeTab() === 'ritual'"
-          [attr.aria-selected]="activeTab() === 'ritual'"
+          [attr.aria-pressed]="activeTab() === 'ritual'"
           (click)="setTab('ritual')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -78,10 +80,9 @@
         </button>
         <button
           type="button"
-          role="tab"
           class="cleansing-tab"
           [class.active]="activeTab() === 'checker'"
-          [attr.aria-selected]="activeTab() === 'checker'"
+          [attr.aria-pressed]="activeTab() === 'checker'"
           (click)="setTab('checker')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -456,6 +457,6 @@
         </p>
         <button type="button" class="btn btn-outline" (click)="close()">Close Guide</button>
       </footer>
-    </div>
+    </dialog>
   </div>
 }

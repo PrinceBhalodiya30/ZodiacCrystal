@@ -29,12 +29,12 @@ export class Modal implements OnChanges {
   @Input() showCloseButton = true;
   @Input() ariaLabel = '';
 
-  @Output() closed = new EventEmitter<void>();
+  @Output() readonly closed = new EventEmitter<void>();
 
   private readonly platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   private previousActiveElement: HTMLElement | null = null;
-  private modalContainer = viewChild<ElementRef<HTMLElement>>('dialogEl');
+  private readonly modalContainer = viewChild<ElementRef<HTMLElement>>('dialogEl');
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: Event): void {

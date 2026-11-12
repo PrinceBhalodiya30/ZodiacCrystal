@@ -21,11 +21,11 @@
 
   <!-- Standardized Control Bar matching .filter-bar -->
   <div class="finder-controls-bar">
+    <label for="birth-month" class="visually-hidden">Select Month</label>
     <select
       id="birth-month"
       class="finder-select"
       name="birthMonth"
-      aria-label="Select Birth Month"
       [ngModel]="selectedMonth()"
       (ngModelChange)="onMonthChange($event)"
     >
@@ -35,11 +35,11 @@
       }
     </select>
 
+    <label for="birth-day" class="visually-hidden">Select Day</label>
     <select
       id="birth-day"
       class="finder-select"
       name="birthDay"
-      aria-label="Select Birth Day"
       [ngModel]="selectedDay()"
       (ngModelChange)="onDayChange($event)"
     >

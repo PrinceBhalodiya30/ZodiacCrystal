@@ -119,3 +119,12 @@
   border-color: var(--color-copper, #985e38);
   box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.18);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-overlay,
+  .confirm-panel,
+  .confirm-overlay.confirm-leaving,
+  .confirm-leaving .confirm-panel {
+    animation: none;
+  }
+}

@@ -126,18 +126,31 @@ textarea:focus {
   overscroll-behavior: contain;
 }
 
+.address-suggestions-menu li {
+  margin: 0;
+  padding: 0;
+}
+
 .address-suggestion-item {
+  width: 100%;
   display: flex;
   align-items: flex-start;
   gap: 0.65rem;
   padding: 0.6rem 0.85rem;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   transition: background-color var(--transition-fast, 0.15s ease);
 }
 
 .address-suggestion-item:hover,
+.address-suggestion-item:focus-visible,
 .address-suggestion-item.active {
   background-color: var(--color-surface-tint, #f4efe5);
+  outline: none;
 }
 
 .suggestion-pin {
@@ -176,11 +189,13 @@ textarea:focus {
 }
 
 .address-suggestion-item:hover .suggestion-primary,
+.address-suggestion-item:focus-visible .suggestion-primary,
 .address-suggestion-item.active .suggestion-primary {
   color: var(--color-copper, #985e38);
 }
 
 .address-suggestion-item:hover .suggestion-secondary,
+.address-suggestion-item:focus-visible .suggestion-secondary,
 .address-suggestion-item.active .suggestion-secondary {
   color: #554132;
 }
@@ -200,5 +215,15 @@ textarea:focus {
 @media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .address-search-spinner {
+    animation: none;
+  }
+
+  .address-suggestion-item {
+    transition: none;
   }
 }

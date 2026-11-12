@@ -16,17 +16,24 @@ import { isGoogleFailed, loadGoogle, markGoogleFailed } from '../../utils/google
   encapsulation: ViewEncapsulation.None
 })
 export class LocationMap implements AfterViewInit, OnDestroy {
-  latitude = input.required<number>();
-  longitude = input.required<number>();
-  zoom = input(17);
+  readonly latitude = input.required<number>();
+  readonly longitude = input.required<number>();
+  readonly zoom = input(17);
 
-  private mapEl = viewChild.required<ElementRef<HTMLDivElement>>('mapEl');
+  private readonly mapEl = viewChild.required<ElementRef<HTMLDivElement>>('mapEl');
   private map?: L.Map;
   // Google Maps objects (untyped: the Google script is loaded at runtime, without @types).
   private gmap?: any;
+  private marker?: any;
   private destroyed = false;
 
-  async ngAfterViewInit(): Promise<void> {
+  ngAfterViewInit(): void {
+    void this.setupMap().catch(() => {
+      // Ignore map setup errors
+    });
+  }
+
+  private async setupMap(): Promise<void> {
     const key = isGoogleFailed() ? '' : await getGoogleMapsKey();
     if (this.destroyed) return;
     if (key) {
@@ -42,10 +49,10 @@ export class LocationMap implements AfterViewInit, OnDestroy {
 
   private async initGoogle(key: string): Promise<void> {
     const g = await loadGoogle(key, () => this.useOpenStreetMap());
-    const { Map } = await g.maps.importLibrary('maps');
+    const { Map: GoogleMap } = await g.maps.importLibrary('maps');
     if (this.destroyed) return;
     const position = { lat: this.latitude(), lng: this.longitude() };
-    this.gmap = new Map(this.mapEl().nativeElement, {
+    this.gmap = new GoogleMap(this.mapEl().nativeElement, {
       center: position,
       zoom: this.zoom(),
       mapTypeControl: true,
@@ -53,18 +60,21 @@ export class LocationMap implements AfterViewInit, OnDestroy {
       fullscreenControl: true,
       gestureHandling: 'cooperative'
     });
-    new g.maps.Marker({ position, map: this.gmap });
+    this.marker = new g.maps.Marker({ position, map: this.gmap });
   }
 
   // Google rejected the key (e.g. the demo key's daily limit): rebuild with OpenStreetMap.
   private useOpenStreetMap(): void {
     markGoogleFailed();
     this.gmap = undefined;
+    this.marker = undefined;
     const el = this.mapEl().nativeElement;
     el.replaceChildren();
     el.removeAttribute('style');
     if (!this.map) {
-      this.initLeaflet();
+      void this.initLeaflet().catch(() => {
+        // Ignore fallback error
+      });
     }
   }
 
@@ -90,6 +100,7 @@ export class LocationMap implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    this.marker?.setMap?.(null);
     this.map?.remove();
   }
 }

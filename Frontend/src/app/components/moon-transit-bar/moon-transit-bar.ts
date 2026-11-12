@@ -1,8 +1,7 @@
 import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { getMoonPhaseAndTransit, LunarTransitData } from '../../utils/lunar-transit.util';
 import { CheckoutModeService } from '../../services/checkout-mode.service';
@@ -21,7 +20,7 @@ export class MoonTransitBar implements OnInit {
   private readonly router = inject(Router);
   private readonly checkoutMode = inject(CheckoutModeService);
   private readonly destroyRef = inject(DestroyRef);
-  storeSettings = inject(StoreSettingsService);
+  readonly storeSettings = inject(StoreSettingsService);
 
   readonly transitData = signal<LunarTransitData>(getMoonPhaseAndTransit(new Date()));
   readonly isDismissed = signal<boolean>(this.checkDismissed());
@@ -33,7 +32,7 @@ export class MoonTransitBar implements OnInit {
   readonly activeSlideIndex = signal<number>(this.calculateContextualSlide(this.router.url));
 
   // Suppress on checkout flow to avoid cart distraction
-  private isCheckoutRoute = toSignal(
+  private readonly isCheckoutRoute = toSignal(
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(() => this.router.url.startsWith('/checkout'))
@@ -174,16 +173,15 @@ export class MoonTransitBar implements OnInit {
   /**
    * Determine the most relevant banner message based on the current page context
    */
-  calculateContextualSlide(url: string | null | undefined): number {
-    const route = url || '';
+  calculateContextualSlide(url: string = ''): number {
     if (
-      route.startsWith('/products') ||
-      route.startsWith('/cart') ||
-      route.startsWith('/categories') ||
-      route.startsWith('/orders') ||
-      route.startsWith('/wishlist') ||
-      route.startsWith('/mystery-box') ||
-      route.startsWith('/profile')
+      url.startsWith('/products') ||
+      url.startsWith('/cart') ||
+      url.startsWith('/categories') ||
+      url.startsWith('/orders') ||
+      url.startsWith('/wishlist') ||
+      url.startsWith('/mystery-box') ||
+      url.startsWith('/profile')
     ) {
       return 1; // Commerce promotion & shipping
     }

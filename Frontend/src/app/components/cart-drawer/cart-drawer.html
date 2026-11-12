@@ -1,15 +1,20 @@
 @if (isOpen()) {
   <!-- Invisible click-outside backdrop so user can dismiss by clicking anywhere on page without a dark wall -->
-  <div class="cart-flyout-backdrop" (click)="close()"></div>
+  <div
+    class="cart-flyout-backdrop"
+    tabindex="-1"
+    (click)="close()"
+    (keydown)="$event.key === 'Escape' && close()"
+  ></div>
 
   <!-- Top-Right Floating Bag Flyout -->
-  <aside
+  <dialog
     class="cart-flyout"
-    role="dialog"
+    open
     aria-label="Shopping bag summary"
-    (click)="$event.stopPropagation()"
     (mouseenter)="pauseAutoClose()"
     (mouseleave)="resumeAutoClose()"
+    (keydown)="$event.key === 'Escape' && close()"
   >
     @if (cartService.isAutoDismissing()) {
       <div class="flyout-autoclose-indicator" aria-hidden="true">
@@ -149,5 +154,5 @@
         </div>
       </footer>
     }
-  </aside>
+  </dialog>
 }

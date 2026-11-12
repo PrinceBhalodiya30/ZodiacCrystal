@@ -31,12 +31,12 @@ export class Drawer implements OnChanges {
   @Input() backdropType: 'dim' | 'transparent' = 'dim';
   @Input() ariaLabel = '';
 
-  @Output() closed = new EventEmitter<void>();
+  @Output() readonly closed = new EventEmitter<void>();
 
   private readonly platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   private previousActiveElement: HTMLElement | null = null;
-  private drawerPanel = viewChild<ElementRef<HTMLElement>>('drawerEl');
+  private readonly drawerPanel = viewChild<ElementRef<HTMLElement>>('drawerEl');
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: Event): void {

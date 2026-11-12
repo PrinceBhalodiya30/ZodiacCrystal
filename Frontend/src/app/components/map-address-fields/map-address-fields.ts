@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, inject, input, model, signal, viewChild } from '@angular/core';
+import { Component, OnDestroy, inject, input, model, signal } from '@angular/core';
 import { ControlContainer, FormsModule } from '@angular/forms';
 import { AddressMap, PickedAddress } from '../address-map/address-map';
 import { StateCitySelect } from '../state-city-select/state-city-select';
@@ -25,23 +25,23 @@ type PinStatus = 'ok' | 'checking' | 'unknown' | 'mismatch' | 'city-mismatch' | 
   viewProviders: [{ provide: ControlContainer, useFactory: () => inject(ControlContainer, { skipSelf: true }) }]
 })
 export class MapAddressFields implements OnDestroy {
-  line = model('');
-  city = model('');
-  state = model('');
-  postalCode = model('');
-  latitude = model<number | null | undefined>(null);
-  longitude = model<number | null | undefined>(null);
-  maxLength = input(410);
+  readonly line = model('');
+  readonly city = model('');
+  readonly state = model('');
+  readonly postalCode = model('');
+  readonly latitude = model<number | null | undefined>(null);
+  readonly longitude = model<number | null | undefined>(null);
+  readonly maxLength = input(410);
 
   // Address Autocomplete & Quality signals
-  suggestions = signal<AddressSuggestion[]>([]);
-  isSearchingSuggestions = signal(false);
-  showSuggestions = signal(false);
-  selectedSuggestionIndex = signal(-1);
-  addressQuality = signal<AddressQualityResult>({ valid: true });
+  readonly suggestions = signal<AddressSuggestion[]>([]);
+  readonly isSearchingSuggestions = signal(false);
+  readonly showSuggestions = signal(false);
+  readonly selectedSuggestionIndex = signal(-1);
+  readonly addressQuality = signal<AddressQualityResult>({ valid: true });
 
   // An already-saved address starts as checked; the server checked it when saved.
-  pinStatus = signal<PinStatus>('ok');
+  readonly pinStatus = signal<PinStatus>('ok');
   private checkCount = 0;
   private searchTimer?: ReturnType<typeof setTimeout>;
   private abortController?: AbortController;
@@ -159,7 +159,7 @@ export class MapAddressFields implements OnDestroy {
   // A full 6-digit PIN fills State and City from India Post; both stay editable.
   onPinInput(pin: string): void {
     this.postalCode.set(pin);
-    this.check(true);
+    void this.check(true);
   }
 
   onStateChange(state: string): void {
@@ -173,39 +173,45 @@ export class MapAddressFields implements OnDestroy {
   }
 
   private recheck(): void {
-    if (this.postalCode()) this.check(false);
+    if (this.postalCode()) {
+      void this.check(false);
+    }
   }
 
   private async check(fillPlace: boolean): Promise<void> {
-    const check = ++this.checkCount;
-    const pin = this.postalCode().trim();
-    if (!VALID_PIN.test(pin)) {
-      this.pinStatus.set('unknown');
-      return;
-    }
-
-    this.pinStatus.set('checking');
-    const places = await lookupPinPlaces(pin);
-    // The PIN or state changed while India Post was answering.
-    if (check !== this.checkCount) return;
-
-    if (places === null) {
-      // India Post is down: don't block the customer; the server checks again.
-      this.pinStatus.set('unavailable');
-    } else if (places.length === 0) {
-      this.pinStatus.set('unknown');
-    } else if (fillPlace) {
-      // Keep what's there if the PIN covers it; otherwise take State and City from the PIN.
-      if (!places.some(p => this.matches(p))) {
-        this.state.set(places[0].state);
-        this.city.set(places[0].city);
+    try {
+      const check = ++this.checkCount;
+      const pin = this.postalCode().trim();
+      if (!VALID_PIN.test(pin)) {
+        this.pinStatus.set('unknown');
+        return;
       }
-      this.pinStatus.set('ok');
-    } else if (!places.some(p => sameState(p.state, this.state()))) {
-      this.pinStatus.set('mismatch');
-    } else {
-      // A blank city is left to the City field's own required check.
-      this.pinStatus.set(!this.city() || places.some(p => this.matches(p)) ? 'ok' : 'city-mismatch');
+
+      this.pinStatus.set('checking');
+      const places = await lookupPinPlaces(pin);
+      // The PIN or state changed while India Post was answering.
+      if (check !== this.checkCount) return;
+
+      if (places === null) {
+        // India Post is down: don't block the customer; the server checks again.
+        this.pinStatus.set('unavailable');
+      } else if (places.length === 0) {
+        this.pinStatus.set('unknown');
+      } else if (fillPlace) {
+        // Keep what's there if the PIN covers it; otherwise take State and City from the PIN.
+        if (!places.some(p => this.matches(p))) {
+          this.state.set(places[0].state);
+          this.city.set(places[0].city);
+        }
+        this.pinStatus.set('ok');
+      } else if (!places.some(p => sameState(p.state, this.state()))) {
+        this.pinStatus.set('mismatch');
+      } else {
+        // A blank city is left to the City field's own required check.
+        this.pinStatus.set(!this.city() || places.some(p => this.matches(p)) ? 'ok' : 'city-mismatch');
+      }
+    } catch {
+      this.pinStatus.set('unavailable');
     }
   }
 

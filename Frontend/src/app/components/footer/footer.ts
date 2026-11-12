@@ -18,19 +18,19 @@ import { SITE_NAME } from '../../services/page-title.service';
 export class Footer {
   readonly siteName = SITE_NAME;
   readonly currentYear = new Date().getFullYear();
-  authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   private readonly newsletterService = inject(NewsletterService);
   private readonly storeSettings = inject(StoreSettingsService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
 
-  newsletterEmail = signal('');
-  newsletterHoneypot = signal('');
-  newsletterSubmitted = signal(false);
-  welcomeCoupon = signal<string | null>(null);
-  welcomeDiscount = signal<string | null>(null);
-  copiedCoupon = signal(false);
-  isSubscribing = signal(false);
-  newsletterError = signal('');
+  readonly newsletterEmail = signal('');
+  readonly newsletterHoneypot = signal('');
+  readonly newsletterSubmitted = signal(false);
+  readonly welcomeCoupon = signal<string | null>(null);
+  readonly welcomeDiscount = signal<string | null>(null);
+  readonly copiedCoupon = signal(false);
+  readonly isSubscribing = signal(false);
+  readonly newsletterError = signal('');
 
   subscribeNewsletter(): void {
     const email = this.newsletterEmail().trim();
@@ -60,9 +60,14 @@ export class Footer {
     if (!navigator?.clipboard) {
       return;
     }
-    navigator.clipboard.writeText(code).then(() => {
-      this.copiedCoupon.set(true);
-      setTimeout(() => this.copiedCoupon.set(false), 2500);
-    });
+    void navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        this.copiedCoupon.set(true);
+        setTimeout(() => this.copiedCoupon.set(false), 2500);
+      })
+      .catch(() => {
+        // Clipboard write failed or permission denied
+      });
   }
 }

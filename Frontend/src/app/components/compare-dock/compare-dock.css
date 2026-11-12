@@ -182,3 +182,14 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .compare-dock {
+    animation: none;
+  }
+
+  .dock-remove-thumb,
+  .btn-compare-open {
+    transition: none;
+  }
+}
+
