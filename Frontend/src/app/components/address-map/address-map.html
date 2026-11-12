@@ -23,9 +23,13 @@
       </button>
 
       @if (results().length > 0) {
-        <ul class="address-map-results" role="listbox">
+        <ul class="address-map-results">
           @for (r of results(); track $index) {
-            <li role="option" tabindex="0" (click)="choose(r)" (keydown.enter)="choose(r)">{{ r.display_name }}</li>
+            <li>
+              <button type="button" class="address-map-result-item" (click)="choose(r)">
+                {{ r.display_name }}
+              </button>
+            </li>
           }
         </ul>
       }

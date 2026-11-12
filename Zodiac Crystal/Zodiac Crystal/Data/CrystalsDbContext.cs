@@ -480,9 +480,5 @@ public partial class CrystalsDbContext : DbContext
             entity.ToTable("StoreSettings");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(sysutcdatetime())");
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

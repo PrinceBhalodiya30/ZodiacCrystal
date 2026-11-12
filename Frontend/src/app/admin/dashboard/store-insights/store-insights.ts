@@ -54,20 +54,20 @@ export class StoreInsights implements OnChanges {
   @Input() refresh = 0;
 
   readonly ranges = RANGES;
-  rangeDays = signal(30);
+  readonly rangeDays = signal(30);
 
-  isLoading = signal(true);
-  hasError = signal(false);
+  readonly isLoading = signal(true);
+  readonly hasError = signal(false);
 
-  private insights = signal<OrderInsights | null>(null);
-  private summary = signal<ReportSummary | null>(null);
-  private topProducts = signal<TopProduct[]>([]);
-  private zodiacSales = signal<ZodiacSales[]>([]);
-  private zodiacSigns = signal<Zodiac[]>([]);
+  private readonly insights = signal<OrderInsights | null>(null);
+  private readonly summary = signal<ReportSummary | null>(null);
+  private readonly topProducts = signal<TopProduct[]>([]);
+  private readonly zodiacSales = signal<ZodiacSales[]>([]);
+  private readonly zodiacSigns = signal<Zodiac[]>([]);
 
-  totalOrders = computed(() => (this.insights()?.statusCounts ?? []).reduce((sum, s) => sum + s.count, 0));
+  readonly totalOrders = computed(() => (this.insights()?.statusCounts ?? []).reduce((sum, s) => sum + s.count, 0));
 
-  statusSegments = computed<StatusSegment[]>(() => {
+  readonly statusSegments = computed<StatusSegment[]>(() => {
     const counts = this.insights()?.statusCounts ?? [];
     const total = this.totalOrders();
     return STATUS_ORDER.map(status => {
@@ -76,19 +76,19 @@ export class StoreInsights implements OnChanges {
     });
   });
 
-  cancelRate = computed(() => {
+  readonly cancelRate = computed(() => {
     const total = this.totalOrders();
     const cancelled = this.statusSegments().find(s => s.status === 'Cancelled')?.count ?? 0;
     return total ? Math.round((cancelled / total) * 100) : 0;
   });
 
-  cancellationReasons = computed(() => {
+  readonly cancellationReasons = computed(() => {
     const reasons = this.insights()?.cancellationReasons ?? [];
     const max = Math.max(...reasons.map(r => r.count), 1);
     return reasons.slice(0, 4).map(r => ({ ...r, scale: r.count / max }));
   });
 
-  topProductBars = computed<RankedBarItem[]>(() =>
+  readonly topProductBars = computed<RankedBarItem[]>(() =>
     this.topProducts().map(p => ({
       id: p.productId,
       label: p.productName,
@@ -99,7 +99,7 @@ export class StoreInsights implements OnChanges {
   );
 
   // All 12 signs, including ones with no sales yet.
-  zodiacTiles = computed<ZodiacTile[]>(() => {
+  readonly zodiacTiles = computed<ZodiacTile[]>(() => {
     const sales = this.zodiacSales();
     const max = Math.max(...sales.map(s => s.revenue), 0);
     return this.zodiacSigns().map(sign => {
@@ -115,12 +115,12 @@ export class StoreInsights implements OnChanges {
     });
   });
 
-  topZodiac = computed(() => {
+  readonly topZodiac = computed(() => {
     const best = [...this.zodiacTiles()].sort((a, b) => b.revenue - a.revenue)[0];
     return best && best.revenue > 0 ? best : null;
   });
 
-  payments = computed(() => {
+  readonly payments = computed(() => {
     const methods = this.insights()?.paymentMethods ?? [];
     const card = methods.find(m => m.method === 'Card') ?? { method: 'Card', orders: 0, revenue: 0 };
     const cod = methods.find(m => m.method === 'COD') ?? { method: 'COD', orders: 0, revenue: 0 };
@@ -133,7 +133,7 @@ export class StoreInsights implements OnChanges {
     };
   });
 
-  money = computed(() => {
+  readonly money = computed(() => {
     const s = this.summary();
     return s
       ? { collected: s.collectedRevenue, codPending: s.pendingCodRevenue, refunded: s.refundedAmount }
@@ -182,7 +182,7 @@ export class StoreInsights implements OnChanges {
       this.topProducts.set(r.top ?? []);
       this.zodiacSales.set(r.zodiac ?? []);
       this.zodiacSigns.set(r.signs ?? []);
-      this.hasError.set(Object.values(r).some(v => v === null));
+      this.hasError.set(Object.values(r).includes(null));
       this.isLoading.set(false);
     });
   }

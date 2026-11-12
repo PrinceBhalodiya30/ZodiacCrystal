@@ -11,7 +11,9 @@
   </div>
 
   <div class="filter-bar">
+    <label for="orderSearch" class="visually-hidden">Search orders</label>
     <input
+      id="orderSearch"
       type="text"
       class="search-input"
       placeholder="Search by customer, email, order # or tracking #..."
@@ -19,7 +21,9 @@
       (ngModelChange)="onSearchInput($event)"
       name="orderSearch"
     />
+    <label for="orderStatusFilter" class="visually-hidden">Filter by status</label>
     <select
+      id="orderStatusFilter"
       class="status-filter"
       [ngModel]="statusFilter()"
       (ngModelChange)="onStatusFilterChange($event)"
@@ -30,12 +34,13 @@
         <option [value]="status">{{ status }}</option>
       }
     </select>
+    <label for="orderPaymentFilter" class="visually-hidden">Filter by payment</label>
     <select
+      id="orderPaymentFilter"
       class="status-filter"
       [ngModel]="paymentFilter()"
       (ngModelChange)="onPaymentFilterChange($event)"
       name="orderPaymentFilter"
-      aria-label="Filter by payment"
     >
       <option value="">All Payments</option>
       <optgroup label="Payment status">
@@ -55,7 +60,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk order actions">
+    <section class="bulk-bar" aria-label="Bulk order actions">
       <div class="bulk-bar-info">
         <span class="bulk-badge">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -75,7 +80,7 @@
           {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
         </button>
       </div>
-    </div>
+    </section>
   }
 
   @if (isLoading() && orders().length === 0) {
@@ -116,8 +121,8 @@
         </thead>
         <tbody>
           @for (order of orders(); track order.orderId) {
-            <tr class="clickable-row" [class.is-open]="openOrderId() === order.orderId" [class.row-new]="newOrderIds().has(order.orderId)" tabindex="0" role="button" [attr.aria-label]="'Open order #' + order.orderId" (click)="openOrder(order)" (keydown.enter)="openOrder(order)" (keydown.space)="$event.preventDefault(); openOrder(order)">
-              <td class="cb-col" (click)="$event.stopPropagation()">
+            <tr class="clickable-row" [class.is-open]="openOrderId() === order.orderId" [class.row-new]="newOrderIds().has(order.orderId)" tabindex="0" [attr.aria-label]="'Open order #' + order.orderId" (click)="openOrder(order, $event)" (keydown.enter)="openOrder(order)" (keydown.space)="$event.preventDefault(); openOrder(order)">
+              <td class="cb-col">
                 <input
                   type="checkbox"
                   [checked]="selectedIds().has(order.orderId)"

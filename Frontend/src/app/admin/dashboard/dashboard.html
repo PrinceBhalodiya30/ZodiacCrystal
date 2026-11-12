@@ -32,7 +32,7 @@
 
   @if (isLoading()) {
     <!-- Skeleton in the shape of the real layout, so nothing jumps when data arrives. -->
-    <div class="skeleton" role="status" aria-label="Loading dashboard">
+    <output class="skeleton" aria-label="Loading dashboard">
       <div class="kpi-grid">
         @for (i of [1, 2, 3, 4]; track i) {
           <div class="kpi-card">
@@ -62,7 +62,7 @@
           <div class="panel"><span class="sk sk-line sk-w30"></span><span class="sk sk-row"></span><span class="sk sk-row"></span></div>
         </div>
       </div>
-    </div>
+    </output>
   } @else if (errorMessage()) {
     <div class="state-message state-message--error">
       <p>{{ errorMessage() }}</p>
@@ -187,7 +187,7 @@
                 </thead>
                 <tbody>
                   @for (order of recentOrders(); track order.orderId) {
-                    <tr [class.row-new]="newOrderIds().has(order.orderId)" tabindex="0" role="button" [attr.aria-label]="'Open order #' + order.orderId" (click)="openOrder(order)" (keydown.enter)="openOrder(order)" (keydown.space)="$event.preventDefault(); openOrder(order)">
+                    <tr [class.row-new]="newOrderIds().has(order.orderId)" tabindex="0" [attr.aria-label]="'Open order #' + order.orderId" (click)="openOrder(order)" (keydown.enter)="openOrder(order)" (keydown.space)="$event.preventDefault(); openOrder(order)">
                       <td>
                         <a class="order-id" routerLink="/admin/orders" [queryParams]="{ order: order.orderId }" (click)="$event.preventDefault(); $event.stopPropagation(); openOrder(order)">#{{ order.orderId }}</a>
                         @if (newOrderIds().has(order.orderId)) {

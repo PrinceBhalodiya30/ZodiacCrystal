@@ -63,7 +63,7 @@
 .status-select.approved {
   background-color: #ecf8f1;
   border-color: #d3eedf;
-  color: #2f8a57;
+  color: #1e6b3e;
 }
 
 .status-select.rejected {
@@ -221,6 +221,16 @@ tr.has-photos > td {
 
 .review-photo-open:hover img {
   transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-photo-open img {
+    transition: none;
+  }
+
+  .review-photo-open:hover img {
+    transform: none;
+  }
 }
 
 .review-photo-card.rejected .review-photo-open img {

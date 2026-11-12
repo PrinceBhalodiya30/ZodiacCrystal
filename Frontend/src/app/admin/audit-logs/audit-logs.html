@@ -11,7 +11,9 @@
   </div>
 
   <div class="filter-bar">
+    <label for="auditSearch" class="visually-hidden">Search audit logs</label>
     <input
+      id="auditSearch"
       type="text"
       class="search-input"
       placeholder="Search by admin, action, entity, or details..."
@@ -19,24 +21,26 @@
       (ngModelChange)="onSearchInput($event)"
       name="auditSearch"
     />
+    <label for="auditAction" class="visually-hidden">Filter by action</label>
     <select
+      id="auditAction"
       class="audit-filter"
       [ngModel]="actionFilter()"
       (ngModelChange)="onActionChange($event)"
       name="auditAction"
-      aria-label="Filter by action"
     >
       <option value="">All actions</option>
       @for (action of actions(); track action) {
         <option [value]="action">{{ actionLabel(action) }}</option>
       }
     </select>
+    <label for="auditDate" class="visually-hidden">Filter by date</label>
     <select
+      id="auditDate"
       class="audit-filter"
       [ngModel]="datePreset()"
       (ngModelChange)="onDatePresetChange($event)"
       name="auditDate"
-      aria-label="Filter by date"
     >
       <option value="all">Any time</option>
       <option value="today">Today</option>

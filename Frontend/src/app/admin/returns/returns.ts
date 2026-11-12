@@ -36,45 +36,45 @@ export class AdminReturns implements OnInit {
   private readonly returnService = inject(ReturnService);
   private readonly confirmDialog = inject(ConfirmDialogService);
 
-  isExporting = signal(false);
-  selectedOrderId = signal<number | null>(null);
-  selectedCustomerEmail = signal<string | null>(null);
-  previousCustomerEmailForOrder = signal<string | null>(null);
+  readonly isExporting = signal(false);
+  readonly selectedOrderId = signal<number | null>(null);
+  readonly selectedCustomerEmail = signal<string | null>(null);
+  readonly previousCustomerEmailForOrder = signal<string | null>(null);
   private readonly toast = inject(ToastService);
   private readonly navCounts = inject(AdminNavCountsService);
   private readonly injector = inject(Injector);
 
-  private actionPanel = viewChild<ElementRef<HTMLDivElement>>('actionPanel');
+  private readonly actionPanel = viewChild<ElementRef<HTMLDivElement>>('actionPanel');
 
   readonly statuses = ['Requested', 'Approved', 'Rejected', 'Refunded'];
 
-  returns = signal<ReturnRequest[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly returns = signal<ReturnRequest[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
   // Defaults to what needs attention; a link can pick another one (?status=Approved, or ?status= for all).
-  statusFilter = signal(this.initialStatus());
+  readonly statusFilter = signal(this.initialStatus());
 
   // Multi-select & Bulk toolbar state
-  selectedIds = signal<Set<number>>(new Set());
-  selectedCount = computed(() => this.selectedIds().size);
-  pageAllSelected = computed(() => {
+  readonly selectedIds = signal<Set<number>>(new Set());
+  readonly selectedCount = computed(() => this.selectedIds().size);
+  readonly pageAllSelected = computed(() => {
     const items = this.returns();
     return items.length > 0 && items.every(r => this.selectedIds().has(r.returnRequestId));
   });
-  bulkAction = signal<'approve' | 'reject'>('approve');
-  isBulkUpdating = signal(false);
+  readonly bulkAction = signal<'approve' | 'reject'>('approve');
+  readonly isBulkUpdating = signal(false);
 
-  page = signal(1);
-  totalPages = signal(1);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
   // Rows matching the current filter - shown on the Export button.
-  totalCount = signal(0);
+  readonly totalCount = signal(0);
   private loadSubscription?: Subscription;
 
   // The request + action currently being confirmed in the action panel.
-  active = signal<{ request: ReturnRequest; action: ReturnAction } | null>(null);
+  readonly active = signal<{ request: ReturnRequest; action: ReturnAction } | null>(null);
   adminNote = '';
   restock = true;
-  isActing = signal(false);
+  readonly isActing = signal(false);
 
   constructor() {
     // New return requests from customers, or another admin's action.
@@ -109,10 +109,10 @@ export class AdminReturns implements OnInit {
   }
 
   // Search by order number ("93" / "#93"), customer name or email.
-  searchTerm = signal('');
+  readonly searchTerm = signal('');
   // "Clear filters" goes back to the page's normal view: returns waiting for review.
   private readonly defaultStatus = 'Requested';
-  hasFilters = computed(() => !!this.searchTerm().trim() || this.statusFilter() !== this.defaultStatus);
+  readonly hasFilters = computed(() => !!this.searchTerm().trim() || this.statusFilter() !== this.defaultStatus);
   // Typing searches once the admin pauses, instead of on every keystroke.
   onSearchInput = debounced((term: string) => this.onSearchChange(term));
 
@@ -193,7 +193,13 @@ export class AdminReturns implements OnInit {
 
   // Filter options say what each stage still needs, so "Approved" isn't read as "done".
   statusFilterLabel(status: string): string {
-    return status === 'Requested' ? 'Requested (needs review)' : status === 'Approved' ? 'Approved (refund due)' : status;
+    if (status === 'Requested') {
+      return 'Requested (needs review)';
+    }
+    if (status === 'Approved') {
+      return 'Approved (refund due)';
+    }
+    return status;
   }
 
   // COD refunds are paid outside the site, so the button records it rather than sending money.
@@ -205,7 +211,13 @@ export class AdminReturns implements OnInit {
   }
 
   actionTitle(action: ReturnAction): string {
-    return action === 'approve' ? 'Approve return' : action === 'reject' ? 'Reject return' : 'Issue refund';
+    if (action === 'approve') {
+      return 'Approve return';
+    }
+    if (action === 'reject') {
+      return 'Reject return';
+    }
+    return 'Issue refund';
   }
 
   confirmAction(): void {
@@ -217,10 +229,14 @@ export class AdminReturns implements OnInit {
     const { request, action } = active;
     const note = this.adminNote.trim() || undefined;
 
-    const call =
-      action === 'approve' ? this.returnService.approve(request.returnRequestId, note)
-      : action === 'reject' ? this.returnService.reject(request.returnRequestId, note)
-      : this.returnService.refund(request.returnRequestId, this.restock, note);
+    let call;
+    if (action === 'approve') {
+      call = this.returnService.approve(request.returnRequestId, note);
+    } else if (action === 'reject') {
+      call = this.returnService.reject(request.returnRequestId, note);
+    } else {
+      call = this.returnService.refund(request.returnRequestId, this.restock, note);
+    }
 
     this.isActing.set(true);
 
@@ -229,11 +245,14 @@ export class AdminReturns implements OnInit {
         this.navCounts.refresh();
         this.isActing.set(false);
         this.active.set(null);
-        this.toast.success(
-          action === 'refund'
-            ? `Order #${updated.orderId} refunded${updated.paymentMethod === 'Card' ? ' to the customer\'s card' : ''}.`
-            : `Return for order #${updated.orderId} ${updated.status.toLowerCase()}.`
-        );
+        let message: string;
+        if (action === 'refund') {
+          const destination = updated.paymentMethod === 'Card' ? " to the customer's card" : '';
+          message = `Order #${updated.orderId} refunded${destination}.`;
+        } else {
+          message = `Return for order #${updated.orderId} ${updated.status.toLowerCase()}.`;
+        }
+        this.toast.success(message);
         // Refresh so the row moves out of (or into) the current filter.
         this.loadReturns();
       },
@@ -258,7 +277,7 @@ export class AdminReturns implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export returns.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export returns.').then(message => this.toast.error(message));
       }
     });
   }
@@ -312,29 +331,31 @@ export class AdminReturns implements OnInit {
     }
 
     this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let failedCount = 0;
 
-    for (const id of ids) {
-      try {
-        if (action === 'approve') {
-          await firstValueFrom(this.returnService.approve(id));
-        } else {
-          await firstValueFrom(this.returnService.reject(id, 'Bulk rejected by administrator'));
-        }
-        successCount++;
-      } catch {
-        failedCount++;
-      }
-    }
+    const requests = ids.map(id =>
+      firstValueFrom(
+        action === 'approve'
+          ? this.returnService.approve(id)
+          : this.returnService.reject(id, 'Bulk rejected by administrator')
+      )
+    );
+
+    const results = await Promise.allSettled(requests);
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
 
     this.isBulkUpdating.set(false);
     this.clearSelection();
     this.loadReturns();
     this.navCounts.refresh();
 
+    this.notifyBulkResult(action, successCount, failedCount);
+  }
+
+  private notifyBulkResult(action: 'approve' | 'reject', successCount: number, failedCount: number): void {
+    const verb = action === 'approve' ? 'approved' : 'rejected';
     if (successCount > 0 && failedCount === 0) {
-      this.toast.success(`Successfully ${action === 'approve' ? 'approved' : 'rejected'} ${successCount} return request(s).`);
+      this.toast.success(`Successfully ${verb} ${successCount} return request(s).`);
     } else if (successCount > 0 && failedCount > 0) {
       this.toast.success(`Updated ${successCount} return(s); ${failedCount} could not be updated.`);
     } else if (failedCount > 0) {

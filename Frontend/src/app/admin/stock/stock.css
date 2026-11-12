@@ -50,12 +50,22 @@
   color: #ffffff;
   font-weight: 600;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
 .btn-save-all:hover {
   background-color: var(--color-brand-hover, #142e22);
   transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-save-all {
+    transition: none;
+  }
+
+  .btn-save-all:hover {
+    transform: none;
+  }
 }
 
 tr.is-selected {

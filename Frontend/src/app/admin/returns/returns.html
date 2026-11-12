@@ -11,7 +11,9 @@
   </div>
 
   <div class="filter-bar">
+    <label for="returnSearch" class="visually-hidden">Search returns</label>
     <input
+      id="returnSearch"
       type="text"
       class="search-input"
       placeholder="Search by order #, customer name or email..."
@@ -19,12 +21,13 @@
       (ngModelChange)="onSearchInput($event)"
       name="returnSearch"
     />
+    <label for="returnStatusFilter" class="visually-hidden">Filter by return status</label>
     <select
+      id="returnStatusFilter"
       class="status-filter"
       [ngModel]="statusFilter()"
       (ngModelChange)="onStatusFilterChange($event)"
       name="returnStatusFilter"
-      aria-label="Filter by return status"
     >
       <option value="">All Returns</option>
       @for (status of statuses; track status) {
@@ -37,7 +40,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk return actions">
+    <section class="bulk-bar" aria-label="Bulk return actions">
       <div class="bulk-bar-info">
         <span class="bulk-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
@@ -48,7 +51,8 @@
         <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear selection</button>
       </div>
       <div class="bulk-bar-controls">
-        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" aria-label="Bulk action">
+        <label for="bulkReturnAction" class="visually-hidden">Bulk action</label>
+        <select id="bulkReturnAction" class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)">
           <option value="approve">Approve Selected</option>
           <option value="reject">Reject Selected</option>
         </select>
@@ -56,7 +60,7 @@
           {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
         </button>
       </div>
-    </div>
+    </section>
   }
 
   @if (active(); as a) {
@@ -137,7 +141,7 @@
         <tbody>
           @for (r of returns(); track r.returnRequestId) {
             <tr [class.is-active]="active()?.request?.returnRequestId === r.returnRequestId" [class.is-selected]="selectedIds().has(r.returnRequestId)">
-              <td class="cb-col" (click)="$event.stopPropagation()">
+              <td class="cb-col">
                 <input
                   type="checkbox"
                   [attr.aria-label]="'Select return for order #' + r.orderId"

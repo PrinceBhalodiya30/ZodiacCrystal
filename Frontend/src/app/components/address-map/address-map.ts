@@ -46,20 +46,20 @@ let indiaBorder: Promise<IndiaGeometry> | undefined;
   encapsulation: ViewEncapsulation.None
 })
 export class AddressMap implements OnDestroy {
-  picked = output<PickedAddress>();
+  readonly picked = output<PickedAddress>();
   // Max length of the field the address goes into (the order's ShippingAddress allows 410).
-  maxLength = input(410);
+  readonly maxLength = input(410);
 
-  isOpen = signal(false);
-  query = signal('');
-  results = signal<NominatimResult[]>([]);
-  isSearching = signal(false);
-  isLocating = signal(false);
-  message = signal('');
-  flat = signal('');
-  usingGoogle = signal(false);
+  readonly isOpen = signal(false);
+  readonly query = signal('');
+  readonly results = signal<NominatimResult[]>([]);
+  readonly isSearching = signal(false);
+  readonly isLocating = signal(false);
+  readonly message = signal('');
+  readonly flat = signal('');
+  readonly usingGoogle = signal(false);
 
-  private mapEl = viewChild<ElementRef<HTMLDivElement>>('mapEl');
+  private readonly mapEl = viewChild<ElementRef<HTMLDivElement>>('mapEl');
   private leaflet?: typeof L;
   private map?: L.Map;
   private marker?: L.Marker;
@@ -139,7 +139,7 @@ export class AddressMap implements OnDestroy {
       })
     ]);
     street.addTo(this.map);
-    this.maskOutsideIndia();
+    void this.maskOutsideIndia();
     Lf.control.layers({ Map: street, Satellite: satellite }, undefined, { position: 'topright' }).addTo(this.map);
 
     // The container may still be settling into its final size when the map is created.
@@ -191,9 +191,9 @@ export class AddressMap implements OnDestroy {
 
   private async initGoogle(el: HTMLDivElement, key: string): Promise<void> {
     const g = await loadGoogle(key, () => this.useOpenStreetMap());
-    const { Map } = await g.maps.importLibrary('maps');
+    const { Map: GoogleMap } = await g.maps.importLibrary('maps');
     if (!this.isOpen() || this.mapEl()?.nativeElement !== el) return; // Closed meanwhile.
-    this.gmap = new Map(el, {
+    this.gmap = new GoogleMap(el, {
       center: { lat: DEFAULT_CENTER[0], lng: DEFAULT_CENTER[1] },
       zoom: 4,
       minZoom: 4,
@@ -216,9 +216,9 @@ export class AddressMap implements OnDestroy {
       if (e.placeId) {
         // A labelled building, shop or landmark: use Google's own address for it.
         e.stop();
-        this.lookupPlace(e.placeId);
+        void this.lookupPlace(e.placeId);
       } else {
-        this.googleReverse(lat, lng);
+        void this.googleReverse(lat, lng);
       }
     });
   }
@@ -233,7 +233,7 @@ export class AddressMap implements OnDestroy {
     if (!el) return;
     el.replaceChildren();
     el.removeAttribute('style');
-    this.initMap();
+    void this.initMap();
   }
 
   private async googleSearch(q: string): Promise<void> {
@@ -285,7 +285,7 @@ export class AddressMap implements OnDestroy {
       );
       this.placePin(lat, lng, false);
       this.query.set(data.display_name);
-      this.emit(data, lat, lng);
+      void this.emit(data, lat, lng);
     } catch {
       if (lookup !== this.lookupCount) return;
       this.message.set('Could not look up this place. Please type your address below.');
@@ -314,13 +314,13 @@ export class AddressMap implements OnDestroy {
           place.addressComponents.map((c: any) => ({ name: c.longText, types: c.types }))
         );
         this.query.set(data.display_name);
-        this.emit(data, lat, lng);
+        void this.emit(data, lat, lng);
         return;
       }
     } catch {
       if (lookup !== this.lookupCount) return;
     }
-    this.reverseLookup(lat, lng);
+    void this.reverseLookup(lat, lng);
   }
 
   private placePin(lat: number, lng: number, lookup: boolean): void {
@@ -332,14 +332,14 @@ export class AddressMap implements OnDestroy {
         this.gmarker = new (google().maps.Marker)({ position, map: this.gmap, draggable: true });
         this.gmarker.addListener('dragend', () => {
           const pos = this.gmarker.getPosition();
-          this.googleReverse(pos.lat(), pos.lng());
+          void this.googleReverse(pos.lat(), pos.lng());
         });
       }
       if (this.gmap.getZoom() < 17) {
         this.gmap.setCenter(position);
         this.gmap.setZoom(18);
       }
-      if (lookup) this.googleReverse(lat, lng);
+      if (lookup) void this.googleReverse(lat, lng);
       return;
     }
     if (!this.map || !this.leaflet) return;
@@ -349,12 +349,12 @@ export class AddressMap implements OnDestroy {
       this.marker = this.leaflet.marker([lat, lng], { draggable: true, icon: this.pinIcon() }).addTo(this.map);
       this.marker.on('dragend', () => {
         const pos = this.marker!.getLatLng();
-        this.reverseLookup(pos.lat, pos.lng);
+        void this.reverseLookup(pos.lat, pos.lng);
       });
     }
     // Only move the map when zoomed out; re-centring on every tap made the map jump under the finger.
     if (this.map.getZoom() < 17) this.map.setView([lat, lng], 18);
-    if (lookup) this.reverseLookup(lat, lng);
+    if (lookup) void this.reverseLookup(lat, lng);
   }
 
   onQueryInput(value: string): void {
@@ -439,7 +439,7 @@ export class AddressMap implements OnDestroy {
         shape.on('click', (e: L.LeafletMouseEvent) => {
           this.highlight(shape);
           this.placePin(e.latlng.lat, e.latlng.lng, false);
-          this.reverseLookup(e.latlng.lat, e.latlng.lng, label);
+          void this.reverseLookup(e.latlng.lat, e.latlng.lng, label);
         });
         shape.addTo(layer);
       }
@@ -484,14 +484,14 @@ export class AddressMap implements OnDestroy {
     this.query.set(result.display_name);
     // Google suggestions carry only a place id; the address and position come from its details.
     if (result.placeId) {
-      this.lookupPlace(result.placeId);
+      void this.lookupPlace(result.placeId);
       return;
     }
     const lat = +result.lat;
     const lng = +result.lon;
     this.lookupCount++;
     this.placePin(lat, lng, false);
-    this.emit(result, lat, lng);
+    void this.emit(result, lat, lng);
   }
 
   useMyLocation(): void {
@@ -535,7 +535,7 @@ export class AddressMap implements OnDestroy {
         data.display_name = `${building}, ${data.display_name}`;
       }
       this.query.set(data.display_name);
-      this.emit(data, lat, lng);
+      void this.emit(data, lat, lng);
     } catch {
       if (lookup !== this.lookupCount) return;
       this.message.set('Could not look up this spot. Please type your address below.');
@@ -586,7 +586,7 @@ export class AddressMap implements OnDestroy {
   // post office in the same state, preferring one in the same district/city.
   private async lookupPin(localities: string[], state: string, cityNames: string[]): Promise<string | null> {
     const wantState = normalize(state);
-    const wantPlaces = cityNames.map(normalize);
+    const wantPlaces = new Set(cityNames.map(normalize));
     const tried = new Set<string>();
 
     for (const locality of localities) {
@@ -598,8 +598,8 @@ export class AddressMap implements OnDestroy {
         const [data]: IndiaPostResponse[] = await res.json();
         const offices = (data?.PostOffice ?? []).filter(o => !wantState || normalize(o.State) === wantState);
         const best =
-          offices.find(o => wantPlaces.includes(normalize(o.District)) && o.DeliveryStatus === 'Delivery') ??
-          offices.find(o => wantPlaces.includes(normalize(o.District))) ??
+          offices.find(o => wantPlaces.has(normalize(o.District)) && o.DeliveryStatus === 'Delivery') ??
+          offices.find(o => wantPlaces.has(normalize(o.District))) ??
           offices.find(o => o.DeliveryStatus === 'Delivery') ??
           offices[0];
         if (best && VALID_PIN.test(best.Pincode)) return best.Pincode;

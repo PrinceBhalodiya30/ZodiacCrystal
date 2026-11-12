@@ -32,37 +32,37 @@ export class AdminReviews implements OnInit {
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
-  statuses = STATUSES;
+  readonly statuses = STATUSES;
 
-  reviews = signal<AdminReview[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
-  deletingReviewId = signal<number | null>(null);
-  updatingStatusId = signal<number | null>(null);
+  readonly reviews = signal<AdminReview[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly deletingReviewId = signal<number | null>(null);
+  readonly updatingStatusId = signal<number | null>(null);
 
-  pageSize = signal(8);
-  page = signal(1);
-  totalPages = signal(1);
-  totalCount = signal(0);
-  searchTerm = signal('');
-  minRating = signal<number | null>(null);
-  statusFilter = signal<ReviewStatus | null>(null);
-  photoFilter = signal<ReviewPhotoFilter>('');
-  hasFilters = computed(
+  readonly pageSize = signal(8);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
+  readonly totalCount = signal(0);
+  readonly searchTerm = signal('');
+  readonly minRating = signal<number | null>(null);
+  readonly statusFilter = signal<ReviewStatus | null>(null);
+  readonly photoFilter = signal<ReviewPhotoFilter>('');
+  readonly hasFilters = computed(
     () => !!this.searchTerm().trim() || this.minRating() !== null || !!this.statusFilter() || !!this.photoFilter()
   );
 
-  isExporting = signal(false);
-  updatingPhotoId = signal<number | null>(null);
-  photoViewer = signal<{ urls: string[]; index: number; caption: string } | null>(null);
+  readonly isExporting = signal(false);
+  readonly updatingPhotoId = signal<number | null>(null);
+  readonly photoViewer = signal<{ urls: string[]; index: number; caption: string } | null>(null);
 
-  selectedIds = signal<Set<number>>(new Set());
-  bulkStatus = signal<ReviewStatus | ''>('');
-  isBulkUpdating = signal(false);
+  readonly selectedIds = signal<Set<number>>(new Set());
+  readonly bulkStatus = signal<ReviewStatus | ''>('');
+  readonly isBulkUpdating = signal(false);
 
-  replyingReviewId = signal<number | null>(null);
-  replyDraft = signal('');
-  isSavingReply = signal(false);
+  readonly replyingReviewId = signal<number | null>(null);
+  readonly replyDraft = signal('');
+  readonly isSavingReply = signal(false);
 
   private loadSubscription?: Subscription;
   // Typing searches once the admin pauses, instead of on every keystroke.
@@ -307,7 +307,7 @@ export class AdminReviews implements OnInit {
         },
         error: (err: unknown) => {
           this.isExporting.set(false);
-          blobErrorMessage(err, 'Unable to export reviews.').then(message => this.toast.error(message));
+          void blobErrorMessage(err, 'Unable to export reviews.').then(message => this.toast.error(message));
         }
       });
   }

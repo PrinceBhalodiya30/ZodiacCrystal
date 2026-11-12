@@ -29,7 +29,8 @@
   @if (mode === 'login') {
     @if (review(); as r) {
       <figure class="review-card">
-        <div class="review-stars" role="img" [attr.aria-label]="r.rating + ' out of 5 stars'">
+        <div class="review-stars">
+          <span class="sr-only">{{ r.rating }} out of 5 stars</span>
           @for (filled of stars(r.rating); track $index) {
             <svg viewBox="0 0 24 24" [class.empty]="!filled" aria-hidden="true">
               <path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z"/>

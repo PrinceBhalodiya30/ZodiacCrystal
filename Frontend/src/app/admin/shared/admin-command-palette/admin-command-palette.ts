@@ -53,17 +53,17 @@ export class AdminCommandPalette {
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
-  isOpen = signal(false);
-  query = signal('');
-  selectedIndex = signal(0);
+  readonly isOpen = signal(false);
+  readonly query = signal('');
+  readonly selectedIndex = signal(0);
 
   // Dynamic search results
-  productResults = signal<CommandItem[]>([]);
-  customerResults = signal<CommandItem[]>([]);
+  readonly productResults = signal<CommandItem[]>([]);
+  readonly customerResults = signal<CommandItem[]>([]);
 
   readonly navCommands = STATIC_NAV_COMMANDS;
 
-  onSearchInput = debounced((q: string) => this.fetchDynamicResults(q), 200);
+  readonly onSearchInput = debounced((q: string) => this.fetchDynamicResults(q), 200);
 
   @HostListener('window:keydown', ['$event'])
   handleGlobalShortcut(event: KeyboardEvent): void {
@@ -105,7 +105,7 @@ export class AdminCommandPalette {
   }
 
   // Combined and filtered commands
-  filteredCommands = computed(() => {
+  readonly filteredCommands = computed(() => {
     const q = this.query().trim().toLowerCase();
     const items: CommandItem[] = [];
 
@@ -126,18 +126,15 @@ export class AdminCommandPalette {
     // 2. Navigation items matching query
     if (q) {
       const matchedNav = this.navCommands.filter(
-        cmd => cmd.title.toLowerCase().includes(q) || (cmd.subtitle && cmd.subtitle.toLowerCase().includes(q))
+        cmd => cmd.title.toLowerCase().includes(q) || Boolean(cmd.subtitle?.toLowerCase().includes(q))
       );
       items.push(...matchedNav);
     } else {
       items.push(...this.navCommands);
     }
 
-    // 3. Products
-    items.push(...this.productResults());
-
-    // 4. Customers
-    items.push(...this.customerResults());
+    // 3. Products & Customers
+    items.push(...this.productResults(), ...this.customerResults());
 
     return items;
   });

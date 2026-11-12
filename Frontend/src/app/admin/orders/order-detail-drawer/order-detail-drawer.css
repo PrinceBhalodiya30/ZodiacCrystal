@@ -129,9 +129,9 @@
   font-weight: 600;
 }
 
-.muted-note {
-  color: var(--color-muted) !important;
-  margin-top: 0.75rem !important;
+.drawer-section p.muted-note {
+  color: var(--color-muted);
+  margin-top: 0.75rem;
 }
 
 /* Status */
@@ -156,7 +156,7 @@
 
 .payment-badge.paid { background-color: var(--color-success-bg); color: var(--color-success); }
 .payment-badge.pending { background-color: var(--color-warning-bg); color: var(--color-warning); }
-.payment-badge.refunded { background-color: #e8f0fe; color: #2f6fd6; }
+.payment-badge.refunded { background-color: #e8f0fe; color: #1a56b7; }
 .payment-badge.cancelled { background-color: #f1f1f1; color: #555; }
 
 .status-actions {
@@ -288,9 +288,9 @@
   font-weight: 600;
 }
 
-.timeline-meta {
-  font-size: 0.8rem !important;
-  color: var(--color-muted) !important;
+.drawer-section p.timeline-meta {
+  font-size: 0.8rem;
+  color: var(--color-muted);
 }
 
 .drawer-footer {
@@ -692,9 +692,9 @@
 }
 
 /* Luxury Gift Order Admin Drawer & Packing Slip */
-.gift-drawer-total-row dt,
-.gift-drawer-total-row dd {
-  color: #8c6721 !important;
+.totals .gift-drawer-total-row dt,
+.totals .gift-drawer-total-row dd {
+  color: #8c6721;
   font-weight: 600;
 }
 
@@ -861,8 +861,9 @@
     width: 100%;
   }
 
+  .print-preview-toolbar.no-print,
   .no-print {
-    display: none !important;
+    display: none;
   }
 
   .printable-slip-sheet {
@@ -897,11 +898,11 @@
   line-height: 1.35;
 }
 
-.slip-delivery-instructions {
-  margin-top: 0.35rem !important;
+.slip-col p.slip-delivery-instructions {
+  margin-top: 0.35rem;
   padding-top: 0.35rem;
   border-top: 1px dashed #d5d0c7;
-  font-size: 0.82rem !important;
+  font-size: 0.82rem;
   font-style: italic;
   color: #333333;
 }

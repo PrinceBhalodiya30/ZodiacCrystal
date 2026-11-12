@@ -77,38 +77,38 @@ export class AdminSupport implements OnInit {
   readonly maxPhotos = SUPPORT_MAX_PHOTOS;
   private readonly defaultStatus = 'Active';
 
-  tickets = signal<SupportTicket[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
-  isExporting = signal(false);
-  customer360Email = signal<string | null>(null);
-  statusFilter = signal(this.defaultStatus);
-  categoryFilter = signal('');
-  searchTerm = signal('');
-  page = signal(1);
-  totalPages = signal(1);
-  totalCount = signal(0);
-  hasFilters = computed(() => !!this.searchTerm().trim() || !!this.categoryFilter() || this.statusFilter() !== this.defaultStatus);
-  onSearchInput = debounced((term: string) => this.onSearchChange(term));
+  readonly tickets = signal<SupportTicket[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly isExporting = signal(false);
+  readonly customer360Email = signal<string | null>(null);
+  readonly statusFilter = signal(this.defaultStatus);
+  readonly categoryFilter = signal('');
+  readonly searchTerm = signal('');
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
+  readonly totalCount = signal(0);
+  readonly hasFilters = computed(() => !!this.searchTerm().trim() || !!this.categoryFilter() || this.statusFilter() !== this.defaultStatus);
+  readonly onSearchInput = debounced((term: string) => this.onSearchChange(term));
   private loadSubscription?: Subscription;
 
   // Multi-select & Bulk toolbar state
-  selectedIds = signal<Set<number>>(new Set());
-  selectedCount = computed(() => this.selectedIds().size);
-  pageAllSelected = computed(() => {
+  readonly selectedIds = signal<Set<number>>(new Set());
+  readonly selectedCount = computed(() => this.selectedIds().size);
+  readonly pageAllSelected = computed(() => {
     const items = this.tickets();
     return items.length > 0 && items.every(t => this.selectedIds().has(t.supportTicketId));
   });
-  bulkAction = signal<'Resolved' | 'Closed' | 'Open'>('Resolved');
-  isBulkUpdating = signal(false);
+  readonly bulkAction = signal<'Resolved' | 'Closed' | 'Open'>('Resolved');
+  readonly isBulkUpdating = signal(false);
 
   // Open conversation
-  selected = signal<SupportTicket | null>(null);
-  isLoadingTicket = signal(false);
+  readonly selected = signal<SupportTicket | null>(null);
+  readonly isLoadingTicket = signal(false);
   reply = '';
   isInternal = false;
-  files = signal<File[]>([]);
-  isSending = signal(false);
+  readonly files = signal<File[]>([]);
+  readonly isSending = signal(false);
 
   constructor() {
     // New tickets, customer replies, or another admin's action.
@@ -118,7 +118,7 @@ export class AdminSupport implements OnInit {
         if (event.kind === 'ticket') {
           this.loadTickets(true);
           const open = this.selected();
-          if (open && open.supportTicketId === event.id && event.action !== 'read') {
+          if (open?.supportTicketId === event.id && event.action !== 'read') {
             this.openTicket(open.supportTicketId, true);
           }
         }
@@ -259,11 +259,17 @@ export class AdminSupport implements OnInit {
     if (!ticket || !message || this.isSending()) {
       return;
     }
+
+    let targetStatus: 'Resolved' | 'AwaitingCustomer' | undefined;
+    if (!this.isInternal) {
+      targetStatus = resolve ? 'Resolved' : 'AwaitingCustomer';
+    }
+
     this.isSending.set(true);
     this.supportService
       .replyAdmin(ticket.supportTicketId, message, {
         isInternal: this.isInternal,
-        status: this.isInternal ? undefined : resolve ? 'Resolved' : 'AwaitingCustomer',
+        status: targetStatus,
         files: this.files()
       })
       .subscribe({
@@ -272,7 +278,15 @@ export class AdminSupport implements OnInit {
           this.reply = '';
           this.files.set([]);
           this.isSending.set(false);
-          this.toast.success(this.isInternal ? 'Note added.' : resolve ? 'Reply sent and ticket resolved.' : 'Reply sent to the customer.');
+
+          let successMessage = 'Reply sent to the customer.';
+          if (this.isInternal) {
+            successMessage = 'Note added.';
+          } else if (resolve) {
+            successMessage = 'Reply sent and ticket resolved.';
+          }
+          this.toast.success(successMessage);
+
           this.isInternal = false;
           this.loadTickets(true);
           this.navCounts.refresh();
@@ -399,23 +413,21 @@ export class AdminSupport implements OnInit {
     }
 
     this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let failedCount = 0;
 
-    for (const id of ids) {
-      try {
-        await firstValueFrom(this.supportService.updateStatusAdmin(id, action));
-        successCount++;
-      } catch {
-        failedCount++;
-      }
-    }
+    const requests = ids.map(id => firstValueFrom(this.supportService.updateStatusAdmin(id, action)));
+    const results = await Promise.allSettled(requests);
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
 
     this.isBulkUpdating.set(false);
     this.clearSelection();
     this.loadTickets(true);
     this.navCounts.refresh();
 
+    this.notifyBulkResult(action, successCount, failedCount);
+  }
+
+  private notifyBulkResult(action: string, successCount: number, failedCount: number): void {
     if (successCount > 0 && failedCount === 0) {
       this.toast.success(`Updated status to ${action} for ${successCount} ticket(s).`);
     } else if (successCount > 0 && failedCount > 0) {
@@ -434,8 +446,8 @@ export class AdminSupport implements OnInit {
           const header = ['Ticket Ref', 'Subject', 'Customer Name', 'Customer Email', 'Category', 'Status', 'Order ID', 'Created At', 'Rating'];
           const rows = res.items.map(t => [
             `"${t.reference}"`,
-            `"${(t.subject || '').replace(/"/g, '""')}"`,
-            `"${(t.customerName || '').replace(/"/g, '""')}"`,
+            `"${(t.subject || '').replaceAll('"', '""')}"`,
+            `"${(t.customerName || '').replaceAll('"', '""')}"`,
             `"${t.customerEmail}"`,
             `"${t.categoryLabel}"`,
             `"${t.statusLabel}"`,

@@ -69,10 +69,6 @@
   flex-wrap: wrap;
 }
 
-.filter-bar {
-  margin-bottom: 1.25rem;
-}
-
 .filter-bar .search-input {
   width: 100%;
   max-width: 320px;
@@ -199,6 +195,27 @@
 .admin-drawer-overlay.is-leaving .product-form,
 .admin-drawer-overlay.is-leaving .coupon-form {
   animation: drawer-in 0.18s ease-in reverse forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-form,
+  .category-form,
+  .zodiac-form,
+  .coupon-form,
+  .admin-modal-overlay,
+  .admin-drawer-overlay,
+  .admin-modal-overlay .category-form,
+  .admin-modal-overlay .zodiac-form,
+  .admin-drawer-overlay .product-form,
+  .admin-drawer-overlay .coupon-form,
+  .admin-modal-overlay.is-leaving,
+  .admin-drawer-overlay.is-leaving,
+  .admin-modal-overlay.is-leaving .category-form,
+  .admin-modal-overlay.is-leaving .zodiac-form,
+  .admin-drawer-overlay.is-leaving .product-form,
+  .admin-drawer-overlay.is-leaving .coupon-form {
+    animation: none;
+  }
 }
 
 @media (max-width: 600px) {
@@ -337,8 +354,9 @@
   pointer-events: none;
 }
 
+.form-grid .input-prefix input,
 .input-prefix input {
-  padding-left: 1.75rem !important;
+  padding-left: 1.75rem;
 }
 
 .select-wrap {
@@ -584,7 +602,7 @@ tbody tr:last-child td {
 
 .status-pill.pending {
   background-color: #fdf5e7;
-  color: #b07a22;
+  color: #855806;
 }
 
 .row-actions {
@@ -668,6 +686,7 @@ tbody tr:last-child td {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .filter-bar select {
@@ -933,6 +952,12 @@ tbody tr:last-child td {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .bulk-bar {
+    animation: none;
+  }
+}
+
 .bulk-bar-info {
   display: flex;
   align-items: center;
@@ -966,7 +991,7 @@ tbody tr:last-child td {
   cursor: pointer;
   padding: 0.25rem 0.45rem;
   border-radius: 4px;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease;
   text-decoration: underline;
   text-underline-offset: 2px;
 }

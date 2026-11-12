@@ -9,8 +9,14 @@
   </div>
 
   @if (formMode() !== 'closed') {
-    <div class="admin-modal-overlay" animate.leave="is-leaving" (click)="cancelForm()">
-    <form class="category-form" id="adminForm" role="dialog" aria-modal="true" (ngSubmit)="submitForm()" #categoryForm="ngForm" (click)="$event.stopPropagation()">
+    <div
+      class="admin-modal-overlay"
+      animate.leave="is-leaving"
+      tabindex="-1"
+      (click)="$event.target === $event.currentTarget && cancelForm()"
+      (keydown.escape)="cancelForm()"
+    >
+    <form class="category-form" id="adminForm" (ngSubmit)="submitForm()" #categoryForm="ngForm">
       <h2>{{ formMode() === 'create' ? 'Add Category' : 'Edit Category' }}</h2>
 
       <div class="form-grid">
@@ -65,7 +71,9 @@
   }
 
   <div class="filter-bar">
+    <label for="categorySearch" class="visually-hidden">Search categories</label>
     <input
+      id="categorySearch"
       type="text"
       class="search-input"
       placeholder="Search by name or description..."
@@ -73,12 +81,13 @@
       (ngModelChange)="onSearchChange($event)"
       name="categorySearch"
     />
+    <label for="categoryStatus" class="visually-hidden">Filter by status</label>
     <select
+      id="categoryStatus"
       class="status-filter"
       [ngModel]="statusFilter()"
       (ngModelChange)="onStatusChange($event)"
       name="categoryStatus"
-      aria-label="Filter by status"
     >
       <option value="all">All statuses</option>
       <option value="active">Active</option>

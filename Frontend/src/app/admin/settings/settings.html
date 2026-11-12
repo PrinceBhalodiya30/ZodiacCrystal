@@ -240,7 +240,7 @@
                 <label for="announcementEnabled" class="section-title">Enable Announcement Bar</label>
                 <p class="section-desc">When disabled, the top banner is hidden from all visitors on the storefront.</p>
               </div>
-              <label class="switch">
+              <label for="announcementEnabled" class="switch" aria-label="Enable Announcement Bar">
                 <input
                   type="checkbox"
                   id="announcementEnabled"
@@ -280,7 +280,7 @@
             <label for="announcementStyle" class="section-title">Color Palette &amp; Holiday Theme</label>
             <p class="section-desc">Choose a visual style matching your current sale or seasonal campaign.</p>
             <div class="style-selector">
-              <label class="style-option" [class.selected]="announcementStyle() === 'emerald'" (click)="setAnnouncementStyle('emerald')">
+              <label class="style-option" [class.selected]="announcementStyle() === 'emerald'">
                 <input type="radio" name="announcementStyle" value="emerald" [ngModel]="announcementStyle()" (ngModelChange)="setAnnouncementStyle('emerald')"/>
                 <span class="style-swatch swatch-emerald"></span>
                 <div class="style-details">
@@ -289,7 +289,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="announcementStyle() === 'gold'" (click)="setAnnouncementStyle('gold')">
+              <label class="style-option" [class.selected]="announcementStyle() === 'gold'">
                 <input type="radio" name="announcementStyle" value="gold" [ngModel]="announcementStyle()" (ngModelChange)="setAnnouncementStyle('gold')"/>
                 <span class="style-swatch swatch-gold"></span>
                 <div class="style-details">
@@ -298,7 +298,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="announcementStyle() === 'amethyst'" (click)="setAnnouncementStyle('amethyst')">
+              <label class="style-option" [class.selected]="announcementStyle() === 'amethyst'">
                 <input type="radio" name="announcementStyle" value="amethyst" [ngModel]="announcementStyle()" (ngModelChange)="setAnnouncementStyle('amethyst')"/>
                 <span class="style-swatch swatch-amethyst"></span>
                 <div class="style-details">
@@ -307,7 +307,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="announcementStyle() === 'sapphire'" (click)="setAnnouncementStyle('sapphire')">
+              <label class="style-option" [class.selected]="announcementStyle() === 'sapphire'">
                 <input type="radio" name="announcementStyle" value="sapphire" [ngModel]="announcementStyle()" (ngModelChange)="setAnnouncementStyle('sapphire')"/>
                 <span class="style-swatch swatch-sapphire"></span>
                 <div class="style-details">
@@ -316,7 +316,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="announcementStyle() === 'ruby'" (click)="setAnnouncementStyle('ruby')">
+              <label class="style-option" [class.selected]="announcementStyle() === 'ruby'">
                 <input type="radio" name="announcementStyle" value="ruby" [ngModel]="announcementStyle()" (ngModelChange)="setAnnouncementStyle('ruby')"/>
                 <span class="style-swatch swatch-ruby"></span>
                 <div class="style-details">
@@ -351,14 +351,15 @@
           <div class="card-section">
             <div class="toggle-row">
               <div class="toggle-label-wrap">
-                <span class="section-title">Enable Daily Moon Phase &amp; Transit Banner</span>
+                <label for="moonBannerEnabled" class="section-title">Enable Daily Moon Phase &amp; Transit Banner</label>
                 <p class="section-desc">
                   Displays the celestial top ticker banner across the entire storefront (e.g., <em>🌙 Waxing Moon in Taurus · Best Crystal Today: Rose Quartz</em>). Automatically suppressed during checkout.
                 </p>
               </div>
-              <label class="switch">
+              <label for="moonBannerEnabled" class="switch" aria-label="Enable Daily Moon Phase &amp; Transit Banner">
                 <input
                   type="checkbox"
+                  id="moonBannerEnabled"
                   [ngModel]="moonBannerEnabled()"
                   (ngModelChange)="moonBannerEnabled.set($event)"
                 />
@@ -379,14 +380,15 @@
           <div class="card-section">
             <div class="toggle-row">
               <div class="toggle-label-wrap">
-                <span class="section-title">Enable "✦ Cosmic Alignment" Rituals Dialog</span>
+                <label for="moonBannerShowModal" class="section-title">Enable "✦ Cosmic Alignment" Rituals Dialog</label>
                 <p class="section-desc">
                   Allows customers to click "✦ Cosmic Alignment" to open the interactive celestial popup with Moon illumination %, Zodiac element, and a daily crystal meditation ritual.
                 </p>
               </div>
-              <label class="switch">
+              <label for="moonBannerShowModal" class="switch" aria-label="Enable Cosmic Alignment Rituals Dialog">
                 <input
                   type="checkbox"
+                  id="moonBannerShowModal"
                   [ngModel]="moonBannerShowModal()"
                   (ngModelChange)="moonBannerShowModal.set($event)"
                 />
@@ -399,7 +401,7 @@
             <label for="moonBannerStyle" class="section-title">Cosmic Color Palette &amp; Night Sky Aesthetic</label>
             <p class="section-desc">Choose a celestial visual style for the Daily Moon Phase &amp; Cosmic Alignment ticker.</p>
             <div class="style-selector">
-              <label class="style-option" [class.selected]="moonBannerStyle() === 'midnight'" (click)="setMoonBannerStyle('midnight')">
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'midnight'">
                 <input type="radio" name="moonBannerStyle" value="midnight" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('midnight')"/>
                 <span class="style-swatch swatch-moon-midnight"></span>
                 <div class="style-details">
@@ -408,7 +410,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="moonBannerStyle() === 'amethyst'" (click)="setMoonBannerStyle('amethyst')">
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'amethyst'">
                 <input type="radio" name="moonBannerStyle" value="amethyst" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('amethyst')"/>
                 <span class="style-swatch swatch-moon-amethyst"></span>
                 <div class="style-details">
@@ -417,7 +419,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="moonBannerStyle() === 'gold'" (click)="setMoonBannerStyle('gold')">
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'gold'">
                 <input type="radio" name="moonBannerStyle" value="gold" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('gold')"/>
                 <span class="style-swatch swatch-moon-gold"></span>
                 <div class="style-details">
@@ -426,7 +428,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="moonBannerStyle() === 'sapphire'" (click)="setMoonBannerStyle('sapphire')">
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'sapphire'">
                 <input type="radio" name="moonBannerStyle" value="sapphire" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('sapphire')"/>
                 <span class="style-swatch swatch-moon-sapphire"></span>
                 <div class="style-details">
@@ -435,7 +437,7 @@
                 </div>
               </label>
 
-              <label class="style-option" [class.selected]="moonBannerStyle() === 'ruby'" (click)="setMoonBannerStyle('ruby')">
+              <label class="style-option" [class.selected]="moonBannerStyle() === 'ruby'">
                 <input type="radio" name="moonBannerStyle" value="ruby" [ngModel]="moonBannerStyle()" (ngModelChange)="setMoonBannerStyle('ruby')"/>
                 <span class="style-swatch swatch-moon-ruby"></span>
                 <div class="style-details">
@@ -448,7 +450,7 @@
 
           <!-- Mode Selector -->
           <div class="card-section">
-            <label class="section-title">Banner Calculation Mode</label>
+            <span class="section-title">Banner Calculation Mode</span>
             <p class="section-desc">
               Choose whether the daily banner runs on automatic real-time astronomy or custom marketing overrides.
             </p>

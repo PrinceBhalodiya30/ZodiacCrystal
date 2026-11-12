@@ -6,7 +6,9 @@
   </div>
 
   <div class="filter-bar">
+    <label for="ticketSearchInput" class="visually-hidden">Search support tickets</label>
     <input
+      id="ticketSearchInput"
       type="text"
       class="search-input"
       placeholder="Search by ZC-ref, order #, subject, customer name or email..."
@@ -14,13 +16,15 @@
       (ngModelChange)="onSearchInput($event)"
       name="ticketSearch"
     />
-    <select class="status-filter" [ngModel]="statusFilter()" (ngModelChange)="onStatusFilterChange($event)" name="ticketStatus" aria-label="Filter by status">
+    <label for="ticketStatusFilter" class="visually-hidden">Filter by status</label>
+    <select id="ticketStatusFilter" class="status-filter" [ngModel]="statusFilter()" (ngModelChange)="onStatusFilterChange($event)" name="ticketStatus">
       <option value="">All tickets</option>
       @for (s of statuses; track s.value) {
         <option [value]="s.value">{{ s.label }}</option>
       }
     </select>
-    <select class="status-filter" [ngModel]="categoryFilter()" (ngModelChange)="onCategoryFilterChange($event)" name="ticketCategory" aria-label="Filter by topic">
+    <label for="ticketCategoryFilter" class="visually-hidden">Filter by topic</label>
+    <select id="ticketCategoryFilter" class="status-filter" [ngModel]="categoryFilter()" (ngModelChange)="onCategoryFilterChange($event)" name="ticketCategory">
       <option value="">All topics</option>
       @for (c of categories; track c.value) {
         <option [value]="c.value">{{ c.label }}</option>
@@ -32,7 +36,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk ticket actions">
+    <section class="bulk-bar" aria-label="Bulk ticket actions">
       <div class="bulk-bar-info">
         <span class="bulk-badge">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -43,7 +47,8 @@
         <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear</button>
       </div>
       <div class="bulk-bar-controls">
-        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" name="bulkAction" aria-label="Bulk ticket status transition">
+        <label for="bulkTicketAction" class="visually-hidden">Bulk ticket status transition</label>
+        <select id="bulkTicketAction" class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" name="bulkAction">
           <option value="Resolved">Mark as Resolved</option>
           <option value="Closed">Mark as Closed</option>
           <option value="Open">Reopen (Open)</option>
@@ -52,7 +57,7 @@
           {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
         </button>
       </div>
-    </div>
+    </section>
   }
 
   <div class="support-layout" [class.has-panel]="selected() || isLoadingTicket()">
@@ -86,7 +91,7 @@
 
         @for (t of tickets(); track t.supportTicketId) {
           <div class="support-row-item" [class.is-selected]="selectedIds().has(t.supportTicketId)" [class.active]="selected()?.supportTicketId === t.supportTicketId" [class.unread]="t.unread">
-            <label class="support-row-cb-wrap" (click)="$event.stopPropagation()">
+            <label class="support-row-cb-wrap">
               <input
                 type="checkbox"
                 class="support-row-cb"
@@ -188,16 +193,26 @@
           <form class="panel-reply" (ngSubmit)="send()">
             <div class="canned-dropdown-bar">
               <label for="cannedSelect" class="canned-select-label"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Canned reply:</label>
-              <select id="cannedSelect" class="canned-select" (change)="onSelectCanned($event)" aria-label="Insert canned reply template">
+              <select id="cannedSelect" class="canned-select" (change)="onSelectCanned($event)">
                 <option value="" selected>Choose ready-made response (tracking, damaged, crystal care...)</option>
                 @for (c of cannedReplies; track c.label) {
                   <option [value]="c.text">{{ c.label }}</option>
                 }
               </select>
             </div>
-            <textarea name="reply" rows="4" maxlength="2000" [(ngModel)]="reply"
+            <label for="ticketReplyTextarea" class="visually-hidden">
+              {{ isInternal ? 'Internal note' : 'Reply to ' + t.customerName }}
+            </label>
+            <textarea
+              id="ticketReplyTextarea"
+              name="reply"
+              rows="4"
+              maxlength="2000"
+              [(ngModel)]="reply"
               [placeholder]="isInternal ? 'Internal note - only admins see this' : 'Reply to ' + t.customerName + '...'"
-              [class.internal]="isInternal"></textarea>
+              [class.internal]="isInternal"
+              [attr.aria-label]="isInternal ? 'Internal note' : 'Reply to ' + t.customerName"
+            ></textarea>
             <div class="panel-reply-bar">
               <label class="internal-toggle">
                 <input type="checkbox" name="isInternal" [(ngModel)]="isInternal" /> Internal note

@@ -286,13 +286,21 @@ export class AdminProducts implements OnInit {
     return this.formZodiacIds.includes(zodiacId);
   }
 
-  toggleZodiac(zodiacId: number, checked: boolean): void {
-    if (checked) {
-      if (!this.formZodiacIds.includes(zodiacId)) {
-        this.formZodiacIds = [...this.formZodiacIds, zodiacId];
-      }
+  addZodiac(zodiacId: number): void {
+    if (!this.formZodiacIds.includes(zodiacId)) {
+      this.formZodiacIds = [...this.formZodiacIds, zodiacId];
+    }
+  }
+
+  removeZodiac(zodiacId: number): void {
+    this.formZodiacIds = this.formZodiacIds.filter(id => id !== zodiacId);
+  }
+
+  toggleZodiac(zodiacId: number): void {
+    if (this.isZodiacSelected(zodiacId)) {
+      this.removeZodiac(zodiacId);
     } else {
-      this.formZodiacIds = this.formZodiacIds.filter(id => id !== zodiacId);
+      this.addZodiac(zodiacId);
     }
   }
 
@@ -336,7 +344,7 @@ export class AdminProducts implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export products.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export products.').then(message => this.toast.error(message));
       }
     });
   }

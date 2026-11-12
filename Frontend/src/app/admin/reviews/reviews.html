@@ -11,7 +11,9 @@
   </div>
 
   <div class="filter-bar reviews-filter-bar">
+    <label for="reviewSearch" class="visually-hidden">Search reviews</label>
     <input
+      id="reviewSearch"
       type="text"
       class="search-input"
       placeholder="Search by product, reviewer, or comment..."
@@ -20,7 +22,9 @@
       name="reviewSearch"
     />
 
+    <label for="minRating" class="visually-hidden">Filter by rating</label>
     <select
+      id="minRating"
       class="rating-filter"
       [ngModel]="minRating() ?? ''"
       (ngModelChange)="onMinRatingChange($event)"
@@ -34,7 +38,9 @@
       <option value="1">1 star &amp; up</option>
     </select>
 
+    <label for="statusFilter" class="visually-hidden">Filter by status</label>
     <select
+      id="statusFilter"
       class="rating-filter"
       [ngModel]="statusFilter() ?? ''"
       (ngModelChange)="onStatusFilterChange($event)"
@@ -46,7 +52,9 @@
       }
     </select>
 
+    <label for="photoFilter" class="visually-hidden">Filter by photo</label>
     <select
+      id="photoFilter"
       class="rating-filter"
       [ngModel]="photoFilter()"
       (ngModelChange)="onPhotoFilterChange($event)"
@@ -65,7 +73,8 @@
     <div class="bulk-action-bar">
       <span>{{ selectedIds().size }} selected</span>
 
-      <select class="rating-filter" [ngModel]="bulkStatus()" (ngModelChange)="bulkStatus.set($event)" name="bulkStatus">
+      <label for="bulkStatus" class="visually-hidden">Set bulk status</label>
+      <select id="bulkStatus" class="rating-filter" [ngModel]="bulkStatus()" (ngModelChange)="bulkStatus.set($event)" name="bulkStatus">
         <option value="">Set status to...</option>
         @for (status of statuses; track status) {
           <option [value]="status">{{ status }}</option>
@@ -150,8 +159,10 @@
               </td>
               <td data-label="Date">{{ review.createdAt | date:'dd MMM yyyy' }}</td>
               <td data-label="Status">
+                <label [for]="'reviewStatus_' + review.reviewId" class="visually-hidden">Status for review {{ review.reviewId }}</label>
                 <select
                   #statusSelect
+                  [id]="'reviewStatus_' + review.reviewId"
                   class="status-select"
                   [ngModel]="review.status"
                   [class]="review.status.toLowerCase()"
@@ -197,7 +208,7 @@
                       @for (photo of review.images; track photo.reviewImageId; let i = $index) {
                         <div [class]="'review-photo-card ' + photo.status.toLowerCase()" [class.is-busy]="updatingPhotoId() === photo.reviewImageId">
                           <button type="button" class="review-photo-open" [attr.aria-label]="'View photo ' + (i + 1) + ' full size'" (click)="openPhotos(review, i)">
-                            <img [src]="photo.imageUrl" [alt]="'Photo ' + (i + 1) + ' by ' + review.userName" loading="lazy" />
+                            <img [src]="photo.imageUrl" [alt]="'Attachment ' + (i + 1) + ' by ' + review.userName" loading="lazy" />
                             <span class="review-photo-zoom" aria-hidden="true">
                               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2M11 8.5v5M8.5 11h5"/></svg>
                             </span>
@@ -235,7 +246,9 @@
               <tr class="reply-row">
                 <td colspan="8">
                   <div class="reply-editor">
+                    <label [for]="'replyDraft_' + review.reviewId" class="visually-hidden">Reply to review by {{ review.userName }}</label>
                     <textarea
+                      [id]="'replyDraft_' + review.reviewId"
                       rows="2"
                       placeholder="Write a public reply to this review..."
                       [ngModel]="replyDraft()"

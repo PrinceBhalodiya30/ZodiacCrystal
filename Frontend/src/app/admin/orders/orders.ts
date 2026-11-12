@@ -31,10 +31,10 @@ function validStatus(value: string | null): string {
   return value && STATUSES.includes(value) ? value : '';
 }
 
-const PAYMENT_FILTERS = ['Paid', 'Pending', 'Refunded', 'Cancelled', 'Card', 'COD'];
+const PAYMENT_FILTERS = new Set(['Paid', 'Pending', 'Refunded', 'Cancelled', 'Card', 'COD']);
 
 function validPayment(value: string | null): string {
-  return value && PAYMENT_FILTERS.includes(value) ? value : '';
+  return value && PAYMENT_FILTERS.has(value) ? value : '';
 }
 
 @Component({
@@ -224,7 +224,7 @@ export class AdminOrders implements OnInit {
         },
         error: (err: unknown) => {
           this.isExporting.set(false);
-          blobErrorMessage(err, 'Unable to export orders.').then(message => this.toast.error(message));
+          void blobErrorMessage(err, 'Unable to export orders.').then(message => this.toast.error(message));
         }
       });
   }
@@ -243,12 +243,15 @@ export class AdminOrders implements OnInit {
       },
       error: (err: unknown) => {
         this.downloadingInvoiceId.set(null);
-        blobErrorMessage(err, `Unable to download the invoice for order #${orderId}.`).then(message => this.toast.error(message));
+        void blobErrorMessage(err, `Unable to download the invoice for order #${orderId}.`).then(message => this.toast.error(message));
       }
     });
   }
 
-  openOrder(order: AdminOrder): void {
+  openOrder(order: AdminOrder, event?: Event): void {
+    if ((event?.target as HTMLElement)?.closest?.('.cb-col')) {
+      return;
+    }
     this.openOrderId.set(order.orderId);
   }
 
@@ -344,17 +347,12 @@ export class AdminOrders implements OnInit {
     }
 
     this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let skippedCount = 0;
 
-    for (const id of ids) {
-      try {
-        await firstValueFrom(this.orderService.updateOrderStatus(id, action));
-        successCount++;
-      } catch {
-        skippedCount++;
-      }
-    }
+    const results = await Promise.allSettled(
+      ids.map(id => firstValueFrom(this.orderService.updateOrderStatus(id, action)))
+    );
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const skippedCount = results.length - successCount;
 
     this.isBulkUpdating.set(false);
     this.clearSelection();

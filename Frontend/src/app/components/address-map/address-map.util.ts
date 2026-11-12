@@ -50,7 +50,7 @@ export function buildLine(result: NominatimResult): string {
     .map(p => p.trim())
     .filter(p => {
       const k = p.toLowerCase();
-      if (!p || drop.has(k) || /^[1-9][0-9]{5}$/.test(p) || seen.has(k)) return false;
+      if (!p || drop.has(k) || /^[1-9]\d{5}$/.test(p) || seen.has(k)) return false;
       seen.add(k);
       return true;
     })
@@ -91,7 +91,7 @@ export function fromPhoton(f: PhotonFeature): NominatimResult {
 
 export function fromGoogle(formatted: string, parts: { name: string; types: string[] }[], name?: string): NominatimResult {
   const get = (type: string) => parts.find(p => p.types.includes(type))?.name;
-  let display_name = formatted.replace(/\s*\b[1-9][0-9]{5}\b/, '');
+  let display_name = formatted.replace(/\b[1-9]\d{5}\b/, '').replaceAll(' ,', ',').trim();
   if (name && !display_name.toLowerCase().includes(name.toLowerCase())) display_name = `${name}, ${display_name}`;
   return {
     lat: '',

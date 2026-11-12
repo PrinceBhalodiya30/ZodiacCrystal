@@ -1,3 +1,11 @@
+.form-grid .form-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-ink);
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
 /* Page-specific tweaks only - shared table/form styles live in admin-shared.css */
 
 /* Bulk actions */

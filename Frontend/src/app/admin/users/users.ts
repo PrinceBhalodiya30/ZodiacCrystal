@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,6 +22,8 @@ import { OrderDetailDrawer } from '../orders/order-detail-drawer/order-detail-dr
 
 const PAGE_SIZE = 20;
 
+type BulkUserAction = 'activate' | 'deactivate' | 'delete';
+
 @Component({
   selector: 'app-admin-users',
   standalone: true,
@@ -33,37 +35,37 @@ export class AdminUsers implements OnInit {
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
 
-  isExporting = signal(false);
-  selectedCustomerEmail = signal<string | null>(null);
-  selectedOrderId = signal<number | null>(null);
-  previousCustomerEmailForOrder = signal<string | null>(null);
+  readonly isExporting = signal(false);
+  readonly selectedCustomerEmail = signal<string | null>(null);
+  readonly selectedOrderId = signal<number | null>(null);
+  readonly previousCustomerEmailForOrder = signal<string | null>(null);
   private readonly authService = inject(AuthService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
-  users = signal<AdminUser[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
-  updatingUserId = signal<number | null>(null);
+  readonly users = signal<AdminUser[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly updatingUserId = signal<number | null>(null);
 
   // Multi-select & Bulk toolbar state
-  selectedIds = signal<Set<number>>(new Set());
-  selectedCount = computed(() => this.selectedIds().size);
-  pageAllSelected = computed(() => {
+  readonly selectedIds = signal<Set<number>>(new Set());
+  readonly selectedCount = computed(() => this.selectedIds().size);
+  readonly pageAllSelected = computed(() => {
     const selectable = this.users().filter(u => u.userId !== this.currentUserId);
     return selectable.length > 0 && selectable.every(u => this.selectedIds().has(u.userId));
   });
-  bulkAction = signal<'activate' | 'deactivate' | 'delete'>('activate');
-  isBulkUpdating = signal(false);
+  readonly bulkAction = signal<BulkUserAction>('activate');
+  readonly isBulkUpdating = signal(false);
 
-  page = signal(1);
-  totalPages = signal(1);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
   // Rows matching the current filters - shown on the Export button.
-  totalCount = signal(0);
-  searchTerm = signal('');
-  roleFilter = signal<'' | 'Admin' | 'User' | 'Guest'>('');
-  statusFilter = signal<'' | 'active' | 'inactive'>('');
-  hasFilters = computed(() => !!this.searchTerm().trim() || !!this.roleFilter() || !!this.statusFilter());
+  readonly totalCount = signal(0);
+  readonly searchTerm = signal('');
+  readonly roleFilter = signal<'' | 'Admin' | 'User' | 'Guest'>('');
+  readonly statusFilter = signal<'' | 'active' | 'inactive'>('');
+  readonly hasFilters = computed(() => !!this.searchTerm().trim() || !!this.roleFilter() || !!this.statusFilter());
 
   // A logged-in admin can't deactivate their own account (also enforced server-side).
   get currentUserId(): number | undefined {
@@ -72,7 +74,7 @@ export class AdminUsers implements OnInit {
 
   private loadSubscription?: Subscription;
   // Typing searches once the admin pauses, instead of on every keystroke.
-  onSearchInput = debounced((term: string) => this.onSearchChange(term));
+  readonly onSearchInput = debounced((term: string) => this.onSearchChange(term));
 
   constructor() {
     // A customer just registered (SignalR) - reload the list.
@@ -217,7 +219,7 @@ export class AdminUsers implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export users.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export users.').then(message => this.toast.error(message));
       }
     });
   }
@@ -260,56 +262,72 @@ export class AdminUsers implements OnInit {
     this.selectedIds.set(new Set());
   }
 
-  async applyBulkAction(): Promise<void> {
-    const ids = Array.from(this.selectedIds()).filter(id => id !== this.currentUserId);
-    if (ids.length === 0 || this.isBulkUpdating()) return;
-
-    const action = this.bulkAction();
-    const count = ids.length;
-
+  private async confirmBulkAction(action: BulkUserAction, count: number): Promise<boolean> {
     if (action === 'delete') {
-      const confirmed = await this.confirmDialog.confirm(
+      return this.confirmDialog.confirm(
         `Are you sure you want to delete ${count} selected user(s)? If any have order history, their accounts will be deactivated and retained to preserve business records.`,
         { confirmLabel: 'Delete Users', cancelLabel: 'Cancel', danger: true }
       );
-      if (!confirmed) return;
-    } else if (action === 'deactivate') {
-      const confirmed = await this.confirmDialog.confirm(
+    }
+    if (action === 'deactivate') {
+      return this.confirmDialog.confirm(
         `Are you sure you want to deactivate ${count} selected user(s)? They will be logged out and unable to sign in.`,
         { confirmLabel: 'Deactivate Users', cancelLabel: 'Cancel', danger: true }
       );
-      if (!confirmed) return;
     }
+    return true;
+  }
 
-    this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let failedCount = 0;
-
-    for (const id of ids) {
-      try {
-        if (action === 'delete') {
-          await firstValueFrom(this.userService.deleteUser(id));
-        } else {
-          await firstValueFrom(this.userService.updateUserStatus(id, action === 'activate'));
-        }
-        successCount++;
-      } catch {
-        failedCount++;
-      }
+  private executeSingleBulkUserAction(id: number, action: BulkUserAction): Observable<unknown> {
+    if (action === 'delete') {
+      return this.userService.deleteUser(id);
     }
+    return this.userService.updateUserStatus(id, action === 'activate');
+  }
 
-    this.isBulkUpdating.set(false);
-    this.clearSelection();
-    this.loadUsers();
+  private getBulkActionVerb(action: BulkUserAction): string {
+    switch (action) {
+      case 'delete':
+        return 'deleted';
+      case 'activate':
+        return 'activated';
+      case 'deactivate':
+        return 'deactivated';
+    }
+  }
 
-    const actionVerb = action === 'delete' ? 'deleted' : action === 'activate' ? 'activated' : 'deactivated';
+  private notifyBulkActionResult(action: BulkUserAction, successCount: number, failedCount: number): void {
     if (successCount > 0 && failedCount === 0) {
-      this.toast.success(`Successfully ${actionVerb} ${successCount} user(s).`);
+      const verb = this.getBulkActionVerb(action);
+      this.toast.success(`Successfully ${verb} ${successCount} user(s).`);
     } else if (successCount > 0 && failedCount > 0) {
       this.toast.success(`Updated ${successCount} user(s); ${failedCount} could not be updated.`);
     } else if (failedCount > 0) {
       this.toast.error(`Unable to update ${failedCount} user(s).`);
     }
+  }
+
+  async applyBulkAction(): Promise<void> {
+    const ids = Array.from(this.selectedIds()).filter(id => id !== this.currentUserId);
+    if (ids.length === 0 || this.isBulkUpdating()) return;
+
+    const action = this.bulkAction();
+    const confirmed = await this.confirmBulkAction(action, ids.length);
+    if (!confirmed) return;
+
+    this.isBulkUpdating.set(true);
+
+    const requests = ids.map(id => firstValueFrom(this.executeSingleBulkUserAction(id, action)));
+    const results = await Promise.allSettled(requests);
+
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
+
+    this.isBulkUpdating.set(false);
+    this.clearSelection();
+    this.loadUsers();
+
+    this.notifyBulkActionResult(action, successCount, failedCount);
   }
 
   onViewOrder(orderId: number): void {

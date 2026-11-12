@@ -1,14 +1,18 @@
 @if (isOpen()) {
-  <div class="palette-backdrop" (click)="close()">
-    <div
+  <div
+    class="palette-backdrop"
+    tabindex="-1"
+    (click)="$event.target === $event.currentTarget && close()"
+    (keydown)="$event.key === 'Escape' && close()"
+  >
+    <dialog
+      open
       class="palette-dialog"
-      role="dialog"
-      aria-modal="true"
       aria-label="Admin Command Palette"
-      (click)="$event.stopPropagation()"
     >
       <!-- Search Input Header -->
       <div class="palette-input-box">
+        <label for="commandPaletteSearch" class="sr-only">Search commands, pages, and orders</label>
         <span class="palette-search-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -17,29 +21,30 @@
         </span>
         <input
           #searchInput
+          id="commandPaletteSearch"
           type="text"
           class="palette-input"
           placeholder="Type an order #, product, customer, or admin page..."
+          aria-label="Search admin commands, pages, and orders"
           [ngModel]="query()"
           (ngModelChange)="onQueryChange($event)"
           (keydown)="onKeydown($event)"
         />
-        <div class="palette-esc-badge" (click)="close()">ESC</div>
+        <button type="button" class="palette-esc-badge" (click)="close()" aria-label="Close command palette">ESC</button>
       </div>
 
       <!-- Commands & Results List -->
-      <div class="palette-list" role="listbox">
+      <div class="palette-list">
         @if (filteredCommands().length === 0) {
           <div class="palette-empty">
             <p>No matching pages, orders, or items found for "{{ query() }}"</p>
           </div>
         } @else {
           @for (item of filteredCommands(); track item.id; let idx = $index) {
-            <div
+            <button
+              type="button"
               class="palette-item"
               [class.is-selected]="selectedIndex() === idx"
-              role="option"
-              [attr.aria-selected]="selectedIndex() === idx"
               (click)="executeCommand(item)"
               (mouseenter)="selectedIndex.set(idx)"
             >
@@ -51,7 +56,7 @@
                 }
               </div>
               <span class="palette-category-badge">{{ item.category }}</span>
-            </div>
+            </button>
           }
         }
       </div>
@@ -65,6 +70,6 @@
         </div>
         <div class="palette-hint">Crystal Studio Admin Spotlight</div>
       </footer>
-    </div>
+    </dialog>
   </div>
 }

@@ -30,45 +30,45 @@ export class AdminStock implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly confirmDialog = inject(ConfirmDialogService);
 
-  products = signal<Product[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly products = signal<Product[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  page = signal(1);
-  totalPages = signal(1);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
   // Rows matching the current filters - shown on the Export button.
-  totalCount = signal(0);
-  searchTerm = signal('');
-  isExporting = signal(false);
+  readonly totalCount = signal(0);
+  readonly searchTerm = signal('');
+  readonly isExporting = signal(false);
   // Opened with ?lowStock=1 from a low-stock notification.
-  lowStockOnly = signal(inject(ActivatedRoute).snapshot.queryParamMap.get('lowStock') === '1');
+  readonly lowStockOnly = signal(inject(ActivatedRoute).snapshot.queryParamMap.get('lowStock') === '1');
 
   // Multi-select & Bulk toolbar state
-  selectedIds = signal<Set<number>>(new Set());
-  selectedCount = computed(() => this.selectedIds().size);
-  pageAllSelected = computed(() => {
+  readonly selectedIds = signal<Set<number>>(new Set());
+  readonly selectedCount = computed(() => this.selectedIds().size);
+  readonly pageAllSelected = computed(() => {
     const items = this.products();
     return items.length > 0 && items.every(p => this.selectedIds().has(p.productId));
   });
 
-  bulkAction = signal<'add' | 'subtract' | 'set' | 'outOfStock'>('add');
-  bulkQuantity = signal<number | null>(10);
-  isBulkUpdating = signal(false);
-  isSavingAll = signal(false);
+  readonly bulkAction = signal<'add' | 'subtract' | 'set' | 'outOfStock'>('add');
+  readonly bulkQuantity = signal<number | null>(10);
+  readonly isBulkUpdating = signal(false);
+  readonly isSavingAll = signal(false);
 
   // productId -> pending edited stock value (kept separate from the loaded
   // product so the Save button only appears once the value actually changes).
   stockEdits: Record<number, number | null> = {};
-  savingProductId = signal<number | null>(null);
+  readonly savingProductId = signal<number | null>(null);
   rowErrors: Record<number, string> = {};
 
-  changedCount = computed(() => {
+  readonly changedCount = computed(() => {
     return this.products().filter(p => this.hasChanged(p)).length;
   });
 
   private loadSubscription?: Subscription;
   // Typing searches once the admin pauses, instead of on every keystroke.
-  onSearchInput = debounced((term: string) => this.onSearchChange(term));
+  readonly onSearchInput = debounced((term: string) => this.onSearchChange(term));
 
   constructor() {
     // Live stock (SignalR): orders, cancellations and restocks update the rows
@@ -150,7 +150,7 @@ export class AdminStock implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export stock.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export stock.').then(message => this.toast.error(message));
       }
     });
   }
@@ -234,28 +234,13 @@ export class AdminStock implements OnInit {
     this.productService.adjustStock(product.productId, delta).subscribe({
       next: result => {
         this.savingProductId.set(null);
-        this.products.update(items =>
-          items.map(p =>
-            p.productId === product.productId ? { ...p, stockQuantity: result.stockQuantity } : p
-          )
-        );
-        this.stockEdits[product.productId] = result.stockQuantity;
+        this.updateProductState(product.productId, result.stockQuantity);
         const sign = delta > 0 ? '+' : '';
         this.toast.success(`"${product.name}": ${sign}${delta} (now ${result.stockQuantity} in stock).`);
       },
       error: (error: HttpErrorResponse) => {
         this.savingProductId.set(null);
-        // 409: orders took stock since load - show the live number so the admin can re-enter.
-        if (error.status === 409 && typeof error.error?.stockQuantity === 'number') {
-          this.products.update(items =>
-            items.map(p =>
-              p.productId === product.productId ? { ...p, stockQuantity: error.error.stockQuantity } : p
-            )
-          );
-          this.stockEdits[product.productId] = error.error.stockQuantity;
-        }
-        this.rowErrors[product.productId] =
-          error.error?.message || 'Unable to update stock.';
+        this.handleProductStockError(product.productId, error);
       }
     });
   }
@@ -295,51 +280,94 @@ export class AdminStock implements OnInit {
     this.selectedIds.set(new Set());
   }
 
+  private updateProductState(productId: number, stockQuantity: number): void {
+    this.products.update(items =>
+      items.map(p => p.productId === productId ? { ...p, stockQuantity } : p)
+    );
+    this.stockEdits[productId] = stockQuantity;
+    delete this.rowErrors[productId];
+  }
+
+  private handleProductStockError(productId: number, err: unknown): void {
+    const error = err as HttpErrorResponse;
+    if (error.status === 409 && typeof error.error?.stockQuantity === 'number') {
+      this.updateProductState(productId, error.error.stockQuantity);
+    }
+    this.rowErrors[productId] = error.error?.message || 'Unable to update stock.';
+  }
+
+  private async saveSingleProductStock(p: Product): Promise<boolean> {
+    const newStock = this.stockEdits[p.productId];
+    if (newStock === null || newStock === undefined || !Number.isInteger(newStock) || newStock < 0) {
+      this.rowErrors[p.productId] = 'Enter a whole number, 0 or more.';
+      return false;
+    }
+
+    const delta = newStock - p.stockQuantity;
+    try {
+      const result = await firstValueFrom(this.productService.adjustStock(p.productId, delta));
+      this.updateProductState(p.productId, result.stockQuantity);
+      return true;
+    } catch (err: unknown) {
+      this.handleProductStockError(p.productId, err);
+      return false;
+    }
+  }
+
   async saveAllChanged(): Promise<void> {
     const changed = this.products().filter(p => this.hasChanged(p));
     if (changed.length === 0 || this.isSavingAll()) return;
 
     this.isSavingAll.set(true);
-    let successCount = 0;
-    let failedCount = 0;
 
-    for (const p of changed) {
-      const newStock = this.stockEdits[p.productId];
-      if (newStock === null || newStock === undefined || !Number.isInteger(newStock) || newStock < 0) {
-        this.rowErrors[p.productId] = 'Enter a whole number, 0 or more.';
-        failedCount++;
-        continue;
-      }
-
-      delete this.rowErrors[p.productId];
-      const delta = newStock - p.stockQuantity;
-      try {
-        const result = await firstValueFrom(this.productService.adjustStock(p.productId, delta));
-        this.products.update(items =>
-          items.map(item => item.productId === p.productId ? { ...item, stockQuantity: result.stockQuantity } : item)
-        );
-        this.stockEdits[p.productId] = result.stockQuantity;
-        successCount++;
-      } catch (err: unknown) {
-        failedCount++;
-        const error = err as HttpErrorResponse;
-        if (error.status === 409 && typeof error.error?.stockQuantity === 'number') {
-          this.products.update(items =>
-            items.map(item => item.productId === p.productId ? { ...item, stockQuantity: error.error.stockQuantity } : item)
-          );
-          this.stockEdits[p.productId] = error.error.stockQuantity;
-        }
-        this.rowErrors[p.productId] = error.error?.message || 'Failed to update';
-      }
-    }
+    const results = await Promise.all(changed.map(p => this.saveSingleProductStock(p)));
+    const successCount = results.filter(Boolean).length;
+    const failedCount = results.length - successCount;
 
     this.isSavingAll.set(false);
+    this.notifySaveAllResult(successCount, failedCount);
+  }
+
+  private notifySaveAllResult(successCount: number, failedCount: number): void {
     if (successCount > 0 && failedCount === 0) {
       this.toast.success(`Saved all stock changes (${successCount} product${successCount === 1 ? '' : 's'}).`);
     } else if (successCount > 0 && failedCount > 0) {
       this.toast.success(`Updated ${successCount} product(s); ${failedCount} could not be updated.`);
     } else if (failedCount > 0) {
       this.toast.error(`Unable to update ${failedCount} product(s). Please review row errors.`);
+    }
+  }
+
+  private computeBulkDelta(p: Product, action: string, qty: number): number {
+    if (action === 'add') {
+      return qty;
+    }
+    if (action === 'subtract') {
+      return -Math.min(p.stockQuantity, qty);
+    }
+    if (action === 'set') {
+      return qty - p.stockQuantity;
+    }
+    if (action === 'outOfStock') {
+      return -p.stockQuantity;
+    }
+    return 0;
+  }
+
+  private async applyBulkDeltaToProduct(id: number, action: string, qty: number): Promise<boolean> {
+    const p = this.products().find(item => item.productId === id);
+    if (!p) return true;
+
+    const delta = this.computeBulkDelta(p, action, qty);
+    if (delta === 0) return true;
+
+    try {
+      const result = await firstValueFrom(this.productService.adjustStock(id, delta));
+      this.updateProductState(id, result.stockQuantity);
+      return true;
+    } catch (err: unknown) {
+      this.handleProductStockError(id, err);
+      return false;
     }
   }
 
@@ -350,7 +378,7 @@ export class AdminStock implements OnInit {
     const action = this.bulkAction();
     const qty = this.bulkQuantity() ?? 0;
 
-    if (action !== 'outOfStock' && (qty === null || qty === undefined || isNaN(qty) || qty < 0 || !Number.isInteger(qty))) {
+    if (action !== 'outOfStock' && (Number.isNaN(qty) || qty < 0 || !Number.isInteger(qty))) {
       this.toast.error('Please enter a valid whole number for quantity.');
       return;
     }
@@ -364,53 +392,18 @@ export class AdminStock implements OnInit {
     }
 
     this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let failedCount = 0;
 
-    for (const id of ids) {
-      const p = this.products().find(item => item.productId === id);
-      if (!p) continue;
-
-      let delta = 0;
-      if (action === 'add') {
-        delta = qty;
-      } else if (action === 'subtract') {
-        delta = -Math.min(p.stockQuantity, qty);
-      } else if (action === 'set') {
-        delta = qty - p.stockQuantity;
-      } else if (action === 'outOfStock') {
-        delta = -p.stockQuantity;
-      }
-
-      if (delta === 0) {
-        successCount++;
-        continue;
-      }
-
-      try {
-        const result = await firstValueFrom(this.productService.adjustStock(id, delta));
-        this.products.update(items =>
-          items.map(item => item.productId === id ? { ...item, stockQuantity: result.stockQuantity } : item)
-        );
-        this.stockEdits[id] = result.stockQuantity;
-        delete this.rowErrors[id];
-        successCount++;
-      } catch (err: unknown) {
-        failedCount++;
-        const error = err as HttpErrorResponse;
-        if (error.status === 409 && typeof error.error?.stockQuantity === 'number') {
-          this.products.update(items =>
-            items.map(item => item.productId === id ? { ...item, stockQuantity: error.error.stockQuantity } : item)
-          );
-          this.stockEdits[id] = error.error.stockQuantity;
-        }
-        this.rowErrors[id] = error.error?.message || 'Failed to update';
-      }
-    }
+    const results = await Promise.all(ids.map(id => this.applyBulkDeltaToProduct(id, action, qty)));
+    const successCount = results.filter(Boolean).length;
+    const failedCount = results.length - successCount;
 
     this.isBulkUpdating.set(false);
     this.clearSelection();
 
+    this.notifyBulkStockResult(successCount, failedCount);
+  }
+
+  private notifyBulkStockResult(successCount: number, failedCount: number): void {
     if (successCount > 0 && failedCount === 0) {
       this.toast.success(`Successfully updated stock for ${successCount} product(s).`);
     } else if (successCount > 0 && failedCount > 0) {

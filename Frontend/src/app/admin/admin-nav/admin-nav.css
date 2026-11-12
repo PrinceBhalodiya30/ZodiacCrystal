@@ -103,13 +103,13 @@
   color: var(--color-brand);
 }
 
-.admin-nav-back {
-  color: var(--color-brand) !important;
+.admin-nav a.admin-nav-back {
+  color: var(--color-brand);
   font-weight: 600;
 }
 
-.admin-nav-back:hover {
-  background-color: var(--color-tint) !important;
+.admin-nav a.admin-nav-back:hover {
+  background-color: var(--color-tint);
 }
 
 /* On small screens the footer shows icons only, to leave room for the links. */
@@ -254,7 +254,7 @@
   font-size: 0.8rem;
   color: var(--color-muted, #777);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .admin-nav-search-btn:hover {

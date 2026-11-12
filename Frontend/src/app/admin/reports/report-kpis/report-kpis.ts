@@ -27,8 +27,8 @@ interface KpiCard {
   styleUrl: './report-kpis.css'
 })
 export class ReportKpis {
-  private current = signal<ReportSummary | null>(null);
-  private before = signal<ReportSummary | null>(null);
+  private readonly current = signal<ReportSummary | null>(null);
+  private readonly before = signal<ReportSummary | null>(null);
 
   @Input({ required: true }) set summary(value: ReportSummary) {
     this.current.set(value);
@@ -41,7 +41,7 @@ export class ReportKpis {
   // e.g. "1 Sept – 30 Sept", shown on hover of each change chip.
   @Input() previousLabel = 'previous period';
 
-  cards = computed<KpiCard[]>(() => {
+  readonly cards = computed<KpiCard[]>(() => {
     const s = this.current();
     if (!s) {
       return [];
@@ -55,7 +55,7 @@ export class ReportKpis {
   });
 
   // Where the money stands: collected, still to collect (COD), refunded.
-  money = computed(() => {
+  readonly money = computed(() => {
     const s = this.current();
     if (!s) {
       return null;
@@ -87,8 +87,16 @@ export class ReportKpis {
     const up = change > 0.05;
     const down = change < -0.05;
     const lowerIsBetter = key === 'cancelledOrders';
+
+    let indicator = '•';
+    if (up) {
+      indicator = '▲';
+    } else if (down) {
+      indicator = '▼';
+    }
+
     return {
-      text: `${up ? '▲' : down ? '▼' : '•'} ${Math.abs(change).toLocaleString('en-IN', { maximumFractionDigits: 1 })}%`,
+      text: `${indicator} ${Math.abs(change).toLocaleString('en-IN', { maximumFractionDigits: 1 })}%`,
       good: lowerIsBetter ? down : up,
       bad: lowerIsBetter ? up : down
     };

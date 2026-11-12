@@ -1,7 +1,12 @@
-<div class="modal-overlay" (click)="close()">
-  <div class="modal-panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+<div
+  class="modal-overlay"
+  tabindex="-1"
+  (click)="$event.target === $event.currentTarget && close()"
+  (keydown)="$event.key === 'Escape' && close()"
+>
+  <dialog class="modal-panel" open aria-labelledby="imageModalTitle">
     <div class="modal-header">
-      <h2>Images - {{ product.name }}</h2>
+      <h2 id="imageModalTitle">Images - {{ product.name }}</h2>
       <button type="button" class="chip-btn" (click)="close()">Close</button>
     </div>
 
@@ -33,9 +38,10 @@
     }
 
     <div class="add-image-form">
-      <label class="add-image-label">Upload an image</label>
+      <label for="newImageFileInput" class="add-image-label">Upload an image</label>
       <div class="add-image-row">
         <input
+          id="newImageFileInput"
           type="file"
           accept="image/jpeg,image/png,image/webp"
           (change)="onFileSelected($event)"
@@ -46,9 +52,10 @@
         </button>
       </div>
 
-      <label class="add-image-label">Or use an image URL</label>
+      <label for="newImageUrlInput" class="add-image-label">Or use an image URL</label>
       <div class="add-image-row">
         <input
+          id="newImageUrlInput"
           type="text"
           placeholder="Image URL"
           [(ngModel)]="newImageUrl"
@@ -59,5 +66,5 @@
         </button>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>

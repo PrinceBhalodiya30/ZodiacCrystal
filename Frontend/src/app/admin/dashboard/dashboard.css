@@ -182,7 +182,7 @@
 
 .trend--up {
   background-color: #ecf8f1;
-  color: #2f8a57;
+  color: #1e6b3e;
 }
 
 .trend--down {
@@ -439,6 +439,10 @@
 }
 
 /* Loading skeleton */
+.skeleton {
+  display: block;
+}
+
 .sk {
   display: block;
   border-radius: 6px;
@@ -721,7 +725,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .admin-dashboard-page * {
-    transition: none !important;
-    animation: none !important;
+    transition: none;
+    animation: none;
   }
 }

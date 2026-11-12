@@ -4,7 +4,7 @@
       <h2 id="insightsTitle">Store insights</h2>
       <p class="insights-sub">Orders placed in the last {{ rangeDays() }} days</p>
     </div>
-    <div class="range-toggle" role="group" aria-label="Date range">
+    <fieldset class="range-toggle" aria-label="Date range">
       @for (range of ranges; track range.days) {
         <button
           type="button"
@@ -13,7 +13,7 @@
           (click)="setRange(range.days)"
         >{{ range.label }}</button>
       }
-    </div>
+    </fieldset>
   </header>
 
   @if (hasError() && !isLoading()) {
@@ -21,11 +21,11 @@
   }
 
   @if (isLoading()) {
-    <div class="insights-grid" role="status" aria-label="Loading insights">
+    <output class="insights-grid" aria-label="Loading insights">
       @for (i of [1, 2, 3, 4]; track i) {
         <div class="ins-panel"><span class="ins-sk ins-sk--title"></span><span class="ins-sk ins-sk--body"></span></div>
       }
-    </div>
+    </output>
   } @else {
     <div class="insights-grid">
       <!-- Order outcomes + why customers cancel -->

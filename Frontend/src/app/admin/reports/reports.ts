@@ -82,10 +82,10 @@ export class AdminReports implements OnInit {
   private readonly quizService = inject(QuizService);
   private readonly toast = inject(ToastService);
 
-  isExporting = signal(false);
-  isExportingConsultation = signal(false);
+  readonly isExporting = signal(false);
+  readonly isExportingConsultation = signal(false);
 
-  preset = signal<DatePreset>('last30');
+  readonly preset = signal<DatePreset>('last30');
   customFrom = '';
   customTo = '';
   readonly todayKey = toDateKey(new Date());
@@ -94,42 +94,42 @@ export class AdminReports implements OnInit {
   private insightsSubscription?: Subscription;
 
   // Loaded separately from the main report: null = that panel failed, [] = no data.
-  zodiacSales = signal<ZodiacSales[] | null>([]);
-  couponPerformance = signal<CouponPerformance[] | null>([]);
-  unsoldProducts = signal<UnsoldProducts | null>({ totalCount: 0, items: [] });
-  consultationInsights = signal<ConsultationInsights | null>(null);
-  insightsLoading = signal(true);
+  readonly zodiacSales = signal<ZodiacSales[] | null>([]);
+  readonly couponPerformance = signal<CouponPerformance[] | null>([]);
+  readonly unsoldProducts = signal<UnsoldProducts | null>({ totalCount: 0, items: [] });
+  readonly consultationInsights = signal<ConsultationInsights | null>(null);
+  readonly insightsLoading = signal(true);
 
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  summary = signal<ReportSummary | null>(null);
-  previousSummary = signal<ReportSummary | null>(null);
+  readonly summary = signal<ReportSummary | null>(null);
+  readonly previousSummary = signal<ReportSummary | null>(null);
   // Bumped on every reload (including live ones) so the Operations section follows.
-  refreshTick = signal(0);
-  topProducts = signal<TopProduct[]>([]);
-  categorySales = signal<CategorySales[]>([]);
-  dailySales = signal<DailySales[]>([]);
-  previousDailySales = signal<DailySales[]>([]);
-  previousTopProducts = signal<TopProduct[] | null>(null);
+  readonly refreshTick = signal(0);
+  readonly topProducts = signal<TopProduct[]>([]);
+  readonly categorySales = signal<CategorySales[]>([]);
+  readonly dailySales = signal<DailySales[]>([]);
+  readonly previousDailySales = signal<DailySales[]>([]);
+  readonly previousTopProducts = signal<TopProduct[] | null>(null);
 
   // The range the loaded data covers, and the same-length range before it.
-  loadedRange = signal<{ from: string; to: string } | null>(null);
-  rankMetric = signal<RankMetric>('revenue');
+  readonly loadedRange = signal<{ from: string; to: string } | null>(null);
+  readonly rankMetric = signal<RankMetric>('revenue');
 
-  granularity = computed(() => {
+  readonly granularity = computed(() => {
     const range = this.loadedRange();
     return range ? granularityFor(range.from, range.to) : 'day';
   });
 
-  granularityLabel = computed(() => GRANULARITY_LABEL[this.granularity()]);
+  readonly granularityLabel = computed(() => GRANULARITY_LABEL[this.granularity()]);
 
-  private currentSeries = computed(() => {
+  private readonly currentSeries = computed(() => {
     const range = this.loadedRange();
     return range ? buildSalesSeries(this.dailySales(), range.from, range.to, this.granularity()) : [];
   });
 
-  private previousSeries = computed(() => {
+  private readonly previousSeries = computed(() => {
     const range = this.loadedRange();
     if (!range) {
       return [];
@@ -140,7 +140,7 @@ export class AdminReports implements OnInit {
 
   // Previous period on the same buckets, drawn dashed behind the chart (null
   // when the bucket counts differ, e.g. a month with a different length).
-  previousChartValues = computed<number[] | null>(() => {
+  readonly previousChartValues = computed<number[] | null>(() => {
     const previous = this.previousSeries();
     return previous.length === this.currentSeries().length && previous.some(b => b.revenue > 0)
       ? previous.map(b => b.revenue)
@@ -148,7 +148,7 @@ export class AdminReports implements OnInit {
   });
 
   // One point per day/week/month; the tooltip adds the order count and average.
-  salesChartData = computed<AreaChartPoint[]>(() => {
+  readonly salesChartData = computed<AreaChartPoint[]>(() => {
     const money = (v: number) => `₹${v.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
     return this.currentSeries().map(bucket => ({
       label: bucket.label,
@@ -333,7 +333,7 @@ export class AdminReports implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export the report.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export the report.').then(message => this.toast.error(message));
       }
     });
   }
@@ -383,7 +383,7 @@ export class AdminReports implements OnInit {
   }
 
   // Top products, each with how its rank moved against the previous period.
-  leaderboard = computed<LeaderboardRow[]>(() => {
+  readonly leaderboard = computed<LeaderboardRow[]>(() => {
     const previous = this.previousTopProducts();
     const previousRank = new Map<number, number>();
     const compare = this.hasPreviousPeriod();
@@ -398,9 +398,15 @@ export class AdminReports implements OnInit {
         let movement: Movement | null = null;
         if (compare) {
           const before = previousRank.get(p.productId);
-          movement = before == null ? { kind: 'new' }
-            : before === rank ? { kind: 'same' }
-            : { kind: before > rank ? 'up' : 'down', places: Math.abs(before - rank) };
+          if (before == null) {
+            movement = { kind: 'new' };
+          } else if (before === rank) {
+            movement = { kind: 'same' };
+          } else if (before > rank) {
+            movement = { kind: 'up', places: before - rank };
+          } else {
+            movement = { kind: 'down', places: rank - before };
+          }
         }
         return { rank, productId: p.productId, name: p.productName, units: p.quantitySold, revenue: p.revenue, movement };
       });
@@ -408,10 +414,10 @@ export class AdminReports implements OnInit {
 
   // Only compare ranks when the previous period actually had sales; otherwise
   // every row would just say "New".
-  hasPreviousPeriod = computed(() => (this.previousTopProducts()?.length ?? 0) > 0);
+  readonly hasPreviousPeriod = computed(() => (this.previousTopProducts()?.length ?? 0) > 0);
 
   // Category share of sales as donut slices; small categories are grouped into "Other".
-  donutSlices = computed<DonutSlice[]>(() => {
+  readonly donutSlices = computed<DonutSlice[]>(() => {
     const metric = this.rankMetric();
     const valueOf = (c: CategorySales) => (metric === 'revenue' ? c.revenue : c.quantitySold);
     const sorted = this.sortByMetric(this.categorySales()).filter(c => valueOf(c) > 0);

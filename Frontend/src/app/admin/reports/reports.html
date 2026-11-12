@@ -67,10 +67,10 @@
 
     <div class="rank-head">
       <h2 class="stat-group-title">Best Sellers</h2>
-      <div class="segmented" role="group" aria-label="Rank by">
+      <fieldset class="segmented" aria-label="Rank by">
         <button type="button" [class.active]="rankMetric() === 'revenue'" [attr.aria-pressed]="rankMetric() === 'revenue'" (click)="setRankMetric('revenue')">Revenue</button>
         <button type="button" [class.active]="rankMetric() === 'units'" [attr.aria-pressed]="rankMetric() === 'units'" (click)="setRankMetric('units')">Units</button>
-      </div>
+      </fieldset>
     </div>
 
     <div class="best-sellers-grid">

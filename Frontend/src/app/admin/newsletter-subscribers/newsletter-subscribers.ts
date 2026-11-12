@@ -182,7 +182,7 @@ export class AdminNewsletterSubscribers implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export subscribers.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export subscribers.').then(message => this.toast.error(message));
       }
     });
   }
@@ -234,17 +234,12 @@ export class AdminNewsletterSubscribers implements OnInit {
     if (!confirmed) return;
 
     this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let failedCount = 0;
 
-    for (const id of ids) {
-      try {
-        await firstValueFrom(this.newsletterService.unsubscribeAdmin(id));
-        successCount++;
-      } catch {
-        failedCount++;
-      }
-    }
+    const results = await Promise.allSettled(
+      ids.map(id => firstValueFrom(this.newsletterService.unsubscribeAdmin(id)))
+    );
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
 
     this.isBulkUpdating.set(false);
     this.clearSelection();

@@ -24,6 +24,7 @@
 }
 
 .modal-panel {
+  border: none;
   background: #ffffff;
   border-radius: 6px;
   padding: 1.5rem;
@@ -32,6 +33,13 @@
   max-height: 85vh;
   overflow-y: auto;
   animation: image-modal-pop 0.18s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-panel {
+    animation: none;
+  }
 }
 
 .modal-header {

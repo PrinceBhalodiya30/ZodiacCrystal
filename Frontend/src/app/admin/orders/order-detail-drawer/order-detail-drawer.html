@@ -1,10 +1,13 @@
-<div class="admin-drawer-overlay" animate.leave="is-leaving" (click)="close()">
+<div
+  class="admin-drawer-overlay"
+  animate.leave="is-leaving"
+  tabindex="-1"
+  (click)="$event.target === $event.currentTarget && close()"
+  (keydown.escape)="close()"
+>
   <aside
     class="order-drawer"
-    role="dialog"
-    aria-modal="true"
     aria-labelledby="orderDrawerTitle"
-    (click)="$event.stopPropagation()"
   >
     <header class="drawer-header">
       <div class="drawer-header-left">
@@ -33,7 +36,7 @@
     </header>
 
     @if (isLoading()) {
-      <span class="visually-hidden" role="status">Loading order...</span>
+      <output class="visually-hidden">Loading order...</output>
       <div class="drawer-body" aria-hidden="true">
         <span class="skeleton skeleton-h-xl"></span>
         <span class="skeleton skeleton-h-2xl"></span>
@@ -272,8 +275,13 @@
 
       <!-- Printable Packing Slip (Visible in Print Mode or Preview) -->
       @if (isPrintingSlip()) {
-        <div class="print-preview-modal" (click)="closePrintSlip()">
-          <div class="print-preview-dialog" (click)="$event.stopPropagation()">
+        <div
+          class="print-preview-modal"
+          tabindex="-1"
+          (click)="$event.target === $event.currentTarget && closePrintSlip()"
+          (keydown.escape)="closePrintSlip()"
+        >
+          <div class="print-preview-dialog">
             <div class="print-preview-toolbar no-print">
               <span>Packing Slip Preview</span>
               <div class="print-toolbar-actions">

@@ -120,7 +120,7 @@ export class OrderDetailDrawer implements OnInit {
       next: res => {
         const orderLogs = (res.items || []).filter(
           log => log.entityId === this.orderId ||
-                 (log.details && log.details.includes(this.orderId.toString()))
+                 log.details?.includes(this.orderId.toString())
         );
         this.auditLogs.set(orderLogs);
       },
@@ -146,7 +146,7 @@ export class OrderDetailDrawer implements OnInit {
         const titleLower = event.title.toLowerCase();
         const actionLower = l.action.toLowerCase();
         return actionLower.includes(titleLower) ||
-               (l.details && l.details.toLowerCase().includes(titleLower));
+               l.details?.toLowerCase().includes(titleLower);
       });
 
       if (matchingLog) {
@@ -329,7 +329,7 @@ export class OrderDetailDrawer implements OnInit {
       },
       error: (err: unknown) => {
         this.isDownloadingInvoice.set(false);
-        blobErrorMessage(err, `Unable to download the invoice for order #${this.orderId}.`).then(message => this.toast.error(message));
+        void blobErrorMessage(err, `Unable to download the invoice for order #${this.orderId}.`).then(message => this.toast.error(message));
       }
     });
   }

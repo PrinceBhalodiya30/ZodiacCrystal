@@ -19,6 +19,7 @@ import { NotificationService } from '../../services/notification.service';
 const PAGE_SIZE = 20;
 
 type CouponStatus = 'active' | 'scheduled' | 'expired' | 'usedup' | 'inactive';
+type CouponBulkAction = 'activate' | 'deactivate' | 'delete';
 
 // Server dates come without a zone but are UTC.
 function utc(date: string): number {
@@ -52,7 +53,7 @@ export class AdminCoupons implements OnInit {
     const items = this.coupons();
     return items.length > 0 && items.every(c => this.selectedIds().has(c.couponId));
   });
-  bulkAction = signal<'activate' | 'deactivate' | 'delete'>('activate');
+  bulkAction = signal<CouponBulkAction>('activate');
   isBulkUpdating = signal(false);
 
   page = signal(1);
@@ -240,7 +241,7 @@ export class AdminCoupons implements OnInit {
       this.formError.set('Usage limit must be at least 1.');
       return;
     }
-    if (this.formMaxUsesPerUser !== null && !(this.formMaxUsesPerUser >= 1)) {
+    if (this.formMaxUsesPerUser !== null && this.formMaxUsesPerUser < 1) {
       this.formError.set('Max uses per customer must be at least 1, or left empty.');
       return;
     }
@@ -407,7 +408,7 @@ export class AdminCoupons implements OnInit {
       },
       error: (err: unknown) => {
         this.isExporting.set(false);
-        blobErrorMessage(err, 'Unable to export coupons.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to export coupons.').then(message => this.toast.error(message));
       }
     });
   }
@@ -452,61 +453,75 @@ export class AdminCoupons implements OnInit {
     if (ids.length === 0 || this.isBulkUpdating()) return;
 
     const action = this.bulkAction();
-    const count = ids.length;
-
-    if (action === 'delete') {
-      const confirmed = await this.confirmDialog.confirm(
-        `Are you sure you want to delete ${count} selected coupon(s)? This cannot be undone.`,
-        { confirmLabel: 'Delete Coupons', cancelLabel: 'Cancel', danger: true }
-      );
-      if (!confirmed) return;
-    } else if (action === 'deactivate') {
-      const confirmed = await this.confirmDialog.confirm(
-        `Are you sure you want to deactivate ${count} selected coupon(s)? Customers will not be able to use them anymore.`,
-        { confirmLabel: 'Deactivate', cancelLabel: 'Cancel', danger: true }
-      );
-      if (!confirmed) return;
-    }
+    const confirmed = await this.confirmBulkAction(action, ids.length);
+    if (!confirmed) return;
 
     this.isBulkUpdating.set(true);
-    let successCount = 0;
-    let failedCount = 0;
 
-    for (const id of ids) {
-      const coupon = this.coupons().find(c => c.couponId === id);
-      try {
-        if (action === 'delete') {
-          await firstValueFrom(this.couponService.deleteCoupon(id));
-        } else {
-          if (!coupon) {
-            failedCount++;
-            continue;
-          }
-          const request = {
-            code: coupon.code,
-            description: coupon.description,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
-            minimumOrderAmount: coupon.minimumOrderAmount,
-            startDate: coupon.startDate,
-            endDate: coupon.endDate,
-            usageLimit: coupon.usageLimit,
-            maxUsesPerUser: coupon.maxUsesPerUser ?? null,
-            isActive: action === 'activate'
-          };
-          await firstValueFrom(this.couponService.updateCoupon(id, request));
-        }
-        successCount++;
-      } catch {
-        failedCount++;
-      }
-    }
+    const results = await Promise.allSettled(
+      ids.map(id => this.processSingleBulkCoupon(id, action))
+    );
+
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
 
     this.isBulkUpdating.set(false);
     this.clearSelection();
     this.loadCoupons();
 
-    const actionVerb = action === 'delete' ? 'deleted' : action === 'activate' ? 'activated' : 'deactivated';
+    this.notifyBulkResults(action, successCount, failedCount);
+  }
+
+  private async confirmBulkAction(action: CouponBulkAction, count: number): Promise<boolean> {
+    if (action === 'delete') {
+      return this.confirmDialog.confirm(
+        `Are you sure you want to delete ${count} selected coupon(s)? This cannot be undone.`,
+        { confirmLabel: 'Delete Coupons', cancelLabel: 'Cancel', danger: true }
+      );
+    }
+    if (action === 'deactivate') {
+      return this.confirmDialog.confirm(
+        `Are you sure you want to deactivate ${count} selected coupon(s)? Customers will not be able to use them anymore.`,
+        { confirmLabel: 'Deactivate', cancelLabel: 'Cancel', danger: true }
+      );
+    }
+    return true;
+  }
+
+  private async processSingleBulkCoupon(id: number, action: CouponBulkAction): Promise<void> {
+    if (action === 'delete') {
+      await firstValueFrom(this.couponService.deleteCoupon(id));
+      return;
+    }
+
+    const coupon = this.coupons().find(c => c.couponId === id);
+    if (!coupon) {
+      throw new Error(`Coupon #${id} not found.`);
+    }
+
+    const request = {
+      code: coupon.code,
+      description: coupon.description,
+      discountType: coupon.discountType,
+      discountValue: coupon.discountValue,
+      minimumOrderAmount: coupon.minimumOrderAmount,
+      startDate: coupon.startDate,
+      endDate: coupon.endDate,
+      usageLimit: coupon.usageLimit,
+      maxUsesPerUser: coupon.maxUsesPerUser ?? null,
+      isActive: action === 'activate'
+    };
+    await firstValueFrom(this.couponService.updateCoupon(id, request));
+  }
+
+  private notifyBulkResults(action: CouponBulkAction, successCount: number, failedCount: number): void {
+    const actionVerbMap: Record<CouponBulkAction, string> = {
+      delete: 'deleted',
+      activate: 'activated',
+      deactivate: 'deactivated'
+    };
+    const actionVerb = actionVerbMap[action];
+
     if (successCount > 0 && failedCount === 0) {
       this.toast.success(`Successfully ${actionVerb} ${successCount} coupon(s).`);
     } else if (successCount > 0 && failedCount > 0) {
@@ -517,7 +532,7 @@ export class AdminCoupons implements OnInit {
   }
 
   copyCode(code: string): void {
-    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(code).then(() => {
         this.toast.success('Copied coupon code "' + code + '" to clipboard!');
       }).catch(() => {

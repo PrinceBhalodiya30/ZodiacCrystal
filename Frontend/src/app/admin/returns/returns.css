@@ -60,9 +60,9 @@
   font-weight: 700;
 }
 
-.return-status.requested { background-color: #fdf5e7; color: #b07a22; }
-.return-status.approved { background-color: #edf3fb; color: #4b76b0; }
-.return-status.refunded { background-color: #ecf8f1; color: #2f8a57; }
+.return-status.requested { background-color: #fdf5e7; color: #855806; }
+.return-status.approved { background-color: #edf3fb; color: #205c9e; }
+.return-status.refunded { background-color: #ecf8f1; color: #1e6b3e; }
 .return-status.rejected { background-color: var(--color-danger-bg); color: var(--color-danger); }
 
 .action-panel {

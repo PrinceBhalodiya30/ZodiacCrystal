@@ -59,8 +59,8 @@
 }
 
 .tone--lavender { background-color: #f6f2ea; color: #5e7367; }
-.tone--peach { background-color: #fdf3e6; color: #c5862a; }
-.tone--mint { background-color: #eaf7f0; color: #3d9a68; }
+.tone--peach { background-color: #fdf3e6; color: #8a520a; }
+.tone--mint { background-color: #eaf7f0; color: #1e6b3e; }
 .tone--blush { background-color: var(--color-danger-bg); color: #c96a64; }
 
 .kpi-value {
@@ -93,10 +93,10 @@
   font-size: 0.74rem;
   font-weight: 600;
   background-color: #f4f2f7;
-  color: #807c74;
+  color: #5e5950;
 }
 
-.chip--good { background-color: #ecf8f1; color: #2f8a57; }
+.chip--good { background-color: #ecf8f1; color: #1e6b3e; }
 .chip--bad { background-color: var(--color-danger-bg); color: var(--color-danger); }
 
 /* Payments */

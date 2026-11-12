@@ -16,27 +16,31 @@
   </div>
 
   <div class="filter-bar">
+    <label for="productSearch" class="visually-hidden">Search products</label>
     <input
+      id="productSearch"
       type="search"
       class="search-input"
       placeholder="Search by name or SKU..."
-      aria-label="Search products"
       [ngModel]="searchTerm()"
       (ngModelChange)="onSearchInput($event)"
       name="productSearch"
     />
-    <select [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event); onFilterChange()" name="productCategory" aria-label="Filter by category">
+    <label for="productCategory" class="visually-hidden">Filter by category</label>
+    <select id="productCategory" [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event); onFilterChange()" name="productCategory">
       <option [ngValue]="null">All categories</option>
       @for (category of categories(); track category.categoryId) {
         <option [ngValue]="category.categoryId">{{ category.name }}</option>
       }
     </select>
-    <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="productStatus" aria-label="Filter by status">
+    <label for="productStatus" class="visually-hidden">Filter by status</label>
+    <select id="productStatus" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="productStatus">
       <option value="">All statuses</option>
       <option value="active">Active</option>
       <option value="inactive">Inactive</option>
     </select>
-    <select [ngModel]="stockFilter()" (ngModelChange)="stockFilter.set($event); onFilterChange()" name="productStock" aria-label="Filter by stock">
+    <label for="productStock" class="visually-hidden">Filter by stock</label>
+    <select id="productStock" [ngModel]="stockFilter()" (ngModelChange)="stockFilter.set($event); onFilterChange()" name="productStock">
       <option value="">All stock</option>
       <option value="in">In stock</option>
       <option value="low">Low stock</option>
@@ -48,7 +52,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk actions">
+    <section class="bulk-bar" aria-label="Bulk actions">
       <div class="bulk-bar-info">
         <strong>{{ selectedCount() }} selected</strong>
         @if (!selectAllMatching() && pageAllSelected() && totalCount() > selectedIds().size) {
@@ -57,7 +61,8 @@
         <button type="button" class="clear-filters" (click)="clearSelection()">Clear</button>
       </div>
       <div class="bulk-bar-controls">
-        <select [(ngModel)]="bulkAction" name="bulkAction" aria-label="Bulk action" (ngModelChange)="bulkError.set('')">
+        <label for="bulkActionSelect" class="visually-hidden">Bulk action</label>
+        <select id="bulkActionSelect" [(ngModel)]="bulkAction" name="bulkAction" (ngModelChange)="bulkError.set('')">
           @for (a of bulkActions; track a.value) {
             <option [ngValue]="a.value">{{ a.label }}</option>
           }
@@ -65,16 +70,19 @@
         @if (bulkNeedsValue()) {
           <div class="input-prefix bulk-value">
             <span class="prefix-symbol">{{ bulkIsPercent() ? '%' : '₹' }}</span>
-            <input type="number" min="0" step="0.01" name="bulkValue" aria-label="Value" [(ngModel)]="bulkValue" />
+            <label for="bulkValue" class="visually-hidden">Value</label>
+            <input id="bulkValue" type="number" min="0" step="0.01" name="bulkValue" [(ngModel)]="bulkValue" />
           </div>
-          <select [(ngModel)]="bulkRounding" name="bulkRounding" aria-label="Rounding">
+          <label for="bulkRounding" class="visually-hidden">Rounding</label>
+          <select id="bulkRounding" [(ngModel)]="bulkRounding" name="bulkRounding">
             <option value="none">No rounding</option>
             <option value="whole">Round to ₹1</option>
             <option value="99">End in 99</option>
           </select>
         }
         @if (bulkAction === 'setCategory') {
-          <select [(ngModel)]="bulkCategoryId" name="bulkCategory" aria-label="New category">
+          <label for="bulkCategoryId" class="visually-hidden">New category</label>
+          <select id="bulkCategoryId" [(ngModel)]="bulkCategoryId" name="bulkCategory">
             <option [ngValue]="null" disabled>Choose category</option>
             @for (category of categories(); track category.categoryId) {
               <option [ngValue]="category.categoryId">{{ category.name }}</option>
@@ -90,12 +98,18 @@
       @if (bulkError() && !bulkPreview()) {
         <p class="form-error">{{ bulkError() }}</p>
       }
-    </div>
+    </section>
   }
 
   @if (bulkPreview(); as preview) {
-    <div class="admin-modal-overlay" animate.leave="is-leaving" (click)="closeBulkPreview()">
-      <div class="bulk-preview" role="dialog" aria-modal="true" aria-labelledby="bulkPreviewTitle" (click)="$event.stopPropagation()">
+    <div
+      class="admin-modal-overlay"
+      animate.leave="is-leaving"
+      tabindex="-1"
+      (click)="$event.target === $event.currentTarget && closeBulkPreview()"
+      (keydown.escape)="closeBulkPreview()"
+    >
+      <div class="bulk-preview" aria-labelledby="bulkPreviewTitle">
         <h2 id="bulkPreviewTitle">Review bulk change</h2>
         <p class="bulk-summary">
           <strong>{{ preview.changedCount }}</strong> will change
@@ -149,8 +163,14 @@
   }
 
   @if (formMode() !== 'closed') {
-    <div class="admin-drawer-overlay" animate.leave="is-leaving" (click)="cancelForm()">
-    <form class="product-form" id="adminForm" role="dialog" aria-modal="true" (ngSubmit)="submitForm()" #productForm="ngForm" (click)="$event.stopPropagation()">
+    <div
+      class="admin-drawer-overlay"
+      animate.leave="is-leaving"
+      tabindex="-1"
+      (click)="$event.target === $event.currentTarget && cancelForm()"
+      (keydown.escape)="cancelForm()"
+    >
+    <form class="product-form" id="adminForm" (ngSubmit)="submitForm()" #productForm="ngForm">
       <h2>{{ formMode() === 'create' ? 'Add Product' : 'Edit Product' }}</h2>
 
       <div class="form-section">
@@ -254,14 +274,14 @@
           </div>
 
           <div class="span-2">
-            <label>Zodiac Signs</label>
+            <span class="form-label">Zodiac Signs</span>
             <div class="zodiac-chip-group">
               @for (zodiac of zodiacs(); track zodiac.zodiacId) {
                 <button
                   type="button"
                   class="zodiac-chip"
                   [class.selected]="isZodiacSelected(zodiac.zodiacId)"
-                  (click)="toggleZodiac(zodiac.zodiacId, !isZodiacSelected(zodiac.zodiacId))"
+                  (click)="toggleZodiac(zodiac.zodiacId)"
                 >
                   <app-zodiac-icon [sign]="zodiac.symbol || zodiac.name" class="chip-zodiac-icon"></app-zodiac-icon>
                   <span>{{ zodiac.name }}</span>

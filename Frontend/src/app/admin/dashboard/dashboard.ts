@@ -40,6 +40,19 @@ export interface ActionCard {
   note?: string;
 }
 
+interface ActionCardOptions {
+  key: string;
+  count: number | null;
+  singular: string;
+  plural: string;
+  label: string;
+  cta: string;
+  link: string;
+  queryParams?: Record<string, string>;
+  tone: ActionCard['tone'];
+  note?: string;
+}
+
 const DEFAULT_RESTOCK_QUANTITY = 10;
 const NEW_ORDER_HIGHLIGHT_MS = 8000;
 
@@ -61,7 +74,13 @@ export class Dashboard implements OnInit {
 
   dayPart(): 'morning' | 'afternoon' | 'evening' {
     const hour = new Date().getHours();
-    return hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+    if (hour < 12) {
+      return 'morning';
+    }
+    if (hour < 17) {
+      return 'afternoon';
+    }
+    return 'evening';
   }
 
   greeting(): string {
@@ -94,7 +113,7 @@ export class Dashboard implements OnInit {
   }
 
   // Orders that just arrived live; their Recent orders rows are highlighted briefly.
-  newOrderIds = signal<ReadonlySet<number>>(new Set());
+  readonly newOrderIds = signal<ReadonlySet<number>>(new Set());
 
   private markNew(orderId: number): void {
     this.newOrderIds.update(ids => new Set(ids).add(orderId));
@@ -110,31 +129,31 @@ export class Dashboard implements OnInit {
   // Placeholder rows for the loading skeleton.
   readonly skeletonRows = [1, 2, 3, 4, 5];
 
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  totalProducts = signal<number | null>(null);
-  totalOrders = signal<number | null>(null);
-  totalUsers = signal<number | null>(null);
-  totalRevenue = signal<number | null>(null);
+  readonly totalProducts = signal<number | null>(null);
+  readonly totalOrders = signal<number | null>(null);
+  readonly totalUsers = signal<number | null>(null);
+  readonly totalRevenue = signal<number | null>(null);
 
   // "Today" strip next to the heading; refreshed live with each new order.
   // Orders that count as sales (not cancelled/refunded), matching the revenue,
   // average and sales chart; cancelled ones are shown separately underneath.
-  todayOrders = signal<number | null>(null);
-  todayCancelled = signal(0);
-  todayRevenue = signal<number | null>(null);
-  yesterdayRevenue = signal<number | null>(null);
-  todayAverage = signal<number | null>(null);
+  readonly todayOrders = signal<number | null>(null);
+  readonly todayCancelled = signal(0);
+  readonly todayRevenue = signal<number | null>(null);
+  readonly yesterdayRevenue = signal<number | null>(null);
+  readonly todayAverage = signal<number | null>(null);
 
   // Sales overview: the last 7 days, from the same endpoint the Reports page uses.
   // null = failed to load (the panel says so instead of showing an empty chart).
-  private weekSales = signal<DailySales[] | null>(null);
-  private previousWeekSales = signal<DailySales[] | null>(null);
-  private weekRange = signal<{ from: string; to: string } | null>(null);
+  private readonly weekSales = signal<DailySales[] | null>(null);
+  private readonly previousWeekSales = signal<DailySales[] | null>(null);
+  private readonly weekRange = signal<{ from: string; to: string } | null>(null);
 
   // The 7 days before, drawn dashed behind this week (null = not loaded).
-  weekPrevious = computed<number[] | null>(() => {
+  readonly weekPrevious = computed<number[] | null>(() => {
     const sales = this.previousWeekSales();
     const range = this.weekRange();
     if (!sales || !range) {
@@ -144,7 +163,7 @@ export class Dashboard implements OnInit {
     return buildSalesSeries(sales, prev.from, prev.to, 'day').map(bucket => bucket.revenue);
   });
 
-  weekChart = computed<AreaChartPoint[] | null>(() => {
+  readonly weekChart = computed<AreaChartPoint[] | null>(() => {
     const sales = this.weekSales();
     const range = this.weekRange();
     if (!sales || !range) {
@@ -157,11 +176,11 @@ export class Dashboard implements OnInit {
     }));
   });
 
-  weekRevenue = computed(() => (this.weekSales() ?? []).reduce((sum, d) => sum + d.revenue, 0));
-  weekOrders = computed(() => (this.weekSales() ?? []).reduce((sum, d) => sum + d.orderCount, 0));
+  readonly weekRevenue = computed(() => (this.weekSales() ?? []).reduce((sum, d) => sum + d.revenue, 0));
+  readonly weekOrders = computed(() => (this.weekSales() ?? []).reduce((sum, d) => sum + d.orderCount, 0));
 
   // Revenue change vs yesterday, in whole percent; null when there's nothing to compare against.
-  todayChangePercent = computed(() => {
+  readonly todayChangePercent = computed(() => {
     const today = this.todayRevenue();
     const yesterday = this.yesterdayRevenue();
     if (today === null || yesterday === null || yesterday === 0) {
@@ -171,47 +190,47 @@ export class Dashboard implements OnInit {
   });
 
   // When the oldest still-Pending order was placed (null = none waiting).
-  oldestPendingDate = signal<string | null>(null);
+  readonly oldestPendingDate = signal<string | null>(null);
 
   // Recent order opened in the detail drawer.
-  openOrderId = signal<number | null>(null);
+  readonly openOrderId = signal<number | null>(null);
 
   // Low-stock row with the inline "+ Add stock" box open.
-  restockProductId = signal<number | null>(null);
+  readonly restockProductId = signal<number | null>(null);
   restockQuantity = DEFAULT_RESTOCK_QUANTITY;
-  isRestocking = signal(false);
+  readonly isRestocking = signal(false);
 
-  lowStockProducts = signal<Product[]>([]);
-  recentOrders = signal<AdminOrder[]>([]);
+  readonly lowStockProducts = signal<Product[]>([]);
+  readonly recentOrders = signal<AdminOrder[]>([]);
 
   // To-do counts (null until loaded, so a failed request doesn't read as "0 to do").
-  pendingOrders = signal<number | null>(null);
-  ordersToShip = signal<number | null>(null);
-  returnsToReview = signal<number | null>(null);
-  refundsDue = signal<number | null>(null);
-  stockAlerts = signal<number | null>(null);
-  overdueDeliveries = signal<number | null>(null);
+  readonly pendingOrders = signal<number | null>(null);
+  readonly ordersToShip = signal<number | null>(null);
+  readonly returnsToReview = signal<number | null>(null);
+  readonly refundsDue = signal<number | null>(null);
+  readonly stockAlerts = signal<number | null>(null);
+  readonly overdueDeliveries = signal<number | null>(null);
 
   // Bumped on every (live) reload so Store insights refreshes with the rest.
-  refreshTick = signal(0);
+  readonly refreshTick = signal(0);
 
-  actionCards = computed<ActionCard[]>(() => {
+  readonly actionCards = computed<ActionCard[]>(() => {
     const cards: (ActionCard | null)[] = [
-      this.card('pending-orders', this.pendingOrders(), 'new order', 'new orders', 'to confirm', 'Confirm', '/admin/orders', { status: 'Pending' }, 'brand', this.waitingNote()),
-      this.card('orders-to-ship', this.ordersToShip(), 'order', 'orders', 'to ship', 'Ship', '/admin/orders', { status: 'Confirmed' }, 'info'),
-      this.card('overdue', this.overdueDeliveries(), 'shipment', 'shipments', 'overdue for delivery', 'Check', '/admin/orders', { status: 'Shipped' }, 'warning', 'shipped over a week ago'),
-      this.card('returns', this.returnsToReview(), 'return', 'returns', 'to review', 'Review', '/admin/returns', { status: 'Requested' }, 'warning'),
-      this.card('refunds', this.refundsDue(), 'refund', 'refunds', 'to issue', 'Refund', '/admin/returns', { status: 'Approved' }, 'warning'),
-      this.card('stock', this.stockAlerts(), 'product', 'products', 'low or out of stock', 'Restock', '/admin/stock', { lowStock: '1' }, 'danger')
+      this.card({ key: 'pending-orders', count: this.pendingOrders(), singular: 'new order', plural: 'new orders', label: 'to confirm', cta: 'Confirm', link: '/admin/orders', queryParams: { status: 'Pending' }, tone: 'brand', note: this.waitingNote() }),
+      this.card({ key: 'orders-to-ship', count: this.ordersToShip(), singular: 'order', plural: 'orders', label: 'to ship', cta: 'Ship', link: '/admin/orders', queryParams: { status: 'Confirmed' }, tone: 'info' }),
+      this.card({ key: 'overdue', count: this.overdueDeliveries(), singular: 'shipment', plural: 'shipments', label: 'overdue for delivery', cta: 'Check', link: '/admin/orders', queryParams: { status: 'Shipped' }, tone: 'warning', note: 'shipped over a week ago' }),
+      this.card({ key: 'returns', count: this.returnsToReview(), singular: 'return', plural: 'returns', label: 'to review', cta: 'Review', link: '/admin/returns', queryParams: { status: 'Requested' }, tone: 'warning' }),
+      this.card({ key: 'refunds', count: this.refundsDue(), singular: 'refund', plural: 'refunds', label: 'to issue', cta: 'Refund', link: '/admin/returns', queryParams: { status: 'Approved' }, tone: 'warning' }),
+      this.card({ key: 'stock', count: this.stockAlerts(), singular: 'product', plural: 'products', label: 'low or out of stock', cta: 'Restock', link: '/admin/stock', queryParams: { lowStock: '1' }, tone: 'danger' })
     ];
     return cards.filter((c): c is ActionCard => c !== null);
   });
 
   // True once everything has loaded and nothing needs doing.
-  allClear = computed(() => this.actionCards().length > 0 && this.actionCards().every(c => c.count === 0));
+  readonly allClear = computed(() => this.actionCards().length > 0 && this.actionCards().every(c => c.count === 0));
 
   // Only the items that actually need action are listed.
-  pendingCards = computed(() => this.actionCards().filter(c => c.count > 0));
+  readonly pendingCards = computed(() => this.actionCards().filter(c => c.count > 0));
 
   ngOnInit(): void {
     this.load();
@@ -316,7 +335,7 @@ export class Dashboard implements OnInit {
       this.refreshTick.update(n => n + 1);
 
       this.isLoading.set(false);
-      if (Object.values(r).some(v => v === null)) {
+      if (Object.values(r).includes(null)) {
         this.errorMessage.set('Some dashboard data could not be loaded.');
       }
     });
@@ -377,22 +396,21 @@ export class Dashboard implements OnInit {
     });
   }
 
-  private card(
-    key: string,
-    count: number | null,
-    singular: string,
-    plural: string,
-    label: string,
-    cta: string,
-    link: string,
-    queryParams: Record<string, string>,
-    tone: ActionCard['tone'],
-    note?: string
-  ): ActionCard | null {
-    if (count === null) {
+  private card(options: ActionCardOptions): ActionCard | null {
+    if (options.count === null) {
       return null;
     }
-    return { key, count, label: `${count === 1 ? singular : plural} ${label}`, cta, link, queryParams, tone, note: count > 0 ? note : undefined };
+    const countLabel = options.count === 1 ? options.singular : options.plural;
+    return {
+      key: options.key,
+      count: options.count,
+      label: `${countLabel} ${options.label}`,
+      cta: options.cta,
+      link: options.link,
+      queryParams: options.queryParams,
+      tone: options.tone,
+      note: options.count > 0 ? options.note : undefined
+    };
   }
 
   stockLabel(product: Product): string {

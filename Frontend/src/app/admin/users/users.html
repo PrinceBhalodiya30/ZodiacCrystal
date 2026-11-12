@@ -11,21 +11,26 @@
   </div>
 
   <div class="filter-bar">
+    <label for="userSearchInput" class="visually-hidden">Search users by name or email</label>
     <input
+      id="userSearchInput"
       type="text"
       class="search-input"
       placeholder="Search by name or email..."
+      aria-label="Search users by name or email"
       [ngModel]="searchTerm()"
       (ngModelChange)="onSearchInput($event)"
       name="userSearch"
     />
-    <select [ngModel]="roleFilter()" (ngModelChange)="roleFilter.set($event); onFilterChange()" name="userRole" aria-label="Filter by role">
+    <label for="userRoleFilter" class="visually-hidden">Filter by role</label>
+    <select id="userRoleFilter" [ngModel]="roleFilter()" (ngModelChange)="roleFilter.set($event); onFilterChange()" name="userRole">
       <option value="">All roles</option>
       <option value="User">Customers</option>
       <option value="Guest">Guests</option>
       <option value="Admin">Admins</option>
     </select>
-    <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="userStatus" aria-label="Filter by status">
+    <label for="userStatusFilter" class="visually-hidden">Filter by status</label>
+    <select id="userStatusFilter" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="userStatus">
       <option value="">All statuses</option>
       <option value="active">Active</option>
       <option value="inactive">Inactive</option>
@@ -36,7 +41,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk user actions">
+    <section class="bulk-bar" aria-label="Bulk user actions">
       <div class="bulk-bar-info">
         <span class="bulk-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
@@ -47,7 +52,8 @@
         <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear selection</button>
       </div>
       <div class="bulk-bar-controls">
-        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" aria-label="Bulk action">
+        <label for="bulkUserAction" class="visually-hidden">Bulk action</label>
+        <select id="bulkUserAction" class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)">
           <option value="activate">Activate Selected</option>
           <option value="deactivate">Deactivate Selected</option>
           <option value="delete">Delete Selected</option>
@@ -56,7 +62,7 @@
           {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
         </button>
       </div>
-    </div>
+    </section>
   }
 
   @if (isLoading() && users().length === 0) {
@@ -97,7 +103,7 @@
         <tbody>
           @for (user of users(); track user.userId) {
             <tr [class.is-selected]="selectedIds().has(user.userId)">
-              <td class="cb-col" (click)="$event.stopPropagation()">
+              <td class="cb-col">
                 @if (user.userId !== currentUserId) {
                   <input
                     type="checkbox"

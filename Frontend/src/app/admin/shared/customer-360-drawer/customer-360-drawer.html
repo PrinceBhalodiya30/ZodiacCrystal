@@ -1,10 +1,13 @@
-<div class="admin-drawer-overlay" (click)="close()">
-  <aside
+<div
+  class="admin-drawer-overlay"
+  tabindex="-1"
+  (click)="$event.target === $event.currentTarget && close()"
+  (keydown)="$event.key === 'Escape' && close()"
+>
+  <dialog
+    open
     class="customer-360-drawer"
-    role="dialog"
-    aria-modal="true"
     aria-labelledby="customer360Title"
-    (click)="$event.stopPropagation()"
   >
     <header class="drawer-header">
       <div class="drawer-header-left">
@@ -176,5 +179,5 @@
         <button type="button" class="btn btn-outline" (click)="close()">Close Panel</button>
       </footer>
     }
-  </aside>
+  </dialog>
 </div>

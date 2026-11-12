@@ -28,7 +28,9 @@
   </div>
 
   <div class="filter-bar">
+    <label for="stockSearchInput" class="visually-hidden">Search products by name or SKU</label>
     <input
+      id="stockSearchInput"
       type="text"
       class="search-input"
       placeholder="Search by name or SKU..."
@@ -51,7 +53,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk stock actions">
+    <section class="bulk-bar" aria-label="Bulk stock actions">
       <div class="bulk-bar-info">
         <span class="bulk-badge">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -62,14 +64,17 @@
         <button type="button" class="bulk-clear-btn" (click)="clearSelection()">Clear</button>
       </div>
       <div class="bulk-bar-controls">
-        <select class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" name="bulkAction" aria-label="Bulk stock action">
+        <label for="bulkStockAction" class="visually-hidden">Bulk stock action</label>
+        <select id="bulkStockAction" class="bulk-select" [ngModel]="bulkAction()" (ngModelChange)="bulkAction.set($event)" name="bulkAction" aria-label="Bulk stock action">
           <option value="add">Add stock (+)</option>
           <option value="subtract">Reduce stock (-)</option>
           <option value="set">Set exact stock</option>
           <option value="outOfStock">Mark as Out of Stock (0)</option>
         </select>
         @if (bulkAction() !== 'outOfStock') {
+          <label for="bulkStockQty" class="visually-hidden">Stock quantity</label>
           <input
+            id="bulkStockQty"
             type="number"
             class="bulk-input"
             min="0"
@@ -85,7 +90,7 @@
           {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
         </button>
       </div>
-    </div>
+    </section>
   }
 
   @if (isLoading() && products().length === 0) {
@@ -126,7 +131,7 @@
         <tbody>
           @for (product of products(); track product.productId) {
             <tr [class.is-selected]="selectedIds().has(product.productId)">
-              <td class="cb-col" (click)="$event.stopPropagation()">
+              <td class="cb-col">
                 <input
                   type="checkbox"
                   [checked]="selectedIds().has(product.productId)"
@@ -138,13 +143,16 @@
               <td data-label="Name">{{ product.name }}</td>
               <td data-label="Category">{{ product.categoryName || 'Uncategorized' }}</td>
               <td data-label="Stock">
+                <label [for]="'stock-input-' + product.productId" class="visually-hidden">Stock quantity for {{ product.name }}</label>
                 <input
+                  [id]="'stock-input-' + product.productId"
                   type="number"
                   min="0"
                   step="1"
                   class="stock-input"
                   [(ngModel)]="stockEdits[product.productId]"
                   [name]="'stock-' + product.productId"
+                  [attr.aria-label]="'Stock quantity for ' + product.name"
                 />
               </td>
               <td data-label="Status">

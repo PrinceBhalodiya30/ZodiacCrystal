@@ -33,21 +33,21 @@ const LINKS: AccountLink[] = [
   styleUrl: './account-layout.css'
 })
 export class AccountLayout {
-  authService = inject(AuthService);
-  wishlistService = inject(WishlistService);
+  readonly authService = inject(AuthService);
+  readonly wishlistService = inject(WishlistService);
   private readonly router = inject(Router);
 
   // Admins have no orders/addresses/wishlist (those routes are customer-only).
-  links = computed(() => (this.authService.isAdmin() ? LINKS.filter(l => !l.customerOnly) : LINKS));
+  readonly links = computed(() => (this.authService.isAdmin() ? LINKS.filter(l => !l.customerOnly) : LINKS));
 
-  initials = computed(() => {
+  readonly initials = computed(() => {
     const name = this.authService.currentUser()?.name?.trim() ?? '';
     if (!name) {
       return '?';
     }
     const parts = name.split(/\s+/);
     const first = parts[0]?.[0] ?? '';
-    const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    const last = parts.length > 1 ? (parts.at(-1)?.[0] ?? '') : '';
     return (first + last).toUpperCase();
   });
 

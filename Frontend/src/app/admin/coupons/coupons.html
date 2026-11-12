@@ -16,8 +16,14 @@
   </div>
 
   @if (formMode() !== 'closed') {
-    <div class="admin-drawer-overlay" animate.leave="is-leaving" (click)="cancelForm()">
-    <form class="coupon-form" id="adminForm" role="dialog" aria-modal="true" (ngSubmit)="submitForm()" #couponForm="ngForm" (click)="$event.stopPropagation()">
+    <div
+      class="admin-drawer-overlay"
+      animate.leave="is-leaving"
+      tabindex="-1"
+      (click)="$event.target === $event.currentTarget && cancelForm()"
+      (keydown.escape)="cancelForm()"
+    >
+    <form class="coupon-form" id="adminForm" (ngSubmit)="submitForm()" #couponForm="ngForm">
       <h2>{{ formMode() === 'create' ? 'Add Coupon' : 'Edit Coupon' }}</h2>
 
       <div class="form-section">
@@ -132,7 +138,9 @@
   }
 
   <div class="filter-bar">
+    <label for="couponSearch" class="visually-hidden">Search by code</label>
     <input
+      id="couponSearch"
       type="text"
       class="search-input"
       placeholder="Search by code..."
@@ -140,7 +148,8 @@
       (ngModelChange)="onSearchInput($event)"
       name="couponSearch"
     />
-    <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="couponStatus" aria-label="Filter by status">
+    <label for="couponStatus" class="visually-hidden">Filter by status</label>
+    <select id="couponStatus" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); onFilterChange()" name="couponStatus">
       <option value="">All statuses</option>
       <option value="active">Active</option>
       <option value="scheduled">Scheduled</option>
@@ -154,7 +163,7 @@
   </div>
 
   @if (selectedCount() > 0) {
-    <div class="bulk-bar" role="region" aria-label="Bulk coupon actions">
+    <section class="bulk-bar" aria-label="Bulk coupon actions">
       <div class="bulk-bar-info">
         <span class="bulk-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
@@ -174,7 +183,7 @@
           {{ isBulkUpdating() ? 'Updating...' : 'Apply to Selected' }}
         </button>
       </div>
-    </div>
+    </section>
   }
 
   @if (isLoading() && coupons().length === 0) {
@@ -218,7 +227,7 @@
         <tbody>
           @for (coupon of coupons(); track coupon.couponId) {
             <tr [class.is-selected]="selectedIds().has(coupon.couponId)">
-              <td class="cb-col" (click)="$event.stopPropagation()">
+              <td class="cb-col">
                 <input
                   type="checkbox"
                   [attr.aria-label]="'Select coupon ' + coupon.code"

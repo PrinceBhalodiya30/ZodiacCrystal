@@ -165,7 +165,7 @@
 
 .offer-code {
   padding: 0.1rem 0.45rem;
-  background: rgba(255, 255, 255, 0.14);
+  background: #313e55;
   border: 1px dashed rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-sm, 4px);
   font-family: var(--font-mono, monospace);

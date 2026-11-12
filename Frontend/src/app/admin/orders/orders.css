@@ -74,10 +74,10 @@
   font-weight: 700;
 }
 
-.payment-badge.paid { background-color: #ecf8f1; color: #2f8a57; }
-.payment-badge.pending { background-color: #fdf5e7; color: #b07a22; }
-.payment-badge.refunded { background-color: #edf3fb; color: #4b76b0; }
-.payment-badge.cancelled { background-color: #f4f2f7; color: #928e86; }
+.payment-badge.paid { background-color: #ecf8f1; color: #1e6b3e; }
+.payment-badge.pending { background-color: #fdf5e7; color: #855806; }
+.payment-badge.refunded { background-color: #edf3fb; color: #205c9e; }
+.payment-badge.cancelled { background-color: #f4f2f7; color: #5e5950; }
 
 /* Rows open the order drawer; status changes happen there, not in the table. */
 .clickable-row {
@@ -203,7 +203,7 @@
   cursor: pointer;
   padding: 0.25rem 0.45rem;
   border-radius: 4px;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -269,5 +269,12 @@
   font-size: 0.72rem;
   font-weight: 700;
   vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bulk-bar,
+  .row-new td {
+    animation: none;
+  }
 }
 

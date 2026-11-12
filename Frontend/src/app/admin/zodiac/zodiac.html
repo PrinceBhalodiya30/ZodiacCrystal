@@ -9,8 +9,14 @@
   </div>
 
   @if (formMode() !== 'closed') {
-    <div class="admin-modal-overlay" animate.leave="is-leaving" (click)="cancelForm()">
-    <form class="zodiac-form" id="adminForm" (ngSubmit)="submitForm()" #zodiacForm="ngForm" (click)="$event.stopPropagation()">
+    <div
+      class="admin-modal-overlay"
+      tabindex="-1"
+      animate.leave="is-leaving"
+      (click)="$event.target === $event.currentTarget && cancelForm()"
+      (keydown)="$event.key === 'Escape' && cancelForm()"
+    >
+    <form class="zodiac-form" id="adminForm" (ngSubmit)="submitForm()" #zodiacForm="ngForm">
       <h2>
         @if (formMode() === 'create') {
           Add Zodiac Sign
