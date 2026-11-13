@@ -123,22 +123,18 @@
 
 .chakra-bullet {
   background: #9b59b6;
-  box-shadow: 0 0 6px rgba(155, 89, 182, 0.4);
 }
 
 .element-bullet {
   background: #3498db;
-  box-shadow: 0 0 6px rgba(52, 152, 219, 0.4);
 }
 
 .water-bullet {
   background: #1abc9c;
-  box-shadow: 0 0 6px rgba(26, 188, 156, 0.4);
 }
 
 .sun-bullet {
   background: #f39c12;
-  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
 }
 
 .spec-prop-value {
@@ -169,7 +165,7 @@
 
 .crystal-affirmation-card.is-copied {
   border-color: var(--color-gold, #c8963e);
-  box-shadow: 0 0 16px rgba(200, 150, 62, 0.22);
+  box-shadow: 0 4px 14px rgba(29, 39, 57, 0.08);
 }
 
 .affirmation-header {
@@ -224,13 +220,12 @@
   background: var(--color-sage-bg, #edf4f0);
   border-color: var(--color-sage, #3d6b52);
   color: var(--color-sage, #3d6b52);
-  animation: celestial-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: celestial-pop 0.25s ease-out;
 }
 
 @keyframes celestial-pop {
-  0% { transform: scale(0.92); }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); }
+  0% { transform: scale(0.96); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .affirmation-quote {

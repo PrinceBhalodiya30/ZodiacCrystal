@@ -277,14 +277,12 @@ export class FindCrystalModal implements OnInit {
           score += 10;
         }
 
-        // Stock bonus
+        // Stock availability bonus
         if (prod.stockQuantity > 0) {
           score += 10;
         }
 
-        // Cap at 99% for astrological realism
-        const matchScore = Math.min(99, Math.max(68, score));
-
+        const matchScore = score;
         const reason = this.generateReason(prod, intention, zodiac);
 
         return { product: prod, matchScore, reason };

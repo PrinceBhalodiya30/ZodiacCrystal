@@ -165,19 +165,6 @@ section.container.admin-settings-page {
   height: 7px;
   background: #0d9488;
   border-radius: 50%;
-  animation: pulseDot 2s infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pulsing-dot {
-    animation: none;
-  }
-}
-
-@keyframes pulseDot {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(13, 148, 136, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
 }
 
 .preview-hint {

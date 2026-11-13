@@ -41,16 +41,14 @@
 }
 
 .icon-link.ringing svg {
-  animation: bell-ring 0.9s ease;
+  animation: bell-ring 0.6s ease;
 }
 
 @keyframes bell-ring {
-  0%, 100% { transform: rotate(0); }
-  15% { transform: rotate(16deg); }
-  30% { transform: rotate(-14deg); }
-  45% { transform: rotate(10deg); }
-  56% { transform: rotate(-8deg); }
-  75% { transform: rotate(4deg); }
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.12) rotate(6deg); }
+  50% { transform: scale(1.12) rotate(-6deg); }
+  75% { transform: scale(1.05) rotate(2deg); }
 }
 
 .icon-badge {

@@ -104,48 +104,43 @@
 .about-pillars {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 2rem;
   padding: 2.25rem 2.5rem;
-  background: var(--color-cream-light, #faf8f5);
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border-light);
 }
 
 .about-pillar {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
-.pillar-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+.pillar-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--color-brand);
-  margin-bottom: 0.2rem;
+  gap: 0.65rem;
 }
 
-.pillar-icon svg {
-  width: 20px;
-  height: 20px;
+.pillar-inline-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-copper, #985e38);
+  flex-shrink: 0;
 }
 
 .about-pillar h3 {
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-ink);
   margin: 0;
 }
 
 .about-pillar p {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--color-muted);
-  line-height: 1.55;
+  line-height: 1.6;
   margin: 0;
 }
 
