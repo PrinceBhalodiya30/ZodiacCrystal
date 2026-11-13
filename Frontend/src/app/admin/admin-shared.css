@@ -27,7 +27,8 @@
   .admin-coupons-page,
   .admin-reports-page,
   .admin-audit-logs-page,
-  .admin-newsletter-subscribers-page {
+  .admin-newsletter-subscribers-page,
+  .admin-settings-page {
     margin-left: 220px;
   }
 }

@@ -27,7 +27,7 @@ export interface MoonEventPreset {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, AdminNav],
   templateUrl: './settings.html',
-  styleUrl: './settings.css'
+  styleUrls: ['../admin-shared.css', './settings.css']
 })
 export class AdminSettings implements OnInit {
   private readonly storeSettingsService = inject(StoreSettingsService);
