@@ -43,3 +43,6 @@ Thumbs.db
 
 # Ignore sonarqube
 sonarqube-26.11.0.134175
+
+# Ignore node_modules
+node_modules
