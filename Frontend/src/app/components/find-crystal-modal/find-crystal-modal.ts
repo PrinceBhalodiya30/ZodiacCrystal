@@ -319,4 +319,10 @@ export class FindCrystalModal implements OnInit {
 
     return `Harmonizes beautifully with ${zodiacText}, amplifying positive intentions for ${goalText}.`;
   }
+
+  getAffinityLabel(matchScore: number): string {
+    if (matchScore >= 90) return 'Primary Astrological Stone';
+    if (matchScore >= 80) return 'Harmonizing Companion Stone';
+    return 'Aligned Ritual Stone';
+  }
 }

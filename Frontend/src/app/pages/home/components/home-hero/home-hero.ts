@@ -5,7 +5,6 @@ import { QuizService } from '../../../../services/quiz.service';
 import { ProductService } from '../../../../services/product.service';
 import { CartService } from '../../../../services/cart.service';
 import { Product } from '../../../../models/product';
-import { InrPipe } from '../../../../pipes/inr.pipe';
 import { ImgFallbackDirective } from '../../../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../../../services/page-title.service';
 import { HERO_IMAGE_URL } from '../../../../utils/hero-image.util';
@@ -15,7 +14,7 @@ import { getProductSlug } from '../../../../utils/product-slug.util';
 @Component({
   selector: 'app-home-hero',
   standalone: true,
-  imports: [RouterLink, InrPipe, ImgFallbackDirective],
+  imports: [RouterLink, ImgFallbackDirective],
   templateUrl: './home-hero.html',
   styleUrl: './home-hero.css'
 })

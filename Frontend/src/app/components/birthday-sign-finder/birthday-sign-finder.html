@@ -12,7 +12,9 @@
       Select your birth date to reveal your Vedic astrological sign and attuned healing stones.
     </p>
     <div class="finder-astrology-note">
-      <span class="note-icon" aria-hidden="true">✦</span>
+      <span class="note-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </span>
       <span>
         Calculated as per Indian Vedic calendar (Surya Sankranti). Already know your Janma Rashi (Moon Sign) from your Kundali? You can select it directly from the collection below.
       </span>
@@ -55,7 +57,6 @@
       (click)="findMySign()"
       [disabled]="!selectedMonth() || !selectedDay()"
     >
-      <span class="btn-sparkle" aria-hidden="true">✦</span>
       <span>Find My Sign</span>
     </button>
 
@@ -125,7 +126,7 @@
         @if (isLoadingCrystals()) {
           <div class="crystals-loading">
             <span class="loading-pulse"></span>
-            <span>Aligning cosmic crystal resonance...</span>
+            <span>Selecting attuned crystals for your sign...</span>
           </div>
         } @else if (attunedCrystals().length > 0) {
           <div class="crystals-mini-grid">
@@ -135,7 +136,9 @@
                   @if (product.images && product.images.length > 0) {
                     <img [src]="product.images[0].imageUrl" [alt]="product.name" imgFallback />
                   } @else {
-                    <div class="mini-card-placeholder">✦</div>
+                    <div class="mini-card-placeholder">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/></svg>
+                    </div>
                   }
                 </div>
                 <div class="mini-card-info">

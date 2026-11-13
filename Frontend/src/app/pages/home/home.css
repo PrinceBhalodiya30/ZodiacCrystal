@@ -157,7 +157,7 @@ section h2 {
 .zodiac-section,
 .featured-section,
 .category-section,
-.why-us-section,
+.atelier-story-section,
 .guides-section {
   padding: 4.5rem 1.5rem;
 }
@@ -869,64 +869,85 @@ section h2 {
   text-decoration: underline;
 }
 
-/* Why Choose Us Section */
-.why-us-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.75rem;
-}
-
-.why-us-card {
-  background-color: var(--color-surface, #ffffff);
-  border-radius: var(--radius-card, 4px);
+/* Atelier Story & Sourcing Philosophy Section */
+.atelier-story-card {
+  background: linear-gradient(135deg, #FAF7F2 0%, #F5EFE6 100%);
   border: 1px solid var(--color-border-subtle, #EAE3D6);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card, 6px);
+  padding: 3.5rem 3rem;
+  box-shadow: 0 4px 20px rgba(29, 39, 57, 0.04);
+}
+
+.atelier-story-content {
+  max-width: 900px;
+  margin: 0 auto;
   text-align: center;
-  padding: 2.25rem 1.5rem;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
-.why-us-card:hover {
-  border-color: var(--color-copper-light, #D8B092);
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-4px);
-}
-
-.why-us-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 1.25rem;
-  border-radius: 50%;
-  background: var(--color-surface-tint, #F4EFE5);
+.story-kicker {
+  display: inline-block;
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--color-copper, #985E38);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform var(--transition-base);
+  margin-bottom: 0.85rem;
 }
 
-.why-us-card:hover .why-us-icon {
-  transform: scale(1.08);
-}
-
-.why-us-icon svg {
-  width: 1.75rem;
-  height: 1.75rem;
-}
-
-.why-us-card h3 {
+.atelier-story-content h2 {
   font-family: var(--font-heading);
-  margin: 0 0 0.5rem;
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
   color: var(--color-ink, #1D2739);
+  margin: 0 0 1.25rem;
+  line-height: 1.25;
+  font-weight: 500;
 }
 
-.why-us-card p {
-  margin: 0;
-  color: var(--color-subtle, #4E5A70);
-  font-size: var(--text-sm);
-  line-height: var(--leading-relaxed);
+.story-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #374151;
+  margin: 0 auto 2.5rem;
+  max-width: 780px;
+}
+
+.story-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: left;
+  border-top: 1px solid rgba(152, 94, 56, 0.16);
+  padding-top: 2rem;
+}
+
+.story-pillar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.story-pillar-item strong {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--color-ink, #1D2739);
+  font-weight: 600;
+}
+
+.story-pillar-item span {
+  font-size: var(--text-sm, 0.875rem);
+  color: #555e6d;
+  line-height: 1.55;
+}
+
+@media (max-width: 768px) {
+  .atelier-story-card {
+    padding: 2.25rem 1.5rem;
+  }
+  .story-pillars {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    text-align: center;
+  }
 }
 
 /* Responsive adjustments */

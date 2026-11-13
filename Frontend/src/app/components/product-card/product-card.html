@@ -10,14 +10,18 @@
         <span>No Image</span>
       </div>
     }
-    @if (isUnavailable) {
-      <span class="stock-badge stock-badge-overlay out-of-stock">Unavailable</span>
-    } @else {
-      <span class="stock-badge stock-badge-overlay" [class]="stockStatus">{{ stockLabel }}</span>
-    }
-    @if (discountPercent; as percent) {
-      <span class="sale-badge">-{{ percent }}%</span>
-    }
+    <div class="card-badge-stack">
+      @if (isUnavailable) {
+        <span class="stock-badge stock-badge-overlay out-of-stock">Unavailable</span>
+      } @else if (isOutOfStock) {
+        <span class="stock-badge stock-badge-overlay out-of-stock">Sold Out</span>
+      } @else if (stockStatus === 'low-stock') {
+        <span class="stock-badge stock-badge-overlay low-stock">{{ stockLabel }}</span>
+      }
+      @if (discountPercent; as percent) {
+        <span class="sale-badge">-{{ percent }}%</span>
+      }
+    </div>
     @if (marketingBadge; as badge) {
       <span class="marketing-badge-overlay" [class]="marketingBadgeClass">
         @switch (badge.toLowerCase()) {
@@ -59,29 +63,31 @@
         }
       </span>
     }
-    <button
-      type="button"
-      class="wishlist-toggle"
-      [class.active]="isWishlisted"
-      [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
-      (click)="$event.preventDefault(); $event.stopPropagation(); toggleWishlist()"
-    >
-      <svg viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
-      </svg>
-    </button>
-    <button
-      type="button"
-      class="compare-toggle"
-      [class.active]="isCompared"
-      [attr.aria-label]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
-      [attr.title]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
-      (click)="$event.preventDefault(); $event.stopPropagation(); toggleCompare()"
-    >
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
-      </svg>
-    </button>
+    <div class="card-action-stack">
+      <button
+        type="button"
+        class="wishlist-toggle"
+        [class.active]="isWishlisted"
+        [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+        (click)="$event.preventDefault(); $event.stopPropagation(); toggleWishlist()"
+      >
+        <svg viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="compare-toggle"
+        [class.active]="isCompared"
+        [attr.aria-label]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
+        [attr.title]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
+        (click)="$event.preventDefault(); $event.stopPropagation(); toggleCompare()"
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
+        </svg>
+      </button>
+    </div>
   </a>
 
   <div class="product-body">

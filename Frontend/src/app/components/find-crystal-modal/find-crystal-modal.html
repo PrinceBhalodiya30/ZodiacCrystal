@@ -276,8 +276,8 @@
                   <line x1="5" y1="7" x2="19" y2="7"/>
                 </svg>
               </div>
-              <h4 class="loader-title">Synthesizing Astrological Resonance</h4>
-              <p class="loader-subtitle">Evaluating natural mineral structures against your celestial blueprint...</p>
+              <h4 class="loader-title">Curating Your Sacred Stones</h4>
+              <p class="loader-subtitle">Matching natural mineral structures to your astrological sign and intention...</p>
             </div>
           } @else {
             <div class="results-header">
@@ -302,7 +302,7 @@
                   <article class="specimen-card">
                     <div class="specimen-resonance-tag">
                       <span class="tag-dot"></span>
-                      {{ match.matchScore }}% Astrological Affinity
+                      {{ getAffinityLabel(match.matchScore) }}
                     </div>
 
                     <button
