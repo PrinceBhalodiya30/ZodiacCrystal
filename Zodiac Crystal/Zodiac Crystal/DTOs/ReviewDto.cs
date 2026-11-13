@@ -1,4 +1,4 @@
-﻿namespace Zodiac_Crystal.DTOs
+namespace Zodiac_Crystal.DTOs
 {
     public class ReviewDto
     {
@@ -19,6 +19,8 @@
         public string? AdminReply { get; set; }
 
         public DateTime? AdminReplyAt { get; set; }
+
+        public bool IsVerifiedBuyer { get; set; }
 
         public List<ReviewPhotoDto> Images { get; set; } = new();
     }

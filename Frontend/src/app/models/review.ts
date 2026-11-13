@@ -20,6 +20,7 @@ export interface Review {
   createdAt: string;
   adminReply?: string;
   adminReplyAt?: string;
+  isVerifiedBuyer?: boolean;
   images: ReviewPhoto[];
 }
 

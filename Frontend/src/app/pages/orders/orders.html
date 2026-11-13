@@ -128,6 +128,14 @@
                 (click)="openCareGuide(item.productName, item.productId, $event)">
                 Care Guide
               </button>
+              @if (order.status === 'Delivered') {
+                <span class="action-separator">&middot;</span>
+                <a class="link-btn-action review-action-link"
+                  [routerLink]="['/products', itemSlug(item)]"
+                  [fragment]="'reviews'">
+                  ★ Write Review
+                </a>
+              }
             </div>
           </div>
           <span class="item-price">{{ item.subtotal | inr }}</span>

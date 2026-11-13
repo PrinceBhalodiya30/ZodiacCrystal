@@ -136,9 +136,17 @@
                 </a>
               </td>
               <td data-label="Reviewer">
-                <a [routerLink]="['/admin/users']" [queryParams]="{ search: review.userName }" class="review-reviewer-link" title="Find customer in Users list">
-                  {{ review.userName }}
-                </a>
+                <div class="reviewer-cell">
+                  <a [routerLink]="['/admin/users']" [queryParams]="{ search: review.userName }" class="review-reviewer-link" title="Find customer in Users list">
+                    {{ review.userName }}
+                  </a>
+                  @if (review.isVerifiedBuyer) {
+                    <span class="badge-verified-buyer-admin" title="Verified Buyer (delivered order for this product)">
+                      <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                      Verified
+                    </span>
+                  }
+                </div>
               </td>
               <td data-label="Rating">
                 <span class="stars" [attr.aria-label]="review.rating + ' out of 5 stars'">{{ getStars(review.rating) }}</span>

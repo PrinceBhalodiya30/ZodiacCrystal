@@ -81,6 +81,24 @@ namespace Zodiac_Crystal.Controllers
                 Reviews = reviews
             };
 
+            if (reviews.Count > 0)
+            {
+                var reviewerUserIds = reviews.Select(r => r.UserId).Distinct().ToList();
+                var verifiedUserIds = await _context.Orders
+                    .Where(o => reviewerUserIds.Contains(o.UserId) &&
+                                o.Status == "Delivered" &&
+                                o.OrderItems.Any(i => i.ProductId == productId))
+                    .Select(o => o.UserId)
+                    .Distinct()
+                    .ToListAsync();
+                var verifiedSet = new HashSet<int>(verifiedUserIds);
+
+                foreach (var review in reviews)
+                {
+                    review.IsVerifiedBuyer = verifiedSet.Contains(review.UserId);
+                }
+            }
+
             return Ok(result);
         }
 
@@ -130,6 +148,8 @@ namespace Zodiac_Crystal.Controllers
 
             var user = await _context.Users.FirstAsync(u => u.UserId == userId);
 
+            var isVerified = await HasDeliveredOrderAsync(userId, productId);
+
             var reviewDto = new ReviewDto
             {
                 ReviewId = review.ReviewId,
@@ -138,7 +158,8 @@ namespace Zodiac_Crystal.Controllers
                 UserName = user.Name,
                 Rating = review.Rating,
                 Comment = review.Comment,
-                CreatedAt = review.CreatedAt
+                CreatedAt = review.CreatedAt,
+                IsVerifiedBuyer = isVerified
             };
 
             return CreatedAtAction(nameof(GetReviews), new { productId }, reviewDto);

@@ -494,6 +494,15 @@
   color: var(--color-brand, #1d2739);
 }
 
+.link-btn-action.review-action-link {
+  color: #b37418;
+  font-weight: 600;
+}
+
+.link-btn-action.review-action-link:hover {
+  color: var(--color-brand, #1d2739);
+}
+
 .link-btn-action:disabled {
   opacity: 0.5;
   cursor: not-allowed;

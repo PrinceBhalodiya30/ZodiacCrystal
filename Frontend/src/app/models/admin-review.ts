@@ -21,5 +21,6 @@ export interface AdminReview {
   status: ReviewStatus;
   adminReply?: string;
   adminReplyAt?: string;
+  isVerifiedBuyer?: boolean;
   images: AdminReviewPhoto[];
 }

@@ -294,6 +294,24 @@
   font-weight: 500;
 }
 
+.item-name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.item-review-link {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #b37418;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.item-review-link:hover {
+  color: var(--color-brand, #1d2739);
+}
+
 .item-calc {
   color: var(--color-muted);
   white-space: nowrap;

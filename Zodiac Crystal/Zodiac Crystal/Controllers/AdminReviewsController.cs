@@ -89,6 +89,30 @@ namespace Zodiac_Crystal.Controllers
                 })
                 .ToListAsync();
 
+            if (reviews.Count > 0)
+            {
+                var pairs = reviews.Select(r => new { r.UserId, r.ProductId }).Distinct().ToList();
+                var userIds = pairs.Select(p => p.UserId).Distinct().ToList();
+                var productIds = pairs.Select(p => p.ProductId).Distinct().ToList();
+
+                var deliveredItems = await _context.Orders
+                    .Where(o => userIds.Contains(o.UserId) && o.Status == "Delivered")
+                    .SelectMany(o => o.OrderItems
+                        .Where(i => productIds.Contains(i.ProductId))
+                        .Select(i => new { o.UserId, i.ProductId }))
+                    .Distinct()
+                    .ToListAsync();
+
+                var verifiedLookup = new HashSet<(int UserId, int ProductId)>(
+                    deliveredItems.Select(d => (d.UserId, d.ProductId))
+                );
+
+                foreach (var review in reviews)
+                {
+                    review.IsVerifiedBuyer = verifiedLookup.Contains((review.UserId, review.ProductId));
+                }
+            }
+
             return Ok(new PagedResult<AdminReviewDto>
             {
                 Items = reviews,

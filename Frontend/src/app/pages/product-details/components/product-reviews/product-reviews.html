@@ -1,4 +1,4 @@
-<section class="reviews-section">
+<section class="reviews-section" id="reviews">
   <h2>Reviews & Ratings</h2>
 
   @if (reviewsLoading) {
@@ -94,6 +94,12 @@
             <div class="review-item-header">
               <span class="stars">{{ getStars(review.rating) }}</span>
               <span class="review-author">{{ review.userName }}</span>
+              @if (review.isVerifiedBuyer) {
+                <span class="badge-verified-buyer" title="Verified Purchase — This customer ordered and received this item">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Verified Buyer</span>
+                </span>
+              }
               <span class="review-date">{{ review.createdAt | date:'dd MMM yyyy' }}</span>
               @if (canDeleteReview(review)) {
                 <button type="button" class="link-btn danger review-delete-btn" (click)="deleteReview.emit(review)">Delete</button>

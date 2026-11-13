@@ -386,6 +386,27 @@ tr.has-photos > td {
   color: #6d4123;
 }
 
+.reviewer-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.badge-verified-buyer-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.45rem;
+  background-color: #ecf8f1;
+  color: #1e6b3e;
+  border: 1px solid #d3eedf;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
 .reviews-pagination-wrap {
   display: flex;
   align-items: center;

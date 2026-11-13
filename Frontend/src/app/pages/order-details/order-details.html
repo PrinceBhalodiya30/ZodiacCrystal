@@ -162,7 +162,14 @@
       <div class="order-items">
         @for (item of o.items; track item.orderItemId) {
           <div class="order-item-row">
-            <span class="item-name">{{ item.productName }}</span>
+            <div class="item-name-block">
+              <span class="item-name">{{ item.productName }}</span>
+              @if (o.status === 'Delivered') {
+                <a [routerLink]="['/products', item.productId]" [fragment]="'reviews'" class="item-review-link">
+                  ★ Write Review
+                </a>
+              }
+            </div>
             <span class="item-calc">
               {{ item.unitPrice | inr }} × {{ item.quantity }} =
               {{ item.subtotal | inr }}
