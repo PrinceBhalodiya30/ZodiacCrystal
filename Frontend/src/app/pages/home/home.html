@@ -122,94 +122,96 @@
   }
 </section>
 
-<!-- Shop by Intention Section (Energy Muse Pattern) -->
-<section class="container intentions-showcase-section" scrollReveal>
-  <div class="section-header">
-    <span class="section-tag">Curated Collections</span>
-    <h2>Shop by Intention</h2>
-    <p class="section-subtitle">
-      Authentic raw minerals, polished towers, and natural gemstone jewelry selected to support your daily rituals.
-    </p>
-  </div>
+<!-- Shop by Intention Section (Curated Collections Band) -->
+<section class="intentions-band" scrollReveal>
+  <div class="container intentions-showcase-section">
+    <div class="section-header">
+      <span class="section-tag">Curated Collections</span>
+      <h2>Shop by Intention</h2>
+      <p class="section-subtitle">
+        Authentic raw minerals, polished towers, and natural gemstone jewelry selected to support your daily rituals.
+      </p>
+    </div>
 
-  <div class="intentions-grid">
-    <!-- Card 1: Protection -->
-    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
-      <div class="intention-image-wrapper">
-        <img src="/intentions/protection.webp" alt="Protection &amp; Grounding Crystals - Natural Smoky Quartz Obelisk"
-          class="intention-img" loading="lazy" decoding="async" imgFallback />
-        <div class="intention-overlay"></div>
-        <span class="intention-pill">Grounding &amp; Shield</span>
-      </div>
-      <div class="intention-content">
-        <span class="intention-kicker">Smoky Quartz &amp; Obsidian</span>
-        <h3 class="intention-title">Protection &amp; Grounding</h3>
-        <p class="intention-desc">Banish psychic drain, deflect heavy frequencies, and stay deeply grounded.</p>
-        <span class="intention-link">Shop Protection <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
-            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg></span>
-      </div>
-    </a>
+    <div class="intentions-grid">
+      <!-- Card 1: Protection -->
+      <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'protection' }">
+        <div class="intention-image-wrapper">
+          <img src="/intentions/protection.webp" alt="Protection &amp; Grounding Crystals - Natural Smoky Quartz Obelisk"
+            class="intention-img" loading="lazy" decoding="async" imgFallback />
+          <div class="intention-overlay"></div>
+          <span class="intention-pill">Grounding &amp; Shield</span>
+        </div>
+        <div class="intention-content">
+          <span class="intention-kicker">Smoky Quartz &amp; Obsidian</span>
+          <h3 class="intention-title">Protection &amp; Grounding</h3>
+          <p class="intention-desc">Banish psychic drain, deflect heavy frequencies, and stay deeply grounded.</p>
+          <span class="intention-link">Shop Protection <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+              stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></span>
+        </div>
+      </a>
 
-    <!-- Card 2: Wealth & Abundance -->
-    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
-      <div class="intention-image-wrapper">
-        <img src="/intentions/wealth.webp" alt="Wealth &amp; Abundance Crystals - Golden Tiger's Eye and Citrine"
-          class="intention-img" loading="lazy" decoding="async" imgFallback />
-        <div class="intention-overlay"></div>
-        <span class="intention-pill">Prosperity &amp; Drive</span>
-      </div>
-      <div class="intention-content">
-        <span class="intention-kicker">Golden Tiger's Eye &amp; Citrine</span>
-        <h3 class="intention-title">Wealth &amp; Success</h3>
-        <p class="intention-desc">Attune your vibration to business breakthrough, solar vitality, and financial flow.
-        </p>
-        <span class="intention-link">Shop Wealth <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
-            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg></span>
-      </div>
-    </a>
+      <!-- Card 2: Wealth & Abundance -->
+      <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'wealth' }">
+        <div class="intention-image-wrapper">
+          <img src="/intentions/wealth.webp" alt="Wealth &amp; Abundance Crystals - Golden Tiger's Eye and Citrine"
+            class="intention-img" loading="lazy" decoding="async" imgFallback />
+          <div class="intention-overlay"></div>
+          <span class="intention-pill">Prosperity &amp; Drive</span>
+        </div>
+        <div class="intention-content">
+          <span class="intention-kicker">Golden Tiger's Eye &amp; Citrine</span>
+          <h3 class="intention-title">Wealth &amp; Success</h3>
+          <p class="intention-desc">Attune your vibration to business breakthrough, solar vitality, and financial flow.
+          </p>
+          <span class="intention-link">Shop Wealth <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+              stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></span>
+        </div>
+      </a>
 
-    <!-- Card 3: Love & Compassion -->
-    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
-      <div class="intention-image-wrapper">
-        <img src="/intentions/love.jpg" alt="Love &amp; Harmony Crystals - Natural Madagascar Rose Quartz"
-          class="intention-img" loading="lazy" decoding="async" imgFallback />
-        <div class="intention-overlay"></div>
-        <span class="intention-pill">Heart Resonance</span>
-      </div>
-      <div class="intention-content">
-        <span class="intention-kicker">Madagascar Rose Quartz</span>
-        <h3 class="intention-title">Love &amp; Harmony</h3>
-        <p class="intention-desc">Open the sacred heart space, dissolve emotional stress, and cultivate tender
-          self-love.</p>
-        <span class="intention-link">Shop Love <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
-            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg></span>
-      </div>
-    </a>
+      <!-- Card 3: Love & Compassion -->
+      <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'love' }">
+        <div class="intention-image-wrapper">
+          <img src="/intentions/love.jpg" alt="Love &amp; Harmony Crystals - Natural Madagascar Rose Quartz"
+            class="intention-img" loading="lazy" decoding="async" imgFallback />
+          <div class="intention-overlay"></div>
+          <span class="intention-pill">Heart Resonance</span>
+        </div>
+        <div class="intention-content">
+          <span class="intention-kicker">Madagascar Rose Quartz</span>
+          <h3 class="intention-title">Love &amp; Harmony</h3>
+          <p class="intention-desc">Open the sacred heart space, dissolve emotional stress, and cultivate tender
+            self-love.</p>
+          <span class="intention-link">Shop Love <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+              stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></span>
+        </div>
+      </a>
 
-    <!-- Card 4: Calm & Clarity -->
-    <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
-      <div class="intention-image-wrapper">
-        <img src="/intentions/clarity.jpg" alt="Peace &amp; Clarity Crystals - Authentic Amethyst Crystal Cluster"
-          class="intention-img" loading="lazy" decoding="async" imgFallback />
-        <div class="intention-overlay"></div>
-        <span class="intention-pill">Serenity &amp; Sleep</span>
-      </div>
-      <div class="intention-content">
-        <span class="intention-kicker">Natural Amethyst &amp; Selenite</span>
-        <h3 class="intention-title">Peace &amp; Rest</h3>
-        <p class="intention-desc">Still an overactive mind, welcome restorative rest, and awaken lucid inner peace.</p>
-        <span class="intention-link">Shop Peace <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
-            stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg></span>
-      </div>
-    </a>
+      <!-- Card 4: Calm & Clarity -->
+      <a class="intention-card" [routerLink]="['/products']" [queryParams]="{ intention: 'peace' }">
+        <div class="intention-image-wrapper">
+          <img src="/intentions/clarity.jpg" alt="Peace &amp; Clarity Crystals - Authentic Amethyst Crystal Cluster"
+            class="intention-img" loading="lazy" decoding="async" imgFallback />
+          <div class="intention-overlay"></div>
+          <span class="intention-pill">Serenity &amp; Sleep</span>
+        </div>
+        <div class="intention-content">
+          <span class="intention-kicker">Natural Amethyst &amp; Selenite</span>
+          <h3 class="intention-title">Peace &amp; Rest</h3>
+          <p class="intention-desc">Still an overactive mind, welcome restorative rest, and awaken lucid inner peace.</p>
+          <span class="intention-link">Shop Peace <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+              stroke="currentColor" stroke-width="2" class="icon-inline-right" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></span>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 

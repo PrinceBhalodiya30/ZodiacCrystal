@@ -8,6 +8,7 @@
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 3rem;
+  align-items: start;
   background-color: var(--color-surface, #ffffff);
   border-radius: var(--radius-sm, 4px);
   border: 1px solid var(--color-border-subtle, #EAE3D6);
@@ -15,13 +16,19 @@
   padding: 2.5rem;
 }
 
+@media (max-width: 900px) {
+  .product-details {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+}
+
 .product-gallery {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   align-self: start;
-  position: sticky;
-  top: 5.5rem;
 }
 
 .product-image {
@@ -188,6 +195,14 @@
 .product-info {
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 901px) {
+  .product-info {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+  }
 }
 
 .pdp-marketing-badge-wrap {

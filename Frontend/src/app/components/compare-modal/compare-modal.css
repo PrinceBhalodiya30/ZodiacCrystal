@@ -14,7 +14,9 @@
 }
 
 .compare-modal {
-  margin: 0;
+  position: relative;
+  margin: auto;
+  inset: auto;
   padding: 0;
   color: inherit;
   display: flex;

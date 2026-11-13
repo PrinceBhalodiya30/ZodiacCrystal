@@ -24,6 +24,9 @@
 }
 
 .modal-panel {
+  position: relative;
+  margin: auto;
+  inset: auto;
   border: none;
   background: #ffffff;
   border-radius: 6px;
