@@ -8,8 +8,8 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class SupportService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/SupportTickets`;
-  private adminBaseUrl = `${API_BASE_URL}/Admin/SupportTickets`;
+  private readonly baseUrl = `${API_BASE_URL}/SupportTickets`;
+  private readonly adminBaseUrl = `${API_BASE_URL}/Admin/SupportTickets`;
 
   // Customer
   getMyTickets(): Observable<SupportTicket[]> {

@@ -87,8 +87,20 @@
 
     /* When Angular is ready, shoot to 100% and fade out */
     #app-splash.is-hidden .top-progress-fill {
-      width: 100% !important;
+      width: 100%;
       animation: none;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     @keyframes top-bar-trickle {
@@ -123,8 +135,9 @@
 </head>
 
 <body>
-  <div id="app-splash" role="progressbar" aria-label="Page loading">
-    <div class="top-progress-track">
+  <div id="app-splash">
+    <progress class="visually-hidden" aria-label="Page loading"></progress>
+    <div class="top-progress-track" aria-hidden="true">
       <div class="top-progress-fill"></div>
     </div>
   </div>

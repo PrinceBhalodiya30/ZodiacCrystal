@@ -65,7 +65,7 @@ export class HomeHero implements OnInit, OnDestroy {
   private loadCenterpieceProduct(): void {
     this.isLoadingProduct.set(true);
     // Fetch the top-rated in-stock active product as the atelier centerpiece
-    this.productService.getProductsPaged(1, 1, undefined, null, true, null, null, null, true, 'rating').subscribe({
+    this.productService.getProductsPaged(1, 1, { activeOnly: true, inStockOnly: true, sortBy: 'rating' }).subscribe({
       next: (res) => {
         if (res.items && res.items.length > 0) {
           this.featuredProduct.set(res.items[0]);

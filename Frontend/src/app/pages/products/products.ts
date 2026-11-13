@@ -106,7 +106,7 @@ export class Products implements OnInit {
           if (!term.trim()) {
             return of(null);
           }
-          return this.productService.getProductsPaged(1, 5, term.trim(), null, true);
+          return this.productService.getProductsPaged(1, 5, { search: term.trim(), activeOnly: true });
         })
       )
       .subscribe({
@@ -297,16 +297,17 @@ export class Products implements OnInit {
       .getProductsPaged(
         this.page(),
         PAGE_SIZE,
-        this.searchTerm().trim() || undefined,
-        this.selectedCategoryId(),
-        true,
-        this.minPrice(),
-        this.maxPrice(),
-        this.selectedZodiacId(),
-        this.inStockOnly(),
-        this.sortBy() || undefined,
-        false,
-        intention?.id || undefined
+        {
+          search: this.searchTerm().trim() || undefined,
+          categoryId: this.selectedCategoryId(),
+          activeOnly: true,
+          minPrice: this.minPrice(),
+          maxPrice: this.maxPrice(),
+          zodiacId: this.selectedZodiacId(),
+          inStockOnly: this.inStockOnly(),
+          sortBy: this.sortBy() || undefined,
+          intention: intention?.id || undefined
+        }
       )
       .subscribe({
         next: result => {

@@ -20,7 +20,7 @@ const MAX_VISIBLE_TOASTS = 3;
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
-  toasts = signal<Toast[]>([]);
+  readonly toasts = signal<Toast[]>([]);
   private nextId = 1;
   private readonly queuedToasts: Toast[] = [];
   private readonly dismissTimers = new Map<number, ReturnType<typeof setTimeout>>();
@@ -73,7 +73,7 @@ export class ToastService {
     }
 
     const current = this.toasts().find(t => t.id === id);
-    if (current && current.startedAt) {
+    if (current?.startedAt) {
       const elapsed = Date.now() - current.startedAt;
       current.remainingMs = Math.max(1200, current.durationMs - elapsed);
     }
@@ -119,8 +119,18 @@ export class ToastService {
     }, 220);
   }
 
+  private getDefaultDuration(type: ToastType): number {
+    if (type === 'error') {
+      return ERROR_DISMISS_MS;
+    }
+    if (type === 'warning') {
+      return 5000;
+    }
+    return SUCCESS_DISMISS_MS;
+  }
+
   private show(message: string, type: ToastType, customDurationMs?: number): void {
-    const defaultDuration = type === 'error' ? ERROR_DISMISS_MS : (type === 'warning' ? 5000 : SUCCESS_DISMISS_MS);
+    const defaultDuration = this.getDefaultDuration(type);
     const toast: Toast = {
       id: this.nextId++,
       message,
@@ -137,7 +147,7 @@ export class ToastService {
   }
 
   private showWithTitle(title: string, message: string, type: ToastType, customDurationMs?: number): void {
-    const defaultDuration = type === 'error' ? ERROR_DISMISS_MS : (type === 'warning' ? 5000 : SUCCESS_DISMISS_MS);
+    const defaultDuration = this.getDefaultDuration(type);
     const toast: Toast = {
       id: this.nextId++,
       title,

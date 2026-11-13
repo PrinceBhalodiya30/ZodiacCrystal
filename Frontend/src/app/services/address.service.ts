@@ -7,7 +7,7 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class AddressService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Addresses`;
+  private readonly baseUrl = `${API_BASE_URL}/Addresses`;
 
   getAddresses(): Observable<Address[]> {
     return this.http.get<Address[]>(this.baseUrl);

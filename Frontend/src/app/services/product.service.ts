@@ -5,10 +5,23 @@ import { Product, ProductRequest } from '../models/product';
 import { PagedResult } from '../models/paged-result';
 import { API_BASE_URL } from './api-config';
 
+export interface ProductFilterParams {
+  search?: string;
+  categoryId?: number | null;
+  activeOnly?: boolean;
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  zodiacId?: number | null;
+  inStockOnly?: boolean;
+  sortBy?: string | null;
+  lowStockOnly?: boolean;
+  intention?: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Products`;
+  private readonly baseUrl = `${API_BASE_URL}/Products`;
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.baseUrl);
@@ -17,53 +30,44 @@ export class ProductService {
   getProductsPaged(
     pageNumber: number,
     pageSize: number,
-    search?: string,
-    categoryId?: number | null,
-    activeOnly = false,
-    minPrice?: number | null,
-    maxPrice?: number | null,
-    zodiacId?: number | null,
-    inStockOnly = false,
-    sortBy?: string | null,
-    lowStockOnly = false,
-    intention?: string | null
+    filters: ProductFilterParams = {}
   ): Observable<PagedResult<Product>> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber)
       .set('pageSize', pageSize)
-      .set('activeOnly', activeOnly)
-      .set('inStockOnly', inStockOnly);
+      .set('activeOnly', filters.activeOnly ?? false)
+      .set('inStockOnly', filters.inStockOnly ?? false);
 
-    if (lowStockOnly) {
+    if (filters.lowStockOnly) {
       params = params.set('lowStockOnly', true);
     }
 
-    if (search) {
-      params = params.set('search', search);
+    if (filters.search) {
+      params = params.set('search', filters.search);
     }
 
-    if (intention) {
-      params = params.set('intention', intention);
+    if (filters.intention) {
+      params = params.set('intention', filters.intention);
     }
 
-    if (categoryId !== null && categoryId !== undefined) {
-      params = params.set('categoryId', categoryId);
+    if (filters.categoryId !== null && filters.categoryId !== undefined) {
+      params = params.set('categoryId', filters.categoryId);
     }
 
-    if (minPrice !== null && minPrice !== undefined) {
-      params = params.set('minPrice', minPrice);
+    if (filters.minPrice !== null && filters.minPrice !== undefined) {
+      params = params.set('minPrice', filters.minPrice);
     }
 
-    if (maxPrice !== null && maxPrice !== undefined) {
-      params = params.set('maxPrice', maxPrice);
+    if (filters.maxPrice !== null && filters.maxPrice !== undefined) {
+      params = params.set('maxPrice', filters.maxPrice);
     }
 
-    if (zodiacId !== null && zodiacId !== undefined) {
-      params = params.set('zodiacId', zodiacId);
+    if (filters.zodiacId !== null && filters.zodiacId !== undefined) {
+      params = params.set('zodiacId', filters.zodiacId);
     }
 
-    if (sortBy) {
-      params = params.set('sortBy', sortBy);
+    if (filters.sortBy) {
+      params = params.set('sortBy', filters.sortBy);
     }
 
     return this.http.get<PagedResult<Product>>(`${this.baseUrl}/paged`, { params });

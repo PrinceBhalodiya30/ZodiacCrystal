@@ -75,7 +75,7 @@ export class AuthShowcase implements OnInit {
     if (this.mode === 'login') {
       // Best-rated products first, so the review comes from a well-loved item.
       this.productService
-        .getProductsPaged(1, REVIEW_SOURCE_COUNT, undefined, null, true, null, null, null, false, 'rating')
+        .getProductsPaged(1, REVIEW_SOURCE_COUNT, { activeOnly: true, sortBy: 'rating' })
         .pipe(catchError(() => of(null)))
         .subscribe(page => this.loadReview((page?.items ?? []).map(p => ({ productId: p.productId, name: p.name }))));
     }

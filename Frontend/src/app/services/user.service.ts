@@ -25,8 +25,8 @@ export interface ChangePasswordRequest {
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Admin/Users`;
-  private meBaseUrl = `${API_BASE_URL}/Users/me`;
+  private readonly baseUrl = `${API_BASE_URL}/Admin/Users`;
+  private readonly meBaseUrl = `${API_BASE_URL}/Users/me`;
 
   getAllUsersAdmin(): Observable<AdminUser[]> {
     return this.http.get<AdminUser[]>(this.baseUrl);

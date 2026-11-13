@@ -1,7 +1,9 @@
 .mystery-box-page {
   padding: 3rem 1.5rem 5rem;
-  max-width: 760px;
+  max-width: var(--container-max, 1400px);
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mystery-box-page h1 {
@@ -23,6 +25,7 @@
   padding: 2.75rem 2.25rem;
   text-align: center;
   box-shadow: var(--shadow-md);
+  width: 100%;
 }
 
 
@@ -84,7 +87,7 @@
 
 .mystery-box-note {
   margin: 0 auto 2rem;
-  max-width: 540px;
+  max-width: 780px;
   color: var(--color-subtle, #4E5A70);
   font-size: 0.95rem;
   line-height: 1.6;
@@ -118,7 +121,8 @@
 /* Zodiac Picker in Promo Card */
 .zodiac-picker-section {
   margin: 1.75rem auto 2.25rem;
-  max-width: 680px;
+  max-width: 1100px;
+  width: 100%;
   text-align: center;
 }
 

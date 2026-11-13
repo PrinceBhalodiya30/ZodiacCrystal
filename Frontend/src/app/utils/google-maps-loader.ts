@@ -19,7 +19,7 @@ export function markGoogleFailed(): void {
 // Loads the Maps JavaScript API once per page. region=IN makes Google draw India's official borders.
 export function loadGoogle(key: string, onFailure: () => void): Promise<any> {
   onGoogleFailure = onFailure;
-  return googleLoad ??= new Promise((resolve, reject) => {
+  googleLoad ??= new Promise((resolve, reject) => {
     const w = window as any;
     w.__zodiacMapsReady = () => resolve(w.google);
     // Google calls this when it rejects the key, including when the demo key's daily limit is used up.
@@ -34,4 +34,5 @@ export function loadGoogle(key: string, onFailure: () => void): Promise<any> {
     };
     document.head.appendChild(script);
   });
+  return googleLoad;
 }

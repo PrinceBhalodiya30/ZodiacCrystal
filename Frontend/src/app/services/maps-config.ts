@@ -5,11 +5,12 @@ import { API_BASE_URL } from './api-config';
 let mapsKey: Promise<string> | undefined;
 
 export function getGoogleMapsKey(): Promise<string> {
-  return mapsKey ??= fetch(`${API_BASE_URL}/config/maps`)
+  mapsKey ??= fetch(`${API_BASE_URL}/config/maps`)
     .then(r => (r.ok ? r.json() : { googleMapsKey: '' }))
     .then((d: { googleMapsKey?: string }) => d.googleMapsKey ?? '')
     .catch(() => {
       mapsKey = undefined; // Ask again next time the map opens.
       return '';
     });
+  return mapsKey;
 }

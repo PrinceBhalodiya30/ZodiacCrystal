@@ -74,7 +74,7 @@ export function getIntentionById(id: string | null | undefined): SacredIntention
 }
 
 export function productMatchesIntention(product: Product, intention: SacredIntention): boolean {
-  if (product.intention && product.intention.trim().toLowerCase() === intention.id.toLowerCase()) {
+  if (product.intention?.trim().toLowerCase() === intention.id.toLowerCase()) {
     return true;
   }
   const searchText = `${product.name} ${product.description ?? ''} ${product.chakra ?? ''} ${product.categoryName ?? ''}`.toLowerCase();

@@ -6,7 +6,7 @@
 
 .consultation-hero {
   text-align: center;
-  max-width: 760px;
+  max-width: 860px;
   margin: 1.5rem auto 3rem;
 }
 
@@ -118,7 +118,7 @@
 
 /* Card Wrapper */
 .consultation-card-wrapper {
-  max-width: 980px;
+  max-width: var(--container-max, 1400px);
   margin: 0 auto;
   background-color: #ffffff;
   border: 1px solid var(--color-border-subtle, #EAE3D6);
@@ -162,7 +162,7 @@
 /* Grid: Step 1 (Intentions) */
 .intentions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
@@ -178,6 +178,8 @@
   cursor: pointer;
   transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
   font: inherit;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .intention-tile:hover {
@@ -227,7 +229,7 @@
 /* Grid: Step 2 (Zodiac) */
 .zodiac-options-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 }
 
@@ -243,6 +245,8 @@
   cursor: pointer;
   transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
   font: inherit;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .zodiac-tile:hover {
@@ -639,6 +643,18 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (max-width: 1100px) {
+  .zodiac-options-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 960px) {
+  .intentions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .consultation-card-wrapper {
     padding: 2rem 1.25rem;
@@ -660,6 +676,16 @@
 
   .specimen-actions {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 580px) {
+  .intentions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zodiac-options-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

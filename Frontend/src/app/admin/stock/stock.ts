@@ -166,16 +166,11 @@ export class AdminStock implements OnInit {
     this.loadSubscription = this.productService.getProductsPaged(
       this.page(),
       PAGE_SIZE,
-      this.searchTerm().trim() || undefined,
-      undefined,
-      false,
-      undefined,
-      undefined,
-      undefined,
-      false,
-      // Most urgent first when looking at low stock.
-      lowStockOnly ? 'stock_asc' : undefined,
-      lowStockOnly
+      {
+        search: this.searchTerm().trim() || undefined,
+        sortBy: lowStockOnly ? 'stock_asc' : undefined,
+        lowStockOnly
+      }
     ).subscribe({
       next: result => {
         // Removing the last row on the last page leaves it empty; step back a page.

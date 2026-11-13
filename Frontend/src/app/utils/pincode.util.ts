@@ -9,6 +9,84 @@ export interface PincodeDeliveryInfo {
 
 const PINCODE_STORAGE_KEY = 'zodiac_delivery_pincode';
 
+interface PincodeLocationInfo {
+  location: string;
+  daysToAdd: number;
+}
+
+const CITY_PREFIX_MAP: Record<string, PincodeLocationInfo> = {
+  // 4-digit prefixes
+  '3800': { location: 'Ahmedabad, Gujarat', daysToAdd: 5 },
+  '3950': { location: 'Surat, Gujarat', daysToAdd: 5 },
+  '3900': { location: 'Vadodara, Gujarat', daysToAdd: 5 },
+  '3600': { location: 'Rajkot, Gujarat', daysToAdd: 5 },
+  '1220': { location: 'Gurugram / Faridabad, NCR', daysToAdd: 5 },
+  '1210': { location: 'Gurugram / Faridabad, NCR', daysToAdd: 5 },
+  '2013': { location: 'Noida / Ghaziabad, NCR', daysToAdd: 5 },
+  '2010': { location: 'Noida / Ghaziabad, NCR', daysToAdd: 5 },
+  // 3-digit prefixes
+  '382': { location: 'Ahmedabad, Gujarat', daysToAdd: 5 },
+  '400': { location: 'Mumbai, Maharashtra', daysToAdd: 5 },
+  '411': { location: 'Pune, Maharashtra', daysToAdd: 5 },
+  '560': { location: 'Bengaluru, Karnataka', daysToAdd: 5 },
+  '600': { location: 'Chennai, Tamil Nadu', daysToAdd: 6 },
+  '500': { location: 'Hyderabad, Telangana', daysToAdd: 5 },
+  '700': { location: 'Kolkata, West Bengal', daysToAdd: 6 },
+  '302': { location: 'Jaipur, Rajasthan', daysToAdd: 5 },
+  '226': { location: 'Lucknow, Uttar Pradesh', daysToAdd: 6 },
+  '452': { location: 'Indore, Madhya Pradesh', daysToAdd: 6 },
+  '682': { location: 'Kochi, Kerala', daysToAdd: 6 },
+  '160': { location: 'Chandigarh', daysToAdd: 5 },
+  // 2-digit major cities
+  '11': { location: 'New Delhi, Delhi NCR', daysToAdd: 5 }
+};
+
+interface RegionRange {
+  min: number;
+  max: number;
+  location: string;
+  daysToAdd: number;
+}
+
+const REGIONAL_RANGES: RegionRange[] = [
+  { min: 12, max: 13, location: 'Haryana', daysToAdd: 6 },
+  { min: 14, max: 16, location: 'Punjab', daysToAdd: 6 },
+  { min: 17, max: 17, location: 'Himachal Pradesh', daysToAdd: 7 },
+  { min: 18, max: 19, location: 'Jammu & Kashmir', daysToAdd: 8 },
+  { min: 20, max: 28, location: 'Uttar Pradesh & Uttarakhand', daysToAdd: 6 },
+  { min: 30, max: 34, location: 'Rajasthan', daysToAdd: 6 },
+  { min: 36, max: 39, location: 'Gujarat', daysToAdd: 5 },
+  { min: 40, max: 44, location: 'Maharashtra & Goa', daysToAdd: 6 },
+  { min: 45, max: 49, location: 'Madhya Pradesh & Chhattisgarh', daysToAdd: 6 },
+  { min: 50, max: 53, location: 'Andhra Pradesh & Telangana', daysToAdd: 6 },
+  { min: 56, max: 59, location: 'Karnataka', daysToAdd: 6 },
+  { min: 60, max: 64, location: 'Tamil Nadu', daysToAdd: 6 },
+  { min: 67, max: 69, location: 'Kerala', daysToAdd: 7 },
+  { min: 70, max: 74, location: 'West Bengal & Sikkim', daysToAdd: 7 },
+  { min: 75, max: 77, location: 'Odisha', daysToAdd: 7 },
+  { min: 78, max: 79, location: 'North East India', daysToAdd: 8 },
+  { min: 80, max: 85, location: 'Bihar & Jharkhand', daysToAdd: 7 }
+];
+
+function getRegionalLocation(prefix2: string): PincodeLocationInfo {
+  const p2 = Number.parseInt(prefix2, 10);
+  const match = REGIONAL_RANGES.find(r => p2 >= r.min && p2 <= r.max);
+  return match ?? { location: 'All India Coverage', daysToAdd: 6 };
+}
+
+function resolvePincodeLocation(cleanPin: string): PincodeLocationInfo {
+  const p4 = cleanPin.slice(0, 4);
+  if (CITY_PREFIX_MAP[p4]) return CITY_PREFIX_MAP[p4];
+
+  const p3 = cleanPin.slice(0, 3);
+  if (CITY_PREFIX_MAP[p3]) return CITY_PREFIX_MAP[p3];
+
+  const p2 = cleanPin.slice(0, 2);
+  if (CITY_PREFIX_MAP[p2]) return CITY_PREFIX_MAP[p2];
+
+  return getRegionalLocation(p2);
+}
+
 /**
  * Checks an Indian postal pincode and returns simulated delivery estimate,
  * city/state coverage, and COD availability for e-commerce product pages.
@@ -19,195 +97,7 @@ export function checkDeliveryPincode(pincode: string): PincodeDeliveryInfo | nul
     return null;
   }
 
-  let location = 'India';
-  let daysToAdd = 6;
-
-  const prefix2 = cleanPin.substring(0, 2);
-  const prefix3 = cleanPin.substring(0, 3);
-  const prefix4 = cleanPin.substring(0, 4);
-
-  // Exact Major City Lookups
-  if (prefix4 === '3800' || prefix3 === '382') {
-    location = 'Ahmedabad, Gujarat';
-    daysToAdd = 5;
-  } else if (prefix4 === '3950') {
-    location = 'Surat, Gujarat';
-    daysToAdd = 5;
-  } else if (prefix4 === '3900') {
-    location = 'Vadodara, Gujarat';
-    daysToAdd = 5;
-  } else if (prefix4 === '3600') {
-    location = 'Rajkot, Gujarat';
-    daysToAdd = 5;
-  } else if (prefix2 === '11') {
-    location = 'New Delhi, Delhi NCR';
-    daysToAdd = 5;
-  } else if (prefix4 === '1220' || prefix4 === '1210') {
-    location = 'Gurugram / Faridabad, NCR';
-    daysToAdd = 5;
-  } else if (prefix4 === '2013' || prefix4 === '2010') {
-    location = 'Noida / Ghaziabad, NCR';
-    daysToAdd = 5;
-  } else if (prefix3 === '400') {
-    location = 'Mumbai, Maharashtra';
-    daysToAdd = 5;
-  } else if (prefix3 === '411') {
-    location = 'Pune, Maharashtra';
-    daysToAdd = 5;
-  } else if (prefix3 === '560') {
-    location = 'Bengaluru, Karnataka';
-    daysToAdd = 5;
-  } else if (prefix3 === '600') {
-    location = 'Chennai, Tamil Nadu';
-    daysToAdd = 6;
-  } else if (prefix3 === '500') {
-    location = 'Hyderabad, Telangana';
-    daysToAdd = 5;
-  } else if (prefix3 === '700') {
-    location = 'Kolkata, West Bengal';
-    daysToAdd = 6;
-  } else if (prefix3 === '302') {
-    location = 'Jaipur, Rajasthan';
-    daysToAdd = 5;
-  } else if (prefix3 === '226') {
-    location = 'Lucknow, Uttar Pradesh';
-    daysToAdd = 6;
-  } else if (prefix3 === '452') {
-    location = 'Indore, Madhya Pradesh';
-    daysToAdd = 6;
-  } else if (prefix3 === '682') {
-    location = 'Kochi, Kerala';
-    daysToAdd = 6;
-  } else if (prefix3 === '160') {
-    location = 'Chandigarh';
-    daysToAdd = 5;
-  } else {
-    // Regional State Breakdown
-    switch (prefix2) {
-      case '12':
-      case '13':
-        location = 'Haryana';
-        daysToAdd = 6;
-        break;
-      case '14':
-      case '15':
-      case '16':
-        location = 'Punjab';
-        daysToAdd = 6;
-        break;
-      case '17':
-        location = 'Himachal Pradesh';
-        daysToAdd = 7;
-        break;
-      case '18':
-      case '19':
-        location = 'Jammu & Kashmir';
-        daysToAdd = 8;
-        break;
-      case '20':
-      case '21':
-      case '22':
-      case '23':
-      case '24':
-      case '25':
-      case '26':
-      case '27':
-      case '28':
-        location = 'Uttar Pradesh & Uttarakhand';
-        daysToAdd = 6;
-        break;
-      case '30':
-      case '31':
-      case '32':
-      case '33':
-      case '34':
-        location = 'Rajasthan';
-        daysToAdd = 6;
-        break;
-      case '36':
-      case '37':
-      case '38':
-      case '39':
-        location = 'Gujarat';
-        daysToAdd = 5;
-        break;
-      case '40':
-      case '41':
-      case '42':
-      case '43':
-      case '44':
-        location = 'Maharashtra & Goa';
-        daysToAdd = 6;
-        break;
-      case '45':
-      case '46':
-      case '47':
-      case '48':
-      case '49':
-        location = 'Madhya Pradesh & Chhattisgarh';
-        daysToAdd = 6;
-        break;
-      case '50':
-      case '51':
-      case '52':
-      case '53':
-        location = 'Andhra Pradesh & Telangana';
-        daysToAdd = 6;
-        break;
-      case '56':
-      case '57':
-      case '58':
-      case '59':
-        location = 'Karnataka';
-        daysToAdd = 6;
-        break;
-      case '60':
-      case '61':
-      case '62':
-      case '63':
-      case '64':
-        location = 'Tamil Nadu';
-        daysToAdd = 6;
-        break;
-      case '67':
-      case '68':
-      case '69':
-        location = 'Kerala';
-        daysToAdd = 7;
-        break;
-      case '70':
-      case '71':
-      case '72':
-      case '73':
-      case '74':
-        location = 'West Bengal & Sikkim';
-        daysToAdd = 7;
-        break;
-      case '75':
-      case '76':
-      case '77':
-        location = 'Odisha';
-        daysToAdd = 7;
-        break;
-      case '78':
-      case '79':
-        location = 'North East India';
-        daysToAdd = 8;
-        break;
-      case '80':
-      case '81':
-      case '82':
-      case '83':
-      case '84':
-      case '85':
-        location = 'Bihar & Jharkhand';
-        daysToAdd = 7;
-        break;
-      default:
-        location = 'All India Coverage';
-        daysToAdd = 6;
-    }
-  }
+  const { location, daysToAdd } = resolvePincodeLocation(cleanPin);
 
   const targetDate = new Date();
   targetDate.setDate(targetDate.getDate() + daysToAdd);

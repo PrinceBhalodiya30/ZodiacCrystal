@@ -32,13 +32,13 @@ interface GuestView {
 export class RecentlyViewedService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private baseUrl = `${API_BASE_URL}/RecentlyViewed`;
+  private readonly baseUrl = `${API_BASE_URL}/RecentlyViewed`;
   private userId: number | null | undefined = undefined;
 
-  productIds = signal<number[]>([]);
+  readonly productIds = signal<number[]>([]);
 
   // Bumped whenever the list is replaced (sign-in/out, server load, clear), so open lists reload.
-  changed = signal(0);
+  readonly changed = signal(0);
 
   constructor() {
     effect(() => {

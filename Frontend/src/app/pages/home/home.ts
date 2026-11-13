@@ -229,7 +229,7 @@ export class Home implements OnInit, OnDestroy {
 
     // Newest active products, one small page instead of the whole catalogue.
     this.productService
-      .getProductsPaged(1, FEATURED_PRODUCT_LIMIT, undefined, null, true, null, null, null, false, 'newest')
+      .getProductsPaged(1, FEATURED_PRODUCT_LIMIT, { activeOnly: true, sortBy: 'newest' })
       .subscribe({
         next: result => {
           this.featuredProducts.set(result.items);

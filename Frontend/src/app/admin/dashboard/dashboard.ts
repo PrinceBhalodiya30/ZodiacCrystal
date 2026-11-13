@@ -281,7 +281,7 @@ export class Dashboard implements OnInit {
       toShip: safe(count('Confirmed')),
       products: safe(this.productService.getProductsPaged(1, 1).pipe(map(r => r.totalCount))),
       lowStock: safe(
-        this.productService.getProductsPaged(1, LOW_STOCK_DISPLAY_LIMIT, undefined, null, false, null, null, null, false, 'stock_asc', true)
+        this.productService.getProductsPaged(1, LOW_STOCK_DISPLAY_LIMIT, { sortBy: 'stock_asc', lowStockOnly: true })
       ),
       users: safe(this.userService.getUsersAdminPaged(1, 1).pipe(map(r => r.totalCount))),
       returns: safe(this.returnService.getReturnsAdmin()),

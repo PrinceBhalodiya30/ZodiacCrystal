@@ -17,9 +17,9 @@ const USER_KEY = 'auth_user';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Auth`;
+  private readonly baseUrl = `${API_BASE_URL}/Auth`;
 
-  currentUser = signal<AuthUser | null>(this.loadValidSession());
+  readonly currentUser = signal<AuthUser | null>(this.loadValidSession());
 
   // Fires when the stored token runs out while the app is open. Only HttpClient
   // calls pass through the interceptor's 401 handling - SignalR's own requests
@@ -148,7 +148,7 @@ export class AuthService {
 
   private readExp(token: string): number | null {
     try {
-      const decoded = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+      const decoded = JSON.parse(atob(token.split('.')[1].replaceAll('-', '+').replaceAll('_', '/')));
       return typeof decoded.exp === 'number' ? decoded.exp : null;
     } catch {
       return null;
@@ -191,7 +191,7 @@ export class AuthService {
     }
 
     try {
-      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      const decoded = JSON.parse(atob(payload.replaceAll('-', '+').replaceAll('_', '/')));
       if (typeof decoded.exp !== 'number') {
         return true;
       }

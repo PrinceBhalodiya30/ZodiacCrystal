@@ -7,7 +7,7 @@ import { config } from './app/app.config.server';
 // bar), so give them an empty in-memory stand-in: a prerendered page is always
 // rendered as a signed-out visitor with an empty cart.
 class MemoryStorage implements Storage {
-  private data = new Map<string, string>();
+  private readonly data = new Map<string, string>();
   get length(): number {
     return this.data.size;
   }

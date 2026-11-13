@@ -1,6 +1,6 @@
 .guides-page {
   padding: 2.5rem 1.5rem 4rem;
-  max-width: 1040px;
+  max-width: var(--container-max, 1400px);
   margin: 0 auto;
 }
 

@@ -47,16 +47,16 @@ export class CartService {
   private syncTimer?: ReturnType<typeof setTimeout>;
   private storageKey = cartKey(this.auth.currentUser()?.userId ?? null);
 
-  items = signal<CartItem[]>(this.loadStoredCart(this.storageKey));
-  mergeNotice = signal<string | null>(this.loadStoredMergeNotice());
-  isDrawerOpen = signal(false);
-  lastAddedProduct = signal<Product | null>(null);
+  readonly items = signal<CartItem[]>(this.loadStoredCart(this.storageKey));
+  readonly mergeNotice = signal<string | null>(this.loadStoredMergeNotice());
+  readonly isDrawerOpen = signal(false);
+  readonly lastAddedProduct = signal<Product | null>(null);
 
   // Luxury Gift Wrap & Zodiac Note state
-  isGiftWrap = signal<boolean>(this.loadStoredGiftWrap());
-  giftRecipient = signal<string>(this.loadStoredGiftRecipient());
-  giftMessage = signal<string>(this.loadStoredGiftMessage());
-  giftFee = computed(() => this.isGiftWrap() ? GIFT_PACKAGING_FEE : 0);
+  readonly isGiftWrap = signal<boolean>(this.loadStoredGiftWrap());
+  readonly giftRecipient = signal<string>(this.loadStoredGiftRecipient());
+  readonly giftMessage = signal<string>(this.loadStoredGiftMessage());
+  readonly giftFee = computed(() => this.isGiftWrap() ? GIFT_PACKAGING_FEE : 0);
 
   setGiftWrap(enabled: boolean, recipient?: string, message?: string): void {
     this.isGiftWrap.set(enabled);
@@ -183,8 +183,8 @@ export class CartService {
   // Checkout page directly, then cleared. Kept in sessionStorage (not just
   // memory) so refreshing Checkout doesn't lose it and silently fall back to
   // the regular cart; sessionStorage is per-tab and gone when the tab closes.
-  buyNowItem = signal<CartItem | null>(this.loadStoredBuyNowItem());
-  buyNowMysteryBox = signal<MysteryBoxBuyNow | null>(this.loadStoredBuyNowMysteryBox());
+  readonly buyNowItem = signal<CartItem | null>(this.loadStoredBuyNowItem());
+  readonly buyNowMysteryBox = signal<MysteryBoxBuyNow | null>(this.loadStoredBuyNowMysteryBox());
 
   constructor() {
     // Live stock (SignalR): keep the stock shown in the cart current, so an item
@@ -208,27 +208,7 @@ export class CartService {
 
     // Signing in: bring along anything added while browsing as a guest.
     if (this.storageKey === GUEST_CART_KEY && key !== GUEST_CART_KEY) {
-      const guestItems = this.items();
-      const hadPreviousItems = items.length > 0;
-
-      if (guestItems.length > 0) {
-        for (const guestItem of guestItems) {
-          const existing = items.find(i => i.product.productId === guestItem.product.productId);
-          if (existing) {
-            existing.quantity = Math.min(existing.quantity + guestItem.quantity, guestItem.product.stockQuantity);
-            existing.product = guestItem.product;
-          } else {
-            items.push(guestItem);
-          }
-        }
-        localStorage.removeItem(GUEST_CART_KEY);
-
-        // Notify user about merged items via the inline cart banner so they understand why both are in the cart
-        if (hadPreviousItems) {
-          const msg = 'We combined the items from your browsing session with your saved cart.';
-          this.setMergeNotice(msg);
-        }
-      }
+      items = this.mergeGuestItems(items);
     } else {
       this.dismissMergeNotice();
     }
@@ -238,6 +218,33 @@ export class CartService {
 
     // A new session must not inherit another user's half-finished Buy Now.
     this.clearBuyNowItem();
+  }
+
+  private mergeGuestItems(items: CartItem[]): CartItem[] {
+    const guestItems = this.items();
+    if (guestItems.length === 0) {
+      return items;
+    }
+
+    const hadPreviousItems = items.length > 0;
+    for (const guestItem of guestItems) {
+      const existing = items.find(i => i.product.productId === guestItem.product.productId);
+      if (existing) {
+        existing.quantity = Math.min(existing.quantity + guestItem.quantity, guestItem.product.stockQuantity);
+        existing.product = guestItem.product;
+      } else {
+        items.push(guestItem);
+      }
+    }
+    localStorage.removeItem(GUEST_CART_KEY);
+
+    // Notify user about merged items via the inline cart banner so they understand why both are in the cart
+    if (hadPreviousItems) {
+      const msg = 'We combined the items from your browsing session with your saved cart.';
+      this.setMergeNotice(msg);
+    }
+
+    return items;
   }
 
   // Re-fetches every line so the cart shows today's price and stock, not the
@@ -270,7 +277,7 @@ export class CartService {
             return;
           }
 
-          if (!product || !product.isActive) {
+          if (!product?.isActive) {
             notes.push(`"${name}" is no longer available and was removed.`);
             return;
           }

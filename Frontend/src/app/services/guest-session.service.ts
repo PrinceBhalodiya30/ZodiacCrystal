@@ -44,9 +44,9 @@ const STORAGE_KEY = 'guest_session';
 @Injectable({ providedIn: 'root' })
 export class GuestSessionService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/guest`;
+  private readonly baseUrl = `${API_BASE_URL}/guest`;
 
-  private session = signal<GuestSession | null>(this.load());
+  private readonly session = signal<GuestSession | null>(this.load());
 
   readonly current = computed(() => {
     const s = this.session();

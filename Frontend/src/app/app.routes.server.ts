@@ -33,8 +33,8 @@ export const serverRoutes: ServerRoute[] = [
   {
     path: 'guides/:slug',
     renderMode: RenderMode.Prerender,
-    async getPrerenderParams() {
-      return GUIDES.map(guide => ({ slug: guide.slug }));
+    getPrerenderParams() {
+      return Promise.resolve(GUIDES.map(guide => ({ slug: guide.slug })));
     }
   },
   { path: 'about', renderMode: RenderMode.Prerender },

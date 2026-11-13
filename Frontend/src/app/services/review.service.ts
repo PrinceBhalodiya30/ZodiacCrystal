@@ -9,8 +9,8 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/products`;
-  private adminBaseUrl = `${API_BASE_URL}/Admin/Reviews`;
+  private readonly baseUrl = `${API_BASE_URL}/products`;
+  private readonly adminBaseUrl = `${API_BASE_URL}/Admin/Reviews`;
 
   getReviews(productId: number): Observable<ProductReviews> {
     return this.http.get<ProductReviews>(`${this.baseUrl}/${productId}/reviews`);

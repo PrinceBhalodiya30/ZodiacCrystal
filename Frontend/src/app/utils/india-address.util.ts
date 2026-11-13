@@ -24,7 +24,7 @@ export const normalize = (s: string): string => {
   const n = s
     .toLowerCase()
     // "Daman & Diu" and "Daman and Diu" are the same name.
-    .replace(/&/g, ' and ')
+    .replaceAll('&', ' and ')
     .replace(/\b(district|taluka|tehsil|tahsil|municipal corporation|corporation|city|urban|rural|subdivision|division|metropolitan region)\b/g, '')
     .replace(/[^a-z]/g, '');
   return CITY_ALIASES[n] ?? n;
@@ -53,7 +53,7 @@ export function matchCity(state: string, candidates: string[]): string | null {
 }
 
 export const INDIA_POST = 'https://api.postalpincode.in';
-export const VALID_PIN = /^[1-9][0-9]{5}$/;
+export const VALID_PIN = /^[1-9]\d{5}$/;
 
 export interface IndiaPostResponse {
   Status: string;

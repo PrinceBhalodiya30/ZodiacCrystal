@@ -13,12 +13,12 @@ export class WishlistService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
   private readonly toast = inject(ToastService);
-  private baseUrl = `${API_BASE_URL}/Wishlist`;
+  private readonly baseUrl = `${API_BASE_URL}/Wishlist`;
 
-  items = signal<WishlistItem[]>([]);
-  count = computed(() => this.items().length);
-  isLoading = signal(false);
-  errorMessage = signal('');
+  readonly items = signal<WishlistItem[]>([]);
+  readonly count = computed(() => this.items().length);
+  readonly isLoading = signal(false);
+  readonly errorMessage = signal('');
 
   private hasLoaded = false;
 

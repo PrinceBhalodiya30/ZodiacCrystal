@@ -78,6 +78,88 @@ export function validateAddressQuality(line: string, city = ''): AddressQualityR
   return { valid: true };
 }
 
+interface PhotonFeature {
+  geometry?: { coordinates?: number[] };
+  properties?: {
+    countrycode?: string;
+    name?: string;
+    street?: string;
+    housenumber?: string;
+    locality?: string;
+    district?: string;
+    city?: string;
+    county?: string;
+    state?: string;
+    postcode?: string;
+    osm_id?: string | number;
+  };
+}
+
+function parseFeatureSuggestion(f: PhotonFeature): AddressSuggestion | null {
+  const p = f.properties ?? {};
+  const coords = f.geometry?.coordinates ?? [0, 0];
+  const lng = coords[0];
+  const lat = coords[1];
+
+  // Prefer Indian locations
+  if (p.countrycode && p.countrycode.toLowerCase() !== 'in') {
+    return null;
+  }
+
+  const name = p.name ? p.name.trim() : '';
+  const street = p.street ? p.street.trim() : '';
+  const houseNumber = p.housenumber ? p.housenumber.trim() : '';
+  const locality = p.locality?.trim() || p.district?.trim() || '';
+  const rawCity = p.city?.trim() || p.county?.trim() || '';
+  const rawState = p.state ? p.state.trim() : '';
+  const rawPostcode = p.postcode ? p.postcode.trim() : '';
+  const postalCode = /^[1-9]\d{5}$/.test(rawPostcode) ? rawPostcode : '';
+
+  // Primary text: Venue/building/house or street name
+  const buildingStreet = [houseNumber, street].filter(Boolean).join(' ');
+  const primaryText = name || buildingStreet || locality || rawCity;
+  if (!primaryText) {
+    return null;
+  }
+
+  // Secondary subtitle
+  const secondaryParts = [
+    street && street !== primaryText ? street : '',
+    locality && locality !== primaryText ? locality : '',
+    rawCity,
+    rawState,
+    postalCode
+  ].filter(Boolean);
+
+  const secondaryText = secondaryParts.join(', ');
+
+  // Formatted line for the textarea
+  const lineParts = [
+    name,
+    buildingStreet,
+    locality
+  ].filter(Boolean);
+
+  const uniqueLineParts = Array.from(new Set(lineParts));
+  const fullLine = uniqueLineParts.join(', ') || primaryText;
+
+  // Resolve city & state with our India locations database
+  const state = matchState(rawState);
+  const city = state ? (matchCity(state, [rawCity, locality]) ?? rawCity) : rawCity;
+
+  return {
+    id: String(p.osm_id || `${lat},${lng}`),
+    primaryText,
+    secondaryText,
+    fullLine,
+    city,
+    state,
+    postalCode,
+    lat,
+    lng
+  };
+}
+
 /**
  * Fetches real-time relevant address suggestions from the free, open Photon API.
  * Uses center-of-India biasing (lat: 20.59, lon: 78.96) for accurate local results.
@@ -95,80 +177,27 @@ export async function fetchAddressSuggestions(
     if (!res.ok) return [];
 
     const data = await res.json();
-    const features: any[] = data?.features ?? [];
+    const features: PhotonFeature[] = data?.features ?? [];
 
     const suggestions: AddressSuggestion[] = [];
     const seen = new Set<string>();
 
     for (const f of features) {
-      const p = f.properties ?? {};
-      const coords = f.geometry?.coordinates ?? [0, 0];
-      const lng = coords[0];
-      const lat = coords[1];
-
-      // Prefer Indian locations
-      if (p.countrycode && p.countrycode.toLowerCase() !== 'in') {
+      const suggestion = parseFeatureSuggestion(f);
+      if (!suggestion) {
         continue;
       }
 
-      const name = p.name ? p.name.trim() : '';
-      const street = p.street ? p.street.trim() : '';
-      const houseNumber = p.housenumber ? p.housenumber.trim() : '';
-      const locality = p.locality ? p.locality.trim() : (p.district ? p.district.trim() : '');
-      const rawCity = p.city ? p.city.trim() : (p.county ? p.county.trim() : '');
-      const rawState = p.state ? p.state.trim() : '';
-      const postalCode = p.postcode && /^[1-9][0-9]{5}$/.test(p.postcode.trim()) ? p.postcode.trim() : '';
-
-      // Primary text: Venue/building/house or street name
-      const primaryText = name || [houseNumber, street].filter(Boolean).join(' ') || locality || rawCity;
-      if (!primaryText) continue;
-
-      // Secondary subtitle
-      const secondaryParts = [
-        street && street !== primaryText ? street : '',
-        locality && locality !== primaryText ? locality : '',
-        rawCity,
-        rawState,
-        postalCode
-      ].filter(Boolean);
-
-      const secondaryText = secondaryParts.join(', ');
-
       // Deduplicate results
-      const dedupeKey = `${primaryText}|${secondaryText}`.toLowerCase();
+      const dedupeKey = `${suggestion.primaryText}|${suggestion.secondaryText}`.toLowerCase();
       if (seen.has(dedupeKey)) continue;
       seen.add(dedupeKey);
 
-      // Formatted line for the textarea
-      const lineParts = [
-        name,
-        [houseNumber, street].filter(Boolean).join(' '),
-        locality
-      ].filter(Boolean);
-
-      const uniqueLineParts = Array.from(new Set(lineParts));
-      const fullLine = uniqueLineParts.join(', ') || primaryText;
-
-      // Resolve city & state with our India locations database
-      const state = matchState(rawState);
-      const city = state ? (matchCity(state, [rawCity, locality]) ?? rawCity) : rawCity;
-
-      suggestions.push({
-        id: String(p.osm_id || `${lat},${lng}`),
-        primaryText,
-        secondaryText,
-        fullLine,
-        city,
-        state,
-        postalCode,
-        lat,
-        lng
-      });
+      suggestions.push(suggestion);
     }
 
     return suggestions;
-  } catch (err: any) {
-    if (err?.name === 'AbortError') return [];
+  } catch {
     return [];
   }
 }

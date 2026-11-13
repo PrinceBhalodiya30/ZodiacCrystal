@@ -8,7 +8,7 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class StockAlertService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/StockAlerts`;
+  private readonly baseUrl = `${API_BASE_URL}/StockAlerts`;
 
   isSubscribed(productId: number): Observable<boolean> {
     return this.http.get<{ subscribed: boolean }>(`${this.baseUrl}/${productId}`).pipe(map(r => r.subscribed));

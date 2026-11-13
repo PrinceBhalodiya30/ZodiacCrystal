@@ -8,13 +8,21 @@ export function slugify(text: string | null | undefined): string {
     return '';
   }
 
-  return text
+  let slug = text
     .toString()
     .toLowerCase()
     .trim()
     .replace(/['’]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^a-z0-9]+/g, '-');
+
+  while (slug.startsWith('-')) {
+    slug = slug.slice(1);
+  }
+  while (slug.endsWith('-')) {
+    slug = slug.slice(0, -1);
+  }
+
+  return slug;
 }
 
 /**
@@ -22,7 +30,7 @@ export function slugify(text: string | null | undefined): string {
  * E.g. { productId: 1, name: "Amethyst Tumbled Stone" } -> "1-amethyst-tumbled-stone"
  */
 export function getProductSlug(product: { productId: number; name?: string } | null | undefined): string {
-  if (!product || !product.productId) {
+  if (!product?.productId) {
     return '';
   }
 
@@ -36,9 +44,9 @@ export function getProductSlug(product: { productId: number; name?: string } | n
  */
 export function parseProductIdFromSlug(param: string | null | undefined): number {
   if (!param) {
-    return NaN;
+    return Number.NaN;
   }
 
   const match = /^(\d+)/.exec(param.trim());
-  return match ? parseInt(match[1], 10) : NaN;
+  return match ? Number.parseInt(match[1], 10) : Number.NaN;
 }

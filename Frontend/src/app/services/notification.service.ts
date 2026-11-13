@@ -35,12 +35,12 @@ export class NotificationService {
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
 
-  notifications = signal<AppNotification[]>([]);
-  unreadCount = signal(0);
+  readonly notifications = signal<AppNotification[]>([]);
+  readonly unreadCount = signal(0);
 
   // Bumped only when a notification arrives live over SignalR (not on the
   // initial load), so the bell can ring for genuinely new ones.
-  liveArrivals = signal(0);
+  readonly liveArrivals = signal(0);
 
   // Admin-only: fires when any customer places an order, so admin screens
   // (dashboard, orders list) can refresh without a page reload.
@@ -156,7 +156,8 @@ export class NotificationService {
     this.hubConnection.on('StockChanged', (levels: StockLevel[]) => this.stockChanged.next(levels));
 
     this.hubConnection.on('AdminOrderPlaced', (event: AdminOrderPlacedEvent) => {
-      this.toastService.success(`New order #${event.orderId}${event.customerName ? ` from ${event.customerName}` : ''}`);
+      const customerSuffix = event.customerName ? ' from ' + event.customerName : '';
+      this.toastService.success(`New order #${event.orderId}${customerSuffix}`);
       this.adminOrderPlaced.next(event);
     });
 
@@ -179,6 +180,6 @@ export class NotificationService {
     const connection = this.hubConnection;
     // Cleared first so the retry in connect() sees a deliberate stop.
     this.hubConnection = null;
-    connection?.stop();
+    void connection?.stop();
   }
 }

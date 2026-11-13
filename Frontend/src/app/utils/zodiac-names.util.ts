@@ -43,7 +43,7 @@ export function getVedicZodiacInfo(name: string | null | undefined): VedicZodiac
  */
 export function formatZodiacDual(name: string | null | undefined, customRashi?: string | null): string {
   if (!name) return '';
-  if (customRashi && customRashi.trim()) {
+  if (customRashi?.trim()) {
     return `${name} · ${customRashi.trim()}`;
   }
   const info = getVedicZodiacInfo(name);
@@ -57,7 +57,7 @@ export function formatZodiacDual(name: string | null | undefined, customRashi?: 
  */
 export function formatZodiacCompact(name: string | null | undefined, customRashi?: string | null): string {
   if (!name) return '';
-  if (customRashi && customRashi.trim()) {
+  if (customRashi?.trim()) {
     return `${name} (${customRashi.trim()})`;
   }
   const info = getVedicZodiacInfo(name);
@@ -70,7 +70,7 @@ export function formatZodiacCompact(name: string | null | undefined, customRashi
  * e.g. "Mesha (मेष)"
  */
 export function getRashiWithDevanagari(name: string | null | undefined, customRashi?: string | null): string {
-  if (customRashi && customRashi.trim()) {
+  if (customRashi?.trim()) {
     return customRashi.trim();
   }
   if (!name) return '';
@@ -84,7 +84,7 @@ export function getRashiWithDevanagari(name: string | null | undefined, customRa
  * e.g. "Mesha"
  */
 export function getRashiSimple(name: string | null | undefined, customRashi?: string | null): string {
-  if (customRashi && customRashi.trim()) {
+  if (customRashi?.trim()) {
     return customRashi.trim().split(/[\s(]/)[0];
   }
   if (!name) return '';

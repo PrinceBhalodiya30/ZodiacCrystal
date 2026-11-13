@@ -145,6 +145,27 @@ export const ZODIAC_SIGNS: Record<string, BirthdaySignResult> = {
   }
 };
 
+interface VedicMonthCutoff {
+  cutoffDay: number;
+  before: string;
+  after: string;
+}
+
+const VEDIC_MONTH_CUTOFFS: Record<number, VedicMonthCutoff> = {
+  1: { cutoffDay: 13, before: 'Sagittarius', after: 'Capricorn' },
+  2: { cutoffDay: 12, before: 'Capricorn', after: 'Aquarius' },
+  3: { cutoffDay: 13, before: 'Aquarius', after: 'Pisces' },
+  4: { cutoffDay: 13, before: 'Pisces', after: 'Aries' },
+  5: { cutoffDay: 14, before: 'Aries', after: 'Taurus' },
+  6: { cutoffDay: 14, before: 'Taurus', after: 'Gemini' },
+  7: { cutoffDay: 15, before: 'Gemini', after: 'Cancer' },
+  8: { cutoffDay: 16, before: 'Cancer', after: 'Leo' },
+  9: { cutoffDay: 16, before: 'Leo', after: 'Virgo' },
+  10: { cutoffDay: 16, before: 'Virgo', after: 'Libra' },
+  11: { cutoffDay: 15, before: 'Libra', after: 'Scorpio' },
+  12: { cutoffDay: 15, before: 'Scorpio', after: 'Sagittarius' }
+};
+
 /**
  * Calculates the Vedic Astrological Rashi based on birth month and day (Indian Nirayana / Surya Sankranti calendar).
  * Month: 1 (Jan) - 12 (Dec)
@@ -155,47 +176,8 @@ export function getZodiacSignByBirthday(month: number, day: number): BirthdaySig
     throw new Error(`Invalid birth date: month=${month}, day=${day}`);
   }
 
-  let signKey: string;
-  switch (month) {
-    case 1: // January: Dhanu until Jan 13, Makara from Jan 14 (Makar Sankranti)
-      signKey = day <= 13 ? 'Sagittarius' : 'Capricorn';
-      break;
-    case 2: // February: Makara until Feb 12, Kumbha from Feb 13
-      signKey = day <= 12 ? 'Capricorn' : 'Aquarius';
-      break;
-    case 3: // March: Kumbha until Mar 13, Meena from Mar 14
-      signKey = day <= 13 ? 'Aquarius' : 'Pisces';
-      break;
-    case 4: // April: Meena until Apr 13, Mesha from Apr 14 (Mesh Sankranti / Baisakhi)
-      signKey = day <= 13 ? 'Pisces' : 'Aries';
-      break;
-    case 5: // May: Mesha until May 14, Vrishabha from May 15
-      signKey = day <= 14 ? 'Aries' : 'Taurus';
-      break;
-    case 6: // June: Vrishabha until Jun 14, Mithuna from Jun 15
-      signKey = day <= 14 ? 'Taurus' : 'Gemini';
-      break;
-    case 7: // July: Mithuna until Jul 15, Karka from Jul 16
-      signKey = day <= 15 ? 'Gemini' : 'Cancer';
-      break;
-    case 8: // August: Karka until Aug 16, Simha from Aug 17
-      signKey = day <= 16 ? 'Cancer' : 'Leo';
-      break;
-    case 9: // September: Simha until Sep 16, Kanya from Sep 17
-      signKey = day <= 16 ? 'Leo' : 'Virgo';
-      break;
-    case 10: // October: Kanya until Oct 16, Tula from Oct 17
-      signKey = day <= 16 ? 'Virgo' : 'Libra';
-      break;
-    case 11: // November: Tula until Nov 15, Vrishchika from Nov 16
-      signKey = day <= 15 ? 'Libra' : 'Scorpio';
-      break;
-    case 12: // December: Vrishchika until Dec 15, Dhanu from Dec 16
-    default:
-      signKey = day <= 15 ? 'Scorpio' : 'Sagittarius';
-      break;
-  }
-
+  const rule = VEDIC_MONTH_CUTOFFS[month];
+  const signKey = day <= rule.cutoffDay ? rule.before : rule.after;
   return ZODIAC_SIGNS[signKey];
 }
 

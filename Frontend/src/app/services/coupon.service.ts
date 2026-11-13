@@ -15,7 +15,7 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class CouponService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Coupons`;
+  private readonly baseUrl = `${API_BASE_URL}/Coupons`;
 
   // status: 'active' | 'scheduled' | 'expired' | 'usedup' | 'inactive' ('' = any).
   getCoupons(pageNumber: number, pageSize: number, search?: string, status = ''): Observable<PagedResult<Coupon>> {

@@ -109,7 +109,7 @@ export class AdminNavCountsService {
       error: () => {}
     });
 
-    this.productService.getProductsPaged(1, 1, undefined, null, false, null, null, null, false, null, true).subscribe({
+    this.productService.getProductsPaged(1, 1, { lowStockOnly: true }).subscribe({
       next: result => this.lowStock.set(result.totalCount),
       error: () => {}
     });

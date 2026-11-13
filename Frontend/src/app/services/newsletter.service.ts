@@ -14,8 +14,8 @@ export interface SubscribeResponse {
 @Injectable({ providedIn: 'root' })
 export class NewsletterService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/newsletter`;
-  private adminBaseUrl = `${API_BASE_URL}/Admin/Newsletter-Subscribers`;
+  private readonly baseUrl = `${API_BASE_URL}/newsletter`;
+  private readonly adminBaseUrl = `${API_BASE_URL}/Admin/Newsletter-Subscribers`;
 
   subscribe(email: string, website?: string): Observable<SubscribeResponse> {
     return this.http.post<SubscribeResponse>(`${this.baseUrl}/subscribe`, { email, website });

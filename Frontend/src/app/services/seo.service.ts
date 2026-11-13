@@ -60,7 +60,7 @@ export class SeoService {
     script.id = JSON_LD_ID;
     script.type = 'application/ld+json';
     // "<" escaped so text from the database can't close the script tag.
-    script.textContent = JSON.stringify(data).replace(/</g, '\\u003c');
+    script.textContent = JSON.stringify(data).replaceAll('<', String.raw`\u003c`);
     this.document.head.appendChild(script);
   }
 
@@ -84,10 +84,20 @@ export class SeoService {
 // Social crawlers need absolute image URLs; uploaded images are already
 // absolute (API host), site assets are made absolute against SITE_URL.
 export function absoluteUrl(url: string): string {
-  return /^https?:\/\//i.test(url) ? url : SITE_URL + (url.startsWith('/') ? url : `/${url}`);
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+  const path = url.startsWith('/') ? url : `/${url}`;
+  return `${SITE_URL}${path}`;
 }
 
 function truncate(text: string, max: number): string {
   const clean = text.replace(/\s+/g, ' ').trim();
-  return clean.length <= max ? clean : `${clean.slice(0, max - 1).replace(/\s+\S*$/, '')}…`;
+  if (clean.length <= max) {
+    return clean;
+  }
+  const slice = clean.slice(0, max - 1);
+  const lastSpace = slice.lastIndexOf(' ');
+  const trimmed = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
+  return `${trimmed}…`;
 }

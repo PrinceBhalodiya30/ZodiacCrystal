@@ -44,10 +44,50 @@ export function previousRange(from: string, to: string): { from: string; to: str
 /** Daily up to a month, weekly up to ~6 months, monthly beyond. */
 export function granularityFor(from: string, to: string): SeriesGranularity {
   const days = daysInRange(from, to);
-  return days <= 31 ? 'day' : days <= 183 ? 'week' : 'month';
+  if (days <= 31) {
+    return 'day';
+  }
+  if (days <= 183) {
+    return 'week';
+  }
+  return 'month';
 }
 
 const dayLabel = (d: Date) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
+type DaySummer = (bucketStart: Date, bucketEnd: Date) => { revenue: number; orders: number };
+
+function buildDayBuckets(start: Date, end: Date, sumDays: DaySummer): SalesBucket[] {
+  const buckets: SalesBucket[] = [];
+  for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
+    buckets.push({ label: dayLabel(d), ...sumDays(d, d) });
+  }
+  return buckets;
+}
+
+function buildWeekBuckets(start: Date, end: Date, sumDays: DaySummer): SalesBucket[] {
+  const buckets: SalesBucket[] = [];
+  for (let d = new Date(start); d <= end; d = addDays(d, 7)) {
+    const rawEnd = addDays(d, 6);
+    const blockEnd = rawEnd > end ? end : rawEnd;
+    buckets.push({ label: `${dayLabel(d)} – ${dayLabel(blockEnd)}`, ...sumDays(d, blockEnd) });
+  }
+  return buckets;
+}
+
+function buildMonthBuckets(start: Date, end: Date, sumDays: DaySummer): SalesBucket[] {
+  const buckets: SalesBucket[] = [];
+  for (let d = new Date(start.getFullYear(), start.getMonth(), 1); d <= end; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
+    const monthStart = d < start ? start : d;
+    const monthEndRaw = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    const monthEnd = monthEndRaw > end ? end : monthEndRaw;
+    buckets.push({
+      label: d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+      ...sumDays(monthStart, monthEnd)
+    });
+  }
+  return buckets;
+}
 
 /**
  * Turns the API's per-day rows (which skip days with no sales) into a
@@ -62,9 +102,8 @@ export function buildSalesSeries(daily: DailySales[], from: string, to: string, 
 
   const start = fromDateKey(from);
   const end = fromDateKey(to);
-  const buckets: SalesBucket[] = [];
 
-  const sumDays = (bucketStart: Date, bucketEnd: Date): { revenue: number; orders: number } => {
+  const sumDays: DaySummer = (bucketStart: Date, bucketEnd: Date) => {
     let revenue = 0;
     let orders = 0;
     for (let d = new Date(bucketStart); d <= bucketEnd; d = addDays(d, 1)) {
@@ -78,29 +117,12 @@ export function buildSalesSeries(daily: DailySales[], from: string, to: string, 
   };
 
   if (granularity === 'day') {
-    for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
-      buckets.push({ label: dayLabel(d), ...sumDays(d, d) });
-    }
-  } else if (granularity === 'week') {
-    // 7-day blocks counted from the range start, so this and the previous
-    // period line up bucket for bucket.
-    for (let d = new Date(start); d <= end; d = addDays(d, 7)) {
-      const blockEnd = addDays(d, 6) > end ? end : addDays(d, 6);
-      buckets.push({ label: `${dayLabel(d)} – ${dayLabel(blockEnd)}`, ...sumDays(d, blockEnd) });
-    }
-  } else {
-    for (let d = new Date(start.getFullYear(), start.getMonth(), 1); d <= end; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) {
-      const monthStart = d < start ? start : d;
-      const monthEndRaw = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-      const monthEnd = monthEndRaw > end ? end : monthEndRaw;
-      buckets.push({
-        label: d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
-        ...sumDays(monthStart, monthEnd)
-      });
-    }
+    return buildDayBuckets(start, end, sumDays);
   }
-
-  return buckets;
+  if (granularity === 'week') {
+    return buildWeekBuckets(start, end, sumDays);
+  }
+  return buildMonthBuckets(start, end, sumDays);
 }
 
 /** % change vs the previous period, or null when there's nothing to compare against. */

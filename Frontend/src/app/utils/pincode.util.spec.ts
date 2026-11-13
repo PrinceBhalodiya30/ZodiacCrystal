@@ -18,24 +18,14 @@ describe('checkDeliveryPincode', () => {
     expect(res?.shippingType).toBe('Free Express Shipping');
   });
 
-  it('correctly maps New Delhi pincode (110001)', () => {
-    const res = checkDeliveryPincode('110001');
+  it.each([
+    { pincode: '110001', city: 'New Delhi' },
+    { pincode: '400001', city: 'Mumbai' },
+    { pincode: '560001', city: 'Bengaluru' }
+  ])('correctly maps $city pincode ($pincode)', ({ pincode, city }) => {
+    const res = checkDeliveryPincode(pincode);
     expect(res).not.toBeNull();
-    expect(res?.location).toContain('New Delhi');
-    expect(res?.deliverable).toBe(true);
-  });
-
-  it('correctly maps Mumbai pincode (400001)', () => {
-    const res = checkDeliveryPincode('400001');
-    expect(res).not.toBeNull();
-    expect(res?.location).toContain('Mumbai');
-    expect(res?.deliverable).toBe(true);
-  });
-
-  it('correctly maps Bengaluru pincode (560001)', () => {
-    const res = checkDeliveryPincode('560001');
-    expect(res).not.toBeNull();
-    expect(res?.location).toContain('Bengaluru');
+    expect(res?.location).toContain(city);
     expect(res?.deliverable).toBe(true);
   });
 

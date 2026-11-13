@@ -8,7 +8,7 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class ZodiacService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Zodiac`;
+  private readonly baseUrl = `${API_BASE_URL}/Zodiac`;
 
   getZodiacSigns(): Observable<Zodiac[]> {
     return this.http.get<Zodiac[]>(this.baseUrl);

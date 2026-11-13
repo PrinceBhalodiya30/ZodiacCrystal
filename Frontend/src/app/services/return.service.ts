@@ -8,8 +8,8 @@ import { API_BASE_URL } from './api-config';
 @Injectable({ providedIn: 'root' })
 export class ReturnService {
   private readonly http = inject(HttpClient);
-  private baseUrl = `${API_BASE_URL}/Returns`;
-  private adminBaseUrl = `${API_BASE_URL}/Admin/Returns`;
+  private readonly baseUrl = `${API_BASE_URL}/Returns`;
+  private readonly adminBaseUrl = `${API_BASE_URL}/Admin/Returns`;
 
   // Customer
   requestReturn(request: CreateReturnRequest): Observable<ReturnRequest> {

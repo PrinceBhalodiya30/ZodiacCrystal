@@ -47,7 +47,7 @@ import { Router } from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class QuizService {
   private readonly router = inject(Router);
-  isOpen = signal(false);
+  readonly isOpen = signal(false);
 
   private consultations: ConsultationRecord[] = [];
 
@@ -190,7 +190,7 @@ export class QuizService {
     const escapeCsv = (val: string | number | boolean): string => {
       const str = String(val ?? '');
       if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '""')}"`;
+        return `"${str.replaceAll('"', '""')}"`;
       }
       return str;
     };
