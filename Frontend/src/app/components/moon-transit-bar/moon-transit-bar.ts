@@ -1,5 +1,4 @@
 import { Component, DestroyRef, HostListener, OnInit, computed, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -12,7 +11,7 @@ const DISMISS_STORAGE_PREFIX = 'crystal_studio_topbar_dismissed_';
 @Component({
   selector: 'app-moon-transit-bar',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [RouterLink],
   templateUrl: './moon-transit-bar.html',
   styleUrl: './moon-transit-bar.css'
 })
@@ -27,8 +26,9 @@ export class MoonTransitBar implements OnInit {
   readonly isDetailsOpen = signal<boolean>(false);
   readonly isPaused = signal<boolean>(false);
 
-  // Approach 4: Page-Contextual Banner (Smart Commerce)
-  // Initializes based on current route and adapts when navigating across the store.
+  // Contextual Banner: Adapts based on current customer route
+  // - Commerce routes (products, cart, categories, orders) -> Slide 1 (Shipping & Promos)
+  // - Discovery routes (home, zodiac, guides, consultation) -> Slide 0 (Celestial Transit)
   readonly activeSlideIndex = signal<number>(this.calculateContextualSlide(this.router.url));
 
   // Suppress on checkout flow to avoid cart distraction
@@ -115,11 +115,11 @@ export class MoonTransitBar implements OnInit {
     return 1;
   });
 
-  // Admin controls whether the modal dialog is enabled
+  // Admin control signal
   readonly showModal = computed(() => {
     return typeof this.storeSettings.moonBannerShowModal === 'function'
       ? this.storeSettings.moonBannerShowModal()
-      : true;
+      : false;
   });
 
   // Check if admin has set custom promotional override
@@ -154,11 +154,10 @@ export class MoonTransitBar implements OnInit {
   });
 
   ngOnInit(): void {
-    // Approach 4: Smart Page-Contextual Adaptation
+    // Smart Page-Contextual Adaptation:
     // When both banners are active, automatically select the most relevant message:
     // - Commerce routes (products, cart, wishlist, orders) -> Store Promo (Slide 1)
     // - Discovery routes (home, zodiac, guides, consultation) -> Moon Transit (Slide 0)
-    // Zero auto-flipping timer. The customer enjoys a serene, static banner on every page.
     this.router.events
       .pipe(
         filter((e): e is NavigationEnd => e instanceof NavigationEnd),

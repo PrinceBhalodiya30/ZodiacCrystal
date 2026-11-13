@@ -52,7 +52,7 @@
         </span>
         @if (hasMultiplePreviewSlides()) {
           <span class="unified-indicator-badge">
-            <span class="cycle-icon">✦</span> Single Rotating Top Bar (Cycles every 5s)
+            Page-Contextual Top Bar (Adapts per Route)
           </span>
         }
       </div>
@@ -66,7 +66,7 @@
             [class.active]="currentPreviewSlide() === 0"
             (click)="setPreviewSlide(0)"
           >
-            🌙 Moon Transit
+            🌙 Celestial Transit
           </button>
           <button
             type="button"
@@ -89,7 +89,7 @@
         <span class="dot dot-green"></span>
       </div>
 
-      <!-- Unified Smart Rotating Top Bar Preview -->
+      <!-- Unified Top Bar Preview -->
       @if (isTopBarPreviewVisible()) {
         <div class="preview-unified-bar" [attr.data-slide]="currentPreviewSlide()" [attr.data-promo-style]="announcementStyle()" [attr.data-moon-style]="moonBannerStyle()">
           <div class="preview-unified-content">
@@ -101,43 +101,21 @@
                   <span class="preview-moon-text">{{ moonBannerCustomText() }}</span>
                 } @else {
                   <span class="preview-moon-text">
-                    Waxing Moon in Taurus · Best Crystal Today:
-                    <strong class="preview-crystal-highlight">{{ moonBannerCustomCrystal() || 'Rose Quartz' }}</strong>
-                    for {{ moonBannerCustomBenefit() || 'Inner Peace' }}
+                    Waxing Moon in Taurus — Featured Crystal:
+                    <strong class="preview-crystal-highlight">{{ moonBannerCustomCrystal() || 'Rose Quartz' }} →</strong>
+                    <span class="preview-benefit">({{ moonBannerCustomBenefit() || 'Inner Peace' }})</span>
                   </span>
-                }
-                @if (moonBannerShowModal()) {
-                  <span class="preview-cosmic-pill">✦ Cosmic Alignment</span>
                 }
               </div>
             } @else {
               <!-- Slide 1: Promo Announcement -->
               <div class="preview-slide-item preview-slide-item--promo">
-                <span class="preview-promo-sparkle">✨</span>
                 <span class="preview-announcement-text">{{ announcementText() || 'Enter your announcement message below...' }}</span>
               </div>
             }
           </div>
 
           <div class="preview-bar-actions">
-            @if (hasMultiplePreviewSlides()) {
-              <div class="preview-slide-dots">
-                <button
-                  type="button"
-                  class="preview-dot"
-                  [class.active]="currentPreviewSlide() === 0"
-                  (click)="setPreviewSlide(0)"
-                  title="Switch to Moon Transit slide"
-                ></button>
-                <button
-                  type="button"
-                  class="preview-dot"
-                  [class.active]="currentPreviewSlide() === 1"
-                  (click)="setPreviewSlide(1)"
-                  title="Switch to Announcement slide"
-                ></button>
-              </div>
-            }
             <span class="preview-close-btn" aria-hidden="true">×</span>
           </div>
         </div>
@@ -252,10 +230,10 @@
             </div>
             @if (announcementEnabled() && moonBannerEnabled()) {
               <div class="unified-info-alert">
-                <span class="alert-icon">✦</span>
+                <span class="alert-icon">ℹ</span>
                 <div class="alert-body">
-                  <strong>Single Unified Rotating Top Bar Active:</strong>
-                  Because both this Announcement Bar and the Daily Moon Transit Banner are enabled, they seamlessly alternate within a single 38px top bar on the customer storefront every 5 seconds (with pause on hover) to eliminate stacked bars and save vertical screen space.
+                  <strong>Smart Page-Contextual Top Bar:</strong>
+                  Because both this Announcement Bar and the Daily Moon Transit Banner are enabled, the storefront automatically displays promotional announcements on shopping pages (products, cart, orders) and celestial curations on discovery pages (home, zodiac, guides) to keep the layout clean and uncluttered.
                 </div>
               </div>
             }
@@ -353,7 +331,7 @@
               <div class="toggle-label-wrap">
                 <label for="moonBannerEnabled" class="section-title">Enable Daily Moon Phase &amp; Transit Banner</label>
                 <p class="section-desc">
-                  Displays the celestial top ticker banner across the entire storefront (e.g., <em>🌙 Waxing Moon in Taurus · Best Crystal Today: Rose Quartz</em>). Automatically suppressed during checkout.
+                  Displays the celestial top ticker banner across the storefront (e.g., <em>🌙 Waxing Moon in Taurus — Featured Crystal: Rose Quartz</em>). Automatically suppressed during checkout.
                 </p>
               </div>
               <label for="moonBannerEnabled" class="switch" aria-label="Enable Daily Moon Phase &amp; Transit Banner">
@@ -368,10 +346,10 @@
             </div>
             @if (moonBannerEnabled() && announcementEnabled()) {
               <div class="unified-info-alert">
-                <span class="alert-icon">✦</span>
+                <span class="alert-icon">ℹ</span>
                 <div class="alert-body">
-                  <strong>Single Unified Rotating Top Bar Active:</strong>
-                  Because both the Daily Moon Phase Banner and Store Announcement are enabled, they share a single 38px top bar on the storefront, rotating smoothly every 5 seconds.
+                  <strong>Smart Page-Contextual Top Bar:</strong>
+                  Celestial transit curation displays on discovery pages, while store promotions display on commerce pages to provide a distraction-free shopping journey.
                 </div>
               </div>
             }
@@ -380,12 +358,12 @@
           <div class="card-section">
             <div class="toggle-row">
               <div class="toggle-label-wrap">
-                <label for="moonBannerShowModal" class="section-title">Enable "✦ Cosmic Alignment" Rituals Dialog</label>
+                <label for="moonBannerShowModal" class="section-title">Enable Direct Crystal Navigation</label>
                 <p class="section-desc">
-                  Allows customers to click "✦ Cosmic Alignment" to open the interactive celestial popup with Moon illumination %, Zodiac element, and a daily crystal meditation ritual.
+                  When enabled, clicking the featured crystal name in the top banner directs customers directly to the matching gemstone collection in the store.
                 </p>
               </div>
-              <label for="moonBannerShowModal" class="switch" aria-label="Enable Cosmic Alignment Rituals Dialog">
+              <label for="moonBannerShowModal" class="switch" aria-label="Enable Direct Crystal Navigation">
                 <input
                   type="checkbox"
                   id="moonBannerShowModal"
@@ -500,7 +478,6 @@
           @if (moonBannerMode() === 'custom') {
             <div class="card-section custom-moon-section">
               <div class="custom-section-header">
-                <span class="sparkle" aria-hidden="true">✦</span>
                 <strong>Custom Promotional &amp; Celestial Overrides</strong>
               </div>
 
@@ -526,7 +503,7 @@
                   type="text"
                   id="moonBannerCustomText"
                   class="form-control"
-                  placeholder="e.g. 🌙 Waxing Moon in Taurus · Best Crystal Today: Rose Quartz for Inner Peace"
+                  placeholder="e.g. 🌙 Waxing Moon in Taurus — Featured Crystal: Rose Quartz (Inner Peace)"
                   [ngModel]="moonBannerCustomText()"
                   (ngModelChange)="moonBannerCustomText.set($event)"
                   maxlength="500"

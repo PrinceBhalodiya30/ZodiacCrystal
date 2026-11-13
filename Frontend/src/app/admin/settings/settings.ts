@@ -138,28 +138,28 @@ export class AdminSettings implements OnInit {
   readonly moonPresets: MoonEventPreset[] = [
     {
       name: 'Waxing Moon in Taurus (Heart & Peace)',
-      text: '🌙 Waxing Moon in Taurus · Best Crystal Today: Rose Quartz for Inner Peace',
+      text: '🌙 Waxing Moon in Taurus — Featured Crystal: Rose Quartz (Inner Peace)',
       crystal: 'Rose Quartz',
       benefit: 'Inner Peace & Emotional Harmony',
       link: '/products?search=Rose+Quartz'
     },
     {
       name: 'Full Moon Supermoon Cleansing',
-      text: '🌕 Supermoon in Pisces · Best Crystal Today: Selenite & Moonstone for Aura Cleansing',
+      text: '🌕 Supermoon in Pisces — Featured Crystal: Selenite (Aura Cleansing)',
       crystal: 'Selenite',
       benefit: 'Aura Cleansing & Lunar Illumination',
       link: '/products?search=Selenite'
     },
     {
       name: 'Scorpio New Moon Transformation',
-      text: '🌑 New Moon in Scorpio · Best Crystal Today: Black Obsidian for Psychic Shielding',
+      text: '🌑 New Moon in Scorpio — Featured Crystal: Black Obsidian (Grounding & Shielding)',
       crystal: 'Black Obsidian',
       benefit: 'Grounding & Energetic Shielding',
       link: '/products?search=Obsidian'
     },
     {
       name: 'Solar Eclipse Solar Vitality',
-      text: '☀️ Solar Alignment · Best Crystal Today: Pyrite & Sunstone for Abundance & Courage',
+      text: '☀️ Solar Alignment — Featured Crystal: Pyrite (Confidence & Abundance)',
       crystal: 'Pyrite',
       benefit: 'Confidence & Golden Abundance',
       link: '/products?search=Pyrite'

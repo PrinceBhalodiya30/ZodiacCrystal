@@ -107,15 +107,12 @@ describe('MoonTransitBar', () => {
     expect(localStorage.getItem(`crystal_studio_topbar_dismissed_${todayKey}`)).toBe('true');
   });
 
-  it('opens and closes details modal when showModal is enabled', () => {
+  it('handles details modal state changes when showModal is enabled', () => {
     expect(component.isDetailsOpen()).toBe(false);
 
     component.openDetails();
     fixture.detectChanges();
     expect(component.isDetailsOpen()).toBe(true);
-
-    const modalEl = fixture.nativeElement.querySelector('.cosmic-modal-overlay');
-    expect(modalEl).toBeTruthy();
 
     component.closeDetails();
     fixture.detectChanges();

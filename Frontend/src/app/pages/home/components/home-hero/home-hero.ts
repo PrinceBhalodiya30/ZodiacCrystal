@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
 import { StoreSettingsService } from '../../../../services/store-settings.service';
 import { QuizService } from '../../../../services/quiz.service';
 import { ProductService } from '../../../../services/product.service';
@@ -16,7 +15,7 @@ import { getProductSlug } from '../../../../utils/product-slug.util';
 @Component({
   selector: 'app-home-hero',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, InrPipe, ImgFallbackDirective],
+  imports: [RouterLink, InrPipe, ImgFallbackDirective],
   templateUrl: './home-hero.html',
   styleUrl: './home-hero.css'
 })
@@ -31,12 +30,12 @@ export class HomeHero implements OnInit, OnDestroy {
   readonly heroTitle = computed(() => this.storeSettings.heroTitle());
   readonly heroSubtitle = computed(() => this.storeSettings.heroSubtitle());
 
-  // Energy Muse Signature: Shop by Energy Intention Quick-Chips
+  // Shop by intention chips
   readonly intentionChips = [
     { id: 'wealth', label: 'Wealth & Success' },
     { id: 'protection', label: 'Protection & Grounding' },
     { id: 'love', label: 'Love & Harmony' },
-    { id: 'peace', label: 'Peace & Calm' }
+    { id: 'peace', label: 'Calm & Peace' }
   ];
 
   // Centerpiece Live Product (Mejuri-style shoppable hero card)
