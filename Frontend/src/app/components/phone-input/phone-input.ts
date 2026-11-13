@@ -18,17 +18,17 @@ import { PHONE_CODE, PHONE_LENGTH, PHONE_PATTERN, PHONE_PLACEHOLDER, phoneDigits
   ]
 })
 export class PhoneInput {
-  phone = model('');
+  readonly phone = model('');
 
   readonly code = PHONE_CODE;
   readonly pattern = PHONE_PATTERN;
   readonly length = PHONE_LENGTH;
   readonly placeholder = PHONE_PLACEHOLDER;
 
-  number = computed(() => phoneDigits(this.phone()));
+  readonly number = computed(() => phoneDigits(this.phone()));
 
   onNumberChange(value: string): void {
-    const digits = (value ?? '').replace(/\D/g, '');
+    const digits = phoneDigits(value);
     this.phone.set(digits ? `${PHONE_CODE} ${digits}` : '');
   }
 }

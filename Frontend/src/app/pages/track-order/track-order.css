@@ -91,7 +91,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .copy-btn:hover {
@@ -113,6 +113,7 @@
   border: 1px solid var(--color-danger);
   border-radius: var(--radius-sm);
   font-weight: 600;
+  display: block;
 }
 
 /* Vertical Timeline */
@@ -233,5 +234,11 @@
 
   .track-header h1 {
     font-size: 1.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy-btn {
+    transition: none;
   }
 }

@@ -21,7 +21,7 @@
     </div>
   } @else {
     @if (cartService.mergeNotice(); as notice) {
-      <div class="cart-notice cart-notice--info" role="status">
+      <output class="cart-notice cart-notice--info">
         <div class="cart-notice-content">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="cart-notice-icon" aria-hidden="true">
             <circle cx="12" cy="12" r="10"/>
@@ -31,18 +31,18 @@
           <span>{{ notice }}</span>
         </div>
         <button type="button" class="cart-notice-dismiss" (click)="cartService.dismissMergeNotice()" aria-label="Dismiss notice"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-      </div>
+      </output>
     }
 
     @if (changeNotes().length > 0) {
-      <div class="cart-notice" role="status">
+      <output class="cart-notice">
         <strong>Your cart was updated:</strong>
         <ul>
           @for (note of changeNotes(); track note) {
             <li>{{ note }}</li>
           }
         </ul>
-      </div>
+      </output>
     }
 
     <div class="cart-layout">

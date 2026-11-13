@@ -6,7 +6,7 @@ export interface PickedPhoto {
   previewUrl: string;
 }
 
-const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ACCEPTED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const MAX_BYTES = 5 * 1024 * 1024;
 
 // "Add photos" control for the review form: picks up to `max` JPG/PNG/WebP
@@ -21,9 +21,9 @@ const MAX_BYTES = 5 * 1024 * 1024;
 export class ReviewPhotoPicker {
   private readonly toast = inject(ToastService);
 
-  photos = model<PickedPhoto[]>([]);
-  max = input(3);
-  disabled = input(false);
+  readonly photos = model<PickedPhoto[]>([]);
+  readonly max = input(3);
+  readonly disabled = input(false);
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.photos().forEach(p => URL.revokeObjectURL(p.previewUrl)));
@@ -40,7 +40,7 @@ export class ReviewPhotoPicker {
 
     const accepted: PickedPhoto[] = [];
     for (const file of chosen.slice(0, Math.max(0, room))) {
-      if (!ACCEPTED_TYPES.includes(file.type)) {
+      if (!ACCEPTED_TYPES.has(file.type)) {
         this.toast.error(`${file.name} isn't a JPG, PNG or WebP image.`);
       } else if (file.size > MAX_BYTES) {
         this.toast.error(`${file.name} is larger than 5 MB.`);

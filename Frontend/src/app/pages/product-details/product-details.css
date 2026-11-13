@@ -371,7 +371,7 @@
   text-transform: uppercase;
   padding: 0.3rem 0.85rem;
   border-radius: var(--radius-pill);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .zodiac-tag:hover {
@@ -473,7 +473,7 @@
   gap: 0.55rem;
   border-radius: var(--radius-sm, 4px);
   box-shadow: 0 4px 14px -2px rgba(29, 39, 57, 0.25);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .product-main-actions .btn-add-cart:hover:not(:disabled) {
@@ -501,7 +501,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 3px rgba(29, 39, 57, 0.04);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .product-main-actions .btn-buy-now:hover:not(:disabled) {
@@ -524,7 +524,7 @@
   border-radius: var(--radius-pill);
   color: var(--color-muted);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
 .btn-icon-action:hover {
@@ -648,7 +648,7 @@
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: all var(--transition-fast, 150ms ease);
+  transition: background-color var(--transition-fast, 150ms ease), border-color var(--transition-fast, 150ms ease), color var(--transition-fast, 150ms ease), transform var(--transition-fast, 150ms ease), box-shadow var(--transition-fast, 150ms ease);
   text-decoration: none;
   background-color: var(--color-surface, #ffffff);
   border: 1px solid var(--color-border, #E4DCCB);
@@ -664,16 +664,16 @@
 }
 
 .btn-share-whatsapp {
-  background-color: rgba(37, 211, 102, 0.08);
-  border-color: rgba(37, 211, 102, 0.35);
-  color: #0b6848;
+  background-color: #eaf8f0;
+  border-color: #8cd8a8;
+  color: #09543a;
 }
 
 .btn-share-whatsapp:hover {
-  background-color: #25d366;
-  border-color: #25d366;
+  background-color: #075e54;
+  border-color: #075e54;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.28);
+  box-shadow: 0 4px 12px rgba(7, 94, 84, 0.28);
 }
 
 .btn-share-copy:hover {
@@ -777,4 +777,24 @@
   font-size: var(--text-xs, 0.75rem);
   color: var(--color-subtle, #7d776e);
   line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-image img,
+  .zoom-btn,
+  .gallery-image,
+  .thumb-btn,
+  .zodiac-tag,
+  .qty-btn,
+  .btn-add-cart,
+  .btn-buy-now,
+  .btn-icon-action,
+  .btn-share,
+  .product-actions .btn.btn-added,
+  .wishlist-toggle-btn.active svg,
+  .btn {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
 }

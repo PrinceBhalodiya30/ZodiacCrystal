@@ -14,7 +14,7 @@ interface FaqItem {
   styleUrl: './faq.css'
 })
 export class Faq {
-  faqs: FaqItem[] = [
+  readonly faqs: FaqItem[] = [
     {
       question: 'How do I choose a crystal?',
       answer: 'Start with what you are drawn to visually, or browse by your zodiac sign to see crystals commonly associated with it. Each product page includes a description to help you decide.'
@@ -57,7 +57,7 @@ export class Faq {
     }
   ];
 
-  openIndex = signal<number | null>(null);
+  readonly openIndex = signal<number | null>(null);
 
   toggle(index: number): void {
     this.openIndex.set(this.openIndex() === index ? null : index);

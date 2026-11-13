@@ -29,21 +29,21 @@ export type NotificationKind =
 export class NotificationBell {
   @Input() align: 'left' | 'right' = 'right';
 
-  service = inject(NotificationService);
+  readonly service = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly elementRef = inject(ElementRef);
   private readonly toast = inject(ToastService);
 
-  isOpen = signal(false);
-  isRinging = signal(false);
+  readonly isOpen = signal(false);
+  readonly isRinging = signal(false);
 
   // Snapshot of "now" for the relative times; refreshed whenever the dropdown
   // opens (and every minute while it stays open), not on every change detection.
-  private now = signal(Date.now());
+  private readonly now = signal(Date.now());
   private nowTimer: ReturnType<typeof setInterval> | null = null;
   private ringTimer: ReturnType<typeof setTimeout> | null = null;
 
-  badgeText = computed(() => {
+  readonly badgeText = computed(() => {
     const count = this.service.unreadCount();
     return count > 9 ? '9+' : String(count);
   });
@@ -179,7 +179,7 @@ export class NotificationBell {
 
   timeAgo(createdAt: string): string {
     const created = new Date(createdAt);
-    if (isNaN(created.getTime())) {
+    if (Number.isNaN(created.getTime())) {
       return '';
     }
 
@@ -209,10 +209,14 @@ export class NotificationBell {
     if (!code) {
       return;
     }
-    navigator.clipboard?.writeText(code).then(
-      () => this.toast.success(`Code ${code} copied - paste it at checkout.`),
-      () => this.toast.success(`Use code ${code} at checkout.`)
-    ) ?? this.toast.success(`Use code ${code} at checkout.`);
+    if (navigator.clipboard) {
+      void navigator.clipboard.writeText(code).then(
+        () => this.toast.success(`Code ${code} copied - paste it at checkout.`),
+        () => this.toast.success(`Use code ${code} at checkout.`)
+      );
+    } else {
+      this.toast.success(`Use code ${code} at checkout.`);
+    }
   }
 
   private ring(): void {

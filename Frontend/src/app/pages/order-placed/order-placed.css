@@ -59,9 +59,10 @@
   font-size: 1.05rem;
 }
 
+.op-card > p.op-muted,
 .op-muted {
-  color: var(--color-muted) !important;
-  font-size: 0.92rem !important;
+  color: var(--color-muted);
+  font-size: 0.92rem;
   max-width: 480px;
   line-height: 1.5;
 }
@@ -160,5 +161,14 @@
 
   .op-card h1 {
     font-size: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .op-link,
+  .btn {
+    animation: none;
+    transition: none;
+    transform: none;
   }
 }

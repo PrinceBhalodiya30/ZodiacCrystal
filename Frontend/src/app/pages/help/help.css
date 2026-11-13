@@ -474,3 +474,16 @@
     padding: 1.25rem 1.25rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .help-order,
+  .help-order:hover,
+  .help-search-input,
+  .help-issue,
+  .help-issue:hover,
+  .btn {
+    transition: none;
+    transform: none;
+  }
+}
+

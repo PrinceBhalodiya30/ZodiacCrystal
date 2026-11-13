@@ -8,7 +8,7 @@
   }
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading product...</span>
+    <output class="visually-hidden">Loading product...</output>
     <div class="product-details" aria-hidden="true">
       <span class="skeleton product-image-skeleton"></span>
       <div class="product-info-skeleton">
@@ -36,6 +36,8 @@
           (mousemove)="onImageMouseMove($event)"
           (mouseleave)="onImageMouseLeave()"
           (click)="openLightbox()"
+          (keydown.enter)="openLightbox()"
+          (keydown.space)="openLightbox(); $event.preventDefault()"
         >
           @if (selectedImageUrl(); as imageUrl) {
             @for (url of [imageUrl]; track url) {

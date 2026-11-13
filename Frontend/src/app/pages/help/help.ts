@@ -44,7 +44,7 @@ type Step = 'start' | 'issue' | 'answer' | 'form' | 'sent';
   styleUrl: './help.css'
 })
 export class Help implements OnInit {
-  authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   private readonly orderService = inject(OrderService);
   private readonly supportService = inject(SupportService);
   private readonly toast = inject(ToastService);
@@ -56,12 +56,12 @@ export class Help implements OnInit {
   readonly maxPhotos = SUPPORT_MAX_PHOTOS;
   readonly returnWindowDays = 7;
 
-  isCustomer = computed(() => this.authService.isLoggedIn() && !this.authService.isAdmin());
+  readonly isCustomer = computed(() => this.authService.isLoggedIn() && !this.authService.isAdmin());
 
   // Search / browse
-  searchTerm = signal('');
-  openArticle = signal<string | null>(null);
-  articles = computed(() => {
+  readonly searchTerm = signal('');
+  readonly openArticle = signal<string | null>(null);
+  readonly articles = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     if (!term) {
       return ARTICLES.slice(0, 6);
@@ -70,17 +70,17 @@ export class Help implements OnInit {
   });
 
   // Guided flow
-  step = signal<Step>('start');
-  orders = signal<OrderSummary[]>([]);
-  ordersLoading = signal(false);
-  showAllOrders = signal(false);
-  visibleOrders = computed(() => (this.showAllOrders() ? this.orders() : this.orders().slice(0, 4)));
-  selectedOrder = signal<OrderSummary | null>(null);
-  selectedTopic = signal<TicketCategory | null>(null);
-  topicArticles = computed(() => ARTICLES.filter(a => a.topic === this.selectedTopic()));
+  readonly step = signal<Step>('start');
+  readonly orders = signal<OrderSummary[]>([]);
+  readonly ordersLoading = signal(false);
+  readonly showAllOrders = signal(false);
+  readonly visibleOrders = computed(() => (this.showAllOrders() ? this.orders() : this.orders().slice(0, 4)));
+  readonly selectedOrder = signal<OrderSummary | null>(null);
+  readonly selectedTopic = signal<TicketCategory | null>(null);
+  readonly topicArticles = computed(() => ARTICLES.filter(a => a.topic === this.selectedTopic()));
 
   // Issues offered for an order depend on where the order is.
-  orderIssues = computed(() => {
+  readonly orderIssues = computed(() => {
     const order = this.selectedOrder();
     if (!order) {
       return [];
@@ -100,11 +100,11 @@ export class Help implements OnInit {
   // Contact form
   subject = '';
   message = '';
-  files = signal<File[]>([]);
-  isSubmitting = signal(false);
-  formError = signal('');
-  createdTicketId = signal<number | null>(null);
-  createdReference = signal('');
+  readonly files = signal<File[]>([]);
+  readonly isSubmitting = signal(false);
+  readonly formError = signal('');
+  readonly createdTicketId = signal<number | null>(null);
+  readonly createdReference = signal('');
 
   ngOnInit(): void {
     if (this.isCustomer()) {
@@ -160,7 +160,13 @@ export class Help implements OnInit {
     }
     const order = this.selectedOrder();
     const topic = this.categories.find(c => c.value === this.selectedTopic());
-    this.subject = topic ? (order ? `${topic.label} - Order #${order.orderId}` : topic.label) : '';
+    if (!topic) {
+      this.subject = '';
+    } else if (order) {
+      this.subject = `${topic.label} - Order #${order.orderId}`;
+    } else {
+      this.subject = topic.label;
+    }
     this.message = '';
     this.files.set([]);
     this.formError.set('');

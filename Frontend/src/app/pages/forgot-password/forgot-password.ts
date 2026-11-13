@@ -25,13 +25,13 @@ export class ForgotPassword {
   newPassword = '';
   confirmPassword = '';
 
-  step = signal<'email' | 'reset'>('email');
-  showPassword = signal(false);
-  showConfirmPassword = signal(false);
-  isSubmitting = signal(false);
-  errorMessage = signal('');
-  infoMessage = signal('');
-  resendIn = signal(0);
+  readonly step = signal<'email' | 'reset'>('email');
+  readonly showPassword = signal(false);
+  readonly showConfirmPassword = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
+  readonly infoMessage = signal('');
+  readonly resendIn = signal(0);
   private resendTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor() {

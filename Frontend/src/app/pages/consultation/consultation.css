@@ -67,7 +67,7 @@
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-xs, 4px);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .stepper-item:disabled {
@@ -83,7 +83,7 @@
   background-color: var(--color-surface-tint, #F4EFE5);
   color: var(--color-ink, #1D2739);
   border-radius: 999px;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .stepper-item.active {
@@ -176,7 +176,7 @@
   border-radius: var(--radius-sm, 4px);
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
   font: inherit;
 }
 
@@ -241,7 +241,7 @@
   border: 1px solid var(--color-border, #E4DCCB);
   border-radius: var(--radius-sm, 4px);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
   font: inherit;
 }
 
@@ -326,7 +326,7 @@
   border-radius: var(--radius-sm, 4px);
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1), transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
   font: inherit;
 }
 
@@ -471,7 +471,7 @@
   border-radius: var(--radius-sm, 4px);
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .specimen-card:hover {
@@ -511,6 +511,9 @@
   width: 100%;
   height: 240px;
   background-color: var(--color-surface-tint, #F4EFE5);
+  border: none;
+  padding: 0;
+  font: inherit;
   cursor: pointer;
   overflow: hidden;
   display: flex;
@@ -596,10 +599,11 @@
   border-radius: var(--radius-sm, 4px);
 }
 
-.btn-added {
-  background-color: #2f8a57 !important;
-  color: #ffffff !important;
-  border-color: #2f8a57 !important;
+.btn.btn-added,
+.specimen-actions .btn.btn-added {
+  background-color: #27784b;
+  color: #ffffff;
+  border-color: #27784b;
 }
 
 .btn-compare.active {
@@ -658,3 +662,26 @@
     flex-direction: column;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .stepper-item,
+  .stepper-num,
+  .intention-tile,
+  .intention-tile:hover,
+  .zodiac-tile,
+  .zodiac-tile:hover,
+  .form-tile,
+  .form-tile:hover,
+  .crystal-silhouette,
+  .specimen-card,
+  .specimen-card:hover,
+  .specimen-image-container img,
+  .specimen-card:hover .specimen-image-container img,
+  .animate-fade-in,
+  .btn {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+

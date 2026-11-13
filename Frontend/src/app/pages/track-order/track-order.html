@@ -50,7 +50,7 @@
       }
 
       @if (isCancelled()) {
-        <div class="cancelled-note" role="status">This order was cancelled.</div>
+        <output class="cancelled-note">This order was cancelled.</output>
       } @else {
         <ol class="track-steps" aria-label="Shipment progress">
           @for (step of steps(); track step.title) {

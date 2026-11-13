@@ -21,7 +21,7 @@ export class RecentlyViewed implements OnInit, OnChanges {
   // product is never shown alongside itself on its own details page.
   @Input() excludeProductId: number | null = null;
 
-  products = signal<Product[]>([]);
+  readonly products = signal<Product[]>([]);
 
   constructor() {
     // The list is replaced on sign-in/out, when the server copy arrives, and on
@@ -63,7 +63,7 @@ export class RecentlyViewed implements OnInit, OnChanges {
       results.forEach((product, index) => {
         // A missing/deleted product, or one that's no longer active, is silently
         // dropped from the stored list rather than shown as a broken card.
-        if (product && product.isActive) {
+        if (product?.isActive) {
           valid.push(product);
         } else {
           this.recentlyViewedService.remove(ids[index]);

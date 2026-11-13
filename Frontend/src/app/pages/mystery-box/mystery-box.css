@@ -104,7 +104,7 @@
   color: #ffffff;
   border: 1px solid var(--color-primary-cta, #1D2739);
   box-shadow: 0 4px 16px rgba(29, 39, 57, 0.22);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   cursor: pointer;
 }
 
@@ -159,7 +159,7 @@
   color: var(--color-ink, #1D2739);
   cursor: pointer;
   text-align: center;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -355,5 +355,21 @@
 
   .affinity-header {
     justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystery-box-cta,
+  .mystery-box-cta:hover,
+  .zodiac-tile,
+  .zodiac-tile:hover,
+  .zodiac-tile.selected,
+  .zodiac-tile-emblem,
+  .zodiac-tile:hover .zodiac-tile-emblem,
+  .zodiac-tile.selected .zodiac-tile-emblem,
+  .zodiac-affinity-card {
+    animation: none;
+    transition: none;
+    transform: none;
   }
 }

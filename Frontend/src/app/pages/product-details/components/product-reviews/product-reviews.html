@@ -2,7 +2,7 @@
   <h2>Reviews & Ratings</h2>
 
   @if (reviewsLoading) {
-    <span class="visually-hidden" role="status">Loading reviews...</span>
+    <output class="visually-hidden">Loading reviews...</output>
     <div class="review-skeletons" aria-hidden="true">
       @for (i of [1, 2]; track i) {
         <div class="review-skeleton-item">

@@ -19,14 +19,14 @@ export class ReturnRequestPanel {
   private readonly returnService = inject(ReturnService);
   private readonly toast = inject(ToastService);
 
-  order = input.required<Order>();
-  returnRequested = output<void>();
+  readonly order = input.required<Order>();
+  readonly returnRequested = output<void>();
 
   readonly reasons = RETURN_REASONS;
 
-  isFormOpen = signal(false);
-  isSubmitting = signal(false);
-  errorMessage = signal('');
+  readonly isFormOpen = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
   reason: ReturnReason | '' = '';
   details = '';
 

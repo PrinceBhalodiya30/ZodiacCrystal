@@ -290,12 +290,10 @@
                       {{ match.matchScore }}% Astrological Affinity
                     </div>
 
-                    <div
+                    <button
+                      type="button"
                       class="specimen-image-container"
                       (click)="navigateToProduct(match.product.productId)"
-                      (keydown.enter)="navigateToProduct(match.product.productId)"
-                      role="button"
-                      tabindex="0"
                       [attr.aria-label]="'View details of ' + match.product.name"
                     >
                       @if (getImage(match.product); as url) {
@@ -307,7 +305,7 @@
                           </svg>
                         </div>
                       }
-                    </div>
+                    </button>
 
                     <div class="specimen-body">
                       <h3 class="specimen-title">

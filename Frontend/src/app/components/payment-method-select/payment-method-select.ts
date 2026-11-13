@@ -21,25 +21,25 @@ export class PaymentMethodSelect {
   readonly siteName = SITE_NAME;
   private readonly paymentService = inject(PaymentService);
 
-  method = model<PaymentMethod>('COD');
+  readonly method = model<PaymentMethod>('COD');
   // Pages that already show their own "Payment" heading hide the legend
   // visually; it stays for screen readers so the radio group keeps its name.
-  hideLegend = input(false);
+  readonly hideLegend = input(false);
   // Guest checkout: card payment only (Cash on Delivery is hidden).
-  cardOnly = input(false);
-  private forceCard = effect(() => {
+  readonly cardOnly = input(false);
+  private readonly forceCard = effect(() => {
     if (this.cardOnly() && untracked(() => this.method()) !== 'Card') {
       this.method.set('Card');
     }
   });
 
-  status = signal<CardFormStatus>('idle');
-  loadError = signal('');
+  readonly status = signal<CardFormStatus>('idle');
+  readonly loadError = signal('');
 
   // The parent's submit button should stay disabled until this is true.
-  canSubmit = computed(() => this.method() === 'COD' || this.status() === 'ready');
+  readonly canSubmit = computed(() => this.method() === 'COD' || this.status() === 'ready');
 
-  private container = viewChild<ElementRef<HTMLDivElement>>('dropinContainer');
+  private readonly container = viewChild<ElementRef<HTMLDivElement>>('dropinContainer');
   private dropin: Dropin | null = null;
 
   constructor() {
@@ -48,7 +48,7 @@ export class PaymentMethodSelect {
     effect(() => {
       const container = this.container();
       if (this.method() === 'Card' && container && untracked(() => this.status()) === 'idle') {
-        untracked(() => this.loadCardForm(container.nativeElement));
+        untracked(() => { void this.loadCardForm(container.nativeElement); });
       }
     });
 
@@ -70,7 +70,7 @@ export class PaymentMethodSelect {
   retryLoad(): void {
     const container = this.container();
     if (container) {
-      this.loadCardForm(container.nativeElement);
+      void this.loadCardForm(container.nativeElement);
     }
   }
 

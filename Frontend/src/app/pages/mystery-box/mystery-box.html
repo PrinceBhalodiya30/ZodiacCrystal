@@ -40,18 +40,17 @@
 
       @if (zodiacSigns().length > 0) {
         <div class="zodiac-picker-section">
-          <label class="zodiac-picker-label" id="zodiac-select-label">Choose Your Zodiac Sign</label>
+          <span class="zodiac-picker-label" id="zodiac-select-label">Choose Your Zodiac Sign</span>
           <p class="zodiac-picker-subtext">Each mystery box is curated with authentic crystals aligned with your cosmic sign.</p>
 
-          <div class="zodiac-tile-grid" role="radiogroup" aria-labelledby="zodiac-select-label">
+          <div class="zodiac-tile-grid" aria-labelledby="zodiac-select-label">
             @for (zodiac of zodiacSigns(); track zodiac.zodiacId) {
               <button
                 type="button"
                 class="zodiac-tile"
                 [class.selected]="selectedZodiacId() === zodiac.zodiacId"
                 (click)="selectZodiac(zodiac.zodiacId)"
-                role="radio"
-                [attr.aria-checked]="selectedZodiacId() === zodiac.zodiacId"
+                [attr.aria-pressed]="selectedZodiacId() === zodiac.zodiacId"
                 [attr.title]="zodiac.name + (zodiac.description ? ' - ' + zodiac.description : '')"
               >
                 <span class="zodiac-tile-emblem">

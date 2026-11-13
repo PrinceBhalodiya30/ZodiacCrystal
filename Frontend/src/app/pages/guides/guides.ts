@@ -10,5 +10,5 @@ import { GUIDES } from '../../data/guides.data';
   styleUrl: './guides.css'
 })
 export class Guides {
-  guides = GUIDES;
+  readonly guides = GUIDES;
 }

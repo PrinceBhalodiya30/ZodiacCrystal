@@ -36,14 +36,14 @@ export class Addresses implements OnInit {
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
-  addresses = signal<Address[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly addresses = signal<Address[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  formMode = signal<'closed' | 'create' | 'edit'>('closed');
-  editingAddressId = signal<number | null>(null);
-  isSaving = signal(false);
-  formError = signal('');
+  readonly formMode = signal<'closed' | 'create' | 'edit'>('closed');
+  readonly editingAddressId = signal<number | null>(null);
+  readonly isSaving = signal(false);
+  readonly formError = signal('');
   form: AddressRequest = { ...EMPTY_FORM };
 
   ngOnInit(): void {

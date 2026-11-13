@@ -38,13 +38,13 @@ export class TrackOrder implements OnInit {
   // Guest order link (/order/:id/track): back link instead of My Account breadcrumbs.
   readonly isGuestView = !inject(AuthService).isLoggedIn();
 
-  order = signal<Order | null>(null);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly order = signal<Order | null>(null);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  isCancelled = computed(() => this.order()?.status === 'Cancelled');
+  readonly isCancelled = computed(() => this.order()?.status === 'Cancelled');
 
-  steps = computed<TrackingStep[]>(() => {
+  readonly steps = computed<TrackingStep[]>(() => {
     const o = this.order();
     if (!o) {
       return [];
@@ -59,11 +59,20 @@ export class TrackOrder implements OnInit {
       { title: 'Delivered', detail: 'Your package has been delivered.', at: o.deliveredAt ?? null }
     ];
 
-    return raw.map((step, index) => ({
-      ...step,
-      at: index <= currentIndex ? step.at : null,
-      state: index < currentIndex || delivered ? 'completed' : index === currentIndex ? 'current' : 'upcoming'
-    }));
+    return raw.map((step, index) => {
+      let state: TrackingStep['state'] = 'upcoming';
+      if (index < currentIndex || delivered) {
+        state = 'completed';
+      } else if (index === currentIndex) {
+        state = 'current';
+      }
+
+      return {
+        ...step,
+        at: index <= currentIndex ? step.at : null,
+        state
+      };
+    });
   });
 
   constructor() {

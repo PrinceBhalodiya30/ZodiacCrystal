@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, FREE_SHIPPING_THRESHOLD, GIFT_PACKAGING_FEE, shippingFeeFor } from '../../services/cart.service';
+import { CartService, GIFT_PACKAGING_FEE } from '../../services/cart.service';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { getProductSlug } from '../../utils/product-slug.util';
 import { CartItem } from '../../models/cart';
@@ -16,19 +16,19 @@ import { InrPipe } from '../../pipes/inr.pipe';
   styleUrl: './cart.css'
 })
 export class Cart implements OnInit {
-  cartService = inject(CartService);
+  readonly cartService = inject(CartService);
   private readonly router = inject(Router);
   private readonly confirmDialog = inject(ConfirmDialogService);
 
   readonly giftPackagingFee = GIFT_PACKAGING_FEE;
 
   // Notes from re-checking prices/availability when the page opened.
-  changeNotes = signal<string[]>([]);
+  readonly changeNotes = signal<string[]>([]);
 
-  shippingFee = computed(() => this.cartService.shippingFeeFor(this.cartService.total()));
-  grandTotal = computed(() => this.cartService.total() + this.shippingFee() + this.cartService.giftFee());
-  amountToFreeShipping = computed(() => Math.max(0, this.cartService.freeShippingThreshold() - this.cartService.total()));
-  freeShippingProgress = computed(() =>
+  readonly shippingFee = computed(() => this.cartService.shippingFeeFor(this.cartService.total()));
+  readonly grandTotal = computed(() => this.cartService.total() + this.shippingFee() + this.cartService.giftFee());
+  readonly amountToFreeShipping = computed(() => Math.max(0, this.cartService.freeShippingThreshold() - this.cartService.total()));
+  readonly freeShippingProgress = computed(() =>
     Math.min(100, Math.round((this.cartService.total() / (this.cartService.freeShippingThreshold() || 1)) * 100))
   );
 

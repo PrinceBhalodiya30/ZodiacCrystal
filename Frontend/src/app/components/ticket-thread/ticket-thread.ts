@@ -15,15 +15,15 @@ import { TicketMessage } from '../../models/support-ticket';
   styleUrl: './ticket-thread.css'
 })
 export class TicketThread {
-  messages = input.required<TicketMessage[]>();
-  forAdmin = input(false);
+  readonly messages = input.required<TicketMessage[]>();
+  readonly forAdmin = input(false);
   // Disables the edit/delete controls while the parent is saving.
-  busy = input(false);
+  readonly busy = input(false);
 
-  editMessage = output<{ messageId: number; body: string }>();
-  deleteMessage = output<TicketMessage>();
+  readonly editMessage = output<{ messageId: number; body: string }>();
+  readonly deleteMessage = output<TicketMessage>();
 
-  editingId = signal<number | null>(null);
+  readonly editingId = signal<number | null>(null);
   editText = '';
 
   isMine(message: TicketMessage): boolean {

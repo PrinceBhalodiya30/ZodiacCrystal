@@ -157,3 +157,17 @@
 .category-card:hover .category-shop {
   transform: translateX(3px);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .category-card,
+  .category-card:hover,
+  .category-image img,
+  .category-card:hover .category-image img,
+  .category-name,
+  .category-shop,
+  .category-card:hover .category-shop {
+    transition: none;
+    transform: none;
+  }
+}
+

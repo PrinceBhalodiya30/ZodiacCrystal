@@ -105,7 +105,7 @@
             </button>
 
             @if (bundleJustAdded) {
-              <div class="bundle-inline-feedback" role="status">
+              <output class="bundle-inline-feedback">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="9"/>
                   <path d="m8 12.5 2.5 2.5L16 9.5"/>
@@ -113,7 +113,7 @@
                 <span>
                   Bundle added! @if (bundleSavings() > 0) { Saved {{ bundleSavings() | inr:0 }} on {{ bundleSelectedCount() }} items. } @else { Added to your bag. }
                 </span>
-              </div>
+              </output>
             }
           </div>
         </div>

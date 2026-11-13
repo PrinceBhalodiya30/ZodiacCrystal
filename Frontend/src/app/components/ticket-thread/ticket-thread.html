@@ -20,7 +20,7 @@
           <div class="thread-photos">
             @for (url of m.attachments; track url) {
               <a [href]="url" target="_blank" rel="noopener">
-                <img [src]="url" alt="Attached photo" loading="lazy" />
+                <img [src]="url" alt="Attachment" loading="lazy" />
               </a>
             }
           </div>

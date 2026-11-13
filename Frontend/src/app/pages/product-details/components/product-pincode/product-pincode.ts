@@ -10,10 +10,10 @@ import { checkDeliveryPincode, getSavedPincode, savePincode, PincodeDeliveryInfo
   styleUrl: './product-pincode.css'
 })
 export class ProductPincode implements OnInit {
-  pincodeInput = signal('');
-  pincodeResult = signal<PincodeDeliveryInfo | null>(null);
-  isCheckingPincode = signal(false);
-  pincodeError = signal('');
+  readonly pincodeInput = signal('');
+  readonly pincodeResult = signal<PincodeDeliveryInfo | null>(null);
+  readonly isCheckingPincode = signal(false);
+  readonly pincodeError = signal('');
 
   ngOnInit(): void {
     const savedPin = getSavedPincode();

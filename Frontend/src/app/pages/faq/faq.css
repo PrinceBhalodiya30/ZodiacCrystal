@@ -152,3 +152,18 @@
     padding: 0 1.15rem 1.2rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link,
+  .page-back-link:hover,
+  .faq-item,
+  .faq-question,
+  .faq-icon,
+  .faq-icon svg,
+  .faq-item.open .faq-icon svg,
+  .faq-answer-collapse {
+    transition: none;
+    transform: none;
+  }
+}
+

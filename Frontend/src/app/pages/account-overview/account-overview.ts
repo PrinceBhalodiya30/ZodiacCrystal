@@ -28,31 +28,31 @@ const RECENT_LIMIT = 3;
   styleUrl: './account-overview.css'
 })
 export class AccountOverview implements OnInit {
-  authService = inject(AuthService);
-  wishlistService = inject(WishlistService);
+  readonly authService = inject(AuthService);
+  readonly wishlistService = inject(WishlistService);
   private readonly orderService = inject(OrderService);
   private readonly addressService = inject(AddressService);
   private readonly supportService = inject(SupportService);
 
-  orders = signal<OrderSummary[]>([]);
-  isLoadingOrders = signal(true);
-  ordersError = signal(false);
-  addressCount = signal<number | null>(null);
-  supportTicketCount = signal<number | null>(null);
-  activeTicketsCount = signal<number | null>(null);
+  readonly orders = signal<OrderSummary[]>([]);
+  readonly isLoadingOrders = signal(true);
+  readonly ordersError = signal(false);
+  readonly addressCount = signal<number | null>(null);
+  readonly supportTicketCount = signal<number | null>(null);
+  readonly activeTicketsCount = signal<number | null>(null);
 
-  firstName = computed(() => this.authService.currentUser()?.name?.trim().split(/\s+/)[0] ?? '');
+  readonly firstName = computed(() => this.authService.currentUser()?.name?.trim().split(/\s+/)[0] ?? '');
 
-  latestOrder = computed(() => this.orders()[0] ?? null);
-  hasActiveOrder = computed(() => {
+  readonly latestOrder = computed(() => this.orders()[0] ?? null);
+  readonly hasActiveOrder = computed(() => {
     const latest = this.latestOrder();
     return !!latest && (latest.status === 'Pending' || latest.status === 'Confirmed' || latest.status === 'Shipped');
   });
 
-  recentOrders = computed(() => this.orders().slice(1, RECENT_LIMIT + 1));
+  readonly recentOrders = computed(() => this.orders().slice(1, RECENT_LIMIT + 1));
 
   // Cancelled orders don't count toward what the customer has spent.
-  totalSpent = computed(() =>
+  readonly totalSpent = computed(() =>
     this.orders()
       .filter(o => o.status !== 'Cancelled' && o.paymentStatus !== 'Refunded')
       .reduce((sum, o) => sum + o.totalAmount, 0)
@@ -103,16 +103,32 @@ export class AccountOverview implements OnInit {
 
   greeting(): string {
     const hour = new Date().getHours();
-    return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    if (hour < 12) {
+      return 'Good morning';
+    }
+    if (hour < 17) {
+      return 'Good afternoon';
+    }
+    return 'Good evening';
   }
 
   // Placed → Confirmed → Shipped → Delivered, marking how far this order has got.
   progressFor(order: OrderSummary): { label: string; state: 'done' | 'current' | 'upcoming' }[] {
     const reached = PROGRESS_STEPS.findIndex(s => s.status === order.status);
-    return PROGRESS_STEPS.map((step, index) => ({
-      label: step.label,
-      state: index < reached ? 'done' : index === reached ? (order.status === 'Delivered' ? 'done' : 'current') : 'upcoming'
-    }));
+    return PROGRESS_STEPS.map((step, index) => {
+      let state: 'done' | 'current' | 'upcoming';
+      if (index < reached) {
+        state = 'done';
+      } else if (index === reached) {
+        state = order.status === 'Delivered' ? 'done' : 'current';
+      } else {
+        state = 'upcoming';
+      }
+      return {
+        label: step.label,
+        state
+      };
+    });
   }
 
   // "Rose Quartz" or "Rose Quartz + 2 more"; falls back to the order number.

@@ -2,7 +2,7 @@
   <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Shop by Zodiac', link: '/zodiac' }, { label: (zodiac()?.name | vedicZodiac:'compact') || 'Zodiac Sign' }]"></app-breadcrumbs>
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading crystals...</span>
+    <output class="visually-hidden">Loading crystals...</output>
     <div class="product-grid">
       @for (n of [1, 2, 3, 4, 5, 6, 7, 8]; track n) {
         <app-product-card-skeleton></app-product-card-skeleton>

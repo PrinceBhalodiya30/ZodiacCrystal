@@ -14,9 +14,9 @@ import { BirthdaySignFinder } from '../../components/birthday-sign-finder/birthd
 export class ZodiacPage implements OnInit {
   private readonly zodiacService = inject(ZodiacService);
 
-  zodiacSigns = signal<Zodiac[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly zodiacSigns = signal<Zodiac[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
   ngOnInit(): void {
     this.loadZodiacSigns();

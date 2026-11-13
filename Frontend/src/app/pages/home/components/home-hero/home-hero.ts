@@ -40,13 +40,13 @@ export class HomeHero implements OnInit, OnDestroy {
   ];
 
   // Centerpiece Live Product (Mejuri-style shoppable hero card)
-  featuredProduct = signal<Product | null>(null);
-  isLoadingProduct = signal<boolean>(true);
-  isAdded = signal<boolean>(false);
+  readonly featuredProduct = signal<Product | null>(null);
+  readonly isLoadingProduct = signal<boolean>(true);
+  readonly isAdded = signal<boolean>(false);
 
   readonly totalSlides = 4;
-  activeSlide = signal(0);
-  isPaused = signal(false);
+  readonly activeSlide = signal(0);
+  readonly isPaused = signal(false);
   private timerId: ReturnType<typeof setInterval> | null = null;
   private touchStartX = 0;
   private touchEndX = 0;
@@ -60,7 +60,7 @@ export class HomeHero implements OnInit, OnDestroy {
     this.stopCarouselTimer();
   }
 
-  heroImageUrl = signal<string | null>(HERO_IMAGE_URL);
+  readonly heroImageUrl = signal<string | null>(HERO_IMAGE_URL);
 
   private loadCenterpieceProduct(): void {
     this.isLoadingProduct.set(true);

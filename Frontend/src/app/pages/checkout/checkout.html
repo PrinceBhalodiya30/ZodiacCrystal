@@ -19,14 +19,14 @@
         <h2>Review Your Order</h2>
 
         @if (changeNotes().length > 0) {
-          <div class="checkout-notice" role="status">
+          <output class="checkout-notice">
             <strong>Your order was updated:</strong>
             <ul>
               @for (note of changeNotes(); track note) {
                 <li>{{ note }}</li>
               }
             </ul>
-          </div>
+          </output>
         }
 
         <div class="summary-list">
@@ -356,7 +356,7 @@
               [(ngModel)]="deliveryInstructions"
               class="delivery-instructions-input"
             />
-            <div class="instruction-chips" role="group" aria-label="Suggested delivery instructions">
+            <fieldset class="instruction-chips" aria-label="Suggested delivery instructions">
               @for (chip of instructionChips; track chip) {
                 <button
                   type="button"
@@ -367,7 +367,7 @@
                   {{ chip }}
                 </button>
               }
-            </div>
+            </fieldset>
           </div>
 
           <button type="button" class="btn place-order-btn" (click)="continueToPayment(checkoutForm)">

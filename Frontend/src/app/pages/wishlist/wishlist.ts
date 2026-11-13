@@ -14,7 +14,7 @@ import { ProductCard } from '../../components/product-card/product-card';
   styleUrl: './wishlist.css'
 })
 export class Wishlist implements OnInit {
-  wishlistService = inject(WishlistService);
+  readonly wishlistService = inject(WishlistService);
 
   ngOnInit(): void {
     this.wishlistService.loadWishlist();

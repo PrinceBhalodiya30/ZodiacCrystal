@@ -163,3 +163,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link,
+  .page-back-link:hover,
+  .guide-card,
+  .guide-card:hover,
+  .arrow-glyph,
+  .guide-card:hover .arrow-glyph {
+    transition: none;
+    transform: none;
+  }
+}
+

@@ -41,13 +41,13 @@ h3 {
 .status-refunded .return-badge { background-color: var(--color-success-bg); color: var(--color-success); }
 .status-rejected .return-badge { background-color: var(--color-danger-bg); color: var(--color-danger); }
 
-.admin-note {
-  margin-top: 0.75rem !important;
+.return-panel .admin-note {
+  margin-top: 0.75rem;
   padding: 0.65rem 0.85rem;
   border-radius: var(--radius-sm);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border-subtle);
-  font-size: 0.88rem !important;
+  font-size: 0.88rem;
 }
 
 .return-offer {
@@ -129,4 +129,13 @@ textarea:focus {
 .cancel-btn:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  select,
+  textarea,
+  .return-btn,
+  .cancel-btn {
+    transition: none;
+  }
 }

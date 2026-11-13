@@ -24,7 +24,7 @@
       <h2>Featured Crystals</h2>
     </div>
   </div>
-  <span class="visually-hidden" role="status">Loading featured crystals...</span>
+  <output class="visually-hidden">Loading featured crystals...</output>
   <div class="featured-slider-track" aria-hidden="true">
     @for (n of [1, 2, 3, 4]; track n) {
     <div class="featured-slider-item">
@@ -73,8 +73,7 @@
   </div>
 
   <!-- Scrollable Product Slider Track -->
-  <div #featuredTrack class="featured-slider-track" (scroll)="onFeaturedScroll()" tabindex="0" role="region"
-    aria-label="Featured crystals carousel">
+  <div #featuredTrack class="featured-slider-track" (scroll)="onFeaturedScroll()">
     @for (product of featuredProducts(); track product.productId) {
     <div class="featured-slider-item">
       <app-product-card [product]="product"></app-product-card>
@@ -96,7 +95,7 @@
   <app-birthday-sign-finder></app-birthday-sign-finder>
 
   @if (isLoading()) {
-  <span class="visually-hidden" role="status">Loading zodiac signs...</span>
+  <output class="visually-hidden">Loading zodiac signs...</output>
   <div class="zodiac-grid" aria-hidden="true">
     @for (n of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track n) {
     <div class="zodiac-skeleton">
@@ -220,7 +219,7 @@
   <div class="section-header">
     <h2>Shop by Category</h2>
   </div>
-  <span class="visually-hidden" role="status">Loading categories...</span>
+  <output class="visually-hidden">Loading categories...</output>
   <div class="category-grid" aria-hidden="true">
     @for (n of [1, 2, 3, 4]; track n) {
     <div class="category-tile">
@@ -352,7 +351,7 @@
       @if (zodiacSigns().length > 0) {
       <div class="mystery-zodiac-selector">
         <div class="selector-header">
-          <label class="selector-label">Choose Your Zodiac Sign:</label>
+          <span class="selector-label">Choose Your Zodiac Sign:</span>
           @if (selectedMysteryZodiac(); as sign) {
           <span class="selected-sign-pill">Selected: {{ sign.name }}</span>
           } @else {

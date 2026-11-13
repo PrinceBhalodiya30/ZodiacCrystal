@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, GIFT_PACKAGING_FEE, shippingFeeFor } from '../../services/cart.service';
+import { CartService, GIFT_PACKAGING_FEE } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { MysteryBoxService } from '../../services/mystery-box.service';
@@ -37,13 +37,13 @@ export class Checkout implements OnInit, OnDestroy {
   private readonly guestSession = inject(GuestSessionService);
   private readonly router = inject(Router);
 
-  paymentMethod = signal<PaymentMethod>('COD');
-  paymentSelect = viewChild(PaymentMethodSelect);
+  readonly paymentMethod = signal<PaymentMethod>('COD');
+  readonly paymentSelect = viewChild(PaymentMethodSelect);
 
-  mysteryBox = computed(() => this.cartService.buyNowMysteryBox());
+  readonly mysteryBox = computed(() => this.cartService.buyNowMysteryBox());
 
   // A Buy Now purchase checks out just that one item; otherwise, the whole cart.
-  items = computed<CartItem[]>(() => {
+  readonly items = computed<CartItem[]>(() => {
     if (this.cartService.buyNowMysteryBox()) {
       return [];
     }
@@ -52,7 +52,7 @@ export class Checkout implements OnInit, OnDestroy {
   });
 
   // Buy Now checkouts go back to that product; cart checkouts go back to the cart.
-  buyNowProductId = computed(() => this.cartService.buyNowItem()?.product.productId ?? null);
+  readonly buyNowProductId = computed(() => this.cartService.buyNowItem()?.product.productId ?? null);
 
   // Leaving a Buy Now checkout drops that one-off session so it never
   // pollutes the shopper's persistent cart (Amazon/Shopify model).
@@ -65,7 +65,7 @@ export class Checkout implements OnInit, OnDestroy {
     this.leaveBuyNow();
   }
 
-  total = computed(() => {
+  readonly total = computed(() => {
     const box = this.mysteryBox();
     if (box) {
       return box.price;
@@ -74,26 +74,26 @@ export class Checkout implements OnInit, OnDestroy {
   });
 
   // Display estimate only - the backend computes the fee it actually charges.
-  shippingFee = computed(() => this.cartService.shippingFeeFor(this.total()));
+  readonly shippingFee = computed(() => this.cartService.shippingFeeFor(this.total()));
 
   // Lines asking for more than is in stock (or sold out). Payment is blocked until fixed.
-  stockProblems = computed(() =>
+  readonly stockProblems = computed(() =>
     this.mysteryBox() ? [] : this.items().filter(i => i.product.stockQuantity <= 0 || i.quantity > i.product.stockQuantity)
   );
 
   // Notes from re-checking prices/availability when checkout opened.
-  changeNotes = signal<string[]>([]);
+  readonly changeNotes = signal<string[]>([]);
 
   // Discount is only ever a server-validated amount, never computed client-side.
-  appliedCouponCode = signal<string | null>(null);
-  appliedDiscountAmount = signal(0);
+  readonly appliedCouponCode = signal<string | null>(null);
+  readonly appliedDiscountAmount = signal(0);
 
   // The subtotal the applied discount was validated against. If the items change
   // (price refresh, live stock), the coupon is re-checked so the discount shown
   // is the one the server will actually give.
   private couponValidatedForTotal: number | null = null;
 
-  private revalidateCoupon = effect(() => {
+  private readonly revalidateCoupon = effect(() => {
     const total = this.total();
     untracked(() => {
       const code = this.appliedCouponCode();
@@ -104,18 +104,18 @@ export class Checkout implements OnInit, OnDestroy {
   });
 
   couponCodeInput = '';
-  isApplyingCoupon = signal(false);
-  couponMessage = signal('');
-  couponMessageType = signal<'success' | 'error'>('error');
+  readonly isApplyingCoupon = signal(false);
+  readonly couponMessage = signal('');
+  readonly couponMessageType = signal<'success' | 'error'>('error');
 
-  availableCoupons = signal<PublicCoupon[]>([]);
-  isLoadingCoupons = signal(true);
+  readonly availableCoupons = signal<PublicCoupon[]>([]);
+  readonly isLoadingCoupons = signal(true);
 
-  remainingAfterCoupon = computed(() => Math.max(0, this.total() - this.appliedDiscountAmount()));
+  readonly remainingAfterCoupon = computed(() => Math.max(0, this.total() - this.appliedDiscountAmount()));
 
   readonly giftPackagingFee = GIFT_PACKAGING_FEE;
 
-  orderTotal = computed(() => {
+  readonly orderTotal = computed(() => {
     if (this.mysteryBox()) {
       return this.total() + this.shippingFee();
     }
@@ -138,15 +138,15 @@ export class Checkout implements OnInit, OnDestroy {
   }
 
   // Saved addresses
-  savedAddresses = signal<Address[]>([]);
-  isLoadingAddresses = signal(false);
+  readonly savedAddresses = signal<Address[]>([]);
+  readonly isLoadingAddresses = signal(false);
   // null selection = filling in a new/one-off address by hand.
-  selectedAddressId = signal<number | null>(null);
+  readonly selectedAddressId = signal<number | null>(null);
 
   // Guest checkout: a logged-out shopper must verify their email first (the
   // gate); after that the form works as usual, card payment only.
-  isGuest = computed(() => !this.authService.isLoggedIn());
-  showGuestGate = computed(() => this.isGuest() && !this.guestSession.current());
+  readonly isGuest = computed(() => !this.authService.isLoggedIn());
+  readonly showGuestGate = computed(() => this.isGuest() && !this.guestSession.current());
 
   shippingName = this.authService.currentUser()?.name ?? this.guestSession.current()?.name ?? '';
   shippingEmail = this.authService.currentUser()?.email ?? this.guestSession.current()?.email ?? '';
@@ -176,10 +176,10 @@ export class Checkout implements OnInit, OnDestroy {
   }
 
   // Step 1 (address) folds into a summary line once confirmed, opening step 2 (payment).
-  addressConfirmed = signal(false);
+  readonly addressConfirmed = signal(false);
 
-  isSubmitting = signal(false);
-  errorMessage = signal('');
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
 
   // Idempotency key for this checkout attempt. Reused while the order being
   // submitted is unchanged (a retry after a network error returns the order
@@ -383,7 +383,7 @@ export class Checkout implements OnInit, OnDestroy {
   // Enter in an address field continues to payment rather than placing the order.
   onSubmit(form: NgForm): void {
     if (this.addressConfirmed()) {
-      this.placeOrder();
+      void this.placeOrder();
     } else {
       this.continueToPayment(form);
     }

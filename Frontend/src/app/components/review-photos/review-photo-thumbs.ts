@@ -16,9 +16,9 @@ export interface ThumbPhoto {
   styleUrl: './review-photos.css'
 })
 export class ReviewPhotoThumbs {
-  photos = input.required<ThumbPhoto[]>();
-  size = input<'sm' | 'md'>('sm');
+  readonly photos = input.required<ThumbPhoto[]>();
+  readonly size = input<'sm' | 'md'>('sm');
   // Optional heading, e.g. "Customer photos" above the review list.
-  heading = input<string>('');
-  open = output<number>();
+  readonly heading = input<string>('');
+  readonly open = output<number>();
 }

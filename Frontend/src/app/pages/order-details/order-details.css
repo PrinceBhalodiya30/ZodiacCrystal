@@ -4,6 +4,7 @@
 }
 
 .confirmation-banner {
+  display: block;
   position: relative;
   background-color: var(--color-success-bg);
   border: 1px solid var(--color-success-border);
@@ -199,7 +200,7 @@
   line-height: 1;
   color: #ffffff;
   box-sizing: border-box;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .status-step.completed .status-step-dot {
@@ -504,5 +505,15 @@
   font-style: italic;
   color: var(--color-ink);
   line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirmation-banner-close,
+  .status-step-dot,
+  .btn {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
 }
 

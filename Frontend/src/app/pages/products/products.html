@@ -89,7 +89,7 @@
 
     <!-- Active Intention Callout Banner -->
     @if (selectedIntention(); as intention) {
-      <div class="active-intention-banner" role="region" [attr.aria-label]="intention.name + ' intention overview'">
+      <section class="active-intention-banner" [attr.aria-label]="intention.name + ' intention overview'">
         <div class="active-intention-info">
           <div class="active-intention-header">
             <span class="active-intention-badge">{{ intention.badge }}</span>
@@ -101,7 +101,7 @@
             <span class="minerals-list">{{ intention.alignedCrystals }}</span>
           </div>
         </div>
-      </div>
+      </section>
     }
   </section>
 
@@ -111,7 +111,9 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
+      <label for="productSearchInput" class="visually-hidden">Search crystals by name or keyword</label>
       <input
+        id="productSearchInput"
         type="text"
         class="search-input"
         placeholder="Search crystals by name or keyword..."
@@ -135,19 +137,22 @@
         </ul>
       }
     </div>
-    <select [ngModel]="selectedCategoryId()" (ngModelChange)="onCategoryChange($event)" name="categoryFilter">
+    <label for="productCategoryFilter" class="visually-hidden">Filter by category</label>
+    <select id="productCategoryFilter" [ngModel]="selectedCategoryId()" (ngModelChange)="onCategoryChange($event)" name="categoryFilter">
       <option [ngValue]="null">All Categories</option>
       @for (category of categories(); track category.categoryId) {
         <option [ngValue]="category.categoryId">{{ category.name }}</option>
       }
     </select>
-    <select [ngModel]="selectedZodiacId()" (ngModelChange)="onZodiacChange($event)" name="zodiacFilter">
+    <label for="productZodiacFilter" class="visually-hidden">Filter by zodiac sign</label>
+    <select id="productZodiacFilter" [ngModel]="selectedZodiacId()" (ngModelChange)="onZodiacChange($event)" name="zodiacFilter">
       <option [ngValue]="null">All Zodiac Signs</option>
       @for (zodiac of zodiacs(); track zodiac.zodiacId) {
         <option [ngValue]="zodiac.zodiacId">{{ zodiac.name | vedicZodiac:'compact' }}</option>
       }
     </select>
-    <select [ngModel]="minPrice() === null && maxPrice() === null ? '' : minPrice() + '-' + (maxPrice() ?? '')" (ngModelChange)="onPriceRangeChange($event)" name="priceRangeFilter">
+    <label for="productPriceRangeFilter" class="visually-hidden">Filter by price range</label>
+    <select id="productPriceRangeFilter" [ngModel]="minPrice() === null && maxPrice() === null ? '' : minPrice() + '-' + (maxPrice() ?? '')" (ngModelChange)="onPriceRangeChange($event)" name="priceRangeFilter">
       <option value="">Any Price</option>
       <option value="0-500">Under &#8377;500</option>
       <option value="500-1000">&#8377;500 - &#8377;1000</option>
@@ -163,7 +168,8 @@
       />
       In stock only
     </label>
-    <select [ngModel]="sortBy()" (ngModelChange)="onSortChange($event)" name="sortBy" class="sort-select">
+    <label for="productSortBy" class="visually-hidden">Sort products by</label>
+    <select id="productSortBy" [ngModel]="sortBy()" (ngModelChange)="onSortChange($event)" name="sortBy" class="sort-select">
       <option value="">Sort: Featured</option>
       <option value="newest">Newest</option>
       <option value="price_asc">Price: Low to High</option>
@@ -251,16 +257,14 @@
           <span class="catalog-progress-text">
             Showing <strong class="catalog-progress-count">{{ displayedCount() }}</strong> of <strong class="catalog-progress-total">{{ totalCount() }}</strong> crystals
           </span>
-          <div
+          <progress
             class="catalog-progress-track"
-            role="progressbar"
-            [attr.aria-valuenow]="progressPercent()"
-            aria-valuemin="0"
-            aria-valuemax="100"
+            [value]="progressPercent()"
+            max="100"
             [attr.aria-label]="'Viewing ' + displayedCount() + ' of ' + totalCount() + ' crystals'"
           >
-            <div class="catalog-progress-fill" [style.width.%]="progressPercent()"></div>
-          </div>
+            {{ progressPercent() }}%
+          </progress>
         </div>
 
         @if (hasMore()) {
@@ -281,11 +285,11 @@
             }
           </button>
         } @else if (totalCount() && totalCount()! > 0) {
-          <div class="catalog-complete-note" role="status">
+          <output class="catalog-complete-note">
             <span class="complete-ornament" aria-hidden="true">✦</span>
             <span>You have explored all {{ totalCount() }} crystals in this collection</span>
             <span class="complete-ornament" aria-hidden="true">✦</span>
-          </div>
+          </output>
         }
       </div>
     }

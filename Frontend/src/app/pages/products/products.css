@@ -207,17 +207,17 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: #B54242;
-  border-color: rgba(181, 66, 66, 0.3);
-  background-color: rgba(181, 66, 66, 0.04);
+  color: #8a2424;
+  border-color: #f1b0b0;
+  background-color: #fdf2f2;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .filter-bar .btn-clear-filters:hover,
 .filter-bar .btn-outline:hover {
-  background-color: rgba(181, 66, 66, 0.1);
-  border-color: #B54242;
-  color: #8E2B2B;
+  background-color: #fae1e1;
+  border-color: #8a2424;
+  color: #631717;
 }
 
 .filter-bar .btn-clear-filters svg {
@@ -250,7 +250,7 @@
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(29, 39, 57, 0.04);
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .subcategory-chip:hover {
@@ -414,7 +414,7 @@
   text-transform: uppercase;
   color: var(--color-ink, #1D2739);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .category-pill-btn:hover {
@@ -473,7 +473,7 @@
   cursor: pointer;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  transition: all var(--transition-fast, 0.15s ease);
+  transition: color var(--transition-fast, 0.15s ease), background-color var(--transition-fast, 0.15s ease);
 }
 
 .btn-clear-intention:hover {
@@ -517,7 +517,7 @@
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: all var(--transition-fast, 0.2s ease);
+  transition: border-color var(--transition-fast, 0.2s ease), background-color var(--transition-fast, 0.2s ease), color var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease);
   box-shadow: 0 1px 3px rgba(44, 40, 37, 0.03);
 }
 
@@ -677,14 +677,34 @@
   color: var(--color-ink, #1D2739);
 }
 
+progress.catalog-progress-track,
 .catalog-progress-track {
   width: 100%;
   max-width: 280px;
   height: 5px;
   background-color: var(--color-sand, #ede5d8);
+  border: none;
   border-radius: var(--radius-pill, 9999px);
   overflow: hidden;
   position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+progress.catalog-progress-track::-webkit-progress-bar {
+  background-color: var(--color-sand, #ede5d8);
+  border-radius: var(--radius-pill, 9999px);
+}
+
+progress.catalog-progress-track::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--color-copper, #985E38) 0%, var(--color-copper-hi, #a6683c) 100%);
+  border-radius: var(--radius-pill, 9999px);
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+progress.catalog-progress-track::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--color-copper, #985E38) 0%, var(--color-copper-hi, #a6683c) 100%);
+  border-radius: var(--radius-pill, 9999px);
 }
 
 .catalog-progress-fill {
@@ -711,7 +731,7 @@
   letter-spacing: 0.02em;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(152, 94, 56, 0.08);
-  transition: all var(--transition-fast, 0.18s ease);
+  transition: background-color var(--transition-fast, 0.18s ease), border-color var(--transition-fast, 0.18s ease), color var(--transition-fast, 0.18s ease), transform var(--transition-fast, 0.18s ease), box-shadow var(--transition-fast, 0.18s ease);
 }
 
 .load-more-btn:hover:not(:disabled) {
@@ -787,7 +807,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .active-intention-banner {
+    animation: none;
+  }
   .catalog-progress-fill,
+  progress.catalog-progress-track::-webkit-progress-value,
   .load-more-btn,
   .load-more-icon {
     transition: none;

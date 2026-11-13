@@ -9,6 +9,7 @@
     name="state"
     [ngModel]="state()"
     required
+    aria-label="State"
     #stateField="ngModel"
     tabindex="-1"
     aria-hidden="true"
@@ -22,7 +23,7 @@
     [class.active]="isStateOpen()"
     [class.invalid]="stateTouched() && !state()"
     (click)="toggleStateDropdown()"
-    aria-haspopup="listbox"
+    aria-haspopup="true"
     [attr.aria-expanded]="isStateOpen()"
   >
     <span class="trigger-text">{{ state() || 'Select state' }}</span>
@@ -34,8 +35,8 @@
   </button>
 
   @if (isStateOpen()) {
-    <div class="dropdown-menu" role="listbox">
-      <div class="search-box" (click)="$event.stopPropagation()">
+    <div class="dropdown-menu">
+      <div class="search-box" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
         <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -44,6 +45,7 @@
           type="text"
           class="search-input"
           placeholder="Search state..."
+          aria-label="Search states"
           [ngModel]="stateSearch()"
           (ngModelChange)="stateSearch.set($event)"
           (keydown.enter)="$event.preventDefault()"
@@ -56,20 +58,19 @@
 
       <div class="options-list">
         @for (s of filteredStateOptions(); track s) {
-          <div
+          <button
+            type="button"
             class="dropdown-option"
             [class.selected]="s === state()"
             (click)="onStateChange(s)"
-            role="option"
-            [attr.aria-selected]="s === state()"
           >
             <span>{{ s }}</span>
             @if (s === state()) {
-              <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             }
-          </div>
+          </button>
         }
         @if (filteredStateOptions().length === 0) {
           <div class="no-options">No matching states found</div>
@@ -94,6 +95,7 @@
     name="city"
     [ngModel]="city()"
     required
+    aria-label="City"
     #cityField="ngModel"
     tabindex="-1"
     aria-hidden="true"
@@ -109,7 +111,7 @@
     [class.invalid]="cityTouched() && !city() && state()"
     [disabled]="!state()"
     (click)="toggleCityDropdown()"
-    aria-haspopup="listbox"
+    aria-haspopup="true"
     [attr.aria-expanded]="isCityOpen()"
   >
     <span class="trigger-text">
@@ -129,8 +131,8 @@
   </button>
 
   @if (isCityOpen()) {
-    <div class="dropdown-menu" role="listbox">
-      <div class="search-box" (click)="$event.stopPropagation()">
+    <div class="dropdown-menu">
+      <div class="search-box" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
         <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -139,6 +141,7 @@
           type="text"
           class="search-input"
           placeholder="Search city..."
+          aria-label="Search cities"
           [ngModel]="citySearch()"
           (ngModelChange)="citySearch.set($event)"
           (keydown.enter)="$event.preventDefault()"
@@ -151,38 +154,36 @@
 
       <div class="options-list">
         @for (c of filteredCityOptions(); track c) {
-          <div
+          <button
+            type="button"
             class="dropdown-option"
             [class.selected]="c === city() && !isOther()"
             (click)="onCityChange(c)"
-            role="option"
-            [attr.aria-selected]="c === city() && !isOther()"
           >
             <span>{{ c }}</span>
             @if (c === city() && !isOther()) {
-              <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             }
-          </div>
+          </button>
         }
         @if (filteredCityOptions().length === 0) {
           <div class="no-options">No matching cities found</div>
         }
-        <div
+        <button
+          type="button"
           class="dropdown-option other-option"
           [class.selected]="isOther()"
           (click)="onCityChange(otherValue)"
-          role="option"
-          [attr.aria-selected]="isOther()"
         >
           <span>Other (Enter manually)</span>
           @if (isOther()) {
-            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           }
-        </div>
+        </button>
       </div>
     </div>
   }

@@ -195,3 +195,12 @@
     font-size: 1.9rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link,
+  .page-back-link:hover {
+    transition: none;
+    transform: none;
+  }
+}
+

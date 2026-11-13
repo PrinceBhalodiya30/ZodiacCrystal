@@ -2,7 +2,7 @@
   <div class="photo-thumbs">
     @for (photo of photos(); track photo.previewUrl; let i = $index) {
       <div class="photo-thumb">
-        <img [src]="photo.previewUrl" [alt]="'Selected photo ' + (i + 1)" />
+        <img [src]="photo.previewUrl" [alt]="'Selected upload ' + (i + 1)" />
         <button
           type="button"
           class="photo-thumb-remove"

@@ -359,3 +359,14 @@
   align-items: center;
   margin-top: 1.25rem;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-tile,
+  .stat-tile:hover,
+  .progress-dot,
+  .recent-row {
+    transition: none;
+    transform: none;
+  }
+}
+

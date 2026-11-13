@@ -2,10 +2,10 @@
   <h3 class="photo-thumbs-heading">{{ heading() }}</h3>
 }
 <div class="photo-thumbs" [class.size-md]="size() === 'md'">
-  @for (photo of photos(); track photo.imageUrl; let i = $index) {
-    <button type="button" class="photo-thumb photo-thumb-button" [attr.aria-label]="'View photo ' + (i + 1)" (click)="open.emit(i)">
-      <img [src]="photo.imageUrl" [alt]="photo.alt || 'Customer photo ' + (i + 1)" loading="lazy" />
-      @if (photo.pending) {
+  @for (item of photos(); track item.imageUrl; let i = $index) {
+    <button type="button" class="photo-thumb photo-thumb-button" [attr.aria-label]="'View item ' + (i + 1)" (click)="open.emit(i)">
+      <img [src]="item.imageUrl" [alt]="item.alt || 'Customer upload ' + (i + 1)" loading="lazy" />
+      @if (item.pending) {
         <span class="photo-thumb-badge">Awaiting approval</span>
       }
     </button>

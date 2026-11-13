@@ -3,7 +3,7 @@
   <p class="page-subtitle">Explore our crystal collections, curated by category.</p>
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading categories...</span>
+    <output class="visually-hidden">Loading categories...</output>
     <div class="category-grid" aria-hidden="true">
       @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
         <div class="category-card category-card-skeleton">

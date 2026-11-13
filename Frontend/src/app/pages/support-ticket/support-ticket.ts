@@ -25,22 +25,22 @@ export class SupportTicketPage implements OnInit {
   readonly siteName = SITE_NAME;
   private readonly supportService = inject(SupportService);
   private readonly toast = inject(ToastService);
-  private ticketId = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
+  private readonly ticketId = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
 
   readonly maxPhotos = SUPPORT_MAX_PHOTOS;
   readonly replyWithinHours = SUPPORT_REPLY_WITHIN_HOURS;
 
-  ticket = signal<SupportTicket | null>(null);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly ticket = signal<SupportTicket | null>(null);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
   reply = '';
-  files = signal<File[]>([]);
-  isSending = signal(false);
+  readonly files = signal<File[]>([]);
+  readonly isSending = signal(false);
 
-  rating = signal(0);
+  readonly rating = signal(0);
   ratingComment = '';
-  isRating = signal(false);
+  readonly isRating = signal(false);
 
   constructor() {
     inject(NotificationService).ticketUpdated

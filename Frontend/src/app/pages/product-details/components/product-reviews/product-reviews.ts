@@ -30,13 +30,13 @@ export class ProductReviews {
   @Input() isSubmittingReview = false;
   @Input() canDeleteReviewFn: (review: Review) => boolean = () => false;
 
-  @Output() retry = new EventEmitter<number>();
-  @Output() ratingChange = new EventEmitter<number>();
-  @Output() commentChange = new EventEmitter<string>();
-  @Output() photosChange = new EventEmitter<PickedPhoto[]>();
-  @Output() submitReview = new EventEmitter<void>();
-  @Output() deleteReview = new EventEmitter<Review>();
-  @Output() openPhoto = new EventEmitter<{ photos: ThumbPhoto[]; index: number; caption: string }>();
+  @Output() readonly retry = new EventEmitter<number>();
+  @Output() readonly ratingChange = new EventEmitter<number>();
+  @Output() readonly commentChange = new EventEmitter<string>();
+  @Output() readonly photosChange = new EventEmitter<PickedPhoto[]>();
+  @Output() readonly submitReview = new EventEmitter<void>();
+  @Output() readonly deleteReview = new EventEmitter<Review>();
+  @Output() readonly openPhoto = new EventEmitter<{ photos: ThumbPhoto[]; index: number; caption: string }>();
 
   getStars(rating: number): string {
     return getStarsUtil(rating);

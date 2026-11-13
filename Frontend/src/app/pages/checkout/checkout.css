@@ -791,12 +791,13 @@
   gap: 0.5rem;
 }
 
+.checkout-form .delivery-instructions-box label.delivery-instructions-label,
 .delivery-instructions-label {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 !important;
-  font-size: 0.88rem !important;
+  margin: 0;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--color-ink);
 }
@@ -813,24 +814,28 @@
   border: 1px solid var(--color-border-subtle);
 }
 
+.checkout-form .delivery-instructions-box input.delivery-instructions-input:not([type='radio']):not([type='checkbox']),
 .delivery-instructions-input {
   width: 100%;
-  padding: 0.65rem 0.85rem !important;
-  border: 1px solid var(--color-border) !important;
-  border-radius: var(--radius-sm) !important;
-  font-size: 0.9rem !important;
-  background: #ffffff !important;
-  color: var(--color-ink) !important;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  background: #ffffff;
+  color: var(--color-ink);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+.checkout-form .delivery-instructions-box input.delivery-instructions-input:not([type='radio']):not([type='checkbox']):focus,
 .delivery-instructions-input:focus {
   outline: none;
-  border-color: var(--color-brand) !important;
-  box-shadow: 0 0 0 3px rgba(34, 76, 56, 0.12) !important;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(34, 76, 56, 0.12);
 }
 
 .instruction-chips {
+  border: none;
+  padding: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
@@ -867,4 +872,22 @@
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(29, 39, 57, 0.2);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link,
+  .page-back-link:hover,
+  .saved-address-option,
+  .checkout-form input,
+  .gift-details-expanded,
+  .gift-field input,
+  .gift-field textarea,
+  .delivery-instructions-input,
+  .instruction-chip,
+  .btn {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+
 

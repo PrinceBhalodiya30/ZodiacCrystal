@@ -340,3 +340,15 @@
   justify-content: space-between;
   align-items: center;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .star-btn,
+  .star-btn:hover,
+  .star-btn:active,
+  .review-comment-input,
+  .btn {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}

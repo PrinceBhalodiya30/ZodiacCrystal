@@ -76,7 +76,7 @@
   border: 1px solid var(--color-border, #E4DCCB);
   border-radius: var(--radius-sm, 4px);
   overflow: hidden;
-  transition: all var(--transition-fast, 0.2s ease);
+  transition: border-color var(--transition-fast, 0.2s ease), transform var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease), opacity var(--transition-fast, 0.2s ease), filter var(--transition-fast, 0.2s ease);
 }
 
 .bundle-item-card:hover {
@@ -303,7 +303,7 @@
   border: 1px solid var(--color-primary-cta, #1D2739);
   border-radius: var(--radius-sm, 4px);
   cursor: pointer;
-  transition: all var(--transition-fast, 0.2s ease);
+  transition: background-color var(--transition-fast, 0.2s ease), border-color var(--transition-fast, 0.2s ease), transform var(--transition-fast, 0.2s ease), box-shadow var(--transition-fast, 0.2s ease);
   box-shadow: 0 4px 14px rgba(29, 39, 57, 0.25);
 }
 
@@ -384,5 +384,17 @@
 
   .btn-bundle-submit {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bundle-card,
+  .bundle-item-card,
+  .bundle-img,
+  .btn-bundle-submit,
+  .bundle-inline-feedback {
+    animation: none;
+    transition: none;
+    transform: none;
   }
 }

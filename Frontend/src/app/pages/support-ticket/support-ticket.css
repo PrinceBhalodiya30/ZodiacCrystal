@@ -312,3 +312,11 @@
 .ticket-status.awaitingcustomer { background-color: var(--color-amber-bg, #fff3e0); color: var(--color-amber, #b25e00); }
 .ticket-status.resolved { background-color: var(--color-success-bg); color: var(--color-success); }
 .ticket-status.closed { background-color: var(--color-surface-sunken); color: var(--color-subtle); }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link,
+  .st-stars-input button {
+    transition: none;
+    transform: none;
+  }
+}

@@ -615,6 +615,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-bg-image,
   .hero-intention-chip,
   .hero-shoppable-card,
   .btn-card-quick-add,

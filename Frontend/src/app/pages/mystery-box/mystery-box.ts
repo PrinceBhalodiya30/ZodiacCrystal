@@ -2,7 +2,6 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MysteryBoxService } from '../../services/mystery-box.service';
 import { ZodiacService } from '../../services/zodiac.service';
-import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { Spinner } from '../../components/spinner/spinner';
 import { MysteryBoxInfo } from '../../models/mystery-box';
@@ -22,17 +21,16 @@ import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
 export class MysteryBox implements OnInit {
   private readonly mysteryBoxService = inject(MysteryBoxService);
   private readonly zodiacService = inject(ZodiacService);
-  private readonly authService = inject(AuthService);
   private readonly cartService = inject(CartService);
   private readonly router = inject(Router);
 
-  zodiacSigns = signal<Zodiac[]>([]);
-  selectedZodiacId = signal<number | null>(null);
-  selectedZodiac = computed(() => this.zodiacSigns().find(z => z.zodiacId === this.selectedZodiacId()) ?? null);
+  readonly zodiacSigns = signal<Zodiac[]>([]);
+  readonly selectedZodiacId = signal<number | null>(null);
+  readonly selectedZodiac = computed(() => this.zodiacSigns().find(z => z.zodiacId === this.selectedZodiacId()) ?? null);
 
-  info = signal<MysteryBoxInfo | null>(null);
-  isLoadingInfo = signal(true);
-  infoError = signal('');
+  readonly info = signal<MysteryBoxInfo | null>(null);
+  readonly isLoadingInfo = signal(true);
+  readonly infoError = signal('');
 
   ngOnInit(): void {
     this.loadInfo();

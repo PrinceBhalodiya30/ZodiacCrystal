@@ -12,12 +12,12 @@ export class ProductCleansingRitual {
   @Input({ required: true }) productName!: string;
   @Input() copiedAffirmation = false;
 
-  @Output() copyAffirmation = new EventEmitter<string>();
-  @Output() openCleansingGuide = new EventEmitter<string>();
+  @Output() readonly copyAffirmation = new EventEmitter<string>();
+  @Output() readonly openCleansingGuide = new EventEmitter<string>();
 
-  isHealingOpen = signal(true);
-  isCareOpen = signal(false);
-  isRitualOpen = signal(false);
+  readonly isHealingOpen = signal(true);
+  readonly isCareOpen = signal(false);
+  readonly isRitualOpen = signal(false);
 
   toggleHealingAccordion(): void {
     this.isHealingOpen.update(v => !v);

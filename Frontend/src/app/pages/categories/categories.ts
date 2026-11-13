@@ -22,9 +22,9 @@ interface CategoryTile {
 export class Categories implements OnInit {
   private readonly categoryService = inject(CategoryService);
 
-  categoryTiles = signal<CategoryTile[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly categoryTiles = signal<CategoryTile[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
   ngOnInit(): void {
     this.loadCategories();

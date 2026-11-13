@@ -35,20 +35,20 @@ export class Orders implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
-  cartService = inject(CartService);
+  private readonly cartService = inject(CartService);
   private readonly productService = inject(ProductService);
 
-  orders = signal<OrderSummary[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
-  actionError = signal('');
-  cancellingOrderId = signal<number | null>(null);
+  readonly orders = signal<OrderSummary[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly actionError = signal('');
+  readonly cancellingOrderId = signal<number | null>(null);
 
-  reorderingProductId = signal<number | null>(null);
-  selectedCareItem = signal<{ name: string; specs: CrystalSpecs } | null>(null);
+  readonly reorderingProductId = signal<number | null>(null);
+  readonly selectedCareItem = signal<{ name: string; specs: CrystalSpecs } | null>(null);
 
   // Distinct list of crystals previously ordered by the customer (excluding cancelled orders)
-  purchasedCrystals = computed<PurchasedCrystalSummary[]>(() => {
+  readonly purchasedCrystals = computed<PurchasedCrystalSummary[]>(() => {
     const list = this.orders();
     const map = new Map<number, PurchasedCrystalSummary>();
 
@@ -110,7 +110,7 @@ export class Orders implements OnInit {
 
   // Like the big stores: first few products listed, the rest behind "+N more".
   readonly maxItems = 3;
-  private expandedOrders = signal<ReadonlySet<number>>(new Set());
+  private readonly expandedOrders = signal<ReadonlySet<number>>(new Set());
 
   isExpanded(orderId: number): boolean {
     return this.expandedOrders().has(orderId);
@@ -190,12 +190,19 @@ export class Orders implements OnInit {
       next: () => {
         this.cancellingOrderId.set(null);
         const wasPaid = order.paymentStatus === 'Paid';
+        let nextPaymentStatus = order.paymentStatus;
+        if (wasPaid) {
+          nextPaymentStatus = 'Refunded';
+        } else if (order.paymentStatus === 'Pending') {
+          nextPaymentStatus = 'Cancelled';
+        }
+
         this.orders.update(items =>
           items.map(o => (o.orderId === order.orderId
             ? {
                 ...o,
                 status: 'Cancelled',
-                paymentStatus: wasPaid ? 'Refunded' : o.paymentStatus === 'Pending' ? 'Cancelled' : o.paymentStatus
+                paymentStatus: nextPaymentStatus
               }
             : o))
         );
@@ -277,6 +284,12 @@ export class Orders implements OnInit {
 
   closeCareGuide(): void {
     this.selectedCareItem.set(null);
+  }
+
+  onBackdropClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.closeCareGuide();
+    }
   }
 
   @HostListener('document:keydown.escape')

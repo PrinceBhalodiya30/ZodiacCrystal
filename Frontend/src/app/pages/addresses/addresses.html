@@ -2,7 +2,7 @@
   <h1>My Addresses</h1>
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading addresses...</span>
+    <output class="visually-hidden">Loading addresses...</output>
     <div class="address-grid" aria-hidden="true">
       @for (i of [1, 2]; track i) {
         <div class="address-card address-card-skeleton">

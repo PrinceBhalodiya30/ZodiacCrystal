@@ -12,7 +12,6 @@ import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardSkeleton } from '../../components/product-card-skeleton/product-card-skeleton';
 import { RecentlyViewed } from '../../components/recently-viewed/recently-viewed';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
-import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { HERO_IMAGE_URL } from '../../utils/hero-image.util';
 import { ScrollRevealDirective } from '../../directives/scroll-reveal.directive';
 import { GUIDES } from '../../data/guides.data';
@@ -57,7 +56,7 @@ export class Home implements OnInit, OnDestroy {
   readonly heroEyebrow = computed(() => this.storeSettings.heroEyebrow());
   readonly heroTitle = computed(() => this.storeSettings.heroTitle());
   readonly heroSubtitle = computed(() => this.storeSettings.heroSubtitle());
-  quizService = inject(QuizService);
+  readonly quizService = inject(QuizService);
   private readonly cleansingGuideService = inject(CleansingGuideService);
 
   // Featured Products Horizontal Slider (E-Commerce Luxury Pattern)
@@ -85,8 +84,8 @@ export class Home implements OnInit, OnDestroy {
 
   // Hero Carousel State (Preserved for compatibility and sub-curations)
   readonly totalSlides = 4;
-  activeSlide = signal(0);
-  isPaused = signal(false);
+  readonly activeSlide = signal(0);
+  readonly isPaused = signal(false);
   private timerId: ReturnType<typeof setInterval> | null = null;
   private touchStartX = 0;
   private touchEndX = 0;
@@ -144,14 +143,14 @@ export class Home implements OnInit, OnDestroy {
   }
 
   onTouchStart(e: TouchEvent): void {
-    if (e.changedTouches && e.changedTouches[0]) {
+    if (e.changedTouches?.[0]) {
       this.touchStartX = e.changedTouches[0].clientX;
       this.pauseCarousel();
     }
   }
 
   onTouchEnd(e: TouchEvent): void {
-    if (e.changedTouches && e.changedTouches[0]) {
+    if (e.changedTouches?.[0]) {
       this.touchEndX = e.changedTouches[0].clientX;
       this.handleSwipe();
       this.resumeCarousel();
@@ -169,14 +168,14 @@ export class Home implements OnInit, OnDestroy {
     }
   }
 
-  guides = signal<Guide[]>(GUIDES.slice(0, 3));
-  zodiacSigns = signal<Zodiac[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly guides = signal<Guide[]>(GUIDES.slice(0, 3));
+  readonly zodiacSigns = signal<Zodiac[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
   // Interactive Mystery Box Zodiac Sign Picker State
-  selectedMysteryZodiacId = signal<number | null>(null);
-  selectedMysteryZodiac = computed(() =>
+  readonly selectedMysteryZodiacId = signal<number | null>(null);
+  readonly selectedMysteryZodiac = computed(() =>
     this.zodiacSigns().find(z => z.zodiacId === this.selectedMysteryZodiacId()) ?? null
   );
 
@@ -184,19 +183,19 @@ export class Home implements OnInit, OnDestroy {
     this.selectedMysteryZodiacId.update(curr => (curr === zodiacId ? null : zodiacId));
   }
 
-  featuredProducts = signal<Product[]>([]);
-  productsLoading = signal(true);
-  productsError = signal('');
+  readonly featuredProducts = signal<Product[]>([]);
+  readonly productsLoading = signal(true);
+  readonly productsError = signal('');
 
-  categories = signal<Category[]>([]);
-  private tileStats = signal<CategoryTileStats[]>([]);
-  categoriesLoading = signal(true);
-  categoriesError = signal('');
+  readonly categories = signal<Category[]>([]);
+  private readonly tileStats = signal<CategoryTileStats[]>([]);
+  readonly categoriesLoading = signal(true);
+  readonly categoriesError = signal('');
 
   // The categories with the most products, so the tiles show the main ones;
   // the rest are a click away via "View all categories". Counts are products
   // directly in the category (active only), worked out on the server.
-  categoryTiles = computed<CategoryTile[]>(() => {
+  readonly categoryTiles = computed<CategoryTile[]>(() => {
     const statsById = new Map(this.tileStats().map(s => [s.categoryId, s]));
     return this.categories()
       .map(category => {
@@ -211,7 +210,7 @@ export class Home implements OnInit, OnDestroy {
       .sort((a, b) => b.productCount - a.productCount)
       .slice(0, CATEGORY_TILE_LIMIT);
   });
-  heroImageUrl = signal<string | null>(HERO_IMAGE_URL);
+  readonly heroImageUrl = signal<string | null>(HERO_IMAGE_URL);
 
   ngOnInit(): void {
     this.loadZodiacSigns();

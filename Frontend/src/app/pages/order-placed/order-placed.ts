@@ -14,10 +14,12 @@ import { InrPipe } from '../../pipes/inr.pipe';
   styleUrl: './order-placed.css'
 })
 export class OrderPlaced {
-  private readonly state = inject(Router).getCurrentNavigation()?.extras.state
+  private readonly router = inject(Router);
+  private readonly state = this.router.currentNavigation()?.extras.state
+    ?? this.router.lastSuccessfulNavigation()?.extras.state
     ?? (typeof history !== 'undefined' ? history.state : null);
 
-  order: Order | null = this.state?.order ?? null;
-  email: string = this.state?.email ?? '';
+  readonly order: Order | null = this.state?.['order'] ?? null;
+  readonly email: string = this.state?.['email'] ?? '';
 }
 

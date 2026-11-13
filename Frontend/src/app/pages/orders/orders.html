@@ -8,7 +8,7 @@
   </div>
 
   @if (isLoading()) {
-  <span class="visually-hidden" role="status">Loading orders...</span>
+  <output class="visually-hidden">Loading orders...</output>
   <div class="order-list" aria-hidden="true">
     @for (n of [1, 2, 3]; track n) {
     <div class="order-card order-card-skeleton">
@@ -55,9 +55,9 @@
       </div>
     </div>
 
-    <div class="reorder-crystal-carousel" role="list">
+    <ul class="reorder-crystal-carousel">
       @for (crystal of purchasedCrystals(); track crystal.productId) {
-      <div class="reorder-crystal-card" role="listitem">
+      <li class="reorder-crystal-card">
         <a class="reorder-crystal-thumb" [routerLink]="['/products', itemSlug(crystal)]">
           <img [imgSrc]="crystal.imageUrl ?? null" imgSizes="64px" [alt]="crystal.productName" width="64" height="64"
             loading="lazy" decoding="async" imgFallback />
@@ -87,9 +87,9 @@
             <span>Care Guide</span>
           </button>
         </div>
-      </div>
+      </li>
       }
-    </div>
+    </ul>
   </section>
   }
 
@@ -167,9 +167,9 @@
 
   <!-- Care & Cleansing Modal -->
   @if (selectedCareItem(); as care) {
-  <div class="care-modal-backdrop" (click)="closeCareGuide()" role="dialog" aria-modal="true"
-    aria-labelledby="care-modal-title">
-    <div class="care-modal-card" (click)="$event.stopPropagation()">
+  <dialog class="care-modal-backdrop" open aria-labelledby="care-modal-title" (click)="onBackdropClick($event)"
+    (keydown.escape)="closeCareGuide()">
+    <div class="care-modal-card">
       <div class="care-modal-header">
         <div>
           <span class="care-modal-badge">Mineral Care &amp; Energetics</span>
@@ -229,6 +229,6 @@
         <button type="button" class="btn btn-outline" (click)="closeCareGuide()">Close Guide</button>
       </div>
     </div>
-  </div>
+  </dialog>
   }
 </section>

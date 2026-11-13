@@ -52,25 +52,25 @@ export class OrderDetails implements OnInit {
   readonly isGuestView = !inject(AuthService).isLoggedIn();
   readonly orderBase = this.isGuestView ? '/order' : '/orders';
 
-  order = signal<Order | null>(null);
-  isLoading = signal(true);
-  errorMessage = signal('');
-  actionError = signal('');
-  isCancelling = signal(false);
-  isDownloadingInvoice = signal(false);
-  isBuyingAgain = signal(false);
+  readonly order = signal<Order | null>(null);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly actionError = signal('');
+  readonly isCancelling = signal(false);
+  readonly isDownloadingInvoice = signal(false);
+  readonly isBuyingAgain = signal(false);
 
   // Only true immediately after Checkout navigates here with { state: { justPlaced: true } }
   // - not on a normal visit or a page refresh, since history.state won't carry it then.
-  justPlaced = !!history.state?.['justPlaced'];
+  readonly justPlaced = !!history.state?.['justPlaced'];
 
-  isCancelled = computed(() => this.order()?.status === 'Cancelled');
+  readonly isCancelled = computed(() => this.order()?.status === 'Cancelled');
 
   // The "Order placed" banner hides after 8s (or via its close button)
   // and never shows on a cancelled order.
-  private bannerVisible = signal(this.justPlaced);
-  showConfirmation = computed(() => this.bannerVisible() && !this.isCancelled());
-  private bannerTimer = this.justPlaced ? setTimeout(() => this.dismissConfirmation(), 8000) : undefined;
+  private readonly bannerVisible = signal(this.justPlaced);
+  readonly showConfirmation = computed(() => this.bannerVisible() && !this.isCancelled());
+  private readonly bannerTimer = this.justPlaced ? setTimeout(() => this.dismissConfirmation(), 8000) : undefined;
 
   dismissConfirmation(): void {
     clearTimeout(this.bannerTimer);
@@ -79,18 +79,26 @@ export class OrderDetails implements OnInit {
 
   // A mystery box order is a normal Order with this sentinel CouponCode
   // (see MysteryBoxController) rather than a real, redeemable coupon.
-  isMysteryBox = computed(() => this.order()?.couponCode === 'MYSTERY-BOX');
+  readonly isMysteryBox = computed(() => this.order()?.couponCode === 'MYSTERY-BOX');
 
-  couponDiscountAmount = computed(() => this.order()?.discountAmount ?? 0);
+  readonly couponDiscountAmount = computed(() => this.order()?.discountAmount ?? 0);
 
-  statusSteps = computed<StatusStep[]>(() => {
+  readonly statusSteps = computed<StatusStep[]>(() => {
     const status = this.order()?.status;
     const currentIndex = STATUS_STEPS.indexOf(status ?? '');
 
-    return STATUS_STEPS.map((status, index) => ({
-      label: STATUS_LABELS[status],
-      state: index < currentIndex ? 'completed' : index === currentIndex ? 'current' : 'upcoming'
-    }));
+    return STATUS_STEPS.map((stepStatus, index) => {
+      let state: 'completed' | 'current' | 'upcoming' = 'upcoming';
+      if (index < currentIndex) {
+        state = 'completed';
+      } else if (index === currentIndex) {
+        state = 'current';
+      }
+      return {
+        label: STATUS_LABELS[stepStatus],
+        state
+      };
+    });
   });
 
   constructor() {
@@ -145,7 +153,7 @@ export class OrderDetails implements OnInit {
       },
       error: (err: unknown) => {
         this.isDownloadingInvoice.set(false);
-        blobErrorMessage(err, 'Unable to download the invoice. Please try again.').then(message => this.toast.error(message));
+        void blobErrorMessage(err, 'Unable to download the invoice. Please try again.').then(message => this.toast.error(message));
       }
     });
   }
@@ -234,13 +242,20 @@ export class OrderDetails implements OnInit {
       next: () => {
         this.isCancelling.set(false);
         const wasPaid = order.paymentStatus === 'Paid';
+        let nextPaymentStatus = order.paymentStatus;
+        if (wasPaid) {
+          nextPaymentStatus = 'Refunded';
+        } else if (order.paymentStatus === 'Pending') {
+          nextPaymentStatus = 'Cancelled';
+        }
+
         this.order.set({
           ...order,
           status: 'Cancelled',
           cancellationReason: reason,
           estimatedDeliveryFrom: null,
           estimatedDeliveryTo: null,
-          paymentStatus: wasPaid ? 'Refunded' : order.paymentStatus === 'Pending' ? 'Cancelled' : order.paymentStatus
+          paymentStatus: nextPaymentStatus
         });
         this.toast.success(
           wasPaid

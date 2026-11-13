@@ -48,22 +48,22 @@ export class Consultation implements OnInit {
   private readonly quizService = inject(QuizService);
   private readonly router = inject(Router);
 
-  breadcrumbs: Crumb[] = [
+  readonly breadcrumbs: Crumb[] = [
     { label: 'Home', link: '/' },
     { label: 'Crystal Consultation' }
   ];
 
-  currentStep = signal<number>(1);
-  isLoading = signal<boolean>(false);
-  products = signal<Product[]>([]);
+  readonly currentStep = signal<number>(1);
+  readonly isLoading = signal<boolean>(false);
+  readonly products = signal<Product[]>([]);
 
-  selectedIntention = signal<QuizIntention | null>(null);
-  selectedZodiac = signal<string | null>(null);
-  selectedForm = signal<QuizForm | null>(null);
+  readonly selectedIntention = signal<QuizIntention | null>(null);
+  readonly selectedZodiac = signal<string | null>(null);
+  readonly selectedForm = signal<QuizForm | null>(null);
 
-  matchedCrystals = signal<CrystalMatch[]>([]);
-  addedProductId = signal<number | null>(null);
-  activeConsultationId = signal<string | null>(null);
+  readonly matchedCrystals = signal<CrystalMatch[]>([]);
+  readonly addedProductId = signal<number | null>(null);
+  readonly activeConsultationId = signal<string | null>(null);
 
   readonly intentions: QuizIntention[] = [
     {

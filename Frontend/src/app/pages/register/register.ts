@@ -24,15 +24,15 @@ export class Register {
   password = '';
   confirmPassword = '';
   otp = '';
-  showPassword = signal(false);
-  showConfirmPassword = signal(false);
-  isSubmitting = signal(false);
-  errorMessage = signal('');
+  readonly showPassword = signal(false);
+  readonly showConfirmPassword = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly errorMessage = signal('');
 
   // 'details' = name/email/password form; 'otp' = enter the emailed code.
-  step = signal<'details' | 'otp'>('details');
-  infoMessage = signal('');
-  resendIn = signal(0);
+  readonly step = signal<'details' | 'otp'>('details');
+  readonly infoMessage = signal('');
+  readonly resendIn = signal(0);
   private resendTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor() {

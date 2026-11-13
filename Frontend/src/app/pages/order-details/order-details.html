@@ -4,7 +4,7 @@
   }
 
   @if (isLoading()) {
-    <span class="visually-hidden" role="status">Loading order...</span>
+    <output class="visually-hidden">Loading order...</output>
     <div class="order-card order-details-skeleton" aria-hidden="true">
       <div class="skeleton-header-row">
         <span class="skeleton skeleton-line skeleton-w-md skeleton-h-md"></span>
@@ -33,13 +33,13 @@
     </div>
   } @else if (order(); as o) {
     @if (showConfirmation()) {
-      <div class="confirmation-banner" role="status">
+      <output class="confirmation-banner">
         <button type="button" class="confirmation-banner-close" aria-label="Close message" (click)="dismissConfirmation()">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
         <h2>Order placed successfully!</h2>
         <p>Thank you - your crystals are on their way.</p>
-      </div>
+      </output>
     }
 
     <div class="order-card">
@@ -101,10 +101,10 @@
       }
 
       @if (isCancelled()) {
-        <div class="status-cancelled-note" role="status">
+        <output class="status-cancelled-note">
           <span class="status-cancelled-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
           <span class="status-cancelled-text">Order Cancelled</span>
-        </div>
+        </output>
         @if (o.cancellationReason) {
           <p class="cancel-reason">Reason: {{ o.cancellationReason }}</p>
         }

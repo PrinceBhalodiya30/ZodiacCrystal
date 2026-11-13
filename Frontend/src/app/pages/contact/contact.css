@@ -224,3 +224,12 @@
     padding: 1.25rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link,
+  .page-back-link:hover {
+    transition: none;
+    transform: none;
+  }
+}
+

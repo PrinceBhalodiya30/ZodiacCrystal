@@ -26,10 +26,10 @@ export class ZodiacProducts implements OnInit {
   private readonly pageTitle = inject(PageTitleService);
   private readonly seo = inject(SeoService);
 
-  zodiac = signal<Zodiac | null>(null);
-  products = signal<Product[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly zodiac = signal<Zodiac | null>(null);
+  readonly products = signal<Product[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
   ngOnInit(): void {
     this.loadZodiac();

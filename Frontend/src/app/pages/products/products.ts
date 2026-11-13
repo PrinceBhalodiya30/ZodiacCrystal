@@ -12,13 +12,13 @@ import { Category } from '../../models/category';
 import { Zodiac } from '../../models/zodiac';
 import { ProductCard } from '../../components/product-card/product-card';
 import { ProductCardSkeleton } from '../../components/product-card-skeleton/product-card-skeleton';
-import { SACRED_INTENTIONS, SacredIntention, getIntentionById, productMatchesIntention } from '../../utils/crystal-intentions.util';
+import { SACRED_INTENTIONS, getIntentionById } from '../../utils/crystal-intentions.util';
+import { InrPipe } from '../../pipes/inr.pipe';
+import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = Array.from({ length: PAGE_SIZE });
 
-import { InrPipe } from '../../pipes/inr.pipe';
-import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
 @Component({
   selector: 'app-products',
   standalone: true,
@@ -33,23 +33,22 @@ export class Products implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  products = signal<Product[]>([]);
-  categories = signal<Category[]>([]);
-  zodiacs = signal<Zodiac[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal('');
+  readonly products = signal<Product[]>([]);
+  readonly categories = signal<Category[]>([]);
+  readonly zodiacs = signal<Zodiac[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  searchTerm = signal('');
-  selectedCategoryId = signal<number | null>(null);
-  selectedIntentionId = signal<string | null>(null);
-  selectedIntention = computed(() => getIntentionById(this.selectedIntentionId()));
+  readonly searchTerm = signal('');
+  readonly selectedCategoryId = signal<number | null>(null);
+  readonly selectedIntentionId = signal<string | null>(null);
+  readonly selectedIntention = computed(() => getIntentionById(this.selectedIntentionId()));
   readonly sacredIntentions = SACRED_INTENTIONS;
-  private allProductsCache: Product[] | null = null;
 
   // Sub-category chips under the filters, e.g. Crystals → All · Raw · Tumbled …
   // Shown when the chosen category has sub-categories, or is one (so you can
   // hop to a sibling or back to the whole parent).
-  subcategoryChips = computed(() => {
+  readonly subcategoryChips = computed(() => {
     const all = this.categories();
     const selected = all.find(c => c.categoryId === this.selectedCategoryId());
     if (!selected) {
@@ -66,26 +65,26 @@ export class Products implements OnInit {
 
     return { parent, children: childrenOf(parent.categoryId) };
   });
-  minPrice = signal<number | null>(null);
-  maxPrice = signal<number | null>(null);
-  selectedZodiacId = signal<number | null>(null);
-  inStockOnly = signal(false);
-  sortBy = signal('');
+  readonly minPrice = signal<number | null>(null);
+  readonly maxPrice = signal<number | null>(null);
+  readonly selectedZodiacId = signal<number | null>(null);
+  readonly inStockOnly = signal(false);
+  readonly sortBy = signal('');
 
-  page = signal(1);
-  totalPages = signal(1);
-  totalCount = signal<number | undefined>(undefined);
-  isLoadingMore = signal(false);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
+  readonly totalCount = signal<number | undefined>(undefined);
+  readonly isLoadingMore = signal(false);
 
-  displayedCount = computed(() => this.products().length);
+  readonly displayedCount = computed(() => this.products().length);
 
-  progressPercent = computed(() => {
+  readonly progressPercent = computed(() => {
     const total = this.totalCount() || 0;
     if (!total) return 0;
     return Math.min(100, Math.round((this.displayedCount() / total) * 100));
   });
 
-  hasMore = computed(() => {
+  readonly hasMore = computed(() => {
     const total = this.totalCount() || 0;
     return total > 0 && this.displayedCount() < total;
   });
@@ -94,9 +93,9 @@ export class Products implements OnInit {
 
   // Autosuggest dropdown - independent of the main filtered grid, so typing
   // doesn't have to wait for the (unrelated) product-grid request to resolve.
-  suggestions = signal<Product[]>([]);
-  showSuggestions = signal(false);
-  private suggestionInput = new Subject<string>();
+  readonly suggestions = signal<Product[]>([]);
+  readonly showSuggestions = signal(false);
+  private readonly suggestionInput = new Subject<string>();
 
   ngOnInit(): void {
     this.suggestionInput

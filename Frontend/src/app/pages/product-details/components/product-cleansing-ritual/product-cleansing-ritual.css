@@ -315,16 +315,28 @@
   padding: 0.4rem 0.65rem;
   border-radius: var(--radius-sm, 4px);
   cursor: pointer;
-  transition: all var(--transition-fast, 0.15s ease);
+  transition: color var(--transition-fast, 0.15s ease), background-color var(--transition-fast, 0.15s ease);
 }
 
 .btn-specs-care-guide:hover {
-  color: #B87A4B;
-  background-color: rgba(152, 94, 56, 0.08);
+  color: #6e3b1c;
+  background-color: #f4ede6;
   text-decoration: underline;
 }
 
 .btn-specs-care-guide svg {
   flex-shrink: 0;
   color: var(--color-copper, #985E38);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .specs-chevron,
+  .specs-accordion-body,
+  .btn-copy-affirmation,
+  .btn-copy-affirmation.copied,
+  .btn-specs-care-guide {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
 }

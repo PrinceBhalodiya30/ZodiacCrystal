@@ -22,8 +22,8 @@ export class ProductBundle {
   @Input({ required: true }) bundleItems: BundleItem[] = [];
   @Input() bundleJustAdded = false;
 
-  @Output() itemToggled = new EventEmitter<number>();
-  @Output() bundleAdded = new EventEmitter<void>();
+  @Output() readonly itemToggled = new EventEmitter<number>();
+  @Output() readonly bundleAdded = new EventEmitter<void>();
 
   get bundleSelectedItems(): BundleItem[] {
     return (this.bundleItems || []).filter(i => i.selected);

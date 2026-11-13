@@ -7,9 +7,10 @@ import { AuthService } from '../services/auth.service';
 // email). Admins have no cart, same as customerGuard.
 export const shopperGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
+  const router = inject(Router);
 
   if (authService.isAdmin()) {
-    inject(Router).navigate(['/admin']);
+    void router.navigate(['/admin']);
     return false;
   }
 

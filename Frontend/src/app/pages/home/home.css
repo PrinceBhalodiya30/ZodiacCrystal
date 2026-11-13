@@ -54,7 +54,7 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(29, 39, 57, 0.06);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
 }
 
@@ -423,8 +423,8 @@ section h2 {
 .mystery-discount-badge {
   font-size: 11.5px;
   font-weight: 600;
-  color: #985E38;
-  background: rgba(152, 94, 56, 0.1);
+  color: #6b3917;
+  background: #f5eee8;
   padding: 0.2rem 0.55rem;
   border-radius: 4px;
 }
@@ -978,3 +978,21 @@ section h2 {
     grid-template-columns: 1fr;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-slider-track {
+    scroll-behavior: auto;
+  }
+
+  .slider-arrow-btn,
+  .slider-arrow-btn:hover:not(:disabled),
+  .why-us-card:hover .why-us-icon,
+  .mystery-zodiac-chip,
+  .category-tile,
+  .btn {
+    transition: none;
+    transform: none;
+    animation: none;
+  }
+}
+

@@ -99,3 +99,10 @@
     padding: 1.5rem 1.25rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-back-link {
+    transition: none;
+    transform: none;
+  }
+}

@@ -7,7 +7,7 @@
   </header>
 
   @if (wishlistService.isLoading()) {
-    <span class="visually-hidden" role="status">Loading wishlist...</span>
+    <output class="visually-hidden">Loading wishlist...</output>
     <div class="wishlist-grid">
       @for (n of [1, 2, 3, 4]; track n) {
         <app-product-card-skeleton></app-product-card-skeleton>

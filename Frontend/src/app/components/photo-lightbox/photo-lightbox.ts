@@ -9,15 +9,15 @@ import { Component, HostListener, computed, input, model, output, signal } from 
   styleUrl: './photo-lightbox.css'
 })
 export class PhotoLightbox {
-  photos = input.required<string[]>();
-  index = model(0);
-  caption = input<string>('');
-  closed = output<void>();
+  readonly photos = input.required<string[]>();
+  readonly index = model(0);
+  readonly caption = input<string>('');
+  readonly closed = output<void>();
 
-  isZoomed = signal(false);
+  readonly isZoomed = signal(false);
 
-  current = computed(() => this.photos()[this.index()] ?? null);
-  hasMany = computed(() => this.photos().length > 1);
+  readonly current = computed(() => this.photos()[this.index()] ?? null);
+  readonly hasMany = computed(() => this.photos().length > 1);
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {

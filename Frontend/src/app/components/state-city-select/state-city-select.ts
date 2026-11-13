@@ -23,61 +23,61 @@ const sameText = (a: string, b: string) => a.trim().toLowerCase() === b.trim().t
 export class StateCitySelect {
   private readonly elementRef = inject(ElementRef);
 
-  state = model('');
-  city = model('');
+  readonly state = model('');
+  readonly city = model('');
 
   readonly otherValue = OTHER;
 
-  isStateOpen = signal(false);
-  isCityOpen = signal(false);
+  readonly isStateOpen = signal(false);
+  readonly isCityOpen = signal(false);
 
-  stateSearch = signal('');
-  citySearch = signal('');
+  readonly stateSearch = signal('');
+  readonly citySearch = signal('');
 
-  stateTouched = signal(false);
-  cityTouched = signal(false);
+  readonly stateTouched = signal(false);
+  readonly cityTouched = signal(false);
 
   // True only when the customer explicitly picked "Other" and hasn't typed yet.
-  private otherChosen = signal(false);
+  private readonly otherChosen = signal(false);
 
-  private matchedState = computed(() => INDIA_STATES.find(s => sameText(s, this.state())) ?? null);
+  private readonly matchedState = computed(() => INDIA_STATES.find(s => sameText(s, this.state())) ?? null);
 
   // A previously saved state that isn't in our list is kept as an extra option
   // rather than silently dropped.
-  stateOptions = computed(() =>
+  readonly stateOptions = computed(() =>
     this.state() && !this.matchedState() ? [...INDIA_STATES, this.state()] : INDIA_STATES
   );
 
-  filteredStateOptions = computed(() => {
+  readonly filteredStateOptions = computed(() => {
     const term = this.stateSearch().trim().toLowerCase();
     if (!term) return this.stateOptions();
     return this.stateOptions().filter(s => s.toLowerCase().includes(term));
   });
 
-  stateSelectValue = computed(() => this.matchedState() ?? this.state());
+  readonly stateSelectValue = computed(() => this.matchedState() ?? this.state());
 
-  cities = computed(() => {
+  readonly cities = computed(() => {
     const key = this.matchedState();
     return key ? INDIA_STATE_CITIES[key] : [];
   });
 
-  filteredCityOptions = computed(() => {
+  readonly filteredCityOptions = computed(() => {
     const term = this.citySearch().trim().toLowerCase();
     const list = this.cities();
     if (!term) return list;
     return list.filter(c => c.toLowerCase().includes(term));
   });
 
-  private matchedCity = computed(() => this.cities().find(c => sameText(c, this.city())) ?? null);
+  private readonly matchedCity = computed(() => this.cities().find(c => sameText(c, this.city())) ?? null);
 
-  isOther = computed(() => {
+  readonly isOther = computed(() => {
     if (!this.state()) {
       return false;
     }
     return this.city() ? !this.matchedCity() : this.otherChosen();
   });
 
-  citySelectValue = computed(() => (this.isOther() ? OTHER : this.matchedCity() ?? ''));
+  readonly citySelectValue = computed(() => (this.isOther() ? OTHER : this.matchedCity() ?? ''));
 
   toggleStateDropdown(): void {
     if (this.isStateOpen()) {

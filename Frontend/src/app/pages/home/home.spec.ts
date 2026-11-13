@@ -66,7 +66,7 @@ describe('Home Component Hero Carousel', () => {
   it('initializes with activeSlide 0 and total 4 carousel tabs', () => {
     expect(component.activeSlide()).toBe(0);
     expect(component.totalSlides).toBe(4);
-    expect(component.carouselTabs.length).toBe(4);
+    expect(component.carouselTabs).toHaveLength(4);
   });
 
   it('cycles to next and previous slide accurately', () => {

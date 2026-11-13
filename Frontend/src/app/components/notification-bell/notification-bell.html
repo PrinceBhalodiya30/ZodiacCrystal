@@ -19,7 +19,7 @@
   </button>
 
   @if (isOpen()) {
-    <div class="notification-dropdown" role="dialog" aria-label="Notifications">
+    <dialog class="notification-dropdown" open aria-label="Notifications">
       <div class="notification-dropdown-header">
         <span>Notifications</span>
         @if (service.unreadCount() > 0) {
@@ -106,6 +106,6 @@
           </div>
         }
       </div>
-    </div>
+    </dialog>
   }
 </div>

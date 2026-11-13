@@ -219,3 +219,13 @@ select:focus {
   margin: 0;
   max-width: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  .address-card,
+  .link-btn {
+    transition: none;
+  }
+}
+

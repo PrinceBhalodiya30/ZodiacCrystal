@@ -37,16 +37,14 @@ import { getStars as getStarsUtil } from '../../utils/rating.util';
 import { getDiscountPercent as getDiscountPercentUtil } from '../../utils/pricing.util';
 import { ZodiacIcon } from '../../components/zodiac-icon/zodiac-icon';
 import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
-
-const RELATED_PRODUCT_LIMIT = 4;
-
 import { InrPipe, formatInr } from '../../pipes/inr.pipe';
 import { CompareService } from '../../services/compare.service';
 import { CouponService } from '../../services/coupon.service';
 import { PublicCoupon } from '../../models/coupon';
-import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING_FEE } from '../../services/cart.service';
 import { getProductCrystalSpecs, CrystalSpecs } from '../../utils/crystal-specs.util';
 import { CleansingGuideService } from '../../services/cleansing-guide.service';
+
+const RELATED_PRODUCT_LIMIT = 4;
 
 export interface BundleItem {
   product: Product;
@@ -89,12 +87,13 @@ export class ProductDetails implements OnInit {
   private readonly stockAlertService = inject(StockAlertService);
 
   // "Notify me when it's back" for out-of-stock products (customers only).
-  stockAlertSubscribed = signal(false);
-  isStockAlertBusy = signal(false);
+  readonly stockAlertSubscribed = signal(false);
+  readonly isStockAlertBusy = signal(false);
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
   private readonly toast = inject(ToastService);
-  wishlistService = inject(WishlistService);
+  readonly wishlistService = inject(WishlistService);
+  readonly compareService = inject(CompareService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly reviewService = inject(ReviewService);
   private readonly recentlyViewedService = inject(RecentlyViewedService);
@@ -105,16 +104,16 @@ export class ProductDetails implements OnInit {
 
   readonly freeShippingThreshold = computed(() => this.cartService.freeShippingThreshold());
   readonly flatShippingFee = computed(() => this.cartService.flatShippingFee());
-  private activeCoupons = signal<PublicCoupon[]>([]);
+  private readonly activeCoupons = signal<PublicCoupon[]>([]);
 
   private productId = 0;
   private loadSubscription?: Subscription;
 
-  product = signal<Product | null>(null);
-  selectedImageUrl = signal<string | null>(null);
-  quantity = signal(1);
-  justAdded = signal(false);
-  cartQuantity = computed(() => {
+  readonly product = signal<Product | null>(null);
+  readonly selectedImageUrl = signal<string | null>(null);
+  readonly quantity = signal(1);
+  readonly justAdded = signal(false);
+  readonly cartQuantity = computed(() => {
     const p = this.product();
     if (!p) {
       return 0;
@@ -122,58 +121,58 @@ export class ProductDetails implements OnInit {
     const item = this.cartService.items().find(i => i.product.productId === p.productId);
     return item?.quantity ?? 0;
   });
-  isLoading = signal(true);
-  errorMessage = signal('');
-  isLightboxOpen = signal(false);
-  isZooming = signal(false);
-  zoomTransformOrigin = signal('center center');
-  relatedProducts = signal<Product[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly isLightboxOpen = signal(false);
+  readonly isZooming = signal(false);
+  readonly zoomTransformOrigin = signal('center center');
+  readonly relatedProducts = signal<Product[]>([]);
 
-  reviews = signal<Review[]>([]);
-  averageRating = signal(0);
-  reviewCount = signal(0);
-  reviewsLoading = signal(true);
-  reviewsError = signal('');
+  readonly reviews = signal<Review[]>([]);
+  readonly averageRating = signal(0);
+  readonly reviewCount = signal(0);
+  readonly reviewsLoading = signal(true);
+  readonly reviewsError = signal('');
 
-  reviewRating = signal(0);
-  reviewComment = signal('');
-  isSubmittingReview = signal(false);
+  readonly reviewRating = signal(0);
+  readonly reviewComment = signal('');
+  readonly isSubmittingReview = signal(false);
 
   // Review photos: verified buyers (delivered order) can attach some; each is
   // public once an admin approves it. The author also sees their pending ones.
-  photoEligibility = signal<PhotoEligibility | null>(null);
-  reviewPhotos = signal<PickedPhoto[]>([]);
+  readonly photoEligibility = signal<PhotoEligibility | null>(null);
+  readonly reviewPhotos = signal<PickedPhoto[]>([]);
   // Approved photos from every review, for the "Customer photos" strip.
-  customerPhotos = computed<ThumbPhoto[]>(() =>
+  readonly customerPhotos = computed<ThumbPhoto[]>(() =>
     this.reviews().flatMap(review =>
       (review.images ?? [])
         .filter(photo => photo.status !== 'Pending')
         .map(photo => ({ imageUrl: photo.imageUrl, alt: `Photo by ${review.userName}` }))
     )
   );
-  photoViewer = signal<{ urls: string[]; index: number; caption: string } | null>(null);
+  readonly photoViewer = signal<{ urls: string[]; index: number; caption: string } | null>(null);
 
 
   // Frequently Bought Together Bundle
-  bundleItems = signal<BundleItem[]>([]);
-  bundleJustAdded = signal(false);
+  readonly bundleItems = signal<BundleItem[]>([]);
+  readonly bundleJustAdded = signal(false);
 
-  bundleSelectedItems = computed(() => this.bundleItems().filter(i => i.selected));
-  bundleSelectedCount = computed(() => this.bundleSelectedItems().length);
-  bundleOriginalTotal = computed(() => this.bundleSelectedItems().reduce((sum, i) => sum + i.product.price, 0));
-  bundleSavings = computed(() => {
+  readonly bundleSelectedItems = computed(() => this.bundleItems().filter(i => i.selected));
+  readonly bundleSelectedCount = computed(() => this.bundleSelectedItems().length);
+  readonly bundleOriginalTotal = computed(() => this.bundleSelectedItems().reduce((sum, i) => sum + i.product.price, 0));
+  readonly bundleSavings = computed(() => {
     const count = this.bundleSelectedCount();
     if (count < 2) return 0;
     return Math.round(this.bundleOriginalTotal() * 0.10); // 10% bundle savings
   });
-  bundleFinalPrice = computed(() => this.bundleOriginalTotal() - this.bundleSavings());
+  readonly bundleFinalPrice = computed(() => this.bundleOriginalTotal() - this.bundleSavings());
 
   // Crystal Healing & Care Specs Accordion
-  crystalSpecs = computed<CrystalSpecs | null>(() => getProductCrystalSpecs(this.product()));
-  isHealingOpen = signal(false);
-  isCareOpen = signal(false);
-  isRitualOpen = signal(false);
-  copiedAffirmation = signal(false);
+  readonly crystalSpecs = computed<CrystalSpecs | null>(() => getProductCrystalSpecs(this.product()));
+  readonly isHealingOpen = signal(false);
+  readonly isCareOpen = signal(false);
+  readonly isRitualOpen = signal(false);
+  readonly copiedAffirmation = signal(false);
 
   toggleHealingAccordion(): void {
     this.isHealingOpen.update(v => !v);
@@ -254,7 +253,7 @@ export class ProductDetails implements OnInit {
   loadProduct(): void {
     const id = this.productId;
 
-    if (isNaN(id) || id <= 0) {
+    if (Number.isNaN(id) || id <= 0) {
       this.product.set(null);
       this.updateSeo(null, this.pageTitle.setPageTitle('Crystal Not Found'));
       this.isLoading.set(false);
@@ -542,11 +541,11 @@ export class ProductDetails implements OnInit {
 
     const eligible = coupons.filter(c => product.price >= c.minimumOrderAmount);
     if (eligible.length > 0) {
-      const best = eligible.reduce((a, b) => (saving(b) > saving(a) ? b : a));
+      const best = eligible.reduce((a, b) => (saving(b) > saving(a) ? b : a), eligible[0]);
       return `Extra ${label(best)} with code ${best.code}`;
     }
 
-    const nearest = coupons.reduce((a, b) => (b.minimumOrderAmount < a.minimumOrderAmount ? b : a));
+    const nearest = coupons.reduce((a, b) => (b.minimumOrderAmount < a.minimumOrderAmount ? b : a), coupons[0]);
     return `Extra ${label(nearest)} on orders above ${formatInr(nearest.minimumOrderAmount)} with code ${nearest.code}`;
   }
 
@@ -654,15 +653,18 @@ export class ProductDetails implements OnInit {
     const p = this.product();
     if (!p) return;
     const currentUrl = this.selectedImageUrl();
-    const urls = p.images && p.images.length > 0
-      ? p.images.map(img => img.imageUrl)
-      : (currentUrl ? [currentUrl] : []);
+    let urls: string[] = [];
+    if (p.images && p.images.length > 0) {
+      urls = p.images.map(img => img.imageUrl);
+    } else if (currentUrl) {
+      urls = [currentUrl];
+    }
     if (!urls.length) return;
 
     const activeIndex = currentUrl ? urls.indexOf(currentUrl) : 0;
     this.photoViewer.set({
       urls,
-      index: activeIndex >= 0 ? activeIndex : 0,
+      index: Math.max(0, activeIndex),
       caption: p.name
     });
     this.isLightboxOpen.set(true);
@@ -670,7 +672,7 @@ export class ProductDetails implements OnInit {
 
   closeLightbox(): void {
     const viewer = this.photoViewer();
-    if (viewer && viewer.urls[viewer.index]) {
+    if (viewer?.urls[viewer.index]) {
       this.selectedImageUrl.set(viewer.urls[viewer.index]);
     }
     this.photoViewer.set(null);
@@ -719,8 +721,6 @@ export class ProductDetails implements OnInit {
     this.justAdded.set(true);
     setTimeout(() => this.justAdded.set(false), 1100);
   }
-
-  compareService = inject(CompareService);
 
   get isWishlisted(): boolean {
     const product = this.product();
@@ -838,8 +838,8 @@ export class ProductDetails implements OnInit {
         document.body.appendChild(textarea);
         textarea.focus();
         textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
+        (document as { execCommand?: (cmd: string) => boolean }).execCommand?.('copy');
+        textarea.remove();
       }
       this.toast.success('Product link copied to clipboard');
     } catch {

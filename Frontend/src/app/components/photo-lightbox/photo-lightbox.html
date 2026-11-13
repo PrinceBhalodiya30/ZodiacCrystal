@@ -1,18 +1,20 @@
 @if (current(); as url) {
-  <div class="photo-lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" (click)="closed.emit()">
+  <dialog class="photo-lightbox" open aria-modal="true" aria-label="Photo viewer" (click)="closed.emit()" (keydown.escape)="closed.emit()">
     <button type="button" class="photo-lightbox-close" aria-label="Close" (click)="closed.emit()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
 
-    <figure class="photo-lightbox-figure" (click)="$event.stopPropagation()">
-      <div
+    <figure class="photo-lightbox-figure" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <button
+        type="button"
         class="photo-lightbox-img-wrap"
         [class.is-zoomed]="isZoomed()"
         (click)="toggleZoom($event)"
         [attr.title]="isZoomed() ? 'Click to zoom out' : 'Click to zoom in'"
+        [attr.aria-label]="isZoomed() ? 'Zoom out' : 'Zoom in'"
       >
-        <img [src]="url" [alt]="caption() || 'Photo'" />
-      </div>
+        <img [src]="url" [alt]="caption() || 'Expanded view'" />
+      </button>
       @if (caption() || hasMany()) {
         <figcaption>
           {{ caption() }}
@@ -31,5 +33,5 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
       </button>
     }
-  </div>
+  </dialog>
 }

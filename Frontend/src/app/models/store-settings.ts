@@ -1,3 +1,5 @@
+export type MoonBannerMode = 'auto' | 'custom';
+
 export interface StoreSettings {
   id: number;
   announcementEnabled: boolean;
@@ -10,7 +12,7 @@ export interface StoreSettings {
   heroTitle: string;
   heroSubtitle: string;
   moonBannerEnabled: boolean;
-  moonBannerMode: 'auto' | 'custom' | string;
+  moonBannerMode: MoonBannerMode;
   moonBannerCustomText?: string | null;
   moonBannerCustomCrystal?: string | null;
   moonBannerCustomBenefit?: string | null;
@@ -32,7 +34,7 @@ export interface UpdateStoreSettingsRequest {
   heroTitle: string;
   heroSubtitle: string;
   moonBannerEnabled: boolean;
-  moonBannerMode: 'auto' | 'custom' | string;
+  moonBannerMode: MoonBannerMode;
   moonBannerCustomText?: string | null;
   moonBannerCustomCrystal?: string | null;
   moonBannerCustomBenefit?: string | null;

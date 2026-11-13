@@ -44,3 +44,9 @@
 .password-strength.strong .password-strength-label {
   color: var(--color-success, #1b6e37);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .password-strength-bar {
+    transition: none;
+  }
+}
