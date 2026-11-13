@@ -87,13 +87,10 @@ export class CartDrawer {
 
   proceedToCheckout(): void {
     this.close();
-    if (!this.router.url.startsWith('/cart')) {
-      void this.router.navigateByUrl('/cart').then(() => {
-        void this.router.navigateByUrl('/checkout');
-      });
-    } else {
-      void this.router.navigate(['/checkout']);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
+    void this.router.navigate(['/checkout']);
   }
 
   viewFullCart(): void {

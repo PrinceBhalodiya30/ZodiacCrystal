@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, afterNextRender, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CartService, GIFT_PACKAGING_FEE } from '../../services/cart.service';
@@ -36,6 +36,14 @@ export class Checkout implements OnInit, OnDestroy {
   private readonly addressService = inject(AddressService);
   private readonly guestSession = inject(GuestSessionService);
   private readonly router = inject(Router);
+
+  constructor() {
+    afterNextRender(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+  }
 
   readonly paymentMethod = signal<PaymentMethod>('COD');
   readonly paymentSelect = viewChild(PaymentMethodSelect);
@@ -197,6 +205,11 @@ export class Checkout implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
     if (this.mysteryBox()) {
       this.isLoadingCoupons.set(false);
     } else {

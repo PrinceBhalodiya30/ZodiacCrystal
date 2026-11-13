@@ -50,7 +50,14 @@ export class App {
 
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-      .subscribe(event => this.isAdminRoute.set(event.urlAfterRedirects.startsWith('/admin')));
+      .subscribe(event => {
+        this.isAdminRoute.set(event.urlAfterRedirects.startsWith('/admin'));
+        if (typeof window !== 'undefined' && event.urlAfterRedirects.startsWith('/checkout')) {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }
+      });
 
     // Fade out the splash loader from index.html once the first page has
     // actually rendered (or the first navigation failed, so it never hangs).

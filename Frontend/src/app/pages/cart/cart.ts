@@ -101,6 +101,9 @@ export class Cart implements OnInit {
     // Checking out from the cart is never a Buy Now purchase - clear any
     // leftover Buy Now item so Checkout shows the actual cart, not a stale item.
     this.cartService.clearBuyNowItem();
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
     void this.router.navigate(['/checkout']);
   }
 }
