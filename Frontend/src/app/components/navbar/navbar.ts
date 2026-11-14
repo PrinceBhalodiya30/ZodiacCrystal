@@ -253,11 +253,7 @@ export class Navbar {
 
   onCartClick(): void {
     this.closeMenu();
-    if (this.cartService.totalQuantity() === 0) {
-      void this.router.navigate(['/cart']);
-    } else {
-      this.cartService.toggleDrawer();
-    }
+    this.cartService.toggleDrawer();
   }
 
   logout(): void {

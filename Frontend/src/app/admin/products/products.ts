@@ -420,6 +420,29 @@ export class AdminProducts implements OnInit {
     this.formError.set('');
   }
 
+  duplicateProduct(product: Product): void {
+    this.formMode.set('create');
+    this.editingProductId.set(null);
+    this.editingProduct.set(null);
+    this.formSku = product.sku ? `${product.sku}-COPY` : '';
+    this.formName = `${product.name} (Copy)`;
+    this.formDescription = product.description ?? '';
+    this.formPrice = product.price;
+    this.formCompareAtPrice = product.compareAtPrice ?? null;
+    this.formStock = product.stockQuantity;
+    this.formCategoryId = product.categoryId;
+    this.formIsActive = false; // Set to draft/inactive until admin confirms SKU and details
+    this.formZodiacIds = product.zodiacs.map(z => z.zodiacId);
+    this.formWaterSafe = product.waterSafe ?? '';
+    this.formSunlightExposure = product.sunlightExposure ?? '';
+    this.formChakra = product.chakra ?? '';
+    this.formElement = product.element ?? '';
+    this.formMarketingBadge = product.marketingBadge ?? '';
+    this.formIntention = product.intention ?? '';
+    this.formError.set('');
+    this.toast.info(`Cloned details from "${product.name}". Adjust SKU/name and save to publish.`);
+  }
+
   // Escape closes the form via the same path as the overlay click. Ignored while
   // a confirm dialog or the image manager is on top so only the topmost layer closes.
   @HostListener('document:keydown.escape')

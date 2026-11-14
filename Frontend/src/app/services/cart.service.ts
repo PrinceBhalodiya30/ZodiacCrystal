@@ -392,7 +392,7 @@ export class CartService {
     if (added > 0) {
       this.lastAddedProduct.set(product);
       if (openDrawer) {
-        this.openDrawer(3500);
+        this.openDrawer(0);
       }
     }
     return added;

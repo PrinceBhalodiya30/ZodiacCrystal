@@ -9,6 +9,15 @@ export function getPrimaryImageUrl(product: Product): string | null {
   return (primary ?? product.images[0]).imageUrl;
 }
 
+export function getSecondaryImageUrl(product: Product): string | null {
+  if (!product.images || product.images.length < 2) {
+    return null;
+  }
+
+  const nonPrimary = product.images.find(image => !image.isPrimary);
+  return (nonPrimary ?? product.images[1]).imageUrl;
+}
+
 // Widths the backend generates as WebP next to each uploaded product image
 // (name-400.webp, name-800.webp, name-1200.webp) - see ImageVariantService.cs.
 const VARIANT_WIDTHS = [400, 800, 1200];

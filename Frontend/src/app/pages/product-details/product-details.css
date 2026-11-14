@@ -841,7 +841,130 @@
   line-height: 1.35;
 }
 
+/* Luxury Editorial Accordions */
+.pdp-accordions-wrap {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--color-border-subtle, #eae3d6);
+  border-bottom: 1px solid var(--color-border-subtle, #eae3d6);
+}
+
+.pdp-accordion-item {
+  border-bottom: 1px solid var(--color-border-subtle, #eae3d6);
+}
+
+.pdp-accordion-item:last-child {
+  border-bottom: none;
+}
+
+.pdp-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.95rem 0.25rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-ink, #1d2739);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.pdp-accordion-header::-webkit-details-marker {
+  display: none;
+}
+
+.pdp-accordion-header:hover {
+  color: var(--color-copper, #985e38);
+}
+
+.pdp-accordion-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.accordion-icon {
+  color: var(--color-copper, #985e38);
+  flex-shrink: 0;
+}
+
+.accordion-indicator {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.accordion-indicator::before,
+.accordion-indicator::after {
+  content: '';
+  position: absolute;
+  background-color: var(--color-copper, #985e38);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.accordion-indicator::before {
+  width: 12px;
+  height: 2px;
+}
+
+.accordion-indicator::after {
+  width: 2px;
+  height: 12px;
+}
+
+.pdp-accordion-item[open] .accordion-indicator::after {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.pdp-accordion-body {
+  padding: 0 0.25rem 1.15rem;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--color-subtle, #4e5a70);
+}
+
+.pdp-accordion-body p {
+  margin: 0 0 0.5rem;
+}
+
+.spec-detail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.spec-detail-list li {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.spec-detail-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--color-copper, #985e38);
+  font-size: 0.65rem;
+  top: 2px;
+}
+
+.spec-detail-list strong {
+  color: var(--color-ink, #1d2739);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .accordion-indicator::before,
+  .accordion-indicator::after,
+  .pdp-accordion-header,
   .product-image img,
   .zoom-btn,
   .gallery-image,

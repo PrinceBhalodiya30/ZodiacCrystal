@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AdminNav } from '../admin-nav/admin-nav';
-import { StoreSettingsService } from '../../services/store-settings.service';
+import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS } from '../../services/store-settings.service';
 import { ToastService } from '../../services/toast.service';
 import { UpdateStoreSettingsRequest } from '../../models/store-settings';
 
@@ -35,7 +35,10 @@ export class AdminSettings implements OnInit {
 
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
-  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero'>('announcement');
+  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee'>('announcement');
+
+  // Hero Marquee Ribbon CMS State
+  readonly marqueeItems = signal<MarqueeElementItem[]>([]);
 
   // Announcement Form State Signals
   readonly announcementEnabled = signal(true);
@@ -69,13 +72,39 @@ export class AdminSettings implements OnInit {
     this.previewSlide.set(index);
   }
 
-  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero'): void {
+  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee'): void {
     this.activeTab.set(tab);
     if (tab === 'announcement') {
       this.previewSlide.set(1);
     } else if (tab === 'moon') {
       this.previewSlide.set(0);
     }
+  }
+
+  addMarqueeItem(): void {
+    this.marqueeItems.update(items => [
+      ...items,
+      { icon: '💎', name: 'Raw Crystal', energy: 'Harmonizing & Amplifying' }
+    ]);
+  }
+
+  removeMarqueeItem(index: number): void {
+    this.marqueeItems.update(items => items.filter((_, i) => i !== index));
+  }
+
+  updateMarqueeField(index: number, field: keyof MarqueeElementItem, value: string): void {
+    this.marqueeItems.update(items => {
+      const copy = [...items];
+      if (copy[index]) {
+        copy[index] = { ...copy[index], [field]: value };
+      }
+      return copy;
+    });
+  }
+
+  resetMarqueeToDefaults(): void {
+    this.marqueeItems.set([...DEFAULT_MARQUEE_ITEMS]);
+    this.toastService.info('Reset marquee ribbon items to celestial defaults.');
   }
 
   setAnnouncementStyle(style: string): void {
@@ -195,6 +224,8 @@ export class AdminSettings implements OnInit {
         this.heroTitle.set(s.heroTitle);
         this.heroSubtitle.set(s.heroSubtitle);
 
+        this.marqueeItems.set([...this.storeSettingsService.marqueeItems()]);
+
         this.lastUpdated.set(this.formatUtcIso(s.updatedAt));
         this.lastUpdatedBy.set(s.updatedByEmail ?? null);
         this.isLoading.set(false);
@@ -243,6 +274,10 @@ export class AdminSettings implements OnInit {
     }
 
     this.isSaving.set(true);
+
+    // Save customized marquee ticker items locally and reactively
+    this.storeSettingsService.saveMarqueeItems(this.marqueeItems());
+
     const req: UpdateStoreSettingsRequest = {
       announcementEnabled: this.announcementEnabled(),
       announcementText: this.announcementText().trim(),

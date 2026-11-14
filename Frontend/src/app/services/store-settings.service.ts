@@ -1,8 +1,23 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_BASE_URL } from './api-config';
 import { StoreSettings, UpdateStoreSettingsRequest } from '../models/store-settings';
+
+export interface MarqueeElementItem {
+  icon: string;
+  name: string;
+  energy: string;
+}
+
+export const DEFAULT_MARQUEE_ITEMS: MarqueeElementItem[] = [
+  { icon: '🔥', name: 'Fire Elements', energy: 'Vitality & Willpower' },
+  { icon: '🌍', name: 'Earth Elements', energy: 'Grounding & Abundance' },
+  { icon: '💨', name: 'Air Elements', energy: 'Clarity & Intellect' },
+  { icon: '🌊', name: 'Water Elements', energy: 'Intuition & Emotional Peace' },
+  { icon: '✨', name: 'Cosmic Ether', energy: 'Higher Planetary Consciousness' }
+];
 
 const DEFAULT_SETTINGS: StoreSettings = {
   id: 1,
@@ -54,6 +69,40 @@ export class StoreSettingsService {
   readonly moonBannerCustomLink = computed(() => this.settings().moonBannerCustomLink ?? null);
   readonly moonBannerShowModal = computed(() => this.settings().moonBannerShowModal ?? true);
   readonly moonBannerStyle = computed(() => this.settings().moonBannerStyle ?? 'midnight');
+
+  // Hero Marquee Ribbon CMS State
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly MARQUEE_STORAGE_KEY = 'zc_marquee_elements';
+
+  readonly marqueeItems = signal<MarqueeElementItem[]>(this.loadInitialMarquee());
+
+  private loadInitialMarquee(): MarqueeElementItem[] {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(this.MARQUEE_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch {
+        // Fallback to defaults
+      }
+    }
+    return DEFAULT_MARQUEE_ITEMS;
+  }
+
+  saveMarqueeItems(items: MarqueeElementItem[]): void {
+    this.marqueeItems.set([...items]);
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(this.MARQUEE_STORAGE_KEY, JSON.stringify(items));
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
 
   constructor() {
     this.loadPublicSettings();

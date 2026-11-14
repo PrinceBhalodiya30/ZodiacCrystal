@@ -184,6 +184,15 @@
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
       <span>Home Hero CMS</span>
     </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'marquee'"
+      (click)="selectTab('marquee')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>Hero Marquee Ribbon</span>
+    </button>
   </div>
 
   @if (isLoading()) {
@@ -659,6 +668,102 @@
               maxlength="1000"
             ></textarea>
             <div class="char-count">{{ heroSubtitle().length }} / 1000 characters</div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- TAB 5: Hero Marquee Ribbon CMS -->
+    @if (activeTab() === 'marquee') {
+      <div class="tab-pane">
+        <div class="settings-card">
+          <div class="card-section">
+            <div class="section-title-row">
+              <div>
+                <h3 class="section-title">Infinite Cosmic Ticker Elements</h3>
+                <p class="section-desc">
+                  Customize the items scrolling in the continuous luxury marquee ribbon directly beneath the homepage hero section.
+                </p>
+              </div>
+              <div class="marquee-actions">
+                <button type="button" class="btn btn-sm btn-outline" (click)="resetMarqueeToDefaults()">
+                  Reset to Defaults
+                </button>
+                <button type="button" class="btn btn-sm btn-primary" (click)="addMarqueeItem()">
+                  + Add Ticker Item
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Ticker Strip Preview -->
+            <div class="admin-marquee-preview-box">
+              <span class="preview-mini-tag">Live Ticker Preview</span>
+              <div class="admin-marquee-track">
+                @for (item of marqueeItems(); track $index) {
+                  <span class="admin-marquee-pill">
+                    <span class="pill-icon">{{ item.icon }}</span>
+                    <strong class="pill-name">{{ item.name }}</strong>
+                    <span class="pill-energy">({{ item.energy }})</span>
+                  </span>
+                }
+              </div>
+            </div>
+
+            <!-- Editable Items List -->
+            <div class="marquee-items-list">
+              @for (item of marqueeItems(); track $index) {
+                <div class="marquee-edit-row">
+                  <div class="row-index">#{{ $index + 1 }}</div>
+                  <div class="marquee-field-icon">
+                    <label [for]="'marquee-icon-' + $index" class="field-label">Icon</label>
+                    <input
+                      [id]="'marquee-icon-' + $index"
+                      type="text"
+                      class="form-control text-center"
+                      maxlength="4"
+                      [ngModel]="item.icon"
+                      (ngModelChange)="updateMarqueeField($index, 'icon', $event)"
+                      placeholder="✨"
+                    />
+                  </div>
+                  <div class="marquee-field-name">
+                    <label [for]="'marquee-name-' + $index" class="field-label">Category / Name</label>
+                    <input
+                      [id]="'marquee-name-' + $index"
+                      type="text"
+                      class="form-control"
+                      maxlength="50"
+                      [ngModel]="item.name"
+                      (ngModelChange)="updateMarqueeField($index, 'name', $event)"
+                      placeholder="e.g. Fire Elements"
+                    />
+                  </div>
+                  <div class="marquee-field-energy">
+                    <label [for]="'marquee-energy-' + $index" class="field-label">Intention / Energy Benefit</label>
+                    <input
+                      [id]="'marquee-energy-' + $index"
+                      type="text"
+                      class="form-control"
+                      maxlength="80"
+                      [ngModel]="item.energy"
+                      (ngModelChange)="updateMarqueeField($index, 'energy', $event)"
+                      placeholder="e.g. Vitality & Willpower"
+                    />
+                  </div>
+                  <div class="marquee-field-delete">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline danger"
+                      [disabled]="marqueeItems().length <= 1"
+                      (click)="removeMarqueeItem($index)"
+                      title="Remove item"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
       </div>

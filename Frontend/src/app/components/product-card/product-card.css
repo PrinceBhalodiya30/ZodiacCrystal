@@ -53,12 +53,30 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease, opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-img-primary {
+  z-index: 1;
+}
+
+.card-img-secondary {
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .product-card:hover .product-image img {
   transform: scale(1.03);
   filter: brightness(1.01);
+}
+
+.product-card:hover .card-img-secondary {
+  opacity: 1;
+}
+
+.product-card:hover .card-img-primary.has-secondary {
+  opacity: 0;
 }
 
 .card-badge-stack {
@@ -513,6 +531,8 @@
 @media (prefers-reduced-motion: reduce) {
   .product-card,
   .product-image img,
+  .card-img-primary,
+  .card-img-secondary,
   .product-actions .btn,
   .product-actions .btn.btn-added,
   .wishlist-toggle,

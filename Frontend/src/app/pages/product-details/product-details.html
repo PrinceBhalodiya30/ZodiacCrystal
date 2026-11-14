@@ -399,6 +399,73 @@
           </button>
         </div>
 
+        <!-- Luxury Editorial Accordions -->
+        <div class="pdp-accordions-wrap">
+          <details class="pdp-accordion-item" open>
+            <summary class="pdp-accordion-header">
+              <span class="pdp-accordion-title">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="accordion-icon" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                Geological Origin &amp; Specimen Details
+              </span>
+              <span class="accordion-indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="pdp-accordion-body">
+              <p>Hand-selected authentic natural mineral specimen. Retains organic internal crystal lattices, phantom inclusions, and natural terminations without artificial heat or radiation treatment.</p>
+              @if (crystalSpecs(); as specs) {
+                <ul class="spec-detail-list">
+                  <li><strong>Water Care:</strong> {{ specs.waterSafe }}</li>
+                  <li><strong>Sunlight Exposure:</strong> {{ specs.sunlightExposure }}</li>
+                  <li><strong>Elemental Energy:</strong> {{ specs.element }}</li>
+                </ul>
+              }
+            </div>
+          </details>
+
+          <details class="pdp-accordion-item">
+            <summary class="pdp-accordion-header">
+              <span class="pdp-accordion-title">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="accordion-icon" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Astrological &amp; Planetary Affinity
+              </span>
+              <span class="accordion-indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="pdp-accordion-body">
+              <p>Resonates harmoniously with your astrological energy blueprint:</p>
+              @if (crystalSpecs(); as specs) {
+                <ul class="spec-detail-list">
+                  <li><strong>Primary Chakra:</strong> {{ specs.chakra }}</li>
+                  @if (p.zodiacs && p.zodiacs.length > 0) {
+                    <li>
+                      <strong>Zodiac Resonance:</strong>
+                      @for (z of p.zodiacs; track z.zodiacId) {
+                        <span>{{ z.name }}{{ $last ? '' : ', ' }}</span>
+                      }
+                    </li>
+                  }
+                  <li><strong>Affirmation:</strong> "{{ specs.affirmation }}"</li>
+                </ul>
+              }
+            </div>
+          </details>
+
+          <details class="pdp-accordion-item">
+            <summary class="pdp-accordion-header">
+              <span class="pdp-accordion-title">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" class="accordion-icon" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Safe Transit, Packaging &amp; 7-Day Guarantee
+              </span>
+              <span class="accordion-indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="pdp-accordion-body">
+              <ul class="spec-detail-list">
+                <li><strong>Insured Transit:</strong> Individually cushioned in custom protective foam armor to guarantee zero chipping or breakage during delivery.</li>
+                <li><strong>7-Day Replacement:</strong> In the rare event of transit damage, an instant replacement is provided at zero cost.</li>
+                <li><strong>Authenticity Guaranteed:</strong> Includes our numbered Certificate of Authenticity and personalized care card.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
       </div>
     </div>
 

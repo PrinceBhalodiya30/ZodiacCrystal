@@ -1,14 +1,11 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { QuizService } from '../../../../services/quiz.service';
+import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS } from '../../../../services/store-settings.service';
 import { ImgFallbackDirective } from '../../../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../../../services/page-title.service';
 
-export interface CosmicElementItem {
-  icon: string;
-  name: string;
-  energy: string;
-}
+export type CosmicElementItem = MarqueeElementItem;
 
 export interface IntentionItem {
   id: string;
@@ -28,19 +25,24 @@ export interface IntentionItem {
 export class HomeHero implements OnInit, OnDestroy {
   readonly siteName = SITE_NAME;
   private readonly quizService = inject(QuizService);
+  private readonly storeSettingsService = inject(StoreSettingsService);
 
   @ViewChild('herowave', { static: true }) waveCanvasRef!: ElementRef<HTMLCanvasElement>;
 
   private animationFrameId: number | null = null;
   private isDestroyed = false;
 
-  readonly cosmicElements: CosmicElementItem[] = [
-    { icon: '🔥', name: 'Fire Elements', energy: 'Vitality & Willpower' },
-    { icon: '🌍', name: 'Earth Elements', energy: 'Grounding & Abundance' },
-    { icon: '💨', name: 'Air Elements', energy: 'Clarity & Intellect' },
-    { icon: '🌊', name: 'Water Elements', energy: 'Intuition & Emotional Peace' },
-    { icon: '✨', name: 'Cosmic Ether', energy: 'Higher Planetary Consciousness' }
-  ];
+  get cosmicElements(): CosmicElementItem[] {
+    const items = typeof this.storeSettingsService?.marqueeItems === 'function'
+      ? this.storeSettingsService.marqueeItems()
+      : undefined;
+    return items && items.length > 0 ? items : DEFAULT_MARQUEE_ITEMS;
+  }
+
+  get marqueeElements(): CosmicElementItem[] {
+    const items = this.cosmicElements;
+    return [...items, ...items];
+  }
 
   getElementSearchTerm(elem: CosmicElementItem): string {
     return elem.name.split(' ')[0].toLowerCase();

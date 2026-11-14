@@ -36,7 +36,10 @@ describe('Home Component Hero Carousel', () => {
     const mockStoreSettingsService = {
       heroEyebrow: signal('Celestial Resonance'),
       heroTitle: signal('Wear Your Cosmic Frequency'),
-      heroSubtitle: signal('Attune your daily energy')
+      heroSubtitle: signal('Attune your daily energy'),
+      marqueeItems: signal([
+        { icon: '🔥', name: 'Fire Elements', energy: 'Vitality & Willpower' }
+      ])
     };
 
     await TestBed.configureTestingModule({

@@ -2,7 +2,7 @@ import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { Product } from '../../models/product';
-import { getPrimaryImageUrl } from '../../utils/product-image.util';
+import { getPrimaryImageUrl, getSecondaryImageUrl } from '../../utils/product-image.util';
 import { getProductSlug } from '../../utils/product-slug.util';
 import { getStockLabel, getStockStatus } from '../../utils/stock-status.util';
 import { CartService } from '../../services/cart.service';
@@ -49,6 +49,7 @@ export class ProductCard implements OnInit {
   }
 
   selectedImageUrl = signal<string | null>(null);
+  secondaryImageUrl = signal<string | null>(null);
   justAdded = signal(false);
 
   get ratingStars(): string {
@@ -88,6 +89,7 @@ export class ProductCard implements OnInit {
 
   ngOnInit(): void {
     this.selectedImageUrl.set(getPrimaryImageUrl(this.product));
+    this.secondaryImageUrl.set(getSecondaryImageUrl(this.product));
   }
 
   get stockLabel(): string {

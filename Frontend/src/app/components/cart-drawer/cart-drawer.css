@@ -1,44 +1,55 @@
-/* Invisible click-outside backdrop - NO dark mask covering the screen! */
+/* Frosted Backdrop for Slide-over Drawer */
 .cart-flyout-backdrop {
   position: fixed;
   inset: 0;
   z-index: var(--z-backdrop, 800);
-  background: transparent;
+  background: rgba(29, 39, 57, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fade-in 0.22s ease-out;
 }
 
-/* Floating Top-Right Bag Flyout */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Full-Height Slide-Over Bag Drawer */
 .cart-flyout {
   margin: 0;
   padding: 0;
   color: inherit;
   position: fixed;
-  top: 76px;
-  right: 24px;
+  top: 0;
+  right: 0;
+  bottom: 0;
   left: auto;
   inset-inline-start: auto;
-  inset-inline-end: 24px;
-  width: 390px;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100vh - 100px);
+  inset-inline-end: 0;
+  width: 420px;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
   background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border-subtle, #EAE3D6);
-  border-radius: var(--radius-sm, 4px);
-  box-shadow: 0 16px 44px rgba(29, 39, 57, 0.18), 0 2px 8px rgba(29, 39, 57, 0.06);
+  border-left: 1px solid var(--color-border-subtle, #EAE3D6);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: -8px 0 36px rgba(29, 39, 57, 0.18);
   z-index: var(--z-drawer, 900);
   overflow: hidden;
-  animation: flyout-slide-down 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: drawer-slide-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes flyout-slide-down {
+@keyframes drawer-slide-in {
   from {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.98);
+    transform: translateX(100%);
   }
   to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0);
   }
 }
 
@@ -186,9 +197,10 @@
 
 /* Items List */
 .cart-flyout-items {
+  flex: 1 1 auto;
   overflow-y: auto;
-  max-height: 270px;
-  padding: 0.5rem 1.25rem;
+  max-height: none;
+  padding: 0.75rem 1.25rem;
 }
 
 .flyout-empty-state {
@@ -421,10 +433,13 @@
 /* Responsive */
 @media (max-width: 500px) {
   .cart-flyout {
-    top: 68px;
-    right: 10px;
-    left: 10px;
-    width: auto;
-    max-width: none;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    border-left: none;
   }
 }

@@ -97,10 +97,20 @@
               <small>Astrological stones for your sun &amp; rising sign</small>
             </div>
           </a>
+          <a routerLink="/products" [queryParams]="{ intention: 'clarity' }" routerLinkActive="active" (click)="closeMenu()">
+            <span class="dropdown-item-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </span>
+            <div class="dropdown-item-content">
+              <strong>Shop by Intention</strong>
+              <small>Wealth, Love, Clarity, Calm &amp; Protection</small>
+            </div>
+          </a>
         </div>
       </div>
 
-      <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">Shop by Zodiac</a>
       <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
       <a routerLink="/guides" routerLinkActive="active" (click)="closeMenu()">Crystal Guides</a>
 

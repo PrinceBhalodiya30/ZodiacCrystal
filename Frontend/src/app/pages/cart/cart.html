@@ -1,6 +1,6 @@
 <section class="container cart-page">
   <header class="cart-header">
-    <h1>Your Cart</h1>
+    <h1>Your Shopping Bag</h1>
     @if (cartService.items().length > 0) {
       <span class="cart-count-pill">{{ cartService.items().length }} {{ cartService.items().length === 1 ? 'item' : 'items' }}</span>
     }
@@ -10,12 +10,12 @@
     <div class="state-message state-message--empty cart-empty">
       <div class="cart-empty-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="8" cy="21" r="1"></circle>
-          <circle cx="19" cy="21" r="1"></circle>
-          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+          <path d="M3 6h18"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
       </div>
-      <h2>Your cart is empty</h2>
+      <h2>Your bag is empty</h2>
       <p>Discover handpicked crystals, healing gemstones, and celestial talismans tuned to your energy.</p>
       <a routerLink="/products" class="btn">Explore Crystals</a>
     </div>
@@ -36,7 +36,7 @@
 
     @if (changeNotes().length > 0) {
       <output class="cart-notice">
-        <strong>Your cart was updated:</strong>
+        <strong>Your bag was updated:</strong>
         <ul>
           @for (note of changeNotes(); track note) {
             <li>{{ note }}</li>

@@ -2,7 +2,7 @@
   @if (mysteryBox()) {
     <a class="back-link" routerLink="/mystery-box" (click)="leaveBuyNow()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Mystery Box</a>
   } @else if (items().length > 0) {
-    <a class="back-link" routerLink="/cart" (click)="leaveBuyNow()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to cart</a>
+    <a class="back-link" routerLink="/cart" (click)="leaveBuyNow()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to bag</a>
   }
   <h1>Checkout</h1>
 
@@ -401,7 +401,7 @@
           @if (stockProblems().length > 0) {
             <p class="form-error" role="alert">
               Some items are no longer in stock.
-              <a routerLink="/cart" (click)="leaveBuyNow()">Update your cart</a>
+              <a routerLink="/cart" (click)="leaveBuyNow()">Update your bag</a>
               to continue.
             </p>
           }
@@ -417,6 +417,28 @@
               {{ paymentMethod() === 'Card' ? 'Pay' : 'Place Order' }} · {{ orderTotal() | inr }}
             }
           </button>
+
+          <div class="checkout-security-strip" aria-label="Payment security and guarantees">
+            <span class="security-item">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              256-Bit Encrypted Payment
+            </span>
+            <span class="security-item">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              100% Genuine Certified
+            </span>
+            <span class="security-item">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+              </svg>
+              7-Day Safe Transit Guarantee
+            </span>
+          </div>
         }
 
       </form>

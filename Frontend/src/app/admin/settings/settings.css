@@ -1025,3 +1025,150 @@ input:checked + .slider:before {
 .preview-unified-bar[data-slide="0"][data-moon-style="ruby"] .preview-crystal-highlight {
   color: #f7a5b6;
 }
+
+/* -------------------------------------------------------------
+   Hero Marquee Ribbon CMS
+------------------------------------------------------------- */
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.marquee-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-marquee-preview-box {
+  background: #11141b;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: var(--radius-md, 8px);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-mini-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #d4af37;
+  margin-bottom: 0.6rem;
+}
+
+.admin-marquee-track {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.admin-marquee-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  background: #1f2735;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  color: #f3f4f6;
+}
+
+.admin-marquee-pill .pill-icon {
+  font-size: 0.95rem;
+}
+
+.admin-marquee-pill .pill-name {
+  color: #f9fafb;
+}
+
+.admin-marquee-pill .pill-energy {
+  color: #d1d5db;
+  font-size: 0.75rem;
+}
+
+.marquee-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.marquee-edit-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.85rem;
+  padding: 1rem;
+  background: var(--color-surface-sunken, #f9f8f5);
+  border: 1px solid var(--color-border-subtle, #e8e4dc);
+  border-radius: var(--radius-md, 8px);
+}
+
+.row-index {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  padding-bottom: 0.6rem;
+  min-width: 28px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  margin-bottom: 0.35rem;
+}
+
+.marquee-field-icon {
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.marquee-field-name {
+  flex: 1;
+  min-width: 140px;
+}
+
+.marquee-field-energy {
+  flex: 1.5;
+  min-width: 180px;
+}
+
+.marquee-field-delete {
+  padding-bottom: 0.1rem;
+}
+
+.btn.danger {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.btn.danger:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .marquee-edit-row {
+    flex-wrap: wrap;
+  }
+  .marquee-field-icon {
+    width: 60px;
+  }
+  .marquee-field-name,
+  .marquee-field-energy {
+    min-width: 100%;
+  }
+}

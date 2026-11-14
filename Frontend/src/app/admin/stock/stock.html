@@ -125,6 +125,7 @@
             <th>Category</th>
             <th>Stock</th>
             <th>Status</th>
+            <th>Runout Forecast</th>
             <th></th>
           </tr>
         </thead>
@@ -162,6 +163,17 @@
                   [class.out]="status(product) === 'out-of-stock'"
                 >
                   {{ label(product) }}
+                </span>
+              </td>
+              <td data-label="Runout Forecast">
+                @let f = getForecast(product);
+                <span
+                  class="forecast-pill"
+                  [class]="'forecast-pill forecast-' + f.badge"
+                  [title]="f.tooltip"
+                >
+                  <span class="forecast-dot"></span>
+                  {{ f.label }}
                 </span>
               </td>
               <td class="cell-actions">

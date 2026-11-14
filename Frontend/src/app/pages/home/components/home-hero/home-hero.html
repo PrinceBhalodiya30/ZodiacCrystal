@@ -39,22 +39,42 @@
   </div>
 </section>
 
-<!-- 6. Celestial Astrological Elements Ribbon -->
-<section class="hzband" aria-label="Cosmic Astrological Elements">
+<!-- 6. Celestial Astrological Elements Ribbon (Energy Muse Infinite Scrolling Marquee) -->
+<section class="hzband" aria-label="Cosmic Astrological Elements Ribbon">
   <div class="hztrack">
-    @for (elem of cosmicElements; track elem.name) {
-      <a
-        [routerLink]="['/products']"
-        [queryParams]="{ search: getElementSearchTerm(elem) }"
-        class="hzitem"
-        [attr.aria-label]="'Explore crystals attuned to ' + elem.name"
-      >
-        <span class="hznum" aria-hidden="true">{{ elem.icon }}</span>
-        <span class="hzelem-title">{{ elem.name }}</span>
-        <span class="hzsep">·</span>
-        <span class="hzname">{{ elem.energy }}</span>
-      </a>
-    }
+    <!-- Group 1: Accessible for screen readers and keyboard users -->
+    <div class="hzgroup">
+      @for (elem of marqueeElements; track $index) {
+        <a
+          [routerLink]="['/products']"
+          [queryParams]="{ search: getElementSearchTerm(elem) }"
+          class="hzitem"
+          [attr.aria-label]="'Explore crystals attuned to ' + elem.name"
+        >
+          <span class="hznum" aria-hidden="true">{{ elem.icon }}</span>
+          <span class="hzelem-title">{{ elem.name }}</span>
+          <span class="hzsep">·</span>
+          <span class="hzname">{{ elem.energy }}</span>
+        </a>
+      }
+    </div>
+
+    <!-- Group 2: Seamless duplicate for infinite looping -->
+    <div class="hzgroup" aria-hidden="true">
+      @for (elem of marqueeElements; track $index) {
+        <a
+          [routerLink]="['/products']"
+          [queryParams]="{ search: getElementSearchTerm(elem) }"
+          class="hzitem"
+          tabindex="-1"
+        >
+          <span class="hznum">{{ elem.icon }}</span>
+          <span class="hzelem-title">{{ elem.name }}</span>
+          <span class="hzsep">·</span>
+          <span class="hzname">{{ elem.energy }}</span>
+        </a>
+      }
+    </div>
   </div>
 </section>
 
@@ -77,6 +97,21 @@
           <path d="m12 6 3 6-6 3 3 3"/>
         </svg>
         Astrological Guidance Before &amp; After You Buy
+      </span>
+      <span class="trust-pill">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Insured Transit &amp; Zero Breakage Guarantee
+      </span>
+      <span class="trust-pill">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="1" y="6" width="13" height="11"/>
+          <path d="M14 9h4l4 4v4h-8V9z"/>
+          <circle cx="6" cy="19" r="1.6"/>
+          <circle cx="17.5" cy="19" r="1.6"/>
+        </svg>
+        Complimentary Express Delivery Over ₹999
       </span>
     </div>
   </div>

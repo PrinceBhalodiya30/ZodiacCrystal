@@ -833,6 +833,69 @@
   color: #7b5816;
 }
 
+/* Simulated Dispatch Barcode */
+.slip-barcode-wrap {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.slip-barcode-lines {
+  display: flex;
+  align-items: stretch;
+  height: 26px;
+  gap: 2px;
+}
+
+.slip-barcode-lines span {
+  background-color: #111;
+  display: inline-block;
+  height: 100%;
+}
+
+.slip-barcode-lines .bar-w1 { width: 1.5px; }
+.slip-barcode-lines .bar-w2 { width: 2.5px; }
+.slip-barcode-lines .bar-w3 { width: 4px; }
+.slip-barcode-lines .bar-w4 { width: 5.5px; }
+
+.slip-barcode-digits {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #333;
+  margin-top: 2px;
+}
+
+/* Fragile Specimen Warning Notice */
+.slip-fragile-notice {
+  margin: 1.25rem 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  background: #fffbeb;
+  border: 1px dashed #d97706;
+  border-radius: 4px;
+}
+
+.slip-fragile-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.slip-fragile-text {
+  font-size: 0.78rem;
+  color: #78350f;
+  line-height: 1.4;
+}
+
+.slip-fragile-text strong {
+  font-weight: 700;
+  color: #92400e;
+}
+
 /* Native Print Stylesheet */
 @media print {
   /* Hide all app chrome, overlays, drawer sidebars, buttons */

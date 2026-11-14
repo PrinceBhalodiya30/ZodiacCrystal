@@ -1,8 +1,32 @@
 <div class="product-card">
   <div class="product-media-wrap">
     <a class="product-image" [routerLink]="['/products', productSlug]" [attr.aria-label]="'View details for ' + product.name">
-    @if (selectedImageUrl()) {
-      <img [imgSrc]="selectedImageUrl()" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="product.name" width="400" height="400" loading="lazy" decoding="async" imgFallback />
+    @if (selectedImageUrl(); as primaryUrl) {
+      <img
+        class="card-img-primary"
+        [class.has-secondary]="!!secondaryImageUrl()"
+        [imgSrc]="primaryUrl"
+        imgSizes="(max-width: 600px) 50vw, 300px"
+        [alt]="product.name"
+        width="400"
+        height="400"
+        loading="lazy"
+        decoding="async"
+        imgFallback
+      />
+      @if (secondaryImageUrl(); as secondaryUrl) {
+        <img
+          class="card-img-secondary"
+          [imgSrc]="secondaryUrl"
+          imgSizes="(max-width: 600px) 50vw, 300px"
+          [alt]="product.name + ' scale detail'"
+          width="400"
+          height="400"
+          loading="lazy"
+          decoding="async"
+          imgFallback
+        />
+      }
     } @else {
       <div class="image-placeholder">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">

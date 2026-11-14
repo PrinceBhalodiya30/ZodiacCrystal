@@ -302,6 +302,12 @@
                   <div class="slip-order-num">Order #{{ d.order.orderId }}</div>
                   <div class="slip-order-date">Date: {{ d.order.orderDate | date:'dd MMM yyyy' }}</div>
                   <div class="slip-order-status">Payment: {{ d.order.paymentMethod }} · {{ d.order.paymentStatus }}</div>
+                  <div class="slip-barcode-wrap" aria-hidden="true">
+                    <div class="slip-barcode-lines">
+                      <span class="bar-w1"></span><span class="bar-w3"></span><span class="bar-w2"></span><span class="bar-w1"></span><span class="bar-w4"></span><span class="bar-w2"></span><span class="bar-w1"></span><span class="bar-w3"></span><span class="bar-w2"></span><span class="bar-w1"></span><span class="bar-w3"></span><span class="bar-w2"></span><span class="bar-w4"></span>
+                    </div>
+                    <div class="slip-barcode-digits">*ZC-ORD-{{ d.order.orderId }}*</div>
+                  </div>
                 </div>
               </header>
 
@@ -390,6 +396,13 @@
                     <div class="slip-total-row slip-gift-total"><span>Gift Wrap:</span> <strong>+{{ (d.order.giftFee || 99) | inr }}</strong></div>
                   }
                   <div class="slip-total-row grand"><span>Total:</span> <strong>{{ d.order.totalAmount | inr }}</strong></div>
+                </div>
+              </div>
+
+              <div class="slip-fragile-notice">
+                <span class="slip-fragile-icon">⚠️</span>
+                <div class="slip-fragile-text">
+                  <strong>FRAGILE NATURAL MINERAL SPECIMENS ENCLOSED:</strong> Handle with extreme care. Specimens are cleansed with sacred white sage before packaging. Unpack gently over a soft surface.
                 </div>
               </div>
 

@@ -202,6 +202,20 @@ export class AdminStock implements OnInit {
     return getStockLabel(this.stockEdits[product.productId] ?? product.stockQuantity);
   }
 
+  getForecast(product: Product): { badge: 'out' | 'critical' | 'warn' | 'ok'; label: string; tooltip: string } {
+    const qty = this.stockEdits[product.productId] ?? product.stockQuantity;
+    if (qty <= 0) {
+      return { badge: 'out', label: 'Depleted (0d)', tooltip: 'Stock is 0 units. Immediate supplier order needed.' };
+    }
+    if (qty <= 3) {
+      return { badge: 'critical', label: 'Critical (~2-3d)', tooltip: `Only ${qty} left. Imminent stockout based on sales velocity.` };
+    }
+    if (qty <= 8) {
+      return { badge: 'warn', label: 'Reorder (~7-10d)', tooltip: `${qty} units remaining. Recommended supplier reorder threshold.` };
+    }
+    return { badge: 'ok', label: 'Healthy (30+d)', tooltip: `${qty} units in stock. Optimal mineral inventory.` };
+  }
+
   hasChanged(product: Product): boolean {
     return this.stockEdits[product.productId] !== product.stockQuantity;
   }
