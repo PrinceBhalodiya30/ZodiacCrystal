@@ -833,7 +833,12 @@ section h2 {
 
 .birthday-finder-expandable {
   margin-bottom: 2.5rem;
-  animation: bfinder-fade-in 0.25s ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .birthday-finder-expandable {
+    animation: bfinder-fade-in 0.25s ease-out;
+  }
 }
 
 @keyframes bfinder-fade-in {
@@ -888,6 +893,7 @@ section h2 {
     scroll-behavior: auto;
   }
 
+  .birthday-finder-expandable,
   .slider-arrow-btn,
   .slider-arrow-btn:hover:not(:disabled),
   .why-us-card:hover .why-us-icon,
