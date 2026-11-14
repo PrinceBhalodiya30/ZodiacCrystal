@@ -24,6 +24,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .product-details-page {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .product-gallery {
   display: flex;
   flex-direction: column;

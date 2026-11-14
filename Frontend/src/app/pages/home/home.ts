@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { ZodiacService } from '../../services/zodiac.service';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
+import { MysteryBoxService } from '../../services/mystery-box.service';
+import { InrPipe } from '../../pipes/inr.pipe';
 import { Zodiac } from '../../models/zodiac';
 import { Product } from '../../models/product';
 import { Category, CategoryTileStats } from '../../models/category';
@@ -43,7 +45,7 @@ export interface CategoryTile {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, ZodiacCard, ProductCard, ProductCardSkeleton, RecentlyViewed, ImgFallbackDirective, ScrollRevealDirective, BirthdaySignFinder, HomeHero],
+  imports: [RouterLink, InrPipe, ZodiacCard, ProductCard, ProductCardSkeleton, RecentlyViewed, ImgFallbackDirective, ScrollRevealDirective, BirthdaySignFinder, HomeHero],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -52,12 +54,14 @@ export class Home implements OnInit, OnDestroy {
   private readonly zodiacService = inject(ZodiacService);
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
+  private readonly mysteryBoxService = inject(MysteryBoxService);
   private readonly storeSettings = inject(StoreSettingsService);
   readonly heroEyebrow = computed(() => this.storeSettings.heroEyebrow());
   readonly heroTitle = computed(() => this.storeSettings.heroTitle());
   readonly heroSubtitle = computed(() => this.storeSettings.heroSubtitle());
   readonly quizService = inject(QuizService);
   private readonly cleansingGuideService = inject(CleansingGuideService);
+  readonly mysteryBoxPrice = signal<number>(1999);
 
   // Featured Products Horizontal Slider (E-Commerce Luxury Pattern)
   @ViewChild('featuredTrack') featuredTrack?: ElementRef<HTMLDivElement>;
@@ -216,11 +220,22 @@ export class Home implements OnInit, OnDestroy {
     this.loadZodiacSigns();
     this.loadFeaturedProducts();
     this.loadCategories();
-    this.startAutoplay();
+    this.loadMysteryBoxPrice();
   }
 
   ngOnDestroy(): void {
     this.stopAutoplay();
+  }
+
+  private loadMysteryBoxPrice(): void {
+    this.mysteryBoxService.getInfo().subscribe({
+      next: info => {
+        if (info?.price) {
+          this.mysteryBoxPrice.set(info.price);
+        }
+      },
+      error: () => {}
+    });
   }
 
   loadFeaturedProducts(): void {

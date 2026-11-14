@@ -14,8 +14,6 @@ import { SITE_NAME } from '../../services/page-title.service';
 
 import { QuizService } from '../../services/quiz.service';
 
-const ANNOUNCEMENT_DISMISSED_KEY = 'announcementDismissed';
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -67,11 +65,6 @@ export class Navbar {
       .join('')
       .toUpperCase();
   });
-  readonly announcementDismissed = signal(this.readAnnouncementDismissed());
-  readonly isAnnouncementVisible = computed(() => this.storeSettings.announcementEnabled() && !this.announcementDismissed());
-  readonly announcementText = computed(() => this.storeSettings.announcementText());
-  readonly announcementLink = computed(() => this.storeSettings.announcementLink());
-  readonly announcementStyle = computed(() => this.storeSettings.announcementStyle());
 
   readonly cartBump = signal(false);
   readonly wishlistBump = signal(false);
@@ -101,23 +94,6 @@ export class Navbar {
   private triggerBump(bumpSignal: WritableSignal<boolean>): void {
     bumpSignal.set(true);
     setTimeout(() => bumpSignal.set(false), 350);
-  }
-
-  private readAnnouncementDismissed(): boolean {
-    try {
-      return localStorage.getItem(ANNOUNCEMENT_DISMISSED_KEY) === 'true';
-    } catch {
-      return false;
-    }
-  }
-
-  dismissAnnouncement(): void {
-    this.announcementDismissed.set(true);
-    try {
-      localStorage.setItem(ANNOUNCEMENT_DISMISSED_KEY, 'true');
-    } catch {
-      // localStorage unavailable (private mode, etc.) - dismissal won't persist
-    }
   }
 
   @HostListener('window:scroll')

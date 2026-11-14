@@ -108,8 +108,8 @@
 
         <button type="button" class="navbar-logout" (click)="logout()">Logout</button>
       } @else {
-        <a routerLink="/login" routerLinkActive="active" (click)="closeMenu()">Login</a>
-        <a routerLink="/register" class="navbar-cta" (click)="closeMenu()">Register</a>
+        <a routerLink="/login" routerLinkActive="active" (click)="closeMenu()">Sign In</a>
+        <a routerLink="/register" class="navbar-cta" (click)="closeMenu()">Create Account</a>
       }
       </div>
     </nav>
@@ -272,7 +272,6 @@
           type="text"
           name="navbarSearch"
           placeholder="Search for crystals, zodiac signs, categories..."
-          autofocus
           [ngModel]="searchTerm()"
           (ngModelChange)="searchTerm.set($event)"
           aria-label="Search products"

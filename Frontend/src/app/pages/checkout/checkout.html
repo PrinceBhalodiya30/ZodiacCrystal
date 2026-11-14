@@ -303,13 +303,15 @@
             [readonly]="isGuest()"
             required
             email
+            [attr.aria-invalid]="shippingEmailField.invalid && shippingEmailField.touched"
+            [attr.aria-describedby]="shippingEmailField.invalid && shippingEmailField.touched ? 'shippingEmail-error' : null"
             #shippingEmailField="ngModel"
           />
           @if (isGuest()) {
             <small class="field-hint">Verified guest email · <button type="button" class="link-btn" (click)="switchGuestEmail()">use a different email</button></small>
           }
           @if (shippingEmailField.invalid && shippingEmailField.touched) {
-            <p class="field-hint error">
+            <p id="shippingEmail-error" class="field-hint error">
               {{ shippingEmailField.errors?.['required'] ? 'Email is required.' : 'Enter a valid email address.' }}
             </p>
           }
@@ -324,10 +326,12 @@
               autocomplete="name"
               [(ngModel)]="shippingName"
               required
+              [attr.aria-invalid]="shippingNameField.invalid && shippingNameField.touched"
+              [attr.aria-describedby]="shippingNameField.invalid && shippingNameField.touched ? 'shippingName-error' : null"
               #shippingNameField="ngModel"
             />
             @if (shippingNameField.invalid && shippingNameField.touched) {
-              <p class="field-hint error">Name is required.</p>
+              <p id="shippingName-error" class="field-hint error">Name is required.</p>
             }
 
             <app-map-address-fields
@@ -357,6 +361,7 @@
               class="delivery-instructions-input"
             />
             <fieldset class="instruction-chips" aria-label="Suggested delivery instructions">
+              <legend class="sr-only">Suggested delivery instructions</legend>
               @for (chip of instructionChips; track chip) {
                 <button
                   type="button"

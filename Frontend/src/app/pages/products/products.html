@@ -128,7 +128,7 @@
         <ul class="search-suggestions">
           @for (product of suggestions(); track product.productId) {
             <li>
-              <button type="button" class="search-suggestion" (mousedown)="selectSuggestion(product)">
+              <button type="button" class="search-suggestion" (mousedown)="$event.preventDefault()" (click)="selectSuggestion(product)" (keydown.enter)="selectSuggestion(product)">
                 <span class="search-suggestion-name">{{ product.name }}</span>
                 <span class="search-suggestion-price">{{ product.price | inr }}</span>
               </button>

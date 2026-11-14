@@ -53,7 +53,7 @@
             [disabled]="isSubscribing()"
             aria-label="Email address"
           />
-          <button type="submit" class="btn btn-outline" [disabled]="isSubscribing()">
+          <button type="submit" class="btn" [disabled]="isSubscribing()">
             {{ isSubscribing() ? 'Joining...' : 'Join' }}
           </button>
         </form>
@@ -72,10 +72,10 @@
     <div class="container footer-pillars-grid">
       <div class="footer-pillar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <div class="pillar-text">
+        <a routerLink="/about" class="pillar-text">
           <strong>100% Authentic Gemstones</strong>
           <small>Ethically sourced natural crystals</small>
-        </div>
+        </a>
       </div>
       <div class="footer-pillar">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>

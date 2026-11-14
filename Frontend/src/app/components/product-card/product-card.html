@@ -1,5 +1,6 @@
 <div class="product-card">
-  <a class="product-image" [routerLink]="['/products', productSlug]" [attr.aria-label]="'View details for ' + product.name">
+  <div class="product-media-wrap">
+    <a class="product-image" [routerLink]="['/products', productSlug]" [attr.aria-label]="'View details for ' + product.name">
     @if (selectedImageUrl()) {
       <img [imgSrc]="selectedImageUrl()" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="product.name" width="400" height="400" loading="lazy" decoding="async" imgFallback />
     } @else {
@@ -63,13 +64,14 @@
         }
       </span>
     }
+    </a>
     <div class="card-action-stack">
       <button
         type="button"
         class="wishlist-toggle"
         [class.active]="isWishlisted"
         [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
-        (click)="$event.preventDefault(); $event.stopPropagation(); toggleWishlist()"
+        (click)="toggleWishlist()"
       >
         <svg viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
@@ -81,14 +83,14 @@
         [class.active]="isCompared"
         [attr.aria-label]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
         [attr.title]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
-        (click)="$event.preventDefault(); $event.stopPropagation(); toggleCompare()"
+        (click)="toggleCompare()"
       >
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
         </svg>
       </button>
     </div>
-  </a>
+  </div>
 
   <div class="product-body">
     <h3 class="product-name">

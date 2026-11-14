@@ -60,11 +60,23 @@
   --color-accent: #985e38;
   --color-copper-light: #faf5ee;
   --color-surface-sunken: #ede6d9;
+  --color-sand: #f0eae1;
+  --color-sand-light: #f7f3ee;
+  --color-sand-dark: #e2dacd;
   --color-sand-tint: #f4efe5;
   --color-bone: #f4efe5;
   --color-primary-cta: #1d2739;
   --color-text: #1d2739;
+  --color-ink-secondary: #4a5568;
+  --color-accent-hover: #7e4d2d;
+  --color-error: #b3261a;
+  --color-amber: #d97706;
+  --color-cream-soft: #f5efeb;
   --color-amber-bg: #fff5e6;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
 
   /* --- Semantic Status Colors (WCAG AA compliant) --- */
   --color-success: #1b6e37;
@@ -127,6 +139,7 @@
 
   /* --- Shadows & Elevation (Energy Muse copper aura shadows) --- */
   --shadow-sm: 0 1px 2px rgba(61, 41, 23, 0.05), 0 4px 10px rgba(61, 41, 23, 0.05);
+  --shadow-md: 0 4px 12px rgba(61, 41, 23, 0.08), 0 1px 3px rgba(61, 41, 23, 0.04);
   --shadow-card: 0 2px 5px rgba(61, 41, 23, 0.05), 0 14px 34px rgba(61, 41, 23, 0.08), 0 0 0 1px var(--color-border);
   --shadow-card-hover: 0 6px 18px rgba(61, 41, 23, 0.09), 0 26px 54px rgba(61, 41, 23, 0.12), 0 0 0 1px var(--color-copper);
   --shadow-dropdown: 0 14px 38px rgba(11, 19, 32, 0.14), 0 0 0 1px var(--color-border);
@@ -872,6 +885,10 @@ textarea:focus,
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.text-center {
+  text-align: center;
 }
 
 

@@ -16,6 +16,7 @@
           class="stepper-item"
           [class.active]="currentStep() === 1"
           [class.completed]="currentStep() > 1"
+          [attr.aria-current]="currentStep() === 1 ? 'step' : null"
           (click)="goToStep(1)"
         >
           <span class="stepper-num">01</span>
@@ -27,6 +28,7 @@
           class="stepper-item"
           [class.active]="currentStep() === 2"
           [class.completed]="currentStep() > 2"
+          [attr.aria-current]="currentStep() === 2 ? 'step' : null"
           [disabled]="currentStep() < 2"
           (click)="goToStep(2)"
         >
@@ -39,6 +41,7 @@
           class="stepper-item"
           [class.active]="currentStep() === 3"
           [class.completed]="currentStep() > 3"
+          [attr.aria-current]="currentStep() === 3 ? 'step' : null"
           [disabled]="currentStep() < 3"
           (click)="goToStep(3)"
         >
@@ -46,7 +49,7 @@
           <span class="stepper-label">Form</span>
         </button>
         <span class="stepper-divider" [class.filled]="currentStep() > 3" aria-hidden="true"></span>
-        <div class="stepper-item" [class.active]="currentStep() === 4">
+        <div class="stepper-item" [class.active]="currentStep() === 4" [attr.aria-current]="currentStep() === 4 ? 'step' : null">
           <span class="stepper-num">04</span>
           <span class="stepper-label">Resonance</span>
         </div>
@@ -287,7 +290,7 @@
                   <article class="specimen-card">
                     <div class="specimen-resonance-tag">
                       <span class="tag-dot"></span>
-                      {{ match.matchScore }}% Astrological Affinity
+                      {{ match.affinityTier }}
                     </div>
 
                     <button
@@ -309,9 +312,9 @@
 
                     <div class="specimen-body">
                       <h3 class="specimen-title">
-                        <a (click)="navigateToProduct(match.product.productId)" (keydown.enter)="navigateToProduct(match.product.productId)" tabindex="0">
+                        <button type="button" class="specimen-title-link" (click)="navigateToProduct(match.product.productId)">
                           {{ match.product.name }}
-                        </a>
+                        </button>
                       </h3>
 
                       <div class="specimen-price">

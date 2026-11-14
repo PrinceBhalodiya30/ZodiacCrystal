@@ -303,7 +303,7 @@
       <h2 class="mystery-title">The Zodiac Mystery Crystal Box</h2>
 
       <div class="mystery-price-strip">
-        <span class="mystery-current-price">₹1,999</span>
+        <span class="mystery-current-price">{{ mysteryBoxPrice() | inr }}</span>
         <del class="mystery-original-price">₹3,500</del>
         <span class="mystery-discount-badge">Save ₹1,501 (43% Off)</span>
       </div>
@@ -375,7 +375,7 @@
         <a class="btn btn-accent mystery-order-cta" routerLink="/mystery-box"
           [queryParams]="selectedMysteryZodiacId() ? { zodiac: selectedMysteryZodiacId() } : {}">
           <span>{{ selectedMysteryZodiac() ? 'Order for ' + selectedMysteryZodiac()?.name : 'Order Mystery Box' }} —
-            ₹1,999</span>
+            {{ mysteryBoxPrice() | inr }}</span>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
             class="icon-inline-right" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7" />

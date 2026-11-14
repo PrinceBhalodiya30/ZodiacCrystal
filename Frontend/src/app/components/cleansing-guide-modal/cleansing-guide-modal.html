@@ -40,12 +40,15 @@
       </header>
 
       <!-- Tab Navigation -->
-      <nav class="cleansing-tabs" aria-label="Cleansing guide sections">
+      <div class="cleansing-tabs" role="tablist" aria-label="Cleansing guide sections">
         <button
           type="button"
+          role="tab"
+          id="tab-cleansing"
           class="cleansing-tab"
           [class.active]="activeTab() === 'cleansing'"
-          [attr.aria-pressed]="activeTab() === 'cleansing'"
+          [attr.aria-selected]="activeTab() === 'cleansing'"
+          aria-controls="panel-cleansing"
           (click)="setTab('cleansing')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -55,9 +58,12 @@
         </button>
         <button
           type="button"
+          role="tab"
+          id="tab-charging"
           class="cleansing-tab"
           [class.active]="activeTab() === 'charging'"
-          [attr.aria-pressed]="activeTab() === 'charging'"
+          [attr.aria-selected]="activeTab() === 'charging'"
+          aria-controls="panel-charging"
           (click)="setTab('charging')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -68,9 +74,12 @@
         </button>
         <button
           type="button"
+          role="tab"
+          id="tab-ritual"
           class="cleansing-tab"
           [class.active]="activeTab() === 'ritual'"
-          [attr.aria-pressed]="activeTab() === 'ritual'"
+          [attr.aria-selected]="activeTab() === 'ritual'"
+          aria-controls="panel-ritual"
           (click)="setTab('ritual')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -80,9 +89,12 @@
         </button>
         <button
           type="button"
+          role="tab"
+          id="tab-checker"
           class="cleansing-tab"
           [class.active]="activeTab() === 'checker'"
-          [attr.aria-pressed]="activeTab() === 'checker'"
+          [attr.aria-selected]="activeTab() === 'checker'"
+          aria-controls="panel-checker"
           (click)="setTab('checker')"
         >
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -91,13 +103,13 @@
           </svg>
           <span>Mineral Quick-Checker</span>
         </button>
-      </nav>
+      </div>
 
       <!-- Modal Body -->
       <div class="cleansing-modal-body">
         <!-- Tab 1: Cleansing Protocols -->
         @if (activeTab() === 'cleansing') {
-          <div class="tab-pane-content">
+          <div class="tab-pane-content" role="tabpanel" id="panel-cleansing" aria-labelledby="tab-cleansing">
             <div class="protocols-grid">
               <!-- Method 1: Smoke / Smudging -->
               <article class="protocol-card">
@@ -225,7 +237,7 @@
 
         <!-- Tab 2: Lunar & Solar Charging -->
         @if (activeTab() === 'charging') {
-          <div class="tab-pane-content">
+          <div class="tab-pane-content" role="tabpanel" id="panel-charging" aria-labelledby="tab-charging">
             <div class="charging-grid">
               <article class="charging-card moon-charge-card">
                 <div class="charge-header">
@@ -302,7 +314,7 @@
 
         <!-- Tab 3: 3-Step Consecration & Activation Ritual -->
         @if (activeTab() === 'ritual') {
-          <div class="tab-pane-content">
+          <div class="tab-pane-content" role="tabpanel" id="panel-ritual" aria-labelledby="tab-ritual">
             <div class="ritual-guide-banner">
               <h3>The 3-Step Consecration &amp; Programming Ritual</h3>
               <p>
@@ -355,7 +367,7 @@
 
         <!-- Tab 4: Mineral Quick-Checker -->
         @if (activeTab() === 'checker') {
-          <div class="tab-pane-content">
+          <div class="tab-pane-content" role="tabpanel" id="panel-checker" aria-labelledby="tab-checker">
             <div class="checker-controls">
               <div class="checker-search-wrap">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

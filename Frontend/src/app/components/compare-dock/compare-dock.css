@@ -177,8 +177,10 @@
 
 @media (max-width: 768px) {
   :root:has(.mobile-add-bar) .compare-dock,
-  body:has(.mobile-add-bar) .compare-dock {
-    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  body:has(.mobile-add-bar) .compare-dock,
+  :root:has(.cart-mobile-sticky-bar) .compare-dock,
+  body:has(.cart-mobile-sticky-bar) .compare-dock {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 

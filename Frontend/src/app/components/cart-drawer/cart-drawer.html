@@ -11,9 +11,12 @@
   <dialog
     class="cart-flyout"
     open
+    aria-modal="true"
     aria-label="Shopping bag summary"
     (mouseenter)="pauseAutoClose()"
     (mouseleave)="resumeAutoClose()"
+    (focusin)="pauseAutoClose()"
+    (focusout)="resumeAutoClose()"
     (keydown)="$event.key === 'Escape' && close()"
   >
     @if (cartService.isAutoDismissing()) {

@@ -31,6 +31,7 @@ export interface QuizForm {
 export interface CrystalMatch {
   product: Product;
   matchScore: number;
+  affinityTier: string;
   reason: string;
 }
 
@@ -304,11 +305,14 @@ export class Consultation implements OnInit {
         const matchScore = Math.min(99, Math.max(68, score));
         const reason = this.generateReason(prod, intention, zodiac);
 
-        return { product: prod, matchScore, reason };
+        return { product: prod, matchScore, affinityTier: 'Harmonious Match', reason };
       });
 
       scored.sort((a, b) => b.matchScore - a.matchScore);
-      const topMatches = scored.slice(0, 3);
+      const topMatches = scored.slice(0, 3).map((item, index) => ({
+        ...item,
+        affinityTier: this.getAffinityTier(index)
+      }));
 
       this.matchedCrystals.set(topMatches);
       const consId = this.quizService.logConsultation(
@@ -334,5 +338,15 @@ export class Consultation implements OnInit {
     }
 
     return `Harmonizes beautifully with ${zodiacText}, amplifying positive intentions for ${goalText}.`;
+  }
+
+  private getAffinityTier(index: number): string {
+    if (index === 0) {
+      return 'Primary Astrological Match';
+    }
+    if (index === 1) {
+      return 'Harmonious Resonance';
+    }
+    return 'Complementary Energy';
   }
 }

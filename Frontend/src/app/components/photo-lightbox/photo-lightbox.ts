@@ -27,6 +27,20 @@ export class PhotoLightbox {
       this.step(1);
     } else if (event.key === 'ArrowLeft') {
       this.step(-1);
+    } else if (event.key === 'Tab' && typeof document !== 'undefined') {
+      const dialog = document.querySelector<HTMLElement>('.photo-lightbox');
+      if (!dialog) return;
+      const focusable = dialog.querySelectorAll<HTMLElement>('button:not([disabled])');
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   }
 

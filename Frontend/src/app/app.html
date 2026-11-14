@@ -1,8 +1,9 @@
+<a href="#main-content" class="skip-link">Skip to main content</a>
 @if (!isAdminRoute()) {
   <app-navbar></app-navbar>
 }
 
-<main [class.admin-main]="isAdminRoute()">
+<main id="main-content" [class.admin-main]="isAdminRoute()">
   <router-outlet />
 </main>
 

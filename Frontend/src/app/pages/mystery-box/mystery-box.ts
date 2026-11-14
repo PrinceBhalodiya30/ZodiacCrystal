@@ -1,5 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MysteryBoxService } from '../../services/mystery-box.service';
 import { ZodiacService } from '../../services/zodiac.service';
 import { CartService } from '../../services/cart.service';
@@ -23,6 +23,7 @@ export class MysteryBox implements OnInit {
   private readonly zodiacService = inject(ZodiacService);
   private readonly cartService = inject(CartService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly zodiacSigns = signal<Zodiac[]>([]);
   readonly selectedZodiacId = signal<number | null>(null);
@@ -42,11 +43,15 @@ export class MysteryBox implements OnInit {
   }
 
   private loadZodiacSigns(): void {
+    const zodiacParam = this.route.snapshot.queryParamMap.get('zodiac');
     this.zodiacService.getZodiacSigns().subscribe({
       next: signs => {
         this.zodiacSigns.set(signs);
         if (signs.length > 0 && !this.selectedZodiacId()) {
-          this.selectedZodiacId.set(signs[0].zodiacId);
+          const matched = zodiacParam
+            ? signs.find(s => s.name.toLowerCase() === zodiacParam.toLowerCase() || s.zodiacId.toString() === zodiacParam)
+            : null;
+          this.selectedZodiacId.set(matched ? matched.zodiacId : signs[0].zodiacId);
         }
       },
       error: () => {}

@@ -55,13 +55,13 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  min-width: 18px;
-  height: 18px;
+  min-width: 19px;
+  height: 19px;
   padding: 0 4px;
   border-radius: var(--radius-pill);
   background-color: var(--color-copper, #985E38);
   color: #ffffff;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 700;
   display: flex;
   align-items: center;

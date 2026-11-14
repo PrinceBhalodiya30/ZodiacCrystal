@@ -4,7 +4,7 @@
       <app-auth-showcase mode="register"></app-auth-showcase>
     </aside>
 
-    <main class="auth-form-panel">
+    <div class="auth-form-panel">
       @if (step() === 'details') {
         <div class="auth-form-wrap">
           <header class="auth-form-header">
@@ -166,7 +166,7 @@
             <span>Already have an account?</span>
           </div>
 
-          <a routerLink="/login" class="btn btn-secondary">
+          <a routerLink="/login" class="btn btn-outline">
             Sign In
           </a>
         </div>
@@ -180,14 +180,14 @@
             </svg>
           </div>
 
-          <header class="auth-form-header">
-            <h1 style="text-align: center;">Verify your email</h1>
-            <p class="auth-subtitle" style="text-align: center;">{{ infoMessage() }}</p>
+          <header class="auth-form-header text-center">
+            <h1>Verify your email</h1>
+            <p class="auth-subtitle">{{ infoMessage() }}</p>
           </header>
 
           <form (ngSubmit)="onVerify(otpForm)" #otpForm="ngForm" novalidate>
             <div class="field-group">
-              <label for="otp" style="text-align: center;">6-Digit Verification Code <span class="req-star" aria-hidden="true">*</span></label>
+              <label for="otp" class="text-center">6-Digit Verification Code <span class="req-star" aria-hidden="true">*</span></label>
               <input
                 id="otp"
                 name="otp"
@@ -204,9 +204,9 @@
                 [attr.aria-describedby]="otpField.invalid && otpField.touched ? 'otp-error' : 'otp-hint'"
                 #otpField="ngModel"
               />
-              <p id="otp-hint" class="field-hint" style="text-align: center;">Code is valid for 10 minutes.</p>
+              <p id="otp-hint" class="field-hint text-center">Code is valid for 10 minutes.</p>
               @if (otpField.invalid && otpField.touched) {
-                <p id="otp-error" class="field-hint error" role="alert" style="text-align: center;">Enter the 6-digit code from your email.</p>
+                <p id="otp-error" class="field-hint error text-center" role="alert">Enter the 6-digit code from your email.</p>
               }
             </div>
 
@@ -241,7 +241,7 @@
           <p class="auth-switch">Already registered? <a routerLink="/login">Sign In</a></p>
         </div>
       }
-    </main>
+    </div>
   </div>
 
   <div class="auth-trust-bar">

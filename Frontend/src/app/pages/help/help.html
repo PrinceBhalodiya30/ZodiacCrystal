@@ -56,7 +56,7 @@
               @for (o of visibleOrders(); track o.orderId) {
                 <button type="button" class="help-order" (click)="chooseOrder(o)">
                   @if (o.items?.[0]?.imageUrl) {
-                    <img [src]="o.items![0].imageUrl" alt="" loading="lazy" />
+                    <img [src]="o.items![0].imageUrl" [alt]="o.items![0].productName" loading="lazy" />
                   }
                   <span class="help-order-text">
                     <strong>{{ orderLabel(o) }}</strong>

@@ -7,7 +7,7 @@
   background: #18161e;
   color: #f3efe6;
   border-bottom: 1px solid rgba(240, 230, 215, 0.1);
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.45;
   letter-spacing: 0.025em;
   position: relative;
@@ -101,7 +101,7 @@
   padding: 0;
   margin: 0;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: #e2ba72;
   cursor: pointer;
@@ -132,7 +132,7 @@
 
 /* Promo Slide */
 .ticker-slide--promo {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
   color: #f3efe6;
   letter-spacing: 0.02em;
@@ -363,13 +363,13 @@
 
   .ticker-text-wrapper,
   .ticker-slide--promo {
-    font-size: 11px;
+    font-size: 12px;
     gap: 0.25rem;
     line-height: 1.35;
   }
 
   .crystal-name-btn {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .crystal-benefit {

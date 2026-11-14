@@ -21,5 +21,12 @@ export class OrderPlaced {
 
   readonly order: Order | null = this.state?.['order'] ?? null;
   readonly email: string = this.state?.['email'] ?? '';
+
+  getPaymentMethodLabel(order: Order): string {
+    if (order.paymentMethod === 'COD') {
+      return 'Cash on Delivery';
+    }
+    return 'Paid by card';
+  }
 }
 

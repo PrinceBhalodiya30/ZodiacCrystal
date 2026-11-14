@@ -8,6 +8,7 @@
     <dialog
       class="compare-modal"
       open
+      aria-modal="true"
       aria-labelledby="compareModalTitle"
       (click)="$event.stopPropagation()"
       (keydown)="$event.key === 'Escape' && close()"

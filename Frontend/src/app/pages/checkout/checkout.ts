@@ -383,6 +383,12 @@ export class Checkout implements OnInit, OnDestroy {
   continueToPayment(form: NgForm): void {
     if (form.invalid) {
       form.control.markAllAsTouched();
+      if (typeof document !== 'undefined') {
+        setTimeout(() => {
+          const firstInvalid = document.querySelector<HTMLElement>('.checkout-form .ng-invalid[name], .checkout-form input.ng-invalid, .checkout-form input[aria-invalid="true"]');
+          firstInvalid?.focus();
+        }, 50);
+      }
       return;
     }
     this.addressConfirmed.set(true);
