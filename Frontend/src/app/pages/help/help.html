@@ -230,7 +230,7 @@
   </div>
 
   <aside class="help-contact">
-    <span>Prefer email? <a href="mailto:support@crystalstudio.com">support&#64;crystalstudio.com</a></span>
-    <span>Mon - Sat, 9am - 6pm</span>
+    <span>Prefer email? <a [href]="'mailto:' + supportEmail()">{{ supportEmail() }}</a></span>
+    <span>{{ operatingHours() }}</span>
   </aside>
 </section>

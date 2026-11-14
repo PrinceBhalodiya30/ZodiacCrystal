@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { SupportService } from '../../services/support.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { ToastService } from '../../services/toast.service';
 import { OrderSummary } from '../../models/order';
 import { SUPPORT_MAX_PHOTOS, SUPPORT_REPLY_WITHIN_HOURS, TICKET_CATEGORIES, TicketCategory } from '../../models/support-ticket';
@@ -47,9 +48,14 @@ export class Help implements OnInit {
   readonly authService = inject(AuthService);
   private readonly orderService = inject(OrderService);
   private readonly supportService = inject(SupportService);
+  private readonly storeSettings = inject(StoreSettingsService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
+  readonly contactSettings = computed(() => this.storeSettings.storeContactSettings());
+  readonly supportEmail = computed(() => this.contactSettings().supportEmail);
+  readonly operatingHours = computed(() => this.contactSettings().operatingHours);
 
   readonly categories = TICKET_CATEGORIES;
   readonly replyWithinHours = SUPPORT_REPLY_WITHIN_HOURS;

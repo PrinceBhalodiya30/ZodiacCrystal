@@ -55,6 +55,12 @@ export class HomeHero implements OnInit, OnDestroy {
     return items && items.length > 0 ? items : DEFAULT_HERO_INTENTIONS;
   }
 
+  get freeShippingThreshold(): number {
+    return typeof this.storeSettingsService?.freeShippingThreshold === 'function'
+      ? this.storeSettingsService.freeShippingThreshold()
+      : 999;
+  }
+
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
       this.initSineWave();

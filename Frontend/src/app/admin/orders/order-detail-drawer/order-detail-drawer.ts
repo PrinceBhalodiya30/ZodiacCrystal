@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -31,6 +31,7 @@ const COURIERS = ['Delhivery', 'Blue Dart', 'DTDC', 'Ekart', 'India Post', 'Xpre
 // stray click in the orders table can't cancel or refund anything.
 import { AdminNavCountsService } from '../../admin-nav/admin-nav-counts.service';
 import { AuditLogService } from '../../../services/audit-log.service';
+import { StoreSettingsService } from '../../../services/store-settings.service';
 import { AuditLog } from '../../../models/audit-log';
 import { SITE_NAME } from '../../../services/page-title.service';
 
@@ -53,6 +54,9 @@ export class OrderDetailDrawer implements OnInit {
   readonly siteName = SITE_NAME;
   private readonly orderService = inject(OrderService);
   private readonly auditLogService = inject(AuditLogService);
+  private readonly storeSettings = inject(StoreSettingsService);
+
+  readonly supportEmail = computed(() => this.storeSettings.storeContactSettings().supportEmail);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
   private readonly navCounts = inject(AdminNavCountsService);

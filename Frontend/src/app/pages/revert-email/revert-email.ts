@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { SITE_NAME } from '../../services/page-title.service';
 
 // Landing page for the "this wasn't me" link in the email-changed notice.
@@ -16,6 +17,9 @@ import { SITE_NAME } from '../../services/page-title.service';
 export class RevertEmail {
   readonly siteName = SITE_NAME;
   private readonly authService = inject(AuthService);
+  private readonly storeSettings = inject(StoreSettingsService);
+
+  readonly supportEmail = computed(() => this.storeSettings.storeContactSettings().supportEmail);
 
   private readonly token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
   readonly hasToken = this.token.length > 0;
