@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { QuizService } from '../../../../services/quiz.service';
-import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS } from '../../../../services/store-settings.service';
+import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS, DEFAULT_HERO_INTENTIONS } from '../../../../services/store-settings.service';
 import { ImgFallbackDirective } from '../../../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../../../services/page-title.service';
 
@@ -48,50 +48,12 @@ export class HomeHero implements OnInit, OnDestroy {
     return elem.name.split(' ')[0].toLowerCase();
   }
 
-  readonly intentions: IntentionItem[] = [
-    {
-      id: 'wealth',
-      label: 'Wealth',
-      sub: 'Pyrite & Citrine',
-      image: '/intentions/wealth.webp',
-      queryParam: 'wealth'
-    },
-    {
-      id: 'protection',
-      label: 'Protection',
-      sub: 'Smoky Quartz & Obsidian',
-      image: '/intentions/protection.webp',
-      queryParam: 'protection'
-    },
-    {
-      id: 'love',
-      label: 'Love',
-      sub: 'Rose Quartz',
-      image: '/intentions/love.jpg',
-      queryParam: 'love'
-    },
-    {
-      id: 'clarity',
-      label: 'Clarity',
-      sub: 'Clear Quartz',
-      image: '/intentions/clarity.webp',
-      queryParam: 'intuition'
-    },
-    {
-      id: 'calm',
-      label: 'Calm',
-      sub: 'Amethyst & Selenite',
-      image: '/intentions/calm.jpg',
-      queryParam: 'peace'
-    },
-    {
-      id: 'all',
-      label: 'All Crystals',
-      sub: 'Explore Collection',
-      image: '/intentions/all-crystals.webp',
-      queryParam: ''
-    }
-  ];
+  get intentions(): IntentionItem[] {
+    const items = typeof this.storeSettingsService?.heroIntentions === 'function'
+      ? this.storeSettingsService.heroIntentions()
+      : undefined;
+    return items && items.length > 0 ? items : DEFAULT_HERO_INTENTIONS;
+  }
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {

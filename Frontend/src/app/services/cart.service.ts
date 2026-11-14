@@ -56,7 +56,23 @@ export class CartService {
   readonly isGiftWrap = signal<boolean>(this.loadStoredGiftWrap());
   readonly giftRecipient = signal<string>(this.loadStoredGiftRecipient());
   readonly giftMessage = signal<string>(this.loadStoredGiftMessage());
-  readonly giftFee = computed(() => this.isGiftWrap() ? GIFT_PACKAGING_FEE : 0);
+  readonly giftFee = computed(() => {
+    if (!this.isGiftWrap()) return 0;
+    const settings = typeof this.storeSettings?.giftPackagingSettings === 'function'
+      ? this.storeSettings.giftPackagingSettings()
+      : null;
+    if (!settings) {
+      return GIFT_PACKAGING_FEE;
+    }
+    return settings.enabled ? settings.fee : 0;
+  });
+
+  get currentGiftPackagingFee(): number {
+    const settings = typeof this.storeSettings?.giftPackagingSettings === 'function'
+      ? this.storeSettings.giftPackagingSettings()
+      : null;
+    return settings ? settings.fee : GIFT_PACKAGING_FEE;
+  }
 
   setGiftWrap(enabled: boolean, recipient?: string, message?: string): void {
     this.isGiftWrap.set(enabled);

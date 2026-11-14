@@ -22,6 +22,7 @@ export class Footer {
   private readonly newsletterService = inject(NewsletterService);
   private readonly storeSettings = inject(StoreSettingsService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
+  readonly contact = computed(() => this.storeSettings.storeContactSettings());
 
   readonly newsletterEmail = signal('');
   readonly newsletterHoneypot = signal('');

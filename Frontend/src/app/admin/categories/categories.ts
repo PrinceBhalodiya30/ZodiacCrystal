@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, computed, inject, signal } from '@angu
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CategoryService } from '../../services/category.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { Category } from '../../models/category';
 import { AdminNav } from '../admin-nav/admin-nav';
 import { Spinner } from '../../components/spinner/spinner';
@@ -20,6 +21,7 @@ const PAGE_SIZE = 20;
 })
 export class AdminCategories implements OnInit {
   private readonly categoryService = inject(CategoryService);
+  private readonly storeSettings = inject(StoreSettingsService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
@@ -61,6 +63,7 @@ export class AdminCategories implements OnInit {
 
   formName = '';
   formDescription = '';
+  formImageUrl = '';
   formParentCategoryId: number | null = null;
   formIsActive = true;
 
@@ -145,11 +148,16 @@ export class AdminCategories implements OnInit {
     return this.categories().find(c => c.categoryId === id)?.name ?? '—';
   }
 
+  getCategoryImage(id: number): string | null {
+    return this.storeSettings.getCategoryImage(id);
+  }
+
   startCreate(): void {
     this.formMode.set('create');
     this.editingCategoryId.set(null);
     this.formName = '';
     this.formDescription = '';
+    this.formImageUrl = '';
     this.formParentCategoryId = null;
     this.formIsActive = true;
     this.formError.set('');
@@ -160,6 +168,7 @@ export class AdminCategories implements OnInit {
     this.editingCategoryId.set(category.categoryId);
     this.formName = category.name;
     this.formDescription = category.description ?? '';
+    this.formImageUrl = this.storeSettings.getCategoryImage(category.categoryId) ?? '';
     this.formParentCategoryId = category.parentCategoryId ?? null;
     this.formIsActive = category.isActive;
     this.formError.set('');
@@ -196,6 +205,7 @@ export class AdminCategories implements OnInit {
     if (editingId) {
       this.categoryService.updateCategory(editingId, request).subscribe({
         next: () => {
+          this.storeSettings.saveCategoryImage(editingId, this.formImageUrl);
           this.isSubmitting.set(false);
           this.formMode.set('closed');
           this.toast.success(`"${request.name}" updated.`);
@@ -208,7 +218,10 @@ export class AdminCategories implements OnInit {
       });
     } else {
       this.categoryService.createCategory(request).subscribe({
-        next: () => {
+        next: (created) => {
+          if (created?.categoryId) {
+            this.storeSettings.saveCategoryImage(created.categoryId, this.formImageUrl);
+          }
           this.isSubmitting.set(false);
           this.formMode.set('closed');
           this.toast.success(`"${request.name}" added.`);

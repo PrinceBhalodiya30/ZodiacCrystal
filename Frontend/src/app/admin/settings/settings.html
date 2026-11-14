@@ -202,6 +202,15 @@
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-1.8 0-3-1-3-2.5S10 3 11.3 3C12.7 3 12 6.5 12 8Zm0 0c1.8 0 3-1 3-2.5S13 3 11.7 3C10.3 3 12 6.5 12 8Z"/></svg>
       <span>Mystery Box Curation</span>
     </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'contact'"
+      (click)="selectTab('contact')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Store Channels &amp; Socials</span>
+    </button>
   </div>
 
   @if (isLoading()) {
@@ -628,6 +637,74 @@
               />
             </div>
           </div>
+
+          <!-- Luxury Gift Packaging & Zodiac Note Service -->
+          <div class="card-section">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="section-title">Luxury Gift Packaging &amp; Zodiac Note Service</span>
+                <p class="section-desc">Offer customers a luxury velvet presentation box and personalized gold-foil astrological greeting card at checkout.</p>
+              </div>
+              <label for="giftPackagingEnabledToggle" class="switch" aria-label="Enable Gift Packaging Service">
+                <input
+                  type="checkbox"
+                  id="giftPackagingEnabledToggle"
+                  [ngModel]="giftPackagingEnabled()"
+                  (ngModelChange)="giftPackagingEnabled.set($event)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            @if (giftPackagingEnabled()) {
+              <div class="form-grid-2col margin-top-md">
+                <div class="form-group">
+                  <label for="giftPackagingFee">Gift Packaging Fee (₹)</label>
+                  <div class="input-with-currency">
+                    <span class="currency-prefix">₹</span>
+                    <input
+                      type="number"
+                      id="giftPackagingFee"
+                      class="form-control"
+                      min="0"
+                      step="10"
+                      [ngModel]="giftPackagingFee()"
+                      (ngModelChange)="giftPackagingFee.set($event)"
+                      placeholder="99"
+                    />
+                  </div>
+                  <small class="field-hint">Set to 0 to offer complimentary free gift packaging</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="giftPackagingTitle">Service Display Title</label>
+                  <input
+                    type="text"
+                    id="giftPackagingTitle"
+                    class="form-control"
+                    maxlength="80"
+                    [ngModel]="giftPackagingTitle()"
+                    (ngModelChange)="giftPackagingTitle.set($event)"
+                    placeholder="e.g. Luxury Gift Wrap &amp; Zodiac Note"
+                  />
+                  <small class="field-hint">Shown in cart drawer and checkout</small>
+                </div>
+              </div>
+
+              <div class="form-group margin-top-sm">
+                <label for="giftPackagingDesc">Cardstock Inscription Promise</label>
+                <textarea
+                  id="giftPackagingDesc"
+                  class="form-control textarea"
+                  rows="2"
+                  maxlength="200"
+                  [ngModel]="giftPackagingDesc()"
+                  (ngModelChange)="giftPackagingDesc.set($event)"
+                  placeholder="e.g. Hand-wrapped in sacred velvet gift box with a personalized gold-foil card..."
+                ></textarea>
+              </div>
+            }
+          </div>
         </div>
       </div>
     }
@@ -677,6 +754,82 @@
               maxlength="1000"
             ></textarea>
             <div class="char-count">{{ heroSubtitle().length }} / 1000 characters</div>
+          </div>
+
+          <!-- Hero Curated Intentions -->
+          <div class="card-section">
+            <div class="section-title-row">
+              <div>
+                <h3 class="section-title">Curated Intention Quick-Filter Cards</h3>
+                <p class="section-desc">
+                  Customize the 6 intention quick-filter cards displayed on the homepage hero, including labels, crystal pairings, and query filters.
+                </p>
+              </div>
+              <div>
+                <button type="button" class="btn btn-sm btn-outline" (click)="resetIntentionsToDefaults()">
+                  Reset to Defaults
+                </button>
+              </div>
+            </div>
+
+            <div class="intentions-edit-grid">
+              @for (item of heroIntentions(); track item.id; let idx = $index) {
+                <div class="intention-card-editor">
+                  <div class="intention-editor-header">
+                    <span class="intention-pill">#{{ idx + 1 }} {{ item.label }}</span>
+                    <span class="intention-id-badge">{{ item.id }}</span>
+                  </div>
+
+                  <div class="form-group margin-top-xs">
+                    <label [for]="'intention-label-' + idx">Card Label / Intention</label>
+                    <input
+                      [id]="'intention-label-' + idx"
+                      type="text"
+                      class="form-control"
+                      [ngModel]="item.label"
+                      (ngModelChange)="updateIntentionField(idx, 'label', $event)"
+                      placeholder="e.g. Wealth"
+                    />
+                  </div>
+
+                  <div class="form-group margin-top-xs">
+                    <label [for]="'intention-sub-' + idx">Featured Crystals / Pairings</label>
+                    <input
+                      [id]="'intention-sub-' + idx"
+                      type="text"
+                      class="form-control"
+                      [ngModel]="item.sub"
+                      (ngModelChange)="updateIntentionField(idx, 'sub', $event)"
+                      placeholder="e.g. Pyrite &amp; Citrine"
+                    />
+                  </div>
+
+                  <div class="form-group margin-top-xs">
+                    <label [for]="'intention-query-' + idx">Catalog Filter Query</label>
+                    <input
+                      [id]="'intention-query-' + idx"
+                      type="text"
+                      class="form-control"
+                      [ngModel]="item.queryParam"
+                      (ngModelChange)="updateIntentionField(idx, 'queryParam', $event)"
+                      placeholder="e.g. wealth, protection, or leave blank"
+                    />
+                  </div>
+
+                  <div class="form-group margin-top-xs">
+                    <label [for]="'intention-img-' + idx">Card Artwork Image Path</label>
+                    <input
+                      [id]="'intention-img-' + idx"
+                      type="text"
+                      class="form-control"
+                      [ngModel]="item.image"
+                      (ngModelChange)="updateIntentionField(idx, 'image', $event)"
+                      placeholder="e.g. /intentions/wealth.webp"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -923,6 +1076,126 @@
                 (ngModelChange)="mysterySubtitle.set($event)"
                 placeholder="e.g. Every box is personalized with crystals attuned to your zodiac sign..."
               ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- TAB 7: Store Identity & Support Channels CMS -->
+    @if (activeTab() === 'contact') {
+      <div class="tab-pane">
+        <div class="settings-card">
+          <!-- Support & Concierge Channels -->
+          <div class="card-section">
+            <h3 class="section-title">Customer Concierge &amp; Direct Support</h3>
+            <p class="section-desc">Manage support contact methods displayed on the storefront footer, order confirmations, and customer portal.</p>
+
+            <div class="form-grid-2col">
+              <div class="form-group">
+                <label for="supportEmail">Customer Support Email</label>
+                <input
+                  type="email"
+                  id="supportEmail"
+                  class="form-control"
+                  [ngModel]="supportEmail()"
+                  (ngModelChange)="supportEmail.set($event)"
+                  placeholder="e.g. support@crystalstudio.com"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="supportPhone">Concierge Phone Helpline</label>
+                <input
+                  type="text"
+                  id="supportPhone"
+                  class="form-control"
+                  [ngModel]="supportPhone()"
+                  (ngModelChange)="supportPhone.set($event)"
+                  placeholder="e.g. +91 98765 43210"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="whatsappNumber">Direct WhatsApp Concierge (E.164 Format)</label>
+                <input
+                  type="text"
+                  id="whatsappNumber"
+                  class="form-control"
+                  [ngModel]="whatsappNumber()"
+                  (ngModelChange)="whatsappNumber.set($event)"
+                  placeholder="e.g. +919876543210"
+                />
+                <small class="field-hint">Used for 1-click WhatsApp customer support link in footer</small>
+              </div>
+
+              <div class="form-group">
+                <label for="operatingHours">Atelier Operating Schedule</label>
+                <input
+                  type="text"
+                  id="operatingHours"
+                  class="form-control"
+                  [ngModel]="operatingHours()"
+                  (ngModelChange)="operatingHours.set($event)"
+                  placeholder="e.g. Mon - Sat, 9am - 6pm IST"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Community Links -->
+          <div class="card-section">
+            <h3 class="section-title">Brand Channels &amp; Social Sanctuary</h3>
+            <p class="section-desc">Direct URLs for social icons in the storefront footer and marketing touchpoints.</p>
+
+            <div class="form-grid-2col">
+              <div class="form-group">
+                <label for="instagramUrl">Instagram Sanctuary URL</label>
+                <input
+                  type="url"
+                  id="instagramUrl"
+                  class="form-control"
+                  [ngModel]="instagramUrl()"
+                  (ngModelChange)="instagramUrl.set($event)"
+                  placeholder="https://instagram.com/your-brand"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="facebookUrl">Facebook Community URL</label>
+                <input
+                  type="url"
+                  id="facebookUrl"
+                  class="form-control"
+                  [ngModel]="facebookUrl()"
+                  (ngModelChange)="facebookUrl.set($event)"
+                  placeholder="https://facebook.com/your-brand"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="pinterestUrl">Pinterest Moodboard URL</label>
+                <input
+                  type="url"
+                  id="pinterestUrl"
+                  class="form-control"
+                  [ngModel]="pinterestUrl()"
+                  (ngModelChange)="pinterestUrl.set($event)"
+                  placeholder="https://pinterest.com/your-brand"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="twitterUrl">X / Twitter Updates URL</label>
+                <input
+                  type="url"
+                  id="twitterUrl"
+                  class="form-control"
+                  [ngModel]="twitterUrl()"
+                  (ngModelChange)="twitterUrl.set($event)"
+                  placeholder="https://twitter.com/your-brand"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
+import { StoreSettingsService } from '../../services/store-settings.service';
 import { Category, CategoryTileStats } from '../../models/category';
 import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 
@@ -21,6 +22,7 @@ interface CategoryTile {
 })
 export class Categories implements OnInit {
   private readonly categoryService = inject(CategoryService);
+  private readonly storeSettings = inject(StoreSettingsService);
 
   readonly categoryTiles = signal<CategoryTile[]>([]);
   readonly isLoading = signal(true);
@@ -69,11 +71,12 @@ export class Categories implements OnInit {
     // products page uses when this card is clicked, so the counts match.
     return roots.map(root => {
       const rootStats = statsById.get(root.categoryId);
+      const customImg = this.storeSettings.getCategoryImage(root.categoryId);
       return {
         categoryId: root.categoryId,
         name: root.name,
         description: root.description,
-        imageUrl: rootStats?.imageUrl ?? null,
+        imageUrl: customImg || rootStats?.imageUrl || null,
         productCount: rootStats?.productCount ?? 0
       };
     });

@@ -1195,3 +1195,53 @@ input:checked + .slider:before {
 .margin-top-sm {
   margin-top: 0.85rem;
 }
+
+.margin-top-xs {
+  margin-top: 0.5rem;
+}
+
+/* -------------------------------------------------------------
+   Hero Curated Intentions Editor Grid
+------------------------------------------------------------- */
+.intentions-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.intention-card-editor {
+  background: var(--color-surface-sunken, #f9f8f5);
+  border: 1px solid var(--color-border-subtle, #e8e4dc);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.intention-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border-subtle, #e8e4dc);
+}
+
+.intention-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  background: #f1f5f9;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+}
+
+.intention-id-badge {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: #475569;
+  background: #e2e8f0;
+  border-radius: 4px;
+  padding: 0.15rem 0.4rem;
+}

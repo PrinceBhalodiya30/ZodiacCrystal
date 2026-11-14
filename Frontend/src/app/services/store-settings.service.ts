@@ -21,6 +21,59 @@ export interface MysteryBoxSettings {
   badgeText: string;
 }
 
+export interface GiftPackagingSettings {
+  enabled: boolean;
+  fee: number;
+  title: string;
+  description: string;
+}
+
+export interface StoreContactSettings {
+  supportEmail: string;
+  supportPhone: string;
+  whatsappNumber: string;
+  operatingHours: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  pinterestUrl: string;
+  twitterUrl: string;
+}
+
+export interface HeroIntentionItem {
+  id: string;
+  label: string;
+  sub: string;
+  image: string;
+  queryParam: string;
+}
+
+export const DEFAULT_GIFT_PACKAGING_SETTINGS: GiftPackagingSettings = {
+  enabled: true,
+  fee: 99,
+  title: 'Luxury Gift Wrap & Handwritten Zodiac Note',
+  description: 'Hand-wrapped in sacred velvet gift box with a personalized gold-foil astrological greeting card.'
+};
+
+export const DEFAULT_STORE_CONTACT_SETTINGS: StoreContactSettings = {
+  supportEmail: 'support@crystalstudio.com',
+  supportPhone: '+91 98765 43210',
+  whatsappNumber: '+919876543210',
+  operatingHours: 'Mon - Sat, 9am - 6pm IST',
+  instagramUrl: 'https://instagram.com',
+  facebookUrl: 'https://facebook.com',
+  pinterestUrl: 'https://pinterest.com',
+  twitterUrl: 'https://twitter.com'
+};
+
+export const DEFAULT_HERO_INTENTIONS: HeroIntentionItem[] = [
+  { id: 'wealth', label: 'Wealth', sub: 'Pyrite & Citrine', image: '/intentions/wealth.webp', queryParam: 'wealth' },
+  { id: 'protection', label: 'Protection', sub: 'Smoky Quartz & Obsidian', image: '/intentions/protection.webp', queryParam: 'protection' },
+  { id: 'love', label: 'Love', sub: 'Rose Quartz', image: '/intentions/love.jpg', queryParam: 'love' },
+  { id: 'clarity', label: 'Clarity', sub: 'Clear Quartz', image: '/intentions/clarity.webp', queryParam: 'intuition' },
+  { id: 'calm', label: 'Calm', sub: 'Amethyst & Selenite', image: '/intentions/calm.jpg', queryParam: 'peace' },
+  { id: 'all', label: 'All Crystals', sub: 'Explore Collection', image: '/intentions/all-crystals.webp', queryParam: '' }
+];
+
 export const DEFAULT_MYSTERY_BOX_SETTINGS: MysteryBoxSettings = {
   enabled: true,
   price: 1499,
@@ -134,7 +187,7 @@ export class StoreSettingsService {
         const stored = localStorage.getItem(this.MYSTERY_STORAGE_KEY);
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (parsed && typeof parsed.price === 'number') {
+          if (typeof parsed?.price === 'number') {
             return { ...DEFAULT_MYSTERY_BOX_SETTINGS, ...parsed };
           }
         }
@@ -150,6 +203,144 @@ export class StoreSettingsService {
     if (isPlatformBrowser(this.platformId)) {
       try {
         localStorage.setItem(this.MYSTERY_STORAGE_KEY, JSON.stringify(settings));
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
+
+  // Luxury Gift Packaging Settings
+  private readonly GIFT_STORAGE_KEY = 'zc_gift_packaging_settings';
+  readonly giftPackagingSettings = signal<GiftPackagingSettings>(this.loadInitialGiftPackaging());
+
+  private loadInitialGiftPackaging(): GiftPackagingSettings {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(this.GIFT_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (typeof parsed?.fee === 'number') {
+            return { ...DEFAULT_GIFT_PACKAGING_SETTINGS, ...parsed };
+          }
+        }
+      } catch {
+        // Fallback to defaults
+      }
+    }
+    return DEFAULT_GIFT_PACKAGING_SETTINGS;
+  }
+
+  saveGiftPackagingSettings(settings: GiftPackagingSettings): void {
+    this.giftPackagingSettings.set({ ...settings });
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(this.GIFT_STORAGE_KEY, JSON.stringify(settings));
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
+
+  // Store Contact & Support Channels Settings
+  private readonly CONTACT_STORAGE_KEY = 'zc_store_contact_settings';
+  readonly storeContactSettings = signal<StoreContactSettings>(this.loadInitialStoreContact());
+
+  private loadInitialStoreContact(): StoreContactSettings {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(this.CONTACT_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed?.supportEmail) {
+            return { ...DEFAULT_STORE_CONTACT_SETTINGS, ...parsed };
+          }
+        }
+      } catch {
+        // Fallback to defaults
+      }
+    }
+    return DEFAULT_STORE_CONTACT_SETTINGS;
+  }
+
+  saveStoreContactSettings(settings: StoreContactSettings): void {
+    this.storeContactSettings.set({ ...settings });
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(this.CONTACT_STORAGE_KEY, JSON.stringify(settings));
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
+
+  // Hero Curated Intentions Settings
+  private readonly INTENTIONS_STORAGE_KEY = 'zc_hero_intentions';
+  readonly heroIntentions = signal<HeroIntentionItem[]>(this.loadInitialHeroIntentions());
+
+  private loadInitialHeroIntentions(): HeroIntentionItem[] {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(this.INTENTIONS_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch {
+        // Fallback to defaults
+      }
+    }
+    return DEFAULT_HERO_INTENTIONS;
+  }
+
+  saveHeroIntentions(items: HeroIntentionItem[]): void {
+    this.heroIntentions.set([...items]);
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(this.INTENTIONS_STORAGE_KEY, JSON.stringify(items));
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
+
+  // Category Visual Banners / Custom Image Overrides
+  private readonly CATEGORY_IMAGES_STORAGE_KEY = 'zc_category_images';
+  readonly categoryImages = signal<Record<number, string>>(this.loadInitialCategoryImages());
+
+  private loadInitialCategoryImages(): Record<number, string> {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(this.CATEGORY_IMAGES_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === 'object') {
+            return parsed;
+          }
+        }
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+    return {};
+  }
+
+  getCategoryImage(categoryId: number): string | null {
+    return this.categoryImages()[categoryId] ?? null;
+  }
+
+  saveCategoryImage(categoryId: number, imageUrl: string | null): void {
+    const updated = { ...this.categoryImages() };
+    if (imageUrl?.trim()) {
+      updated[categoryId] = imageUrl.trim();
+    } else {
+      delete updated[categoryId];
+    }
+    this.categoryImages.set(updated);
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(this.CATEGORY_IMAGES_STORAGE_KEY, JSON.stringify(updated));
       } catch {
         // Ignore storage exceptions
       }

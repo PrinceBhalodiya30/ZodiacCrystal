@@ -209,9 +209,12 @@ export class Home implements OnInit, OnDestroy {
     return this.categories()
       .map(category => {
         const stats = statsById.get(category.categoryId);
+        const customImg = typeof this.storeSettings?.getCategoryImage === 'function'
+          ? this.storeSettings.getCategoryImage(category.categoryId)
+          : null;
         return {
           category,
-          imageUrl: stats?.directImageUrl ?? null,
+          imageUrl: customImg || stats?.directImageUrl || null,
           productCount: stats?.directProductCount ?? 0
         };
       })

@@ -33,6 +33,18 @@
           <textarea id="description" name="description" [(ngModel)]="formDescription" rows="2"></textarea>
         </div>
 
+        <div class="span-2">
+          <label for="categoryImageUrl">Visual Banner / Image URL (Optional)</label>
+          <input
+            id="categoryImageUrl"
+            name="categoryImageUrl"
+            type="text"
+            [(ngModel)]="formImageUrl"
+            placeholder="e.g. /categories/crystals.webp or https://images.unsplash.com/..."
+          />
+          <small class="field-hint">Used for category tiles and banners across the storefront. Defaults to first crystal photo if empty.</small>
+        </div>
+
         <div>
           <label for="parent">Parent Category</label>
           <div class="select-wrap">

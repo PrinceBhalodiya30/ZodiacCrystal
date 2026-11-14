@@ -131,23 +131,36 @@
       <p>Sacred healing crystals attuned to your natal zodiac blueprint and daily intentions.</p>
       
       <div class="footer-social">
-        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg>
-        </a>
-        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1Z"/></svg>
-        </a>
-        <a href="https://pinterest.com" target="_blank" rel="noopener" aria-label="Pinterest">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 18c.8-2.5 1.5-4.9 2.2-7.4M11 11.5c.3-1.4 1.6-2 2.8-1.6 1.3.4 1.7 1.9 1.3 3.2-.5 1.6-1.7 2.9-3.2 2.4-.6-.2-1-.7-1-1.3"/></svg>
-        </a>
-        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter / X">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
+        @if (contact().instagramUrl) {
+          <a [href]="contact().instagramUrl" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1"/></svg>
+          </a>
+        }
+        @if (contact().facebookUrl) {
+          <a [href]="contact().facebookUrl" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1Z"/></svg>
+          </a>
+        }
+        @if (contact().pinterestUrl) {
+          <a [href]="contact().pinterestUrl" target="_blank" rel="noopener" aria-label="Pinterest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 18c.8-2.5 1.5-4.9 2.2-7.4M11 11.5c.3-1.4 1.6-2 2.8-1.6 1.3.4 1.7 1.9 1.3 3.2-.5 1.6-1.7 2.9-3.2 2.4-.6-.2-1-.7-1-1.3"/></svg>
+          </a>
+        }
+        @if (contact().twitterUrl) {
+          <a [href]="contact().twitterUrl" target="_blank" rel="noopener" aria-label="Twitter / X">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        }
+        @if (contact().whatsappNumber) {
+          <a [href]="'https://wa.me/' + contact().whatsappNumber.replace('+', '').replace(' ', '')" target="_blank" rel="noopener" aria-label="WhatsApp Concierge" title="Chat with Atelier on WhatsApp">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+        }
       </div>
 
       <div class="footer-direct-contact">
-        <a href="mailto:support@crystalstudio.com" class="footer-email-link">support&#64;crystalstudio.com</a>
-        <span class="footer-contact-hours">Atelier Hours: Mon - Sat, 9am - 6pm</span>
+        <a [href]="'mailto:' + contact().supportEmail" class="footer-email-link">{{ contact().supportEmail }}</a>
+        <span class="footer-contact-hours">Atelier Hours: {{ contact().operatingHours }}</span>
       </div>
     </div>
 

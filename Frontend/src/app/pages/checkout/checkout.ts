@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, afterNextRender, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, GIFT_PACKAGING_FEE } from '../../services/cart.service';
+import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { MysteryBoxService } from '../../services/mystery-box.service';
@@ -121,7 +121,9 @@ export class Checkout implements OnInit, OnDestroy {
 
   readonly remainingAfterCoupon = computed(() => Math.max(0, this.total() - this.appliedDiscountAmount()));
 
-  readonly giftPackagingFee = GIFT_PACKAGING_FEE;
+  get giftPackagingFee(): number {
+    return this.cartService.currentGiftPackagingFee;
+  }
 
   readonly orderTotal = computed(() => {
     if (this.mysteryBox()) {

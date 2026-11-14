@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CartService, GIFT_PACKAGING_FEE } from '../../services/cart.service';
+import { CartService } from '../../services/cart.service';
 import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { getProductSlug } from '../../utils/product-slug.util';
 import { CartItem } from '../../models/cart';
@@ -20,7 +20,9 @@ export class Cart implements OnInit {
   private readonly router = inject(Router);
   private readonly confirmDialog = inject(ConfirmDialogService);
 
-  readonly giftPackagingFee = GIFT_PACKAGING_FEE;
+  get giftPackagingFee(): number {
+    return this.cartService.currentGiftPackagingFee;
+  }
 
   // Notes from re-checking prices/availability when the page opened.
   readonly changeNotes = signal<string[]>([]);

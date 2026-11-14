@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AdminNav } from '../admin-nav/admin-nav';
-import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS } from '../../services/store-settings.service';
+import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS, HeroIntentionItem, DEFAULT_HERO_INTENTIONS } from '../../services/store-settings.service';
 import { ToastService } from '../../services/toast.service';
 import { UpdateStoreSettingsRequest } from '../../models/store-settings';
 
@@ -35,7 +35,7 @@ export class AdminSettings implements OnInit {
 
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
-  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox'>('announcement');
+  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox' | 'contact'>('announcement');
 
   // Hero Marquee Ribbon CMS State
   readonly marqueeItems = signal<MarqueeElementItem[]>([]);
@@ -48,6 +48,25 @@ export class AdminSettings implements OnInit {
   readonly mysteryTitle = signal('Mystery Crystal Box');
   readonly mysterySubtitle = signal('');
   readonly mysteryBadge = signal('Curator Guaranteed Value');
+
+  // Luxury Gift Packaging State Signals
+  readonly giftPackagingEnabled = signal(true);
+  readonly giftPackagingFee = signal(99);
+  readonly giftPackagingTitle = signal('Luxury Gift Wrap & Handwritten Zodiac Note');
+  readonly giftPackagingDesc = signal('Hand-wrapped in sacred velvet gift box with a personalized gold-foil astrological greeting card.');
+
+  // Store Contact & Support Channels State Signals
+  readonly supportEmail = signal('support@crystalstudio.com');
+  readonly supportPhone = signal('+91 98765 43210');
+  readonly whatsappNumber = signal('+919876543210');
+  readonly operatingHours = signal('Mon - Sat, 9am - 6pm IST');
+  readonly instagramUrl = signal('https://instagram.com');
+  readonly facebookUrl = signal('https://facebook.com');
+  readonly pinterestUrl = signal('https://pinterest.com');
+  readonly twitterUrl = signal('https://twitter.com');
+
+  // Hero Intentions State Signals
+  readonly heroIntentions = signal<HeroIntentionItem[]>([]);
 
   // Announcement Form State Signals
   readonly announcementEnabled = signal(true);
@@ -81,13 +100,28 @@ export class AdminSettings implements OnInit {
     this.previewSlide.set(index);
   }
 
-  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox'): void {
+  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox' | 'contact'): void {
     this.activeTab.set(tab);
     if (tab === 'announcement') {
       this.previewSlide.set(1);
     } else if (tab === 'moon') {
       this.previewSlide.set(0);
     }
+  }
+
+  updateIntentionField(index: number, field: keyof HeroIntentionItem, value: string): void {
+    this.heroIntentions.update(items => {
+      const copy = [...items];
+      if (copy[index]) {
+        copy[index] = { ...copy[index], [field]: value };
+      }
+      return copy;
+    });
+  }
+
+  resetIntentionsToDefaults(): void {
+    this.heroIntentions.set([...DEFAULT_HERO_INTENTIONS]);
+    this.toastService.info('Reset hero intentions to sacred defaults.');
   }
 
   readonly mysteryPresets = [
@@ -294,6 +328,24 @@ export class AdminSettings implements OnInit {
         this.mysterySubtitle.set(mb.subtitle);
         this.mysteryBadge.set(mb.badgeText);
 
+        const gift = this.storeSettingsService.giftPackagingSettings();
+        this.giftPackagingEnabled.set(gift.enabled);
+        this.giftPackagingFee.set(gift.fee);
+        this.giftPackagingTitle.set(gift.title);
+        this.giftPackagingDesc.set(gift.description);
+
+        const contact = this.storeSettingsService.storeContactSettings();
+        this.supportEmail.set(contact.supportEmail);
+        this.supportPhone.set(contact.supportPhone);
+        this.whatsappNumber.set(contact.whatsappNumber);
+        this.operatingHours.set(contact.operatingHours);
+        this.instagramUrl.set(contact.instagramUrl);
+        this.facebookUrl.set(contact.facebookUrl);
+        this.pinterestUrl.set(contact.pinterestUrl);
+        this.twitterUrl.set(contact.twitterUrl);
+
+        this.heroIntentions.set([...this.storeSettingsService.heroIntentions()]);
+
         this.lastUpdated.set(this.formatUtcIso(s.updatedAt));
         this.lastUpdatedBy.set(s.updatedByEmail ?? null);
         this.isLoading.set(false);
@@ -356,6 +408,29 @@ export class AdminSettings implements OnInit {
       subtitle: this.mysterySubtitle().trim(),
       badgeText: this.mysteryBadge().trim()
     });
+
+    // Save customized Gift Packaging settings
+    this.storeSettingsService.saveGiftPackagingSettings({
+      enabled: this.giftPackagingEnabled(),
+      fee: Number(this.giftPackagingFee()),
+      title: this.giftPackagingTitle().trim(),
+      description: this.giftPackagingDesc().trim()
+    });
+
+    // Save Store Identity & Support Channels
+    this.storeSettingsService.saveStoreContactSettings({
+      supportEmail: this.supportEmail().trim(),
+      supportPhone: this.supportPhone().trim(),
+      whatsappNumber: this.whatsappNumber().trim(),
+      operatingHours: this.operatingHours().trim(),
+      instagramUrl: this.instagramUrl().trim(),
+      facebookUrl: this.facebookUrl().trim(),
+      pinterestUrl: this.pinterestUrl().trim(),
+      twitterUrl: this.twitterUrl().trim()
+    });
+
+    // Save Hero Curated Intentions
+    this.storeSettingsService.saveHeroIntentions(this.heroIntentions());
 
     const req: UpdateStoreSettingsRequest = {
       announcementEnabled: this.announcementEnabled(),
