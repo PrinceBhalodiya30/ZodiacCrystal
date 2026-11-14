@@ -1,14 +1,16 @@
 @if (isOpen()) {
   <div
     class="cleansing-modal-backdrop"
+    tabindex="-1"
     (click)="close()"
+    (keydown)="$event.key === 'Escape' && close()"
   >
-    <div
+    <dialog
       class="cleansing-modal-container"
-      role="dialog"
-      aria-modal="true"
+      open
       aria-labelledby="cleansing-modal-title"
       (click)="$event.stopPropagation()"
+      (keydown)="$event.key === 'Escape' && close()"
     >
       <!-- Modal Header -->
       <header class="cleansing-modal-header">
@@ -459,6 +461,6 @@
         </p>
         <button type="button" class="btn btn-outline" (click)="close()">Close Guide</button>
       </footer>
-    </div>
+    </dialog>
   </div>
 }
