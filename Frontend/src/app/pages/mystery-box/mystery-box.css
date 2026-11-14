@@ -362,6 +362,51 @@
   }
 }
 
+.mystery-box-curator-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  margin: 0.35rem auto 1rem;
+  background: #fdf6e7;
+  color: #713f12;
+  border: 1px solid #e0c878;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mystery-box-paused-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.25rem 1.5rem;
+  margin-top: 2rem;
+  background: #fffbeb;
+  border: 1px dashed #d97706;
+  border-radius: var(--radius-md, 8px);
+  color: #78350f;
+  text-align: left;
+}
+
+.mystery-box-paused-banner svg {
+  flex-shrink: 0;
+  color: #d97706;
+}
+
+.mystery-box-paused-banner strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+  color: #92400e;
+}
+
+.mystery-box-paused-banner p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mystery-box-cta,
   .mystery-box-cta:hover,

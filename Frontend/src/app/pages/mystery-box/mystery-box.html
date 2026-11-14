@@ -16,7 +16,10 @@
           <path d="M4 17v2M4 18h-1M4 18h1" stroke-width="1.2"/>
         </svg>
       </span>
-      <h2>Mystery Crystal Box</h2>
+      <h2>{{ boxInfo.title || 'Mystery Crystal Box' }}</h2>
+      @if (boxInfo.badgeText) {
+        <span class="mystery-box-curator-badge">{{ boxInfo.badgeText }}</span>
+      }
 
       <ul class="mystery-box-facts">
         <li>
@@ -34,8 +37,7 @@
       </ul>
 
       <p class="mystery-box-note">
-        Every box is personalized with crystals attuned to your zodiac sign, picked from our
-        in-stock authentic collection and worth at least {{ boxInfo.minimumValue | inr:0 }} at catalog prices.
+        {{ boxInfo.subtitle || ('Every box is personalized with crystals attuned to your zodiac sign, picked from our in-stock authentic collection and worth at least ' + (boxInfo.minimumValue | inr:0) + ' at catalog prices.') }}
       </p>
 
       @if (zodiacSigns().length > 0) {
@@ -94,9 +96,19 @@
         </div>
       }
 
-      <button type="button" class="btn mystery-box-cta" (click)="startPurchase()">
-        Get Mystery Box
-      </button>
+      @if (boxInfo.enabled !== false) {
+        <button type="button" class="btn mystery-box-cta" (click)="startPurchase()">
+          Get Mystery Box
+        </button>
+      } @else {
+        <div class="mystery-box-paused-banner">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div class="paused-text">
+            <strong>Curation in Progress</strong>
+            <p>The Mystery Crystal Box is temporarily paused while our gemologists hand-select our next batch of rare specimens. Check back soon for the next celestial drop!</p>
+          </div>
+        </div>
+      }
     </div>
   }
 </section>

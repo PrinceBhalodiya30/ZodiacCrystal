@@ -11,6 +11,26 @@ export interface MarqueeElementItem {
   energy: string;
 }
 
+export interface MysteryBoxSettings {
+  enabled: boolean;
+  price: number;
+  minimumValue: number;
+  itemCount: number;
+  title: string;
+  subtitle: string;
+  badgeText: string;
+}
+
+export const DEFAULT_MYSTERY_BOX_SETTINGS: MysteryBoxSettings = {
+  enabled: true,
+  price: 1499,
+  minimumValue: 2500,
+  itemCount: 3,
+  title: 'Mystery Crystal Box',
+  subtitle: 'Every box is personalized with crystals attuned to your zodiac sign, picked from our in-stock authentic collection and worth at least the guaranteed minimum value at catalog prices.',
+  badgeText: 'Curator Guaranteed Value'
+};
+
 export const DEFAULT_MARQUEE_ITEMS: MarqueeElementItem[] = [
   { icon: '🔥', name: 'Fire Elements', energy: 'Vitality & Willpower' },
   { icon: '🌍', name: 'Earth Elements', energy: 'Grounding & Abundance' },
@@ -98,6 +118,38 @@ export class StoreSettingsService {
     if (isPlatformBrowser(this.platformId)) {
       try {
         localStorage.setItem(this.MARQUEE_STORAGE_KEY, JSON.stringify(items));
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
+
+  // Mystery Box Curation Settings
+  private readonly MYSTERY_STORAGE_KEY = 'zc_mystery_box_settings';
+  readonly mysteryBoxSettings = signal<MysteryBoxSettings>(this.loadInitialMysteryBox());
+
+  private loadInitialMysteryBox(): MysteryBoxSettings {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const stored = localStorage.getItem(this.MYSTERY_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed.price === 'number') {
+            return { ...DEFAULT_MYSTERY_BOX_SETTINGS, ...parsed };
+          }
+        }
+      } catch {
+        // Fallback to default configuration
+      }
+    }
+    return DEFAULT_MYSTERY_BOX_SETTINGS;
+  }
+
+  saveMysteryBoxSettings(settings: MysteryBoxSettings): void {
+    this.mysteryBoxSettings.set({ ...settings });
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(this.MYSTERY_STORAGE_KEY, JSON.stringify(settings));
       } catch {
         // Ignore storage exceptions
       }

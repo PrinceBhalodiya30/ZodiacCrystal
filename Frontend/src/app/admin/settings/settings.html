@@ -193,6 +193,15 @@
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       <span>Hero Marquee Ribbon</span>
     </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'mysterybox'"
+      (click)="selectTab('mysterybox')"
+    >
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-1.8 0-3-1-3-2.5S10 3 11.3 3C12.7 3 12 6.5 12 8Zm0 0c1.8 0 3-1 3-2.5S13 3 11.7 3C10.3 3 12 6.5 12 8Z"/></svg>
+      <span>Mystery Box Curation</span>
+    </button>
   </div>
 
   @if (isLoading()) {
@@ -763,6 +772,157 @@
                   </div>
                 </div>
               }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- TAB 6: Mystery Box Curation CMS -->
+    @if (activeTab() === 'mysterybox') {
+      <div class="tab-pane">
+        <!-- Quick Preset Editions -->
+        <div class="preset-box">
+          <div class="preset-title">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Quick Mystery Editions &amp; Seasonal Drops</span>
+          </div>
+          <p class="preset-desc">Apply tested retail pricing and minimum guaranteed values with one click:</p>
+          <div class="preset-pills">
+            @for (preset of mysteryPresets; track preset.name) {
+              <button
+                type="button"
+                class="preset-pill-btn"
+                (click)="applyMysteryPreset(preset)"
+              >
+                <strong>{{ preset.name }}</strong>
+                <span>₹{{ preset.price }} (₹{{ preset.minValue }}+ Value)</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <!-- Mystery Box Activation Toggle -->
+          <div class="card-section">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="section-title">Mystery Crystal Box Status</span>
+                <p class="section-desc">When disabled, customers see an elegant "Curation in Progress" banner, safeguarding your stock during low inventory periods.</p>
+              </div>
+              <label for="mysteryEnabledToggle" class="switch" aria-label="Enable Mystery Crystal Box">
+                <input
+                  type="checkbox"
+                  id="mysteryEnabledToggle"
+                  [ngModel]="mysteryEnabled()"
+                  (ngModelChange)="mysteryEnabled.set($event)"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pricing & Guaranteed Value Tier -->
+          <div class="card-section">
+            <h3 class="section-title">Pricing &amp; Value Guarantee</h3>
+            <p class="section-desc">Set the customer purchase price and the minimum combined retail value guaranteed by your catalog.</p>
+
+            <div class="form-grid-2col">
+              <div class="form-group">
+                <label for="mysteryPrice">Customer Purchase Price (₹)</label>
+                <div class="input-with-currency">
+                  <span class="currency-prefix">₹</span>
+                  <input
+                    type="number"
+                    id="mysteryPrice"
+                    class="form-control with-prefix"
+                    min="1"
+                    step="1"
+                    [ngModel]="mysteryPrice()"
+                    (ngModelChange)="mysteryPrice.set($event)"
+                    placeholder="1499"
+                  />
+                </div>
+                <small class="field-hint">Actual amount charged to customer at checkout</small>
+              </div>
+
+              <div class="form-group">
+                <label for="mysteryMinValue">Guaranteed Minimum Retail Value (₹)</label>
+                <div class="input-with-currency">
+                  <span class="currency-prefix">₹</span>
+                  <input
+                    type="number"
+                    id="mysteryMinValue"
+                    class="form-control with-prefix"
+                    min="1"
+                    step="1"
+                    [ngModel]="mysteryMinValue()"
+                    (ngModelChange)="mysteryMinValue.set($event)"
+                    placeholder="2500"
+                  />
+                </div>
+                <small class="field-hint">Catalog retail value promise displayed to customer</small>
+              </div>
+            </div>
+
+            <div class="form-group margin-top-md">
+              <label for="mysteryItemCount">Number of Crystals Included</label>
+              <select
+                id="mysteryItemCount"
+                class="form-control"
+                [ngModel]="mysteryItemCount()"
+                (ngModelChange)="mysteryItemCount.set($event)"
+              >
+                <option [ngValue]="2">2 Curated Crystals (Starter Discovery Pair)</option>
+                <option [ngValue]="3">3 Curated Crystals (Standard Cosmic Triad - Recommended)</option>
+                <option [ngValue]="4">4 Curated Crystals (Quad Altar Set)</option>
+                <option [ngValue]="5">5 Curated Crystals (Grand Celestial Collection)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Storefront Copy & Marketing Badge -->
+          <div class="card-section">
+            <h3 class="section-title">Storefront Copy &amp; Curator Badge</h3>
+            <p class="section-desc">Customize headline, marketing badge, and curator note on the mystery box landing page.</p>
+
+            <div class="form-group">
+              <label for="mysteryTitle">Card Headline (H2)</label>
+              <input
+                type="text"
+                id="mysteryTitle"
+                class="form-control"
+                maxlength="100"
+                [ngModel]="mysteryTitle()"
+                (ngModelChange)="mysteryTitle.set($event)"
+                placeholder="e.g. Mystery Crystal Box"
+              />
+            </div>
+
+            <div class="form-group margin-top-sm">
+              <label for="mysteryBadge">Curator Tag / Value Badge</label>
+              <input
+                type="text"
+                id="mysteryBadge"
+                class="form-control"
+                maxlength="60"
+                [ngModel]="mysteryBadge()"
+                (ngModelChange)="mysteryBadge.set($event)"
+                placeholder="e.g. Curator Guaranteed Value"
+              />
+            </div>
+
+            <div class="form-group margin-top-sm">
+              <label for="mysterySubtitle">Curator Note / Promise</label>
+              <textarea
+                id="mysterySubtitle"
+                class="form-control textarea"
+                rows="3"
+                maxlength="300"
+                [ngModel]="mysterySubtitle()"
+                (ngModelChange)="mysterySubtitle.set($event)"
+                placeholder="e.g. Every box is personalized with crystals attuned to your zodiac sign..."
+              ></textarea>
             </div>
           </div>
         </div>

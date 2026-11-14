@@ -1172,3 +1172,26 @@ input:checked + .slider:before {
     min-width: 100%;
   }
 }
+
+/* -------------------------------------------------------------
+   Mystery Box Configuration Grid & Spacers
+------------------------------------------------------------- */
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.margin-top-md {
+  margin-top: 1.25rem;
+}
+
+.margin-top-sm {
+  margin-top: 0.85rem;
+}

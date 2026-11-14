@@ -39,7 +39,16 @@ describe('Home Component Hero Carousel', () => {
       heroSubtitle: signal('Attune your daily energy'),
       marqueeItems: signal([
         { icon: '🔥', name: 'Fire Elements', energy: 'Vitality & Willpower' }
-      ])
+      ]),
+      mysteryBoxSettings: signal({
+        enabled: true,
+        price: 1499,
+        minimumValue: 2500,
+        itemCount: 3,
+        title: 'Mystery Crystal Box',
+        subtitle: 'Personalized with 3 crystals',
+        badgeText: 'Curator Guaranteed Value'
+      })
     };
 
     await TestBed.configureTestingModule({

@@ -4,6 +4,10 @@ export interface MysteryBoxInfo {
   itemCount: number;
   minimumValue: number;
   price: number;
+  enabled?: boolean;
+  title?: string;
+  subtitle?: string;
+  badgeText?: string;
 }
 
 export interface CreateMysteryBoxOrderRequest extends PaymentDetails {

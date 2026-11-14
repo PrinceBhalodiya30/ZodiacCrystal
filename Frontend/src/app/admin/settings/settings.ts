@@ -35,10 +35,19 @@ export class AdminSettings implements OnInit {
 
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
-  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee'>('announcement');
+  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox'>('announcement');
 
   // Hero Marquee Ribbon CMS State
   readonly marqueeItems = signal<MarqueeElementItem[]>([]);
+
+  // Mystery Box Curation State Signals
+  readonly mysteryEnabled = signal(true);
+  readonly mysteryPrice = signal(1499);
+  readonly mysteryMinValue = signal(2500);
+  readonly mysteryItemCount = signal(3);
+  readonly mysteryTitle = signal('Mystery Crystal Box');
+  readonly mysterySubtitle = signal('');
+  readonly mysteryBadge = signal('Curator Guaranteed Value');
 
   // Announcement Form State Signals
   readonly announcementEnabled = signal(true);
@@ -72,13 +81,63 @@ export class AdminSettings implements OnInit {
     this.previewSlide.set(index);
   }
 
-  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee'): void {
+  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox'): void {
     this.activeTab.set(tab);
     if (tab === 'announcement') {
       this.previewSlide.set(1);
     } else if (tab === 'moon') {
       this.previewSlide.set(0);
     }
+  }
+
+  readonly mysteryPresets = [
+    {
+      name: 'Standard Astro Edition',
+      price: 1499,
+      minValue: 2500,
+      itemCount: 3,
+      badge: 'Worth ₹2,500+ Guaranteed',
+      title: 'Mystery Crystal Box',
+      subtitle: 'Personalized with 3 crystals attuned to your zodiac sign, worth at least ₹2,500 at catalog prices.'
+    },
+    {
+      name: 'Deluxe Celestial Chest',
+      price: 2499,
+      minValue: 4500,
+      itemCount: 5,
+      badge: '5 Specimens · ₹4,500+ Value',
+      title: 'Deluxe Celestial Mystery Chest',
+      subtitle: 'Premium collector edition featuring 5 rare raw clusters and polished palm stones worth ₹4,500+.'
+    },
+    {
+      name: 'Talisman Discovery Pouch',
+      price: 999,
+      minValue: 1800,
+      itemCount: 2,
+      badge: 'Starter Discovery Pair',
+      title: 'Talisman Discovery Mystery Pouch',
+      subtitle: 'Two intuitively selected pocket crystals attuned to balance your sun and rising signs.'
+    },
+    {
+      name: 'Festive Cosmic Special',
+      price: 1299,
+      minValue: 2800,
+      itemCount: 3,
+      badge: 'Limited Festive Drop',
+      title: 'Festive Cosmic Mystery Box',
+      subtitle: 'Special celebratory curation paired with a sacred velvet altar cloth.'
+    }
+  ];
+
+  applyMysteryPreset(preset: typeof this.mysteryPresets[0]): void {
+    this.mysteryPrice.set(preset.price);
+    this.mysteryMinValue.set(preset.minValue);
+    this.mysteryItemCount.set(preset.itemCount);
+    this.mysteryBadge.set(preset.badge);
+    this.mysteryTitle.set(preset.title);
+    this.mysterySubtitle.set(preset.subtitle);
+    this.mysteryEnabled.set(true);
+    this.toastService.info(`Applied "${preset.name}". Click "Save Changes" to publish.`);
   }
 
   addMarqueeItem(): void {
@@ -226,6 +285,15 @@ export class AdminSettings implements OnInit {
 
         this.marqueeItems.set([...this.storeSettingsService.marqueeItems()]);
 
+        const mb = this.storeSettingsService.mysteryBoxSettings();
+        this.mysteryEnabled.set(mb.enabled);
+        this.mysteryPrice.set(mb.price);
+        this.mysteryMinValue.set(mb.minimumValue);
+        this.mysteryItemCount.set(mb.itemCount);
+        this.mysteryTitle.set(mb.title);
+        this.mysterySubtitle.set(mb.subtitle);
+        this.mysteryBadge.set(mb.badgeText);
+
         this.lastUpdated.set(this.formatUtcIso(s.updatedAt));
         this.lastUpdatedBy.set(s.updatedByEmail ?? null);
         this.isLoading.set(false);
@@ -277,6 +345,17 @@ export class AdminSettings implements OnInit {
 
     // Save customized marquee ticker items locally and reactively
     this.storeSettingsService.saveMarqueeItems(this.marqueeItems());
+
+    // Save customized Mystery Box curation configuration
+    this.storeSettingsService.saveMysteryBoxSettings({
+      enabled: this.mysteryEnabled(),
+      price: Number(this.mysteryPrice()),
+      minimumValue: Number(this.mysteryMinValue()),
+      itemCount: Number(this.mysteryItemCount()),
+      title: this.mysteryTitle().trim() || 'Mystery Crystal Box',
+      subtitle: this.mysterySubtitle().trim(),
+      badgeText: this.mysteryBadge().trim()
+    });
 
     const req: UpdateStoreSettingsRequest = {
       announcementEnabled: this.announcementEnabled(),
