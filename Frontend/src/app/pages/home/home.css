@@ -162,64 +162,6 @@ section h2 {
   padding: 4.5rem 1.5rem;
 }
 
-/* Quick Category / Collection Filter Pills */
-.quick-pills-section {
-  padding: 1.5rem 1.5rem 0.5rem;
-}
-
-.quick-pills-track {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  overflow-x: auto;
-  padding: 0.5rem 0.25rem 0.75rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  justify-content: flex-start;
-}
-
-.quick-pills-track::-webkit-scrollbar {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .quick-pills-track {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-}
-
-.quick-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1.15rem;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--color-ink, #1D2739);
-  background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #E4DCCB);
-  border-radius: var(--radius-pill, 9999px);
-  text-decoration: none;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: all var(--transition-fast, 150ms ease);
-}
-
-.quick-pill:hover {
-  background-color: var(--color-surface-tint, #F4EFE5);
-  border-color: var(--color-copper, #985E38);
-  color: var(--color-copper, #985E38);
-  transform: translateY(-1px);
-}
-
-.quick-pill.active {
-  background-color: var(--color-ink, #1D2739);
-  border-color: var(--color-ink, #1D2739);
-  color: #ffffff;
-}
-
 /* Zodiac Section */
 .zodiac-grid {
   display: grid;
@@ -643,136 +585,6 @@ section h2 {
   text-decoration: underline;
 }
 
-/* ==========================================================================
-   Shop by Intention Section (Curated Collections Band)
-   ========================================================================== */
-.intentions-band {
-  background-color: var(--color-surface-tint, #F4EFE5);
-  border-top: 1px solid var(--color-border-subtle, #EAE3D6);
-  border-bottom: 1px solid var(--color-border-subtle, #EAE3D6);
-  padding: 4.5rem 0;
-}
-
-.intentions-showcase-section {
-  padding: 0 1.5rem;
-}
-
-.intentions-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-
-.intention-card {
-  display: flex;
-  flex-direction: column;
-  background-color: #ffffff;
-  border-radius: var(--radius-sm, 4px);
-  overflow: hidden;
-  border: 1px solid var(--color-border-subtle, #EAE3D6);
-  box-shadow: var(--shadow-card);
-  text-decoration: none;
-  color: var(--color-ink, #1D2739);
-  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
-}
-
-.intention-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(29, 39, 57, 0.1);
-  border-color: var(--color-copper-light, #D8B092);
-}
-
-.intention-image-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background-color: var(--color-surface-sunken, #F4ECE1);
-}
-
-.intention-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.intention-card:hover .intention-img {
-  transform: scale(1.06);
-}
-
-.intention-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(17, 24, 39, 0.45) 100%);
-  pointer-events: none;
-}
-
-.intention-pill {
-  position: absolute;
-  bottom: 0.75rem;
-  left: 0.75rem;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(6px);
-  color: var(--color-ink, #1D2739);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 0.25rem 0.65rem;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.intention-content {
-  padding: 1.25rem 1.25rem 1.35rem;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.intention-kicker {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 600;
-  color: var(--color-copper, #985E38);
-  margin-bottom: 0.3rem;
-}
-
-.intention-title {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-ink, #1D2739);
-  margin: 0 0 0.45rem;
-  line-height: 1.25;
-}
-
-.intention-desc {
-  font-size: var(--text-xs);
-  color: var(--color-subtle, #4E5A70);
-  line-height: var(--leading-relaxed);
-  margin: 0 0 1rem;
-  flex: 1;
-}
-
-.intention-link {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-copper, #985E38);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  transition: color var(--transition-fast), transform var(--transition-fast);
-}
-
-.intention-card:hover .intention-link {
-  color: #B87A4B;
-  transform: translateX(3px);
-}
-
 /* Crystal Guides Section */
 .guides-grid {
   display: grid;
@@ -955,22 +767,100 @@ section h2 {
   }
 }
 
+/* Birthday Sign Finder Expandable Banner */
+.birthday-finder-toggle-wrap {
+  margin: 0 auto 2.5rem;
+  max-width: 760px;
+}
+
+.birthday-finder-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.4rem;
+  background: linear-gradient(135deg, rgba(251, 248, 242, 0.98), rgba(244, 239, 229, 0.95));
+  border: 1px solid var(--color-border, #E4DCCB);
+  border-radius: var(--radius-sm, 8px);
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(152, 94, 56, 0.08);
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.birthday-finder-toggle:hover {
+  border-color: var(--color-copper, #985E38);
+  box-shadow: 0 4px 14px rgba(152, 94, 56, 0.14);
+  transform: translateY(-1px);
+}
+
+.birthday-finder-toggle:focus-visible {
+  outline: 2px solid var(--color-copper, #985E38);
+  outline-offset: 2px;
+}
+
+.bfinder-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.bfinder-text {
+  flex: 1;
+  font-size: 0.92rem;
+  color: var(--color-ink, #1D2739);
+  line-height: 1.4;
+}
+
+.bfinder-text strong {
+  color: var(--color-copper, #985E38);
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+.bfinder-arrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-copper, #985E38);
+  padding: 0.3rem 0.65rem;
+  background: rgba(152, 94, 56, 0.08);
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.birthday-finder-expandable {
+  margin-bottom: 2.5rem;
+  animation: bfinder-fade-in 0.25s ease-out;
+}
+
+@keyframes bfinder-fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 640px) {
-  .intentions-band {
-    padding: 3rem 0;
+  .birthday-finder-toggle {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.6rem;
   }
 
-  .intentions-showcase-section {
-    padding: 0 1rem;
+  .bfinder-text {
+    font-size: 0.84rem;
   }
 
+  .bfinder-arrow {
+    font-size: 0.72rem;
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
   .mystery-product-section {
     padding: 2.5rem 1rem;
-  }
-
-  .intentions-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   .mystery-zodiac-chips-grid {

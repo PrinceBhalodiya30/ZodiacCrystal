@@ -31,6 +31,9 @@ describe('crystal-intentions.util', () => {
     expect(getIntentionById('wealth')?.name).toBe('Wealth & Success');
     expect(getIntentionById('LOVE')?.id).toBe('love');
     expect(getIntentionById('Peace & Sleep')?.id).toBe('peace');
+    expect(getIntentionById('clarity')?.id).toBe('intuition');
+    expect(getIntentionById('focus')?.id).toBe('intuition');
+    expect(getIntentionById('calm')?.id).toBe('peace');
     expect(getIntentionById(null)).toBeNull();
     expect(getIntentionById('unknown')).toBeNull();
   });

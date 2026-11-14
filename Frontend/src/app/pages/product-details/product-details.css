@@ -37,6 +37,45 @@
   align-self: start;
 }
 
+.gallery-media-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.gallery-media-row .image-thumbs {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 0.65rem;
+  margin-top: 0;
+  max-height: 480px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.gallery-media-row .product-image {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .gallery-media-row {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  .gallery-media-row .image-thumbs {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    max-height: none;
+    padding-bottom: 0.35rem;
+  }
+}
+
 .product-image {
   position: relative;
   width: 100%;

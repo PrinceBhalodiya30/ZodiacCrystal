@@ -62,6 +62,11 @@ export class Home implements OnInit, OnDestroy {
   readonly quizService = inject(QuizService);
   private readonly cleansingGuideService = inject(CleansingGuideService);
   readonly mysteryBoxPrice = signal<number>(1999);
+  readonly isBirthdayFinderOpen = signal<boolean>(false);
+
+  toggleBirthdayFinder(): void {
+    this.isBirthdayFinderOpen.update(open => !open);
+  }
 
   // Featured Products Horizontal Slider (E-Commerce Luxury Pattern)
   @ViewChild('featuredTrack') featuredTrack?: ElementRef<HTMLDivElement>;

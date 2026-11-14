@@ -1,15 +1,22 @@
-import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { StoreSettingsService } from '../../../../services/store-settings.service';
 import { QuizService } from '../../../../services/quiz.service';
-import { ProductService } from '../../../../services/product.service';
-import { CartService } from '../../../../services/cart.service';
-import { Product } from '../../../../models/product';
 import { ImgFallbackDirective } from '../../../../directives/img-fallback.directive';
 import { SITE_NAME } from '../../../../services/page-title.service';
-import { HERO_IMAGE_URL } from '../../../../utils/hero-image.util';
-import { getPrimaryImageUrl } from '../../../../utils/product-image.util';
-import { getProductSlug } from '../../../../utils/product-slug.util';
+
+export interface CosmicElementItem {
+  icon: string;
+  name: string;
+  energy: string;
+}
+
+export interface IntentionItem {
+  id: string;
+  label: string;
+  sub: string;
+  image: string;
+  queryParam: string;
+}
 
 @Component({
   selector: 'app-home-hero',
@@ -20,79 +27,80 @@ import { getProductSlug } from '../../../../utils/product-slug.util';
 })
 export class HomeHero implements OnInit, OnDestroy {
   readonly siteName = SITE_NAME;
-  private readonly storeSettings = inject(StoreSettingsService);
   private readonly quizService = inject(QuizService);
-  private readonly productService = inject(ProductService);
-  private readonly cartService = inject(CartService);
 
-  readonly heroEyebrow = computed(() => this.storeSettings.heroEyebrow());
-  readonly heroTitle = computed(() => this.storeSettings.heroTitle());
-  readonly heroSubtitle = computed(() => this.storeSettings.heroSubtitle());
+  @ViewChild('herowave', { static: true }) waveCanvasRef!: ElementRef<HTMLCanvasElement>;
 
-  // Shop by intention chips
-  readonly intentionChips = [
-    { id: 'wealth', label: 'Wealth & Success' },
-    { id: 'protection', label: 'Protection & Grounding' },
-    { id: 'love', label: 'Love & Harmony' },
-    { id: 'peace', label: 'Calm & Peace' }
+  private animationFrameId: number | null = null;
+  private isDestroyed = false;
+
+  readonly cosmicElements: CosmicElementItem[] = [
+    { icon: '🔥', name: 'Fire Elements', energy: 'Vitality & Willpower' },
+    { icon: '🌍', name: 'Earth Elements', energy: 'Grounding & Abundance' },
+    { icon: '💨', name: 'Air Elements', energy: 'Clarity & Intellect' },
+    { icon: '🌊', name: 'Water Elements', energy: 'Intuition & Emotional Peace' },
+    { icon: '✨', name: 'Cosmic Ether', energy: 'Higher Planetary Consciousness' }
   ];
 
-  // Centerpiece Live Product (Mejuri-style shoppable hero card)
-  readonly featuredProduct = signal<Product | null>(null);
-  readonly isLoadingProduct = signal<boolean>(true);
-  readonly isAdded = signal<boolean>(false);
+  getElementSearchTerm(elem: CosmicElementItem): string {
+    return elem.name.split(' ')[0].toLowerCase();
+  }
 
-  readonly totalSlides = 4;
-  readonly activeSlide = signal(0);
-  readonly isPaused = signal(false);
-  private timerId: ReturnType<typeof setInterval> | null = null;
-  private touchStartX = 0;
-  private touchEndX = 0;
+  readonly intentions: IntentionItem[] = [
+    {
+      id: 'wealth',
+      label: 'Wealth',
+      sub: 'Pyrite & Citrine',
+      image: '/intentions/wealth.webp',
+      queryParam: 'wealth'
+    },
+    {
+      id: 'protection',
+      label: 'Protection',
+      sub: 'Smoky Quartz & Obsidian',
+      image: '/intentions/protection.webp',
+      queryParam: 'protection'
+    },
+    {
+      id: 'love',
+      label: 'Love',
+      sub: 'Rose Quartz',
+      image: '/intentions/love.jpg',
+      queryParam: 'love'
+    },
+    {
+      id: 'clarity',
+      label: 'Clarity',
+      sub: 'Clear Quartz',
+      image: '/intentions/clarity.webp',
+      queryParam: 'intuition'
+    },
+    {
+      id: 'calm',
+      label: 'Calm',
+      sub: 'Amethyst & Selenite',
+      image: '/intentions/calm.jpg',
+      queryParam: 'peace'
+    },
+    {
+      id: 'all',
+      label: 'All Crystals',
+      sub: 'Explore Collection',
+      image: '/intentions/all-crystals.webp',
+      queryParam: ''
+    }
+  ];
 
   ngOnInit(): void {
-    this.startCarouselTimer();
-    this.loadCenterpieceProduct();
+    if (typeof window !== 'undefined') {
+      this.initSineWave();
+    }
   }
 
   ngOnDestroy(): void {
-    this.stopCarouselTimer();
-  }
-
-  readonly heroImageUrl = signal<string | null>(HERO_IMAGE_URL);
-
-  private loadCenterpieceProduct(): void {
-    this.isLoadingProduct.set(true);
-    // Fetch the top-rated in-stock active product as the atelier centerpiece
-    this.productService.getProductsPaged(1, 1, { activeOnly: true, inStockOnly: true, sortBy: 'rating' }).subscribe({
-      next: (res) => {
-        if (res.items && res.items.length > 0) {
-          this.featuredProduct.set(res.items[0]);
-        }
-        this.isLoadingProduct.set(false);
-      },
-      error: () => {
-        this.isLoadingProduct.set(false);
-      }
-    });
-  }
-
-  getProductImage(product: Product): string | null {
-    return getPrimaryImageUrl(product);
-  }
-
-  getProductLink(product: Product): string {
-    return getProductSlug(product);
-  }
-
-  addToBag(product: Product, event: Event): void {
-    event.stopPropagation();
-    event.preventDefault();
-    if (product.stockQuantity <= 0) return;
-
-    const added = this.cartService.addToCart(product, 1);
-    if (added > 0) {
-      this.isAdded.set(true);
-      setTimeout(() => this.isAdded.set(false), 2200);
+    this.isDestroyed = true;
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
     }
   }
 
@@ -100,50 +108,73 @@ export class HomeHero implements OnInit, OnDestroy {
     this.quizService.open();
   }
 
-  pauseCarousel(): void {
-    this.isPaused.set(true);
-    this.stopCarouselTimer();
-  }
+  private initSineWave(): void {
+    const canvas = this.waveCanvasRef?.nativeElement;
+    if (!canvas) return;
 
-  resumeCarousel(): void {
-    this.isPaused.set(false);
-    this.startCarouselTimer();
-  }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  nextSlide(): void {
-    this.activeSlide.update(i => (i + 1) % this.totalSlides);
-  }
+    const resize = () => {
+      canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+      canvas.height = canvas.parentElement?.clientHeight || window.innerHeight * 0.75;
+    };
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
 
-  prevSlide(): void {
-    this.activeSlide.update(i => (i - 1 + this.totalSlides) % this.totalSlides);
-  }
+    let step = 0;
+    const render = () => {
+      if (this.isDestroyed) return;
 
-  onTouchStart(e: TouchEvent): void {
-    this.touchStartX = e.changedTouches[0].screenX;
-  }
+      const width = canvas.width;
+      const height = canvas.height;
 
-  onTouchEnd(e: TouchEvent): void {
-    this.touchEndX = e.changedTouches[0].screenX;
-    const diff = this.touchStartX - this.touchEndX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) this.nextSlide();
-      else this.prevSlide();
-    }
-  }
+      ctx.clearRect(0, 0, width, height);
 
-  private startCarouselTimer(): void {
-    this.stopCarouselTimer();
-    this.timerId = setInterval(() => {
-      if (!this.isPaused()) {
-        this.nextSlide();
+      // Subtle harmonic golden energy wave
+      ctx.beginPath();
+      ctx.lineWidth = 1.25;
+      ctx.strokeStyle = 'rgba(232, 177, 131, 0.28)';
+
+      const midY = height * 0.62;
+      for (let x = 0; x < width; x += 3) {
+        const y = midY + Math.sin((x * 0.0035) + step) * 22 + Math.cos((x * 0.007) - (step * 0.5)) * 12;
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
       }
-    }, 7000);
-  }
+      ctx.stroke();
 
-  private stopCarouselTimer(): void {
-    if (this.timerId) {
-      clearInterval(this.timerId);
-      this.timerId = null;
+      // Second harmonic overtone
+      ctx.beginPath();
+      ctx.lineWidth = 0.85;
+      ctx.strokeStyle = 'rgba(200, 150, 62, 0.18)';
+      for (let x = 0; x < width; x += 4) {
+        const y = midY + Math.sin((x * 0.005) - (step * 1.2)) * 16 + Math.sin((x * 0.002) + step) * 8;
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+
+      step += 0.012;
+      this.animationFrameId = requestAnimationFrame(render);
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Draw static single line for reduced motion
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(232, 177, 131, 0.2)';
+      ctx.moveTo(0, canvas.height * 0.62);
+      ctx.lineTo(canvas.width, canvas.height * 0.62);
+      ctx.stroke();
+    } else {
+      this.animationFrameId = requestAnimationFrame(render);
     }
   }
 }

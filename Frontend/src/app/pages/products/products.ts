@@ -8,6 +8,7 @@ import { CategoryService } from '../../services/category.service';
 import { ZodiacService } from '../../services/zodiac.service';
 import { Product } from '../../models/product';
 import { getProductSlug } from '../../utils/product-slug.util';
+import { getPrimaryImageUrl } from '../../utils/product-image.util';
 import { Category } from '../../models/category';
 import { Zodiac } from '../../models/zodiac';
 import { ProductCard } from '../../components/product-card/product-card';
@@ -15,6 +16,7 @@ import { ProductCardSkeleton } from '../../components/product-card-skeleton/prod
 import { SACRED_INTENTIONS, getIntentionById } from '../../utils/crystal-intentions.util';
 import { InrPipe } from '../../pipes/inr.pipe';
 import { VedicZodiacPipe } from '../../pipes/vedic-zodiac.pipe';
+import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = Array.from({ length: PAGE_SIZE });
@@ -22,7 +24,7 @@ const SKELETON_ROWS = Array.from({ length: PAGE_SIZE });
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [InrPipe, FormsModule, ProductCard, ProductCardSkeleton, VedicZodiacPipe],
+  imports: [InrPipe, FormsModule, ProductCard, ProductCardSkeleton, VedicZodiacPipe, ImgFallbackDirective],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
@@ -76,6 +78,30 @@ export class Products implements OnInit {
   readonly totalCount = signal<number | undefined>(undefined);
   readonly isLoadingMore = signal(false);
 
+  readonly isMobileFiltersOpen = signal(false);
+
+  toggleMobileFilters(): void {
+    this.isMobileFiltersOpen.update(v => !v);
+  }
+
+  readonly selectedCategory = computed(() =>
+    this.categories().find(c => c.categoryId === this.selectedCategoryId()) ?? null
+  );
+
+  readonly selectedZodiac = computed(() =>
+    this.zodiacs().find(z => z.zodiacId === this.selectedZodiacId()) ?? null
+  );
+
+  readonly activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.selectedCategoryId() !== null) count++;
+    if (this.selectedZodiacId() !== null) count++;
+    if (this.minPrice() !== null || this.maxPrice() !== null) count++;
+    if (this.inStockOnly()) count++;
+    if (this.sortBy()) count++;
+    return count;
+  });
+
   readonly displayedCount = computed(() => this.products().length);
 
   readonly progressPercent = computed(() => {
@@ -122,7 +148,20 @@ export class Products implements OnInit {
     });
 
     this.zodiacService.getZodiacSigns().subscribe({
-      next: zodiacs => this.zodiacs.set(zodiacs),
+      next: zodiacs => {
+        this.zodiacs.set(zodiacs);
+        // If a searchParam matched a zodiac name before the list loaded, resolve it now
+        const term = this.searchTerm().trim().toLowerCase();
+        if (term && !this.selectedZodiacId()) {
+          const matched = zodiacs.find(z => z.name.toLowerCase() === term);
+          if (matched) {
+            this.selectedZodiacId.set(matched.zodiacId);
+            this.searchTerm.set('');
+            this.page.set(1);
+            this.loadProducts();
+          }
+        }
+      },
       error: () => {
         // Zodiac filter just won't be populated; not fatal.
       }
@@ -132,24 +171,37 @@ export class Products implements OnInit {
       const categoryId = Number(params.get('category'));
       this.selectedCategoryId.set(Number.isFinite(categoryId) && categoryId > 0 ? categoryId : null);
 
+      const zodiacParam = params.get('zodiac');
+      const parsedZodiacId = Number(zodiacParam);
+      if (Number.isFinite(parsedZodiacId) && parsedZodiacId > 0) {
+        this.selectedZodiacId.set(parsedZodiacId);
+      }
+
       const intentionParam = params.get('intention');
-      const searchParam = params.get('search') || '';
+      const searchParam = (params.get('search') || '').trim();
 
       if (intentionParam) {
         const matched = getIntentionById(intentionParam);
         this.selectedIntentionId.set(matched ? matched.id : intentionParam.trim().toLowerCase());
+        this.searchTerm.set(searchParam);
       } else if (searchParam) {
-        const matched = getIntentionById(searchParam);
-        if (matched) {
-          this.selectedIntentionId.set(matched.id);
+        const matchedIntention = getIntentionById(searchParam);
+        const matchedZodiac = this.zodiacs().find(z => z.name.toLowerCase() === searchParam.toLowerCase());
+        if (matchedIntention) {
+          this.selectedIntentionId.set(matchedIntention.id);
+          this.searchTerm.set('');
+        } else if (matchedZodiac) {
+          this.selectedZodiacId.set(matchedZodiac.zodiacId);
+          this.searchTerm.set('');
         } else {
           this.selectedIntentionId.set(null);
+          this.searchTerm.set(searchParam);
         }
       } else {
         this.selectedIntentionId.set(null);
+        this.searchTerm.set('');
       }
 
-      this.searchTerm.set(searchParam);
       this.page.set(1);
       this.loadProducts();
     });
@@ -172,6 +224,10 @@ export class Products implements OnInit {
     setTimeout(() => this.showSuggestions.set(false), 150);
   }
 
+  getProductImage(product: Product): string {
+    return getPrimaryImageUrl(product) || 'assets/images/placeholder.svg';
+  }
+
   selectSuggestion(product: Product): void {
     this.showSuggestions.set(false);
     void this.router.navigate(['/products', getProductSlug(product)]);
@@ -190,17 +246,11 @@ export class Products implements OnInit {
 
   private updateQueryParams(): void {
     const qParams: Record<string, string | number | null> = {};
-    if (this.selectedIntentionId()) {
-      qParams['intention'] = this.selectedIntentionId();
-    } else {
-      qParams['intention'] = null;
-    }
-    if (this.selectedCategoryId()) {
-      qParams['category'] = this.selectedCategoryId();
-    }
-    if (this.searchTerm().trim()) {
-      qParams['search'] = this.searchTerm().trim();
-    }
+    qParams['intention'] = this.selectedIntentionId() || null;
+    qParams['category'] = this.selectedCategoryId() || null;
+    qParams['zodiac'] = this.selectedZodiacId() || null;
+    qParams['search'] = this.searchTerm().trim() || null;
+
     void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: qParams,
@@ -211,12 +261,14 @@ export class Products implements OnInit {
   onCategoryChange(categoryId: number | null): void {
     this.selectedCategoryId.set(categoryId);
     this.page.set(1);
+    this.updateQueryParams();
     this.loadProducts();
   }
 
   onZodiacChange(zodiacId: number | null): void {
     this.selectedZodiacId.set(zodiacId);
     this.page.set(1);
+    this.updateQueryParams();
     this.loadProducts();
   }
 

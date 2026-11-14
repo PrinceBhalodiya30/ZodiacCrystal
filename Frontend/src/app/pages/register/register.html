@@ -97,6 +97,23 @@
                   <span class="password-strength-label">{{ passwordStrength }}</span>
                 </output>
               }
+
+              @if (password.length > 0) {
+                <div class="password-criteria-list" aria-label="Password requirements">
+                  <span class="criteria-item" [class.met]="hasMinLength">
+                    <span class="criteria-icon" aria-hidden="true">{{ hasMinLength ? '✓' : '○' }}</span>
+                    8+ characters
+                  </span>
+                  <span class="criteria-item" [class.met]="hasLetter">
+                    <span class="criteria-icon" aria-hidden="true">{{ hasLetter ? '✓' : '○' }}</span>
+                    Letters (a-z, A-Z)
+                  </span>
+                  <span class="criteria-item" [class.met]="hasNumberOrSpecial">
+                    <span class="criteria-icon" aria-hidden="true">{{ hasNumberOrSpecial ? '✓' : '○' }}</span>
+                    Number or symbol
+                  </span>
+                </div>
+              }
             </div>
 
             <div class="field-group">

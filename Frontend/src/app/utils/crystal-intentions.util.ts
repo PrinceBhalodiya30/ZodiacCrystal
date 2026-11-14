@@ -67,10 +67,22 @@ export const SACRED_INTENTIONS: SacredIntention[] = [
   }
 ];
 
+const INTENTION_ALIASES: Record<string, string> = {
+  clarity: 'intuition',
+  focus: 'intuition',
+  calm: 'peace',
+  sleep: 'peace',
+  abundance: 'wealth',
+  success: 'wealth',
+  grounding: 'protection',
+  vitality: 'energy'
+};
+
 export function getIntentionById(id: string | null | undefined): SacredIntention | null {
   if (!id) return null;
   const normalized = id.trim().toLowerCase();
-  return SACRED_INTENTIONS.find(i => i.id === normalized || i.name.toLowerCase().includes(normalized)) ?? null;
+  const canonical = INTENTION_ALIASES[normalized] ?? normalized;
+  return SACRED_INTENTIONS.find(i => i.id === canonical || i.name.toLowerCase().includes(canonical)) ?? null;
 }
 
 export function productMatchesIntention(product: Product, intention: SacredIntention): boolean {

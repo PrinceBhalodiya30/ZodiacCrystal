@@ -129,7 +129,7 @@ export class NotificationBell {
   }
 
   // Status-change notifications carry the new status in their message
-  // ("Amethyst Bracelet is now Shipped." / "... + 2 more items are now
+  // ("Amethyst Cluster is now Shipped." / "... + 2 more items are now
   // Shipped."), which picks the matching icon.
   kindOf(notification: AppNotification): NotificationKind {
     if (notification.type === 'OrderPlaced') {

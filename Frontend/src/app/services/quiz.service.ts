@@ -273,7 +273,7 @@ export class QuizService {
       'Vitality & Courage'
     ];
     const zodiacs = ['Scorpio', 'Aries', 'Cancer', 'Taurus', 'Leo', 'Pisces', 'Virgo', 'Gemini', 'Libra', 'Sagittarius', 'Capricorn', 'Aquarius'];
-    const forms = ['Raw Natural Specimen', 'Polished Crystal Tower', 'Celestial Crystal Bracelet', 'Pocket Palm Stone', 'Crystal Sphere'];
+    const forms = ['Raw Natural Specimen', 'Polished Crystal Tower', 'Celestial Crystal Talisman', 'Pocket Palm Stone', 'Crystal Sphere'];
 
     const records: ConsultationRecord[] = [];
     const now = new Date();

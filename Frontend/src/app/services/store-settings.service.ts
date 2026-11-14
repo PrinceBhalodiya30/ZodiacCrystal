@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS: StoreSettings = {
   flatShippingRate: 50,
   heroEyebrow: 'Natural Minerals & Astrological Alignments',
   heroTitle: 'Discover Crystals Aligned with Your Zodiac',
-  heroSubtitle: 'Hand-selected crystals, raw clusters, polished towers, and gemstone jewelry intuitively paired to resonate with your astrological blueprint and daily intentions.',
+  heroSubtitle: 'Hand-selected crystals, raw clusters, polished towers, and gemstone talismans intuitively paired to resonate with your astrological blueprint and daily intentions.',
   moonBannerEnabled: true,
   moonBannerMode: 'auto',
   moonBannerCustomText: null,

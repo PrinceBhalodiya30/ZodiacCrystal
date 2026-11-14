@@ -176,6 +176,7 @@
 }
 
 @media (max-width: 768px) {
+  .compare-dock,
   :root:has(.mobile-add-bar) .compare-dock,
   body:has(.mobile-add-bar) .compare-dock,
   :root:has(.cart-mobile-sticky-bar) .compare-dock,

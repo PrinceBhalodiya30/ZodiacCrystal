@@ -55,6 +55,18 @@ export class Register {
     return getPasswordStrength(this.password);
   }
 
+  get hasMinLength(): boolean {
+    return this.password.length >= 8;
+  }
+
+  get hasLetter(): boolean {
+    return /[a-zA-Z]/.test(this.password);
+  }
+
+  get hasNumberOrSpecial(): boolean {
+    return /[\d\W]/.test(this.password);
+  }
+
   onSubmit(form?: NgForm): void {
     if (form?.invalid) {
       Object.values(form.controls).forEach(control => control.markAsTouched());

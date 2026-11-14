@@ -152,58 +152,74 @@
     </div>
 
     <!-- Column 1: Explore & Align -->
-    <nav class="footer-links" aria-label="Explore &amp; Align">
-      <h4>Explore &amp; Align</h4>
-      <a routerLink="/consultation">Crystal Quiz &amp; Blueprint</a>
-      <a routerLink="/products" [queryParams]="{ intention: 'wealth' }">Wealth &amp; Success</a>
-      <a routerLink="/products" [queryParams]="{ intention: 'love' }">Love &amp; Harmony</a>
-      <a routerLink="/products" [queryParams]="{ intention: 'protection' }">Protection &amp; Grounding</a>
-      <a routerLink="/products" [queryParams]="{ intention: 'peace' }">Peace &amp; Restful Sleep</a>
-      <a routerLink="/zodiac">Shop by Zodiac Sign</a>
-      <a routerLink="/products">All Crystals Catalog</a>
-    </nav>
+    <details class="footer-links-group" open>
+      <summary class="footer-links-summary">
+        <h4>Explore &amp; Align</h4>
+      </summary>
+      <nav class="footer-links" aria-label="Explore &amp; Align">
+        <a routerLink="/consultation">Crystal Quiz &amp; Blueprint</a>
+        <a routerLink="/products" [queryParams]="{ intention: 'wealth' }">Wealth &amp; Success</a>
+        <a routerLink="/products" [queryParams]="{ intention: 'love' }">Love &amp; Harmony</a>
+        <a routerLink="/products" [queryParams]="{ intention: 'protection' }">Protection &amp; Grounding</a>
+        <a routerLink="/products" [queryParams]="{ intention: 'peace' }">Peace &amp; Restful Sleep</a>
+        <a routerLink="/zodiac">Shop by Zodiac Sign</a>
+        <a routerLink="/products">All Crystals Catalog</a>
+      </nav>
+    </details>
 
     <!-- Column 2: Rituals & Guides -->
-    <nav class="footer-links" aria-label="Rituals &amp; Guides">
-      <h4>Rituals &amp; Guides</h4>
-      <a routerLink="/guides">Crystal Guides Library</a>
-      <a routerLink="/guides/cleansing-and-moon-rituals">Cleansing &amp; Moon Ritual Guide</a>
-      <a routerLink="/guides/how-to-choose-a-crystal">How to Choose a Stone</a>
-      <a routerLink="/guides/crystal-care">Crystal Care &amp; Safe Storage</a>
-      <a routerLink="/guides/crystals-by-zodiac-sign">Crystals by Natal Sign</a>
-      <a routerLink="/guides/raw-vs-tumbled">Raw Clusters vs. Polished</a>
-    </nav>
+    <details class="footer-links-group" open>
+      <summary class="footer-links-summary">
+        <h4>Rituals &amp; Guides</h4>
+      </summary>
+      <nav class="footer-links" aria-label="Rituals &amp; Guides">
+        <a routerLink="/guides">Crystal Guides Library</a>
+        <a routerLink="/guides/cleansing-and-moon-rituals">Cleansing &amp; Moon Ritual Guide</a>
+        <a routerLink="/guides/how-to-choose-a-crystal">How to Choose a Stone</a>
+        <a routerLink="/guides/crystal-care">Crystal Care &amp; Safe Storage</a>
+        <a routerLink="/guides/crystals-by-zodiac-sign">Crystals by Natal Sign</a>
+        <a routerLink="/guides/raw-vs-tumbled">Raw Clusters vs. Polished</a>
+      </nav>
+    </details>
 
     <!-- Column 3: Customer Care -->
-    <nav class="footer-links" aria-label="Customer Care">
-      <h4>Customer Care</h4>
-      <a routerLink="/find-order">Track Your Package</a>
-      <a routerLink="/help">Help Center &amp; FAQs</a>
-      <a routerLink="/shipping-returns">Shipping &amp; Returns</a>
-      <a routerLink="/contact">Contact Atelier</a>
-      <a routerLink="/about">Our Ethos &amp; Sourcing</a>
-    </nav>
+    <details class="footer-links-group" open>
+      <summary class="footer-links-summary">
+        <h4>Customer Care</h4>
+      </summary>
+      <nav class="footer-links" aria-label="Customer Care">
+        <a routerLink="/find-order">Track Your Package</a>
+        <a routerLink="/help">Help Center &amp; FAQs</a>
+        <a routerLink="/shipping-returns">Shipping &amp; Returns</a>
+        <a routerLink="/contact">Contact Atelier</a>
+        <a routerLink="/about">Our Ethos &amp; Sourcing</a>
+      </nav>
+    </details>
 
     <!-- Column 4: My Sanctuary / Account -->
-    <nav class="footer-links" aria-label="My Sanctuary">
-      <h4>My Sanctuary</h4>
-      @if (authService.isAdmin()) {
-        <a routerLink="/admin/dashboard">Admin Dashboard</a>
-        <a routerLink="/admin/orders">Order Operations</a>
-        <a routerLink="/admin/stock">Inventory Control</a>
-      } @else if (authService.isLoggedIn()) {
-        <a routerLink="/profile">Account Overview</a>
-        <a routerLink="/orders">My Crystal Orders</a>
-        <a routerLink="/profile/addresses">Saved Addresses</a>
-        <a routerLink="/wishlist">Sacred Wishlist</a>
-        <a routerLink="/cart">Shopping Bag</a>
-      } @else {
-        <a routerLink="/login">Sign In</a>
-        <a routerLink="/register">Create Account</a>
-        <a routerLink="/find-order">Guest Order Access</a>
-        <a routerLink="/faq">Order FAQs</a>
-      }
-    </nav>
+    <details class="footer-links-group" open>
+      <summary class="footer-links-summary">
+        <h4>My Sanctuary</h4>
+      </summary>
+      <nav class="footer-links" aria-label="My Sanctuary">
+        @if (authService.isAdmin()) {
+          <a routerLink="/admin/dashboard">Admin Dashboard</a>
+          <a routerLink="/admin/orders">Order Operations</a>
+          <a routerLink="/admin/stock">Inventory Control</a>
+        } @else if (authService.isLoggedIn()) {
+          <a routerLink="/profile">Account Overview</a>
+          <a routerLink="/orders">My Crystal Orders</a>
+          <a routerLink="/profile/addresses">Saved Addresses</a>
+          <a routerLink="/wishlist">Sacred Wishlist</a>
+          <a routerLink="/cart">Shopping Bag</a>
+        } @else {
+          <a routerLink="/login">Sign In</a>
+          <a routerLink="/register">Create Account</a>
+          <a routerLink="/find-order">Guest Order Access</a>
+          <a routerLink="/faq">Order FAQs</a>
+        }
+      </nav>
+    </details>
   </div>
 
   <!-- Holistic Wellbeing Disclaimer (Energy Muse Signature Element) -->

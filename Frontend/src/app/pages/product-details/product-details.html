@@ -29,65 +29,68 @@
   } @else if (product(); as p) {
     <div class="product-details">
       <div class="product-gallery">
-        <div
-          class="product-image"
-          [class.zoomable]="selectedImageUrl()"
-          [class.is-zoomed]="isZooming()"
-          (mousemove)="onImageMouseMove($event)"
-          (mouseleave)="onImageMouseLeave()"
-          (click)="openLightbox()"
-          (keydown.enter)="openLightbox()"
-          (keydown.space)="openLightbox(); $event.preventDefault()"
-        >
-          @if (selectedImageUrl(); as imageUrl) {
-            @for (url of [imageUrl]; track url) {
-              <img
-                class="gallery-image"
-                [style.transform-origin]="zoomTransformOrigin()"
-                [imgSrc]="url"
-                imgSizes="(max-width: 900px) 100vw, 50vw"
-                [alt]="p.name"
-                width="800"
-                height="800"
-                fetchpriority="high"
-                imgFallback
-              />
-            }
-            <button
-              type="button"
-              class="zoom-btn"
-              aria-label="Zoom product image"
-              title="Click to view full screen"
-              (click)="openLightbox(); $event.stopPropagation()"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                <circle cx="10.5" cy="10.5" r="6.5"/>
-                <path d="m20 20-4.35-4.35"/>
-              </svg>
-            </button>
-          } @else {
-            <div class="image-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true">
-                <path d="M8 3h8l4 5-10 13L2 8Z"/>
-              </svg>
-              <span>No Image</span>
+        <div class="gallery-media-row">
+          @if (p.images && p.images.length > 1) {
+            <div class="image-thumbs" aria-label="Product thumbnails">
+              @for (image of p.images; track image.productImageId) {
+                <button
+                  type="button"
+                  class="image-thumb"
+                  [class.active]="image.imageUrl === selectedImageUrl()"
+                  (click)="selectImage(image.imageUrl)"
+                  [attr.aria-label]="'Select image ' + ($index + 1)"
+                >
+                  <img [imgSrc]="image.imageUrl" imgSizes="100px" [alt]="p.name + ' thumbnail ' + ($index + 1)" width="100" height="100" loading="lazy" decoding="async" imgFallback />
+                </button>
+              }
             </div>
           }
-        </div>
 
-        <div class="image-thumbs">
-          @if (p.images && p.images.length > 1) {
-            @for (image of p.images; track image.productImageId) {
+          <div
+            class="product-image"
+            [class.zoomable]="selectedImageUrl()"
+            [class.is-zoomed]="isZooming()"
+            (mousemove)="onImageMouseMove($event)"
+            (mouseleave)="onImageMouseLeave()"
+            (click)="openLightbox()"
+            (keydown.enter)="openLightbox()"
+            (keydown.space)="openLightbox(); $event.preventDefault()"
+          >
+            @if (selectedImageUrl(); as imageUrl) {
+              @for (url of [imageUrl]; track url) {
+                <img
+                  class="gallery-image"
+                  [style.transform-origin]="zoomTransformOrigin()"
+                  [imgSrc]="url"
+                  imgSizes="(max-width: 900px) 100vw, 50vw"
+                  [alt]="p.name"
+                  width="800"
+                  height="800"
+                  fetchpriority="high"
+                  imgFallback
+                />
+              }
               <button
                 type="button"
-                class="image-thumb"
-                [class.active]="image.imageUrl === selectedImageUrl()"
-                (click)="selectImage(image.imageUrl)"
+                class="zoom-btn"
+                aria-label="Zoom product image"
+                title="Click to view full screen"
+                (click)="openLightbox(); $event.stopPropagation()"
               >
-                <img [imgSrc]="image.imageUrl" imgSizes="100px" [alt]="p.name" width="100" height="100" loading="lazy" decoding="async" imgFallback />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <circle cx="10.5" cy="10.5" r="6.5"/>
+                  <path d="m20 20-4.35-4.35"/>
+                </svg>
               </button>
+            } @else {
+              <div class="image-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M8 3h8l4 5-10 13L2 8Z"/>
+                </svg>
+                <span>No Image</span>
+              </div>
             }
-          }
+          </div>
         </div>
 
         @if (crystalSpecs(); as specs) {

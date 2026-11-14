@@ -85,6 +85,18 @@
               <small>Towers, spheres, clusters &amp; mineral specimens</small>
             </div>
           </a>
+          <a routerLink="/zodiac" routerLinkActive="active" (click)="closeMenu()">
+            <span class="dropdown-item-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 3v18M3 12h18"/>
+              </svg>
+            </span>
+            <div class="dropdown-item-content">
+              <strong>Shop by Zodiac</strong>
+              <small>Astrological stones for your sun &amp; rising sign</small>
+            </div>
+          </a>
         </div>
       </div>
 
@@ -92,9 +104,17 @@
       <a routerLink="/mystery-box" routerLinkActive="active" (click)="closeMenu()">Mystery Box</a>
       <a routerLink="/guides" routerLinkActive="active" (click)="closeMenu()">Crystal Guides</a>
 
-      <button type="button" class="navbar-link-btn" (click)="openQuiz(); closeMenu()" title="Personalized Crystal Quiz">
-        Crystal Quiz
-      </button>
+      <a
+        routerLink="/consultation"
+        routerLinkActive="active"
+        class="navbar-link-btn"
+        (click)="closeMenu()"
+        title="Personalized Crystal Consultation"
+      >
+        Crystal Consultation
+      </a>
+
+      <div class="navbar-mobile-divider" aria-hidden="true"></div>
 
       <div class="navbar-mobile-account">
 
@@ -262,28 +282,125 @@
   </div>
 
   @if (isSearchOpen() && !isCheckout()) {
-    <div class="navbar-search-bar reveal-in" animate.leave="reveal-out">
-      <form class="navbar-search-form container" (ngSubmit)="submitSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="10.5" cy="10.5" r="6.5"/>
-          <path d="m20 20-4.35-4.35"/>
-        </svg>
-        <input
-          type="text"
-          name="navbarSearch"
-          placeholder="Search for crystals, zodiac signs, categories..."
-          [ngModel]="searchTerm()"
-          (ngModelChange)="searchTerm.set($event)"
-          aria-label="Search products"
-        />
-        <button type="submit" class="btn">Search</button>
-        <button
-          type="button"
-          class="navbar-search-close"
-          aria-label="Close search"
-          (click)="toggleSearch()"
-        ><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-      </form>
+    <div class="navbar-search-bar">
+      <div class="navbar-search-container">
+        <form class="navbar-search-form" (ngSubmit)="submitSearch()">
+          <div class="navbar-search-input-wrap">
+            <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5"/>
+              <path d="m20 20-4.35-4.35"/>
+            </svg>
+            <input
+              #searchInput
+              type="text"
+              name="navbarSearch"
+              placeholder="Search crystals, minerals, intentions (e.g. Pyrite, Amethyst, Wealth)..."
+              [ngModel]="searchTerm()"
+              (ngModelChange)="onSearchInput($event)"
+              aria-label="Search crystals and mineral specimens"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            @if (searchTerm()) {
+              <button
+                type="button"
+                class="navbar-search-clear-btn"
+                aria-label="Clear search input"
+                (click)="clearSearchInput()"
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            }
+          </div>
+          <button type="submit" class="btn btn-search">Search</button>
+          <button
+            type="button"
+            class="navbar-search-close"
+            aria-label="Close search"
+            (click)="closeSearch()"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </form>
+
+        @if (searchTerm().trim().length >= 2) {
+          <div class="navbar-search-dropdown">
+            @if (isSearching()) {
+              <div class="search-dropdown-loading">
+                <span class="search-spinner" aria-hidden="true"></span>
+                <span>Searching authentic crystals...</span>
+              </div>
+            } @else if (liveSuggestions().length > 0) {
+              <div class="search-dropdown-header">
+                <span>Matching Minerals ({{ liveSuggestions().length }})</span>
+                <span class="search-hint">Press Enter or click item</span>
+              </div>
+              <ul class="search-suggestions-list">
+                @for (product of liveSuggestions(); track product.productId) {
+                  <li>
+                    <button
+                      type="button"
+                      class="search-suggestion-item"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="selectSuggestion(product)"
+                    >
+                      <div class="suggestion-thumb">
+                        <img
+                          [src]="getProductImage(product)"
+                          [alt]="product.name"
+                          appImgFallback="assets/images/placeholder.svg"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="suggestion-meta">
+                        <span class="suggestion-name">{{ product.name }}</span>
+                        <span class="suggestion-category">{{ product.categoryName || 'Authentic Specimen' }}</span>
+                      </div>
+                      <span class="suggestion-price">{{ product.price | inr }}</span>
+                    </button>
+                  </li>
+                }
+              </ul>
+              <button
+                type="button"
+                class="search-view-all-row"
+                (mousedown)="$event.preventDefault()"
+                (click)="submitSearch()"
+              >
+                <span>View all results for &ldquo;<strong>{{ searchTerm().trim() }}</strong>&rdquo;</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+            } @else {
+              <div class="search-dropdown-empty">
+                <p>No crystal specimens found matching &ldquo;{{ searchTerm().trim() }}&rdquo;</p>
+                <small>Try searching by mineral name (e.g. Pyrite, Amethyst), intention (Wealth, Protection, Love), or category.</small>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="navbar-search-quick">
+            <span class="quick-title">Popular Searches:</span>
+            <div class="quick-chips">
+              @for (chip of popularSearches; track chip) {
+                <button
+                  type="button"
+                  class="quick-chip-btn"
+                  (mousedown)="$event.preventDefault()"
+                  (click)="quickSearch(chip)"
+                >
+                  {{ chip }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
     </div>
   }
 </header>

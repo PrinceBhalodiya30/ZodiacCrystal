@@ -136,11 +136,11 @@ export class FindCrystalModal implements OnInit {
       keywords: ['tower', 'point', 'sphere', 'wand', 'pyramid', 'palm', 'polished']
     },
     {
-      id: 'jewelry',
-      label: 'Wearable Jewelry & Talismans',
-      icon: 'jewelry',
+      id: 'talismans',
+      label: 'Wearable Minerals & Talismans',
+      icon: 'talisman',
       desc: 'Keep healing vibrations in contact with your pulse throughout the day.',
-      keywords: ['bracelet', 'pendant', 'necklace', 'ring', 'bead', 'jewelry']
+      keywords: ['pendant', 'talisman', 'pocket', 'amulet', 'sacred']
     },
     {
       id: 'any',

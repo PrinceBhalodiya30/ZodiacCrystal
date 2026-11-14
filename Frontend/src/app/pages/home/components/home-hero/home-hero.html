@@ -1,73 +1,120 @@
-<!-- Full Luxury Editorial Hero Section -->
-<section class="hero-atelier-showcase" aria-label="Crystal Studio Atelier Collection">
-  <div class="container hero-container">
-    
-    <!-- Left Column: Editorial & Storytelling -->
-    <div class="hero-editorial">
-      <div class="hero-eyebrow">
-        <span>Atelier Astrological Curation · Hand-Selected Minerals</span>
-      </div>
+<!-- Energy Muse 1:1 Architectural Hero Section -->
+<section class="hero" id="top">
+  <!-- 1. Ambient Dual-Vignette Background Gradient -->
+  <div class="hero-bg" aria-hidden="true"></div>
 
-      <h1 class="hero-title">
-        Sacred Crystals Aligned with Your <span class="title-accent">Cosmic Energy</span>
+  <!-- 2. Organic SVG Film Grain Texture -->
+  <div class="hero-grain" aria-hidden="true"></div>
+
+  <!-- 3. Full-Bleed Natural Sunlight Crystal Photography -->
+  <picture id="heropic">
+    <source media="(max-width: 840px)" type="image/jpeg" srcset="/hero-crystal-showcase.jpg">
+    <img
+      class="hero-shot"
+      src="/hero-crystal-showcase.jpg"
+      alt="Natural untreated crystal cluster glowing in golden sunlight"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </picture>
+
+  <!-- 4. Vibrational Harmonic Sine Wave Canvas -->
+  <canvas #herowave class="herowave" id="herowave"></canvas>
+
+  <!-- 5. Editorial Typography & Liquid Copper Action -->
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1>
+        <span class="line">
+          <span>Energy, made <em class="hl gemword">personal.</em></span>
+        </span>
       </h1>
-      
-      <p class="hero-subtitle">
-        Explore authentic untreated crystals, raw mineral clusters, and gemstone jewelry intuitively attuned to Vedic astrology and daily intentions.
-      </p>
-
-      <!-- Shop by Intention Chips -->
-      <div class="hero-intentions-wrap">
-        <span class="hero-intentions-label">Shop by Intention:</span>
-        <div class="hero-intentions-chips">
-          @for (item of intentionChips; track item.id) {
-            <a class="hero-intention-chip" [routerLink]="['/products']" [queryParams]="{ intention: item.id }">
-              <span>{{ item.label }}</span>
-            </a>
-          }
-        </div>
-      </div>
-
-      <!-- Action Area: Dual High-Contrast Buttons -->
-      <div class="hero-actions">
-        <a class="btn hero-btn-primary" routerLink="/products">
-          <span>Explore All Crystals</span>
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
-        <button type="button" class="btn btn-outline hero-btn-secondary" (click)="openQuiz()">
-          <span>Find Your Zodiac Crystal</span>
+      <p class="sub anim">Choose your energy. Live in it.</p>
+      <div class="cta-row anim">
+        <button type="button" class="btn btn-copper" (click)="openQuiz()">
+          Find My Energy Match
         </button>
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- Store Assurance & Authenticity -->
-      <div class="hero-social-proof">
-        <span class="proof-badge-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </span>
-        <div class="proof-text">
-          <strong>Untreated Natural Minerals</strong>
-          <span>· Authenticated &amp; Hand-Selected for Quality</span>
-        </div>
+<!-- 6. Celestial Astrological Elements Ribbon -->
+<section class="hzband" aria-label="Cosmic Astrological Elements">
+  <div class="hztrack">
+    @for (elem of cosmicElements; track elem.name) {
+      <a
+        [routerLink]="['/products']"
+        [queryParams]="{ search: getElementSearchTerm(elem) }"
+        class="hzitem"
+        [attr.aria-label]="'Explore crystals attuned to ' + elem.name"
+      >
+        <span class="hznum" aria-hidden="true">{{ elem.icon }}</span>
+        <span class="hzelem-title">{{ elem.name }}</span>
+        <span class="hzsep">·</span>
+        <span class="hzname">{{ elem.energy }}</span>
+      </a>
+    }
+  </div>
+</section>
+
+<!-- 7. Editorial Trust Band (Energy Muse trust) -->
+<section class="trust">
+  <div class="wrap trust-wrap">
+    <p class="trust-lead">
+      Curated with sacred intention: untreated natural crystals, consecrated with Vedic mantras and celestial planetary alignment.
+    </p>
+    <div class="trust-facts">
+      <span class="trust-pill">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        100% Untreated Minerals
+      </span>
+      <span class="trust-pill">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="m12 6 3 6-6 3 3 3"/>
+        </svg>
+        Astrological Guidance Before &amp; After You Buy
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. "Shop by How You Want to Feel" Intention Section (Energy Muse intention) -->
+<section class="section-intention" id="intention">
+  <div class="wrap">
+    <div class="int-head">
+      <div>
+        <span class="int-kicker">SHOP BY INTENTION</span>
+        <h2 class="int-title">Shop by how you want to feel.</h2>
       </div>
+      <a routerLink="/products" class="int-all-link">
+        <span>Shop All Crystals</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
     </div>
 
-    <!-- Right Column: Dedicated Visual Showcase -->
-    <div class="hero-visual-showcase">
-      <div class="hero-visual-frame">
-        @if (heroImageUrl(); as url) {
-          <img [imgSrc]="url" 
-               class="hero-visual-image" 
-               alt="Sacred Natural Crystals and Gemstones" 
-               fetchpriority="high" 
-               imgFallback />
-        }
-      </div>
-    </div>
-
+    <ul class="int-grid">
+      @for (item of intentions; track item.id) {
+        <li class="int-item">
+          <a
+            class="int-card"
+            [routerLink]="['/products']"
+            [queryParams]="item.queryParam ? { intention: item.queryParam } : {}"
+          >
+            <div class="int-frame">
+              <img [src]="item.image" [alt]="item.label + ' Crystals'" width="102" height="102" loading="lazy" decoding="async" imgFallback />
+            </div>
+            <strong class="int-label">{{ item.label }}</strong>
+            <span class="int-sub">{{ item.sub }}</span>
+          </a>
+        </li>
+      }
+    </ul>
   </div>
 </section>
