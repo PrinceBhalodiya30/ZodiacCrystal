@@ -1,16 +1,14 @@
 @if (isOpen()) {
   <div
     class="cleansing-modal-backdrop"
-    tabindex="-1"
     (click)="close()"
-    (keydown)="$event.key === 'Escape' && close()"
   >
-    <dialog
+    <div
       class="cleansing-modal-container"
-      open
+      role="dialog"
+      aria-modal="true"
       aria-labelledby="cleansing-modal-title"
       (click)="$event.stopPropagation()"
-      (keydown)="$event.key === 'Escape' && close()"
     >
       <!-- Modal Header -->
       <header class="cleansing-modal-header">
@@ -363,14 +361,18 @@
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
                 <input
+                  #checkerSearchInput
+                  id="mineralSafetySearch"
                   type="text"
                   class="checker-search-input"
                   placeholder="Search mineral (e.g. Selenite, Pyrite, Amethyst, Malachite...)"
-                  [ngModel]="searchQuery() || guideService.searchMineral()"
-                  (ngModelChange)="onSearchChange($event)"
+                  [value]="searchQuery()"
+                  (input)="onSearchInput($event)"
                   aria-label="Search mineral"
+                  autocomplete="off"
+                  spellcheck="false"
                 />
-                @if (searchQuery() || guideService.searchMineral()) {
+                @if (searchQuery()) {
                   <button type="button" class="btn-clear-search" (click)="clearSearch()" aria-label="Clear search">
                     &times;
                   </button>
@@ -457,6 +459,6 @@
         </p>
         <button type="button" class="btn btn-outline" (click)="close()">Close Guide</button>
       </footer>
-    </dialog>
+    </div>
   </div>
 }

@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CleansingGuideService, CleansingGuideTab } from '../../services/cleansing-guide.service';
 
@@ -205,14 +205,15 @@ export class CleansingGuideModal {
 
   isOpen = this.guideService.isOpen;
   activeTab = this.guideService.activeTab;
-  searchQuery = signal('');
+  searchQuery = this.guideService.searchMineral;
   safetyFilter = signal<'all' | 'safe' | 'sensitive'>('all');
+  searchInput = viewChild<ElementRef<HTMLInputElement>>('checkerSearchInput');
 
   readonly minerals = MINERAL_CARE_ITEMS;
 
   filteredMinerals = computed(() => {
     let items = this.minerals;
-    const query = (this.searchQuery() || this.guideService.searchMineral()).trim().toLowerCase();
+    const query = this.searchQuery().trim().toLowerCase();
     if (query) {
       items = items.filter(m =>
         m.name.toLowerCase().includes(query) ||
@@ -240,9 +241,13 @@ export class CleansingGuideModal {
 
   setTab(tab: CleansingGuideTab): void {
     this.guideService.setTab(tab);
+    if (tab === 'checker') {
+      setTimeout(() => this.searchInput()?.nativeElement.focus(), 60);
+    }
   }
 
   close(): void {
+    this.searchQuery.set('');
     this.guideService.close();
   }
 
@@ -250,13 +255,17 @@ export class CleansingGuideModal {
     this.safetyFilter.set(filter);
   }
 
-  onSearchChange(value: string): void {
-    this.searchQuery.set(value);
-    this.guideService.searchMineral.set(value);
+  onSearchInput(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(val);
   }
 
   clearSearch(): void {
     this.searchQuery.set('');
-    this.guideService.searchMineral.set('');
+    const input = this.searchInput()?.nativeElement;
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
   }
 }

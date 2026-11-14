@@ -10,9 +10,7 @@ export class CleansingGuideService {
 
   open(tab: CleansingGuideTab = 'cleansing', mineralName?: string): void {
     this.activeTab.set(tab);
-    if (mineralName) {
-      this.searchMineral.set(mineralName);
-    }
+    this.searchMineral.set(mineralName || '');
     this.isOpen.set(true);
   }
 

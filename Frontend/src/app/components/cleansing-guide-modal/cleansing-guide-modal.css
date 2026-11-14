@@ -511,9 +511,13 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-subtle, #888279);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .checker-search-input {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 40px;
   padding: 0 2rem 0 2.35rem;
@@ -524,6 +528,10 @@
   color: var(--color-ink, #1D2739);
   background: var(--color-surface, #ffffff);
   box-sizing: border-box;
+  cursor: text;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .checker-search-input:focus {
@@ -542,6 +550,7 @@
   color: var(--color-subtle, #888279);
   cursor: pointer;
   font-size: 1.1rem;
+  z-index: 3;
 }
 
 .checker-filter-chips {
