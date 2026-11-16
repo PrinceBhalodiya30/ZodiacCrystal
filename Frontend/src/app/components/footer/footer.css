@@ -357,6 +357,12 @@
   list-style: none;
 }
 
+@media (min-width: 601px) {
+  .footer-links-summary {
+    pointer-events: none;
+  }
+}
+
 .footer-links-summary::-webkit-details-marker {
   display: none;
 }
@@ -577,7 +583,10 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    padding: 0.4rem 0;
+    padding: 0.65rem 0;
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .footer-links-summary h4 {

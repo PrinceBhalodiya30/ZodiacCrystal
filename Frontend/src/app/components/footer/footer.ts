@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -15,14 +15,23 @@ import { SITE_NAME } from '../../services/page-title.service';
   templateUrl: './footer.html',
   styleUrl: './footer.css'
 })
-export class Footer {
+export class Footer implements OnInit {
   readonly siteName = SITE_NAME;
   readonly currentYear = new Date().getFullYear();
+  readonly isDesktop = signal(true);
   readonly authService = inject(AuthService);
   private readonly newsletterService = inject(NewsletterService);
   private readonly storeSettings = inject(StoreSettingsService);
   readonly freeShippingThreshold = computed(() => this.storeSettings.freeShippingThreshold());
   readonly contact = computed(() => this.storeSettings.storeContactSettings());
+
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      const mql = window.matchMedia('(min-width: 601px)');
+      this.isDesktop.set(mql.matches);
+      mql.addEventListener('change', (e) => this.isDesktop.set(e.matches));
+    }
+  }
 
   readonly newsletterEmail = signal('');
   readonly newsletterHoneypot = signal('');

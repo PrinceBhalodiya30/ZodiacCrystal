@@ -165,7 +165,7 @@
     </div>
 
     <!-- Column 1: Explore & Align -->
-    <details class="footer-links-group" open>
+    <details class="footer-links-group" [open]="isDesktop()">
       <summary class="footer-links-summary">
         <h4>Explore &amp; Align</h4>
       </summary>
@@ -181,7 +181,7 @@
     </details>
 
     <!-- Column 2: Rituals & Guides -->
-    <details class="footer-links-group" open>
+    <details class="footer-links-group" [open]="isDesktop()">
       <summary class="footer-links-summary">
         <h4>Rituals &amp; Guides</h4>
       </summary>
@@ -196,7 +196,7 @@
     </details>
 
     <!-- Column 3: Customer Care -->
-    <details class="footer-links-group" open>
+    <details class="footer-links-group" [open]="isDesktop()">
       <summary class="footer-links-summary">
         <h4>Customer Care</h4>
       </summary>
@@ -210,7 +210,7 @@
     </details>
 
     <!-- Column 4: My Sanctuary / Account -->
-    <details class="footer-links-group" open>
+    <details class="footer-links-group" [open]="isDesktop()">
       <summary class="footer-links-summary">
         <h4>My Sanctuary</h4>
       </summary>
@@ -228,6 +228,8 @@
         } @else {
           <a routerLink="/login">Sign In</a>
           <a routerLink="/register">Create Account</a>
+          <a routerLink="/wishlist">Sacred Wishlist</a>
+          <a routerLink="/cart">Shopping Bag</a>
           <a routerLink="/find-order">Guest Order Access</a>
           <a routerLink="/faq">Order FAQs</a>
         }
@@ -276,7 +278,6 @@
     <div class="footer-copy-links">
       <a routerLink="/privacy">Privacy Policy</a>
       <a routerLink="/terms">Terms of Service</a>
-      <a routerLink="/shipping-returns">Shipping &amp; Returns</a>
     </div>
   </div>
 </footer>
