@@ -7,6 +7,7 @@ import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
 import { ToastContainer } from './components/toast-container/toast-container';
 import { AuthService } from './services/auth.service';
 import { WishlistService } from './services/wishlist.service';
+import { isAuthRequiredRoute } from './guards/auth.guard';
 
 import { CartDrawer } from './components/cart-drawer/cart-drawer';
 import { CompareDock } from './components/compare-dock/compare-dock';
@@ -40,12 +41,15 @@ export class App {
   isAdminRoute = signal(this.router.url.startsWith('/admin'));
 
   constructor() {
-    // Session ran out while the app was open: same handling as a REST 401 in the auth interceptor.
+    // Session ran out while the app was open: only bounce to login if on a protected route.
     const wishlistService = inject(WishlistService);
     inject(AuthService).sessionExpired.subscribe(() => {
       wishlistService.clear();
-      const returnUrl = this.router.url.startsWith('/login') ? undefined : this.router.url;
-      void this.router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+      const currentUrl = this.router.url;
+      if (isAuthRequiredRoute(currentUrl)) {
+        const returnUrl = currentUrl.startsWith('/login') ? undefined : currentUrl;
+        void this.router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+      }
     });
 
     this.router.events

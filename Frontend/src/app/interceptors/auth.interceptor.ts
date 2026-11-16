@@ -5,6 +5,7 @@ import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { WishlistService } from '../services/wishlist.service';
 import { GuestSessionService } from '../services/guest-session.service';
+import { isAuthRequiredRoute } from '../guards/auth.guard';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
@@ -35,10 +36,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && token && !req.url.includes('/Auth/')) {
         authService.logout();
         wishlistService.clear();
-        // Come back to the same page (e.g. checkout) after signing in again.
-        // Each user has their own saved cart, so it's still there afterwards.
-        const returnUrl = router.url.startsWith('/login') ? undefined : router.url;
-        void router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+
+        // Only redirect to login if the user was on an authenticated route.
+        // If on the home page ('/') or any public catalog page, keep the user on that page as a guest.
+        const currentUrl = router.url;
+        if (isAuthRequiredRoute(currentUrl)) {
+          const returnUrl = currentUrl.startsWith('/login') ? undefined : currentUrl;
+          void router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+        }
       }
 
       return throwError(() => error);

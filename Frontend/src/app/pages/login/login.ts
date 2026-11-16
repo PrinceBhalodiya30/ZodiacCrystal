@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -13,7 +13,7 @@ import { SITE_NAME } from '../../services/page-title.service';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit {
   readonly siteName = SITE_NAME;
   private readonly authService = inject(AuthService);
   private readonly wishlistService = inject(WishlistService);
@@ -26,6 +26,14 @@ export class Login {
   showPassword = signal(false);
   isSubmitting = signal(false);
   errorMessage = signal('');
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+      const defaultUrl = this.authService.isAdmin() ? '/admin/dashboard' : '/';
+      void this.router.navigateByUrl(returnUrl || defaultUrl);
+    }
+  }
 
   togglePassword(): void {
     this.showPassword.set(!this.showPassword());
