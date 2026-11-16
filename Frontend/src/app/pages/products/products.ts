@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, of } from 'rxjs';
@@ -79,6 +79,44 @@ export class Products implements OnInit {
   readonly isLoadingMore = signal(false);
 
   readonly isMobileFiltersOpen = signal(false);
+  readonly showBackToTop = signal(false);
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (typeof window !== 'undefined') {
+      this.showBackToTop.set(window.scrollY > 400);
+    }
+  }
+
+  scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  @HostListener('window:focus-catalog-search')
+  onFocusCatalogSearch(): void {
+    if (!this.isMobileFiltersOpen()) {
+      this.isMobileFiltersOpen.set(true);
+    }
+    setTimeout(() => {
+      if (typeof document === 'undefined') return;
+      const input = document.getElementById('productSearchInput') as HTMLInputElement | null;
+      if (input) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        input.focus();
+        input.select();
+        const searchBox = input.closest('.search-box') as HTMLElement | null;
+        if (searchBox) {
+          searchBox.classList.remove('search-box-pulse');
+          requestAnimationFrame(() => {
+            searchBox.classList.add('search-box-pulse');
+          });
+          setTimeout(() => searchBox.classList.remove('search-box-pulse'), 1500);
+        }
+      }
+    }, 120);
+  }
 
   toggleMobileFilters(): void {
     this.isMobileFiltersOpen.update(v => !v);

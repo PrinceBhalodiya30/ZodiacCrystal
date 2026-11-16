@@ -97,6 +97,25 @@
   box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.15);
 }
 
+.search-box.search-box-pulse .search-input {
+  animation: searchInputGlow 1.2s ease;
+}
+
+@keyframes searchInputGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(152, 94, 56, 0.45);
+    border-color: var(--color-copper, #985E38);
+  }
+  40% {
+    box-shadow: 0 0 0 6px rgba(152, 94, 56, 0.28);
+    border-color: var(--color-copper, #985E38);
+  }
+  100% {
+    box-shadow: 0 0 0 3px rgba(152, 94, 56, 0.15);
+    border-color: var(--color-copper, #985E38);
+  }
+}
+
 .search-clear-btn {
   position: absolute;
   right: 0.65rem;
@@ -847,15 +866,97 @@ progress.catalog-progress-track::-moz-progress-bar {
   opacity: 0.85;
 }
 
+/* Floating Back to Top Button */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.05rem;
+  background-color: var(--color-ink, #1D2739);
+  color: #ffffff;
+  border: 1px solid rgba(152, 94, 56, 0.45);
+  border-radius: 9999px;
+  box-shadow: 0 4px 18px rgba(29, 39, 57, 0.22), 0 2px 6px rgba(152, 94, 56, 0.15);
+  cursor: pointer;
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.825rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1),
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+  animation: backToTopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.back-to-top-btn:hover {
+  background-color: var(--color-copper, #985E38);
+  border-color: var(--color-copper, #985E38);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(152, 94, 56, 0.32), 0 4px 10px rgba(29, 39, 57, 0.15);
+}
+
+.back-to-top-btn:hover .back-to-top-icon {
+  transform: translateY(-2px);
+}
+
+.back-to-top-btn:active {
+  transform: translateY(0);
+}
+
+.back-to-top-btn:focus-visible {
+  outline: 2px solid var(--color-copper, #985E38);
+  outline-offset: 3px;
+}
+
+.back-to-top-icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.back-to-top-text {
+  line-height: 1;
+}
+
+@keyframes backToTopIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .back-to-top-btn {
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    right: 1.25rem;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.775rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .active-intention-banner {
+  .active-intention-banner,
+  .back-to-top-btn,
+  .search-box.search-box-pulse .search-input {
     animation: none;
   }
   .catalog-progress-fill,
   progress.catalog-progress-track::-webkit-progress-value,
   .load-more-btn,
   .load-more-icon,
-  .search-suggestion {
+  .search-suggestion,
+  .back-to-top-btn,
+  .back-to-top-icon {
     transition: none;
   }
   .load-more-spinner {

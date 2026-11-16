@@ -180,13 +180,15 @@
             Add to Bag
           }
         </button>
-        <button
-          type="button"
-          class="btn btn-accent btn-buy-now"
-          [disabled]="purchaseDisabled"
-          [attr.title]="purchaseDisabled ? unavailableMessage : null"
-          (click)="buyNow()"
-        >Buy Now</button>
+        @if (showBuyNow) {
+          <button
+            type="button"
+            class="btn btn-accent btn-buy-now"
+            [disabled]="purchaseDisabled"
+            [attr.title]="purchaseDisabled ? unavailableMessage : null"
+            (click)="buyNow()"
+          >Buy Now</button>
+        }
       }
     </div>
   </div>

@@ -65,7 +65,7 @@ export class Navbar {
 
   readonly popularSearches: readonly string[] = [
     'Amethyst',
-    'Pyrite Specimen',
+    'Fool’s Gold Pyrite Cluster Specimen',
     'Rose Quartz',
     'Clear Quartz',
     'Protection',
@@ -139,6 +139,18 @@ export class Navbar {
           this.liveSuggestions.set([]);
         }
       });
+
+    // When navigating to the products catalog page, close any lingering navbar search bar
+    this.router.events
+      .pipe(
+        takeUntilDestroyed(),
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd)
+      )
+      .subscribe(event => {
+        if (event.urlAfterRedirects.split('?')[0] === '/products' && this.isSearchOpen()) {
+          this.closeSearch();
+        }
+      });
   }
 
   private triggerBump(bumpSignal: WritableSignal<boolean>): void {
@@ -188,6 +200,15 @@ export class Navbar {
   }
 
   toggleSearch(): void {
+    const currentPath = this.router.url.split('?')[0];
+    if (currentPath === '/products') {
+      this.closeSearch();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('focus-catalog-search'));
+      }
+      return;
+    }
+
     const nextState = !this.isSearchOpen();
     this.isSearchOpen.set(nextState);
     if (nextState) {

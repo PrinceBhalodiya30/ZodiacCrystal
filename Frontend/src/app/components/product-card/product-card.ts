@@ -28,6 +28,7 @@ import { InrPipe } from '../../pipes/inr.pipe';
 export class ProductCard implements OnInit {
   @Input({ required: true }) product!: Product;
   @Input() variant: 'default' | 'wishlist' = 'default';
+  @Input() showBuyNow = false;
 
   private readonly cartService = inject(CartService);
   private readonly authService = inject(AuthService);
