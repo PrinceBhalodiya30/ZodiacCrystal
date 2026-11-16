@@ -368,6 +368,15 @@
   color: var(--color-ink, #1D2739);
 }
 
+.cart-tax-note {
+  font-size: 0.78rem;
+  color: var(--color-subtle, #736b5e);
+  margin-top: 0.3rem;
+  margin-bottom: 0.6rem;
+  text-align: right;
+  letter-spacing: 0.01em;
+}
+
 /* Free Shipping Callout in Order Summary */
 .free-shipping-card {
   margin: 1.25rem 0 0.75rem;
@@ -426,11 +435,6 @@
 
 .free-shipping-card.unlocked .free-shipping-fill {
   background: var(--color-success, #1b6e37);
-}
-
-.free-shipping-check {
-  font-weight: 700;
-  font-size: 1rem;
 }
 
 .cart-hint {
@@ -666,6 +670,13 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--color-brand);
+    white-space: nowrap;
+    line-height: 1.15;
+  }
+
+  .cart-sticky-tax {
+    font-size: 0.68rem;
+    color: var(--color-subtle, #736b5e);
     white-space: nowrap;
   }
 

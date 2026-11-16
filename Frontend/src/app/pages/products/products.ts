@@ -234,11 +234,7 @@ export class Products implements OnInit {
   }
 
   onIntentionChange(intentionId: string | null): void {
-    if (this.selectedIntentionId() === intentionId) {
-      this.selectedIntentionId.set(null);
-    } else {
-      this.selectedIntentionId.set(intentionId);
-    }
+    this.selectedIntentionId.set(intentionId || null);
     this.page.set(1);
     this.updateQueryParams();
     this.loadProducts();

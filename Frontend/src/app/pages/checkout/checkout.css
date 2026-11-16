@@ -571,6 +571,14 @@
   color: var(--color-brand);
 }
 
+.checkout-tax-note {
+  font-size: 0.78rem;
+  color: var(--color-subtle, #736b5e);
+  margin-top: 0.35rem;
+  text-align: right;
+  letter-spacing: 0.01em;
+}
+
 /* Place Order Button */
 .place-order-btn {
   margin-top: 1.75rem;

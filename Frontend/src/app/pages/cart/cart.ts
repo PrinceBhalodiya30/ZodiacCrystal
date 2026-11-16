@@ -27,7 +27,7 @@ export class Cart implements OnInit {
   // Notes from re-checking prices/availability when the page opened.
   readonly changeNotes = signal<string[]>([]);
 
-  readonly shippingFee = computed(() => this.cartService.shippingFeeFor(this.cartService.total()));
+  readonly shippingFee = computed(() => this.cartService.shippingFee());
   readonly grandTotal = computed(() => this.cartService.total() + this.shippingFee() + this.cartService.giftFee());
   readonly amountToFreeShipping = computed(() => Math.max(0, this.cartService.freeShippingThreshold() - this.cartService.total()));
   readonly freeShippingProgress = computed(() =>
@@ -55,7 +55,7 @@ export class Cart implements OnInit {
   }
 
   isOverStock(item: CartItem): boolean {
-    return item.product.stockQuantity <= 0 || item.quantity > item.product.stockQuantity;
+    return item.quantity > item.product.stockQuantity;
   }
 
   itemImage(item: CartItem): string | null {

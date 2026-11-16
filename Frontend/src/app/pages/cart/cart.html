@@ -1,8 +1,8 @@
 <section class="container cart-page">
   <header class="cart-header">
     <h1>Your Shopping Bag</h1>
-    @if (cartService.items().length > 0) {
-      <span class="cart-count-pill">{{ cartService.items().length }} {{ cartService.items().length === 1 ? 'item' : 'items' }}</span>
+    @if (cartService.totalQuantity() > 0) {
+      <span class="cart-count-pill">{{ cartService.totalQuantity() }} {{ cartService.totalQuantity() === 1 ? 'item' : 'items' }}</span>
     }
   </header>
 
@@ -106,7 +106,7 @@
             <span>Subtotal</span>
             <span>{{ cartService.total() | inr }}</span>
           </div>
-          @if (cartService.isGiftWrap()) {
+          @if (cartService.isGiftPackagingEnabled() && cartService.isGiftWrap()) {
             <div class="cart-total-row cart-gift-row">
               <span class="gift-row-label">
                 <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-left" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg> Luxury Gift Packaging
@@ -120,59 +120,62 @@
           </div>
 
           <!-- Luxury Gift Box & Handwritten Zodiac Note Card -->
-          <div class="cart-gift-box-card" [class.active]="cartService.isGiftWrap()">
-            <label class="gift-box-toggle-label">
-              <input
-                type="checkbox"
-                class="gift-box-checkbox"
-                [checked]="cartService.isGiftWrap()"
-                (change)="toggleGiftWrap($event)"
-              />
-              <div class="gift-box-label-content">
-                <div class="gift-box-title-row">
-                  <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>
-                  <strong>Add Luxury Gift Wrap &amp; Zodiac Note</strong>
-                  <span class="gift-tag">+ {{ giftPackagingFee | inr }}</span>
+          @if (cartService.isGiftPackagingEnabled()) {
+            <div class="cart-gift-box-card" [class.active]="cartService.isGiftWrap()">
+              <label class="gift-box-toggle-label">
+                <input
+                  type="checkbox"
+                  class="gift-box-checkbox"
+                  [checked]="cartService.isGiftWrap()"
+                  (change)="toggleGiftWrap($event)"
+                />
+                <div class="gift-box-label-content">
+                  <div class="gift-box-title-row">
+                    <svg class="gift-box-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13"/><path d="M12 8c-2 0-3.5-1.5-3.5-3.5S10.5 1 12 5c1.5-4 3.5-3.5 3.5-0.5S14 8 12 8z"/></svg>
+                    <strong>Add Luxury Gift Wrap &amp; Zodiac Note</strong>
+                    <span class="gift-tag">+ {{ giftPackagingFee | inr }}</span>
+                  </div>
+                  <p class="gift-box-desc">
+                    Gold-foiled velvet pouch, satin-ribbon box &amp; personalized astrological note card.
+                  </p>
                 </div>
-                <p class="gift-box-desc">
-                  Gold-foiled velvet pouch, satin-ribbon box &amp; personalized astrological note card.
-                </p>
-              </div>
-            </label>
+              </label>
 
-            @if (cartService.isGiftWrap()) {
-              <div class="gift-details-expanded">
-                <div class="gift-field">
-                  <label for="cartGiftRecipient">Recipient's Name (Optional)</label>
-                  <input
-                    id="cartGiftRecipient"
-                    type="text"
-                    placeholder="e.g. Ananya Sharma"
-                    [value]="cartService.giftRecipient()"
-                    (input)="onRecipientChange($event)"
-                    maxlength="100"
-                  />
+              @if (cartService.isGiftWrap()) {
+                <div class="gift-details-expanded">
+                  <div class="gift-field">
+                    <label for="cartGiftRecipient">Recipient's Name (Optional)</label>
+                    <input
+                      id="cartGiftRecipient"
+                      type="text"
+                      placeholder="e.g. Ananya Sharma"
+                      [value]="cartService.giftRecipient()"
+                      (input)="onRecipientChange($event)"
+                      maxlength="100"
+                    />
+                  </div>
+                  <div class="gift-field">
+                    <label for="cartGiftMessage">Handwritten Personal Note</label>
+                    <textarea
+                      id="cartGiftMessage"
+                      rows="2"
+                      placeholder="Wishing you abundance, positive energy and alignment..."
+                      [value]="cartService.giftMessage()"
+                      (input)="onMessageChange($event)"
+                      maxlength="250"
+                    ></textarea>
+                    <span class="char-count">{{ cartService.giftMessage().length }}/250</span>
+                  </div>
                 </div>
-                <div class="gift-field">
-                  <label for="cartGiftMessage">Handwritten Personal Note</label>
-                  <textarea
-                    id="cartGiftMessage"
-                    rows="2"
-                    placeholder="Wishing you abundance, positive energy and alignment..."
-                    [value]="cartService.giftMessage()"
-                    (input)="onMessageChange($event)"
-                    maxlength="250"
-                  ></textarea>
-                  <span class="char-count">{{ cartService.giftMessage().length }}/250</span>
-                </div>
-              </div>
-            }
-          </div>
+              }
+            </div>
+          }
 
           <div class="cart-total-row cart-total-final">
             <span>Estimated Total</span>
             <span class="cart-grand-total">{{ grandTotal() | inr }}</span>
           </div>
+          <div class="cart-tax-note">Inclusive of all taxes &amp; GST &middot; No hidden fees</div>
 
           <div class="free-shipping-card" [class.unlocked]="amountToFreeShipping() === 0">
             <div class="free-shipping-text">
@@ -183,9 +186,9 @@
                 <circle cx="17" cy="18" r="2"></circle>
               </svg>
               @if (amountToFreeShipping() > 0) {
-                <span>Add <strong>{{ amountToFreeShipping() | inr }}</strong> more for <strong>Free Shipping</strong></span>
+                <span>Add <strong>{{ amountToFreeShipping() | inr }}</strong> more for <strong>Free Delivery</strong></span>
               } @else {
-                <span>You've unlocked <strong>Free Standard Shipping</strong>!</span>
+                <span>You've unlocked <strong>Free Standard Delivery</strong>!</span>
               }
             </div>
             <div class="free-shipping-track">
@@ -219,6 +222,7 @@
       <div class="cart-sticky-info">
         <span class="cart-sticky-label">Estimated Total</span>
         <span class="cart-sticky-price">{{ grandTotal() | inr }}</span>
+        <span class="cart-sticky-tax">Incl. all taxes &amp; GST</span>
       </div>
       <button
         type="button"

@@ -1,479 +1,418 @@
 <section class="container product-details-page">
   @if (product(); as p) {
-    <app-breadcrumbs [items]="p.categoryName
+  <app-breadcrumbs [items]="p.categoryName
       ? [{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: p.categoryName, link: '/products', queryParams: { category: p.categoryId } }, { label: p.name }]
       : [{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: p.name }]"></app-breadcrumbs>
   } @else {
-    <app-breadcrumbs [items]="[{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: 'Crystal' }]"></app-breadcrumbs>
+  <app-breadcrumbs
+    [items]="[{ label: 'Home', link: '/' }, { label: 'Shop All', link: '/products' }, { label: 'Crystal' }]"></app-breadcrumbs>
   }
 
   @if (isLoading()) {
-    <output class="visually-hidden">Loading product...</output>
-    <div class="product-details" aria-hidden="true">
-      <span class="skeleton product-image-skeleton"></span>
-      <div class="product-info-skeleton">
-        <span class="skeleton skeleton-line skeleton-w-xs"></span>
-        <span class="skeleton skeleton-w-lg skeleton-h-md"></span>
-        <span class="skeleton skeleton-w-sm skeleton-h-sm"></span>
-        <span class="skeleton skeleton-line skeleton-w-full"></span>
-        <span class="skeleton skeleton-line skeleton-w-xl"></span>
-        <span class="skeleton skeleton-line skeleton-w-md"></span>
-        <span class="skeleton product-actions-skeleton"></span>
-      </div>
+  <output class="visually-hidden">Loading product...</output>
+  <div class="product-details" aria-hidden="true">
+    <span class="skeleton product-image-skeleton"></span>
+    <div class="product-info-skeleton">
+      <span class="skeleton skeleton-line skeleton-w-xs"></span>
+      <span class="skeleton skeleton-w-lg skeleton-h-md"></span>
+      <span class="skeleton skeleton-w-sm skeleton-h-sm"></span>
+      <span class="skeleton skeleton-line skeleton-w-full"></span>
+      <span class="skeleton skeleton-line skeleton-w-xl"></span>
+      <span class="skeleton skeleton-line skeleton-w-md"></span>
+      <span class="skeleton product-actions-skeleton"></span>
     </div>
+  </div>
   } @else if (errorMessage()) {
-    <div class="state-message state-message--error">
-      <p>{{ errorMessage() }}</p>
-      <button type="button" class="btn" (click)="loadProduct()">Retry</button>
-    </div>
+  <div class="state-message state-message--error">
+    <p>{{ errorMessage() }}</p>
+    <button type="button" class="btn" (click)="loadProduct()">Retry</button>
+  </div>
   } @else if (product(); as p) {
-    <div class="product-details">
-      <div class="product-gallery">
-        <div class="gallery-media-row">
-          @if (p.images && p.images.length > 1) {
-            <div class="image-thumbs" aria-label="Product thumbnails">
-              @for (image of p.images; track image.productImageId) {
-                <button
-                  type="button"
-                  class="image-thumb"
-                  [class.active]="image.imageUrl === selectedImageUrl()"
-                  (click)="selectImage(image.imageUrl)"
-                  [attr.aria-label]="'Select image ' + ($index + 1)"
-                >
-                  <img [imgSrc]="image.imageUrl" imgSizes="100px" [alt]="p.name + ' thumbnail ' + ($index + 1)" width="100" height="100" loading="lazy" decoding="async" imgFallback />
-                </button>
-              }
-            </div>
+  <div class="product-details">
+    <div class="product-gallery">
+      <div class="gallery-media-row">
+        @if (p.images && p.images.length > 1) {
+        <div class="image-thumbs" aria-label="Product thumbnails">
+          @for (image of p.images; track image.productImageId) {
+          <button type="button" class="image-thumb" [class.active]="image.imageUrl === selectedImageUrl()"
+            (click)="selectImage(image.imageUrl)" [attr.aria-label]="'Select image ' + ($index + 1)">
+            <img [imgSrc]="image.imageUrl" imgSizes="100px" [alt]="p.name + ' thumbnail ' + ($index + 1)" width="100"
+              height="100" loading="lazy" decoding="async" imgFallback />
+          </button>
           }
-
-          <div
-            class="product-image"
-            [class.zoomable]="selectedImageUrl()"
-            [class.is-zoomed]="isZooming()"
-            (mousemove)="onImageMouseMove($event)"
-            (mouseleave)="onImageMouseLeave()"
-            (click)="openLightbox()"
-            (keydown.enter)="openLightbox()"
-            (keydown.space)="openLightbox(); $event.preventDefault()"
-          >
-            @if (selectedImageUrl(); as imageUrl) {
-              @for (url of [imageUrl]; track url) {
-                <img
-                  class="gallery-image"
-                  [style.transform-origin]="zoomTransformOrigin()"
-                  [imgSrc]="url"
-                  imgSizes="(max-width: 900px) 100vw, 50vw"
-                  [alt]="p.name"
-                  width="800"
-                  height="800"
-                  fetchpriority="high"
-                  imgFallback
-                />
-              }
-              <button
-                type="button"
-                class="zoom-btn"
-                aria-label="Zoom product image"
-                title="Click to view full screen"
-                (click)="openLightbox(); $event.stopPropagation()"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                  <circle cx="10.5" cy="10.5" r="6.5"/>
-                  <path d="m20 20-4.35-4.35"/>
-                </svg>
-              </button>
-            } @else {
-              <div class="image-placeholder">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M8 3h8l4 5-10 13L2 8Z"/>
-                </svg>
-                <span>No Image</span>
-              </div>
-            }
-          </div>
         </div>
-
-        @if (crystalSpecs(); as specs) {
-          <app-product-cleansing-ritual
-            [specs]="specs"
-            [productName]="p.name"
-            [copiedAffirmation]="copiedAffirmation()"
-            (copyAffirmation)="copyAffirmation($event)"
-            (openCleansingGuide)="openCleansingGuide($event)"
-          ></app-product-cleansing-ritual>
         }
 
-        <!-- Crystal Quality & Shipping Guarantee -->
-        <div class="crystal-authenticity-card" aria-label="Quality and shipping guarantee">
-          <div class="authenticity-item">
-            <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-            <div class="authenticity-text">
-              <strong>Natural Mineral Specimens</strong>
-              <span>Natural crystal specimens selected for quality and character</span>
-            </div>
-          </div>
-          <div class="authenticity-item">
-            <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-              <line x1="12" y1="22.08" x2="12" y2="12"/>
-            </svg>
-            <div class="authenticity-text">
-              <strong>Carefully Packed</strong>
-              <span>Individually cushioned and boxed for safe transit</span>
-            </div>
-          </div>
-          <div class="authenticity-item">
-            <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <path d="m9 12 2 2 4-4"/>
-            </svg>
-            <div class="authenticity-text">
-              <strong>Certificate of Authenticity</strong>
-              <span>Includes numbered authenticity certificate and specimen care card</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-info">
-        @if (p.marketingBadge; as badge) {
-          <div class="pdp-marketing-badge-wrap">
-            <span class="pdp-marketing-badge" [class]="getMarketingBadgeClass(badge)">
-              @switch (badge.toLowerCase()) {
-                @case ('bestseller') {
-                  <svg class="badge-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                  <span>Bestseller</span>
-                }
-                @case ('rare specimen') {
-                  <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M6 3h12l4 6-10 12L2 9l4-6z"/>
-                    <path d="M2 9h20"/>
-                    <path d="m10 3 2 6 2-6"/>
-                  </svg>
-                  <span>Rare Specimen</span>
-                }
-                @case ('trending') {
-                  <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-                  </svg>
-                  <span>Trending</span>
-                }
-                @case ('new arrival') {
-                  <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
-                  </svg>
-                  <span>New Arrival</span>
-                }
-                @case ('staff pick') {
-                  <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
-                  </svg>
-                  <span>Collector's Pick</span>
-                }
-                @default {
-                  <span>{{ badge }}</span>
-                }
-              }
-            </span>
-          </div>
-        }
-        <h1>{{ p.name }}</h1>
-
-        @if (p.description) {
-          <p class="description">{{ p.description }}</p>
-        }
-
-        <p class="price">
-          {{ p.price | inr }}
-          @if (p.compareAtPrice && p.compareAtPrice > p.price) {
-            <span class="price-compare">{{ p.compareAtPrice | inr }}</span>
-            <span class="price-discount-badge">-{{ getDiscountPercent(p) }}%</span>
+        <div class="product-image" [class.zoomable]="selectedImageUrl()" [class.is-zoomed]="isZooming()"
+          (mousemove)="onImageMouseMove($event)" (mouseleave)="onImageMouseLeave()" (click)="openLightbox()"
+          (keydown.enter)="openLightbox()" (keydown.space)="openLightbox(); $event.preventDefault()">
+          @if (selectedImageUrl(); as imageUrl) {
+          @for (url of [imageUrl]; track url) {
+          <img class="gallery-image" [style.transform-origin]="zoomTransformOrigin()" [imgSrc]="url"
+            imgSizes="(max-width: 900px) 100vw, 50vw" [alt]="p.name" width="800" height="800" fetchpriority="high"
+            imgFallback />
           }
-        </p>
-
-        <ul class="price-notes">
-          <li>Inclusive of all taxes</li>
-          @if (couponOffer(p); as offer) {
-            <li class="price-note-coupon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg>
-              Coupon available: {{ offer }}
-            </li>
-          }
-        </ul>
-
-        <!-- Simulated Pincode Delivery Checker -->
-        <app-product-pincode></app-product-pincode>
-
-
-        @if (!reviewsLoading() && reviewCount() > 0) {
-          <p class="rating-summary">
-            <span class="stars">{{ getStars(averageRating()) }}</span>
-            {{ averageRating() }} ★ ({{ reviewCount() }} review{{ reviewCount() === 1 ? '' : 's' }})
-          </p>
-        }
-
-        <ul class="meta-list">
-          <li><strong>Category:</strong> {{ p.categoryName || 'Uncategorized' }}</li>
-          <li>
-            <span class="stock-badge" [class]="stockStatus">{{ stockLabel }}</span>
-          </li>
-        </ul>
-
-        @if (p.zodiacs && p.zodiacs.length > 0) {
-          <div class="zodiac-tags">
-            @for (zodiac of p.zodiacs; track zodiac.zodiacId) {
-              <span class="zodiac-tag">
-                <app-zodiac-icon class="zodiac-tag-icon" [sign]="zodiac.name"></app-zodiac-icon>
-                {{ zodiac.name | vedicZodiac:'dual' }}
-              </span>
-            }
-          </div>
-        }
-
-        @if (!isOutOfStock) {
-          <div class="quantity-selector">
-            <span class="quantity-label">Quantity</span>
-            <div class="quantity-controls">
-              <button type="button" aria-label="Decrease quantity" (click)="decreaseQuantity()" [disabled]="quantity() <= 1">−</button>
-              <span class="quantity-value">{{ quantity() }}</span>
-              <button
-                type="button"
-                aria-label="Increase quantity"
-                (click)="increaseQuantity()"
-                [disabled]="quantity() >= p.stockQuantity"
-              >+</button>
-            </div>
-          </div>
-        }
-
-        <div class="product-actions-group">
-          @if (canRequestStockAlert) {
-            <button
-              type="button"
-              class="btn btn-stock-alert"
-              [class.btn-outline]="stockAlertSubscribed()"
-              [disabled]="isStockAlertBusy()"
-              [attr.aria-pressed]="stockAlertSubscribed()"
-              (click)="toggleStockAlert()"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-              {{ stockAlertSubscribed() ? "We'll email you · Cancel" : 'Notify Me When Available' }}
-            </button>
+          <button type="button" class="zoom-btn" aria-label="Zoom product image" title="Click to view full screen"
+            (click)="openLightbox(); $event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m20 20-4.35-4.35" />
+            </svg>
+          </button>
           } @else {
-            <div class="product-main-actions">
-              <button
-                type="button"
-                class="btn btn-add-cart"
-                [class.btn-added]="justAdded()"
-                [disabled]="isOutOfStock"
-                (click)="addToCart()"
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  @if (justAdded()) {
-                    <path d="M20 6 9 17l-5-5"/>
-                  } @else {
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-                    <path d="M3 6h18"/>
-                    <path d="M16 10a4 4 0 0 1-8 0"/>
-                  }
-                </svg>
-                <span>{{ justAdded() ? 'Added to Bag' : 'Add to Bag' }}</span>
-              </button>
-
-              <button
-                type="button"
-                class="btn btn-buy-now"
-                [disabled]="isOutOfStock"
-                (click)="buyNow()"
-              >
-                Buy Now
-              </button>
-
-              <button
-                type="button"
-                class="btn-icon-action wishlist-toggle-btn"
-                [class.active]="isWishlisted"
-                [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
-                [title]="isWishlisted ? 'In Wishlist' : 'Add to Wishlist'"
-                (click)="toggleWishlist()"
-              >
-                <svg viewBox="0 0 24 24" width="20" height="20" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z"/>
-                </svg>
-              </button>
-
-              <button
-                type="button"
-                class="btn-icon-action compare-toggle-btn"
-                [class.active]="isCompared"
-                [attr.aria-label]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
-                [title]="isCompared ? 'In Compare List' : 'Compare Crystal'"
-                (click)="toggleCompare()"
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
-                </svg>
-              </button>
-            </div>
-
-            @if (cartQuantity() > 0) {
-              <div class="product-in-cart-notice">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>{{ cartQuantity() }} already in your bag</span>
-                <a routerLink="/cart" class="view-cart-link">View Bag <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-inline-right" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-              </div>
-            }
+          <div class="image-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M8 3h8l4 5-10 13L2 8Z" />
+            </svg>
+            <span>No Image</span>
+          </div>
           }
         </div>
+      </div>
 
-        <div class="product-trust-box">
-          <div class="trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="1" y="6" width="13" height="11"/>
-              <path d="M14 9h4l4 4v4h-8V9Z"/>
-              <circle cx="6" cy="19" r="1.6"/>
-              <circle cx="17.5" cy="19" r="1.6"/>
-            </svg>
-            <div class="trust-item-body">
-              <strong>Free Delivery over {{ freeShippingThreshold() | inr }}</strong>
-              <span>Estimated 3–7 business days across India</span>
-            </div>
-          </div>
-          <div class="trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
-              <path d="m9 12 2 2 4-4"/>
-            </svg>
-            <div class="trust-item-body">
-              <strong>7-Day Returns & Exchanges</strong>
-              <span>Protected transit with zero hassle</span>
-            </div>
-          </div>
-          <div class="trust-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="2" y="5" width="20" height="14" rx="2"/>
-              <line x1="2" y1="10" x2="22" y2="10"/>
-            </svg>
-            <div class="trust-item-body">
-              <strong>Secure Checkout & COD Available</strong>
-              <span>UPI, Cards, and Net Banking supported</span>
-            </div>
+      @if (crystalSpecs(); as specs) {
+      <app-product-cleansing-ritual [specs]="specs" [productName]="p.name" [copiedAffirmation]="copiedAffirmation()"
+        (copyAffirmation)="copyAffirmation($event)"
+        (openCleansingGuide)="openCleansingGuide($event)"></app-product-cleansing-ritual>
+      }
+
+      <!-- Crystal Quality & Shipping Guarantee -->
+      <div class="crystal-authenticity-card" aria-label="Quality and shipping guarantee">
+        <div class="authenticity-item">
+          <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <div class="authenticity-text">
+            <strong>Natural Mineral Specimens</strong>
+            <span>Natural crystal specimens selected for quality and character</span>
           </div>
         </div>
-
-        <!-- Social Share with Toast Feedback -->
-        <div class="product-share-bar" aria-label="Share this crystal">
-          <span class="share-label">Share:</span>
-          <button
-            type="button"
-            class="btn-share btn-share-whatsapp"
-            (click)="shareOnWhatsApp()"
-            aria-label="Share crystal on WhatsApp"
-          >
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.79 14.13c-.24.67-1.39 1.24-1.92 1.32-.49.07-1.12.1-3.26-.78-2.58-1.06-4.22-3.69-4.35-3.86-.13-.17-1.04-1.39-1.04-2.65s.66-1.88.89-2.14c.24-.25.52-.31.7-.31.17 0 .35 0 .5.01.16.01.38-.06.59.45.23.55.77 1.88.84 2.01.07.13.11.29.02.47-.08.17-.13.28-.26.43-.13.15-.27.33-.39.45-.13.12-.26.26-.11.52.15.26.66 1.09 1.42 1.77.98.87 1.81 1.14 2.07 1.27.26.13.41.11.57-.07.15-.17.66-.77.84-1.03.17-.26.35-.22.59-.13.24.09 1.52.72 1.78.85.26.13.43.2.49.31.06.11.06.66-.18 1.33z"/>
-            </svg>
-            <span>Share on WhatsApp</span>
-          </button>
-
-          <button
-            type="button"
-            class="btn-share btn-share-copy"
-            (click)="copyProductLink()"
-            aria-label="Copy crystal link to clipboard"
-          >
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span>Copy Link</span>
-          </button>
+        <div class="authenticity-item">
+          <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+          <div class="authenticity-text">
+            <strong>Carefully Packed</strong>
+            <span>Individually cushioned and boxed for safe transit</span>
+          </div>
         </div>
-
-
-
+        <div class="authenticity-item">
+          <svg class="authenticity-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <div class="authenticity-text">
+            <strong>Certificate of Authenticity</strong>
+            <span>Includes numbered authenticity certificate and specimen care card</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    @if (relatedProducts().length > 0) {
-      <section class="related-section">
-        <h2>You May Also Like</h2>
-        <div class="related-grid">
-          @for (related of relatedProducts(); track related.productId) {
-            <app-product-card [product]="related"></app-product-card>
+    <div class="product-info">
+      @if (p.marketingBadge; as badge) {
+      <div class="pdp-marketing-badge-wrap">
+        <span class="pdp-marketing-badge" [class]="getMarketingBadgeClass(badge)">
+          @switch (badge.toLowerCase()) {
+          @case ('bestseller') {
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <span>Bestseller</span>
           }
+          @case ('rare specimen') {
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+            <path d="M2 9h20" />
+            <path d="m10 3 2 6 2-6" />
+          </svg>
+          <span>Rare Specimen</span>
+          }
+          @case ('trending') {
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path
+              d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+          </svg>
+          <span>Trending</span>
+          }
+          @case ('new arrival') {
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path
+              d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z" />
+          </svg>
+          <span>New Arrival</span>
+          }
+          @case ('staff pick') {
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+          </svg>
+          <span>Collector's Pick</span>
+          }
+          @default {
+          <span>{{ badge }}</span>
+          }
+          }
+        </span>
+      </div>
+      }
+      <h1>{{ p.name }}</h1>
+
+      @if (p.description) {
+      <p class="description">{{ p.description }}</p>
+      }
+
+      <p class="price">
+        {{ p.price | inr }}
+        @if (p.compareAtPrice && p.compareAtPrice > p.price) {
+        <span class="price-compare">{{ p.compareAtPrice | inr }}</span>
+        <span class="price-discount-badge">-{{ getDiscountPercent(p) }}%</span>
+        }
+      </p>
+
+      <ul class="price-notes">
+        <li>Inclusive of all taxes</li>
+        @if (couponOffer(p); as offer) {
+        <li class="price-note-coupon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z" />
+            <path d="M7.5 7.5h.01" />
+          </svg>
+          Coupon available: {{ offer }}
+        </li>
+        }
+      </ul>
+
+      <!-- Simulated Pincode Delivery Checker -->
+      <app-product-pincode></app-product-pincode>
+
+
+      @if (!reviewsLoading() && reviewCount() > 0) {
+      <p class="rating-summary">
+        <span class="stars">{{ getStars(averageRating()) }}</span>
+        {{ averageRating() }} ★ ({{ reviewCount() }} review{{ reviewCount() === 1 ? '' : 's' }})
+      </p>
+      }
+
+      <ul class="meta-list">
+        <li><strong>Category:</strong> {{ p.categoryName || 'Uncategorized' }}</li>
+        <li>
+          <span class="stock-badge" [class]="stockStatus">{{ stockLabel }}</span>
+        </li>
+      </ul>
+
+      @if (p.zodiacs && p.zodiacs.length > 0) {
+      <div class="zodiac-tags">
+        @for (zodiac of p.zodiacs; track zodiac.zodiacId) {
+        <span class="zodiac-tag">
+          <app-zodiac-icon class="zodiac-tag-icon" [sign]="zodiac.name"></app-zodiac-icon>
+          {{ zodiac.name | vedicZodiac:'dual' }}
+        </span>
+        }
+      </div>
+      }
+
+      @if (!isOutOfStock) {
+      <div class="quantity-selector">
+        <span class="quantity-label">Quantity</span>
+        <div class="quantity-controls">
+          <button type="button" aria-label="Decrease quantity" (click)="decreaseQuantity()"
+            [disabled]="quantity() <= 1">−</button>
+          <span class="quantity-value">{{ quantity() }}</span>
+          <button type="button" aria-label="Increase quantity" (click)="increaseQuantity()"
+            [disabled]="quantity() >= p.stockQuantity">+</button>
         </div>
-      </section>
-    }
+      </div>
+      }
 
-    @if (bundleItems().length > 1) {
-      <app-product-bundle
-        [bundleItems]="bundleItems()"
-        [bundleJustAdded]="bundleJustAdded()"
-        (itemToggled)="toggleBundleItem($event)"
-        (bundleAdded)="addBundleToCart()"
-      ></app-product-bundle>
-    }
+      <div class="product-actions-group">
+        @if (canRequestStockAlert) {
+        <button type="button" class="btn btn-stock-alert" [class.btn-outline]="stockAlertSubscribed()"
+          [disabled]="isStockAlertBusy()" [attr.aria-pressed]="stockAlertSubscribed()" (click)="toggleStockAlert()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          {{ stockAlertSubscribed() ? "We'll email you · Cancel" : 'Notify Me When Available' }}
+        </button>
+        } @else {
+        <div class="product-main-actions">
+          <button type="button" class="btn btn-add-cart" [class.btn-added]="justAdded()" [disabled]="isOutOfStock"
+            (click)="addToCart()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              @if (justAdded()) {
+              <path d="M20 6 9 17l-5-5" />
+              } @else {
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+              <path d="M3 6h18" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+              }
+            </svg>
+            <span>{{ justAdded() ? 'Added to Bag' : 'Add to Bag' }}</span>
+          </button>
 
-    <app-product-reviews
-      [productId]="p.productId"
-      [siteName]="siteName"
-      [isLoggedIn]="isLoggedIn"
-      [hasReviewed]="hasReviewed"
-      [reviews]="reviews()"
-      [averageRating]="averageRating()"
-      [reviewCount]="reviewCount()"
-      [reviewsLoading]="reviewsLoading()"
-      [reviewsError]="reviewsError()"
-      [photoEligibility]="photoEligibility()"
-      [customerPhotos]="customerPhotos()"
-      [reviewRating]="reviewRating()"
-      [reviewComment]="reviewComment()"
-      [reviewPhotos]="reviewPhotos()"
-      [isSubmittingReview]="isSubmittingReview()"
-      [canDeleteReviewFn]="canDeleteReview"
-      (retry)="loadReviews($event)"
-      (ratingChange)="setReviewRating($event)"
-      (commentChange)="reviewComment.set($event)"
-      (photosChange)="reviewPhotos.set($event)"
-      (submitReview)="submitReview()"
-      (deleteReview)="deleteReview($event)"
-      (openPhoto)="openPhotoViewer($event.photos, $event.index, $event.caption)"
-    ></app-product-reviews>
+          <button type="button" class="btn btn-buy-now" [disabled]="isOutOfStock" (click)="buyNow()">
+            Buy Now
+          </button>
 
-    <app-recently-viewed [excludeProductId]="p.productId"></app-recently-viewed>
+          <button type="button" class="btn-icon-action wishlist-toggle-btn" [class.active]="isWishlisted"
+            [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+            [title]="isWishlisted ? 'In Wishlist' : 'Add to Wishlist'" (click)="toggleWishlist()">
+            <svg viewBox="0 0 24 24" width="20" height="20" [attr.fill]="isWishlisted ? 'currentColor' : 'none'"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <path
+                d="M12 20.5s-7.5-4.6-10-9.2C.6 8.1 2 4.5 5.3 3.6c2.1-.6 4.2.2 5.7 2 .3.3.7.3 1 0 1.5-1.8 3.6-2.6 5.7-2 3.3.9 4.7 4.5 3.3 7.7-2.5 4.6-10 9.2-10 9.2Z" />
+            </svg>
+          </button>
 
-    @if (!isOutOfStock) {
-      <app-product-sticky-bar
-        [product]="p"
-        [isOutOfStock]="isOutOfStock"
-        [justAdded]="justAdded()"
-        [cartQuantity]="cartQuantity()"
-        (addToCart)="addToCart()"
-      ></app-product-sticky-bar>
-    }
+          <button type="button" class="btn-icon-action compare-toggle-btn" [class.active]="isCompared"
+            [attr.aria-label]="isCompared ? 'Remove from comparison' : 'Compare crystal'"
+            [title]="isCompared ? 'In Compare List' : 'Compare Crystal'" (click)="toggleCompare()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16" />
+            </svg>
+          </button>
+        </div>
 
-    @if (photoViewer(); as viewer) {
-      <app-photo-lightbox
-        [photos]="viewer.urls"
-        [(index)]="viewer.index"
-        [caption]="viewer.caption"
-        (closed)="closeLightbox()"
-      ></app-photo-lightbox>
-    }
-  } @else {
-    <div class="state-message state-message--empty">
-      <p>Product not found.</p>
-      <a routerLink="/products" class="btn">Browse Products</a>
+        @if (cartQuantity() > 0) {
+        <div class="product-in-cart-notice">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span>{{ cartQuantity() }} already in your bag</span>
+          <a routerLink="/cart" class="view-cart-link">View Bag <svg viewBox="0 0 24 24" width="13" height="13"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon-inline-right" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></a>
+        </div>
+        }
+        }
+      </div>
+
+      <div class="product-trust-box">
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <rect x="1" y="6" width="13" height="11" />
+            <path d="M14 9h4l4 4v4h-8V9Z" />
+            <circle cx="6" cy="19" r="1.6" />
+            <circle cx="17.5" cy="19" r="1.6" />
+          </svg>
+          <div class="trust-item-body">
+            <strong>Free Delivery over {{ freeShippingThreshold() | inr }}</strong>
+            <span>Estimated 3–7 business days across India</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <div class="trust-item-body">
+            <strong>7-Day Returns & Exchanges</strong>
+            <span>Protected transit with zero hassle</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="14" rx="2" />
+            <line x1="2" y1="10" x2="22" y2="10" />
+          </svg>
+          <div class="trust-item-body">
+            <strong>Secure Checkout & COD Available</strong>
+            <span>Cards and Net Banking supported</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Share with Toast Feedback -->
+      <div class="product-share-bar" aria-label="Share this crystal">
+        <span class="share-label">Share:</span>
+        <button type="button" class="btn-share btn-share-whatsapp" (click)="shareOnWhatsApp()"
+          aria-label="Share crystal on WhatsApp">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.79 14.13c-.24.67-1.39 1.24-1.92 1.32-.49.07-1.12.1-3.26-.78-2.58-1.06-4.22-3.69-4.35-3.86-.13-.17-1.04-1.39-1.04-2.65s.66-1.88.89-2.14c.24-.25.52-.31.7-.31.17 0 .35 0 .5.01.16.01.38-.06.59.45.23.55.77 1.88.84 2.01.07.13.11.29.02.47-.08.17-.13.28-.26.43-.13.15-.27.33-.39.45-.13.12-.26.26-.11.52.15.26.66 1.09 1.42 1.77.98.87 1.81 1.14 2.07 1.27.26.13.41.11.57-.07.15-.17.66-.77.84-1.03.17-.26.35-.22.59-.13.24.09 1.52.72 1.78.85.26.13.43.2.49.31.06.11.06.66-.18 1.33z" />
+          </svg>
+          <span>Share on WhatsApp</span>
+        </button>
+
+        <button type="button" class="btn-share btn-share-copy" (click)="copyProductLink()"
+          aria-label="Copy crystal link to clipboard">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Link</span>
+        </button>
+      </div>
+
+
+
     </div>
+  </div>
+
+  @if (relatedProducts().length > 0) {
+  <section class="related-section">
+    <h2>You May Also Like</h2>
+    <div class="related-grid">
+      @for (related of relatedProducts(); track related.productId) {
+      <app-product-card [product]="related"></app-product-card>
+      }
+    </div>
+  </section>
+  }
+
+  @if (bundleItems().length > 1) {
+  <app-product-bundle [bundleItems]="bundleItems()" [bundleJustAdded]="bundleJustAdded()"
+    (itemToggled)="toggleBundleItem($event)" (bundleAdded)="addBundleToCart()"></app-product-bundle>
+  }
+
+  <app-product-reviews [productId]="p.productId" [siteName]="siteName" [isLoggedIn]="isLoggedIn"
+    [hasReviewed]="hasReviewed" [reviews]="reviews()" [averageRating]="averageRating()" [reviewCount]="reviewCount()"
+    [reviewsLoading]="reviewsLoading()" [reviewsError]="reviewsError()" [photoEligibility]="photoEligibility()"
+    [customerPhotos]="customerPhotos()" [reviewRating]="reviewRating()" [reviewComment]="reviewComment()"
+    [reviewPhotos]="reviewPhotos()" [isSubmittingReview]="isSubmittingReview()" [canDeleteReviewFn]="canDeleteReview"
+    (retry)="loadReviews($event)" (ratingChange)="setReviewRating($event)" (commentChange)="reviewComment.set($event)"
+    (photosChange)="reviewPhotos.set($event)" (submitReview)="submitReview()" (deleteReview)="deleteReview($event)"
+    (openPhoto)="openPhotoViewer($event.photos, $event.index, $event.caption)"></app-product-reviews>
+
+  <app-recently-viewed [excludeProductId]="p.productId"></app-recently-viewed>
+
+  @if (!isOutOfStock) {
+  <app-product-sticky-bar [product]="p" [isOutOfStock]="isOutOfStock" [justAdded]="justAdded()"
+    [cartQuantity]="cartQuantity()" (addToCart)="addToCart()"></app-product-sticky-bar>
+  }
+
+  @if (photoViewer(); as viewer) {
+  <app-photo-lightbox [photos]="viewer.urls" [(index)]="viewer.index" [caption]="viewer.caption"
+    (closed)="closeLightbox()"></app-photo-lightbox>
+  }
+  } @else {
+  <div class="state-message state-message--empty">
+    <p>Product not found.</p>
+    <a routerLink="/products" class="btn">Browse Products</a>
+  </div>
   }
 </section>

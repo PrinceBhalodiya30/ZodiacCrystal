@@ -73,27 +73,30 @@ namespace Zodiac_Crystal.Services
 
         private static void ComposeHeader(ColumnDescriptor column, Order order)
         {
-            // Clean letterhead displaying the official Crystal Studio logo and order metadata
+            // Clean letterhead displaying the brand logo and order metadata
             column.Item().BorderBottom(2).BorderColor(BrandGreen).PaddingBottom(14).Row(row =>
             {
                 var logoBytes = GetLogoBytes();
-                if (logoBytes != null && logoBytes.Length > 0)
+                row.RelativeItem().Column(c =>
                 {
-                    row.AutoItem().Height(44).Image(logoBytes);
-                }
-                else
-                {
-                    row.RelativeItem().Column(c =>
+                    if (logoBytes != null && logoBytes.Length > 0)
                     {
-                        c.Item().Text("Crystal Studio").FontSize(22).Bold().FontColor(BrandGreen);
-                        c.Item().Text("Hand-picked crystals for every zodiac sign").FontSize(9).FontColor(Colors.Grey.Medium);
-                    });
-                }
+                        c.Item().Height(40).Image(logoBytes);
+                    }
+                    else
+                    {
+                        c.Item().Text("Zodiac Crystal").FontSize(20).Bold().FontColor(BrandGreen);
+                    }
+                    c.Item().PaddingTop(2).Text("Zodiac Crystal").FontSize(10).Bold().FontColor(Ink);
+                    c.Item().Text("Curated Healing Crystals & Astrological Gemstones").FontSize(8).FontColor(Colors.Grey.Darken2);
+                    c.Item().Text("Web: www.zodiaccrystal.com  |  Email: support@zodiaccrystal.com").FontSize(8).FontColor(Colors.Grey.Darken2);
+                    c.Item().Text("Origin: India").FontSize(8).FontColor(Colors.Grey.Darken2);
+                });
 
-                row.ConstantItem(210).Column(c =>
+                row.ConstantItem(220).Column(c =>
                 {
-                    c.Item().AlignRight().Text("INVOICE").FontSize(16).Bold().FontColor(BrandGreen);
-                    c.Item().AlignRight().Text($"Invoice #: INV-{order.OrderId:D6}").FontSize(9).FontColor(Colors.Grey.Darken2);
+                    c.Item().AlignRight().Text("TAX INVOICE").FontSize(16).Bold().FontColor(BrandGreen);
+                    c.Item().AlignRight().Text($"Invoice #: INV/2026-27/{order.OrderId:D5}").FontSize(9).FontColor(Colors.Grey.Darken2);
                     c.Item().AlignRight().Text($"Order #: {order.OrderId}").FontSize(9).FontColor(Colors.Grey.Darken2);
                     c.Item().AlignRight().Text($"Date: {order.OrderDate:dd MMM yyyy}").FontSize(9).FontColor(Colors.Grey.Darken2);
                     c.Item().AlignRight().Text($"Status: {order.Status}").FontSize(9).Bold().FontColor(BrandGreen);
@@ -262,16 +265,18 @@ namespace Zodiac_Crystal.Services
                 table.ColumnsDefinition(columns =>
                 {
                     columns.RelativeColumn(3);
-                    columns.RelativeColumn(1.3f);
-                    columns.RelativeColumn(1);
-                    columns.RelativeColumn(1.3f);
-                    columns.RelativeColumn(1.3f);
+                    columns.RelativeColumn(1.2f);
+                    columns.RelativeColumn(0.9f);
+                    columns.RelativeColumn(0.8f);
+                    columns.RelativeColumn(1.2f);
+                    columns.RelativeColumn(1.2f);
                 });
 
                 table.Header(header =>
                 {
                     header.Cell().Element(HeaderCell).Text("Product");
                     header.Cell().Element(HeaderCell).Text("SKU");
+                    header.Cell().Element(HeaderCell).Text("HSN");
                     header.Cell().Element(HeaderCell).AlignRight().Text("Qty");
                     header.Cell().Element(HeaderCell).AlignRight().Text("Unit Price");
                     header.Cell().Element(HeaderCell).AlignRight().Text("Line Total");
@@ -286,6 +291,7 @@ namespace Zodiac_Crystal.Services
 
                     table.Cell().Element(c => BodyCell(c, isEvenRow)).Text(item.Product?.Name ?? $"Item #{item.ProductId}");
                     table.Cell().Element(c => BodyCell(c, isEvenRow)).Text(item.Product?.Sku ?? "-");
+                    table.Cell().Element(c => BodyCell(c, isEvenRow)).Text("7103");
                     table.Cell().Element(c => BodyCell(c, isEvenRow)).AlignRight().Text(item.Quantity.ToString());
                     table.Cell().Element(c => BodyCell(c, isEvenRow)).AlignRight().Text($"₹{item.UnitPrice:0.00}");
                     table.Cell().Element(c => BodyCell(c, isEvenRow)).AlignRight().Text($"₹{item.Subtotal:0.00}");
@@ -304,7 +310,27 @@ namespace Zodiac_Crystal.Services
 
         private static void ComposeTotals(ColumnDescriptor column, Order order, decimal subtotal)
         {
-            column.Item().PaddingTop(15).AlignRight().Width(240).Background(StoneTint).Border(1).BorderColor(StoneLine).Padding(12).Column(c =>
+            // Compute GST breakdown from inclusive total (standard 3% GST rate for gemstones/crystals, HSN 7103)
+            var taxableAmount = Math.Round(order.TotalAmount / 1.03m, 2);
+            var totalGst = order.TotalAmount - taxableAmount;
+
+            var state = (order.State ?? "").Trim();
+            var isDelhi = state.Equals("Delhi", StringComparison.OrdinalIgnoreCase) ||
+                          state.Equals("DL", StringComparison.OrdinalIgnoreCase) ||
+                          state.Equals("New Delhi", StringComparison.OrdinalIgnoreCase);
+
+            decimal cgst = 0, sgst = 0, igst = 0;
+            if (isDelhi)
+            {
+                cgst = Math.Round(totalGst / 2m, 2);
+                sgst = totalGst - cgst;
+            }
+            else
+            {
+                igst = totalGst;
+            }
+
+            column.Item().PaddingTop(15).AlignRight().Width(260).Background(StoneTint).Border(1).BorderColor(StoneLine).Padding(12).Column(c =>
             {
                 c.Item().Row(r =>
                 {
@@ -316,11 +342,45 @@ namespace Zodiac_Crystal.Services
                 RenderShippingRow(c, order);
                 RenderGiftWrapRow(c, order);
 
-                c.Item().PaddingTop(6).BorderTop(1).BorderColor(BrandGreen);
+                c.Item().PaddingVertical(4).LineHorizontal(0.5f).LineColor(StoneLine);
 
-                c.Item().PaddingTop(6).Row(r =>
+                c.Item().Row(r =>
                 {
-                    r.RelativeItem().Text("Total").Bold().FontSize(13).FontColor(BrandGreen);
+                    r.RelativeItem().Text("Taxable Value").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                    r.ConstantItem(100).AlignRight().Text($"₹{taxableAmount:0.00}").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                });
+
+                if (isDelhi)
+                {
+                    c.Item().Row(r =>
+                    {
+                        r.RelativeItem().Text("CGST (1.5%)").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                        r.ConstantItem(100).AlignRight().Text($"₹{cgst:0.00}").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                    });
+                    c.Item().Row(r =>
+                    {
+                        r.RelativeItem().Text("SGST (1.5%)").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                        r.ConstantItem(100).AlignRight().Text($"₹{sgst:0.00}").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                    });
+                }
+                else
+                {
+                    c.Item().Row(r =>
+                    {
+                        r.RelativeItem().Text("IGST (3.0%)").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                        r.ConstantItem(100).AlignRight().Text($"₹{igst:0.00}").FontSize(8.5f).FontColor(Colors.Grey.Darken2);
+                    });
+                }
+
+                c.Item().PaddingTop(4).BorderTop(1).BorderColor(BrandGreen);
+
+                c.Item().PaddingTop(4).Row(r =>
+                {
+                    r.RelativeItem().Column(rc =>
+                    {
+                        rc.Item().Text("Total").Bold().FontSize(13).FontColor(BrandGreen);
+                        rc.Item().Text("(Inclusive of all taxes)").FontSize(7.5f).FontColor(Colors.Grey.Darken1);
+                    });
                     r.ConstantItem(100).AlignRight().Text($"₹{order.TotalAmount:0.00}").Bold().FontSize(13).FontColor(BrandGreen);
                 });
 
@@ -396,19 +456,23 @@ namespace Zodiac_Crystal.Services
         {
             column.Item().LineHorizontal(1).LineColor(StoneLine);
 
-            column.Item().PaddingTop(8).Row(row =>
+            column.Item().PaddingTop(6).AlignCenter()
+                .Text("This is a computer-generated tax invoice and requires no physical signature.")
+                .FontSize(7.5f).Italic().FontColor(Colors.Grey.Darken1);
+
+            column.Item().PaddingTop(6).Row(row =>
             {
                 row.RelativeItem().Text(text =>
                 {
                     text.Span("Questions about this order? ").FontSize(8).FontColor(Colors.Grey.Darken1);
-                    text.Span("support@crystalstudio.com").FontSize(8).FontColor(BrandGreen);
+                    text.Span("support@zodiaccrystal.com").FontSize(8).FontColor(BrandGreen);
                 });
 
                 row.RelativeItem().AlignRight().Text(t =>
                     t.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Darken1));
             });
 
-            column.Item().PaddingTop(4).AlignCenter().Text("Thank you for shopping with Crystal Studio.")
+            column.Item().PaddingTop(4).AlignCenter().Text("Thank you for shopping with Zodiac Crystal.")
                 .FontSize(9).FontColor(BrandGreen).Bold();
         }
 
