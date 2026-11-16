@@ -19,6 +19,11 @@ export interface StoreSettings {
   moonBannerCustomLink?: string | null;
   moonBannerShowModal: boolean;
   moonBannerStyle?: string;
+  marqueeRibbonJson?: string | null;
+  heroIntentionsJson?: string | null;
+  mysteryBoxJson?: string | null;
+  giftPackagingJson?: string | null;
+  storeContactJson?: string | null;
   updatedAt: string;
   updatedByEmail?: string | null;
 }
@@ -41,4 +46,9 @@ export interface UpdateStoreSettingsRequest {
   moonBannerCustomLink?: string | null;
   moonBannerShowModal: boolean;
   moonBannerStyle?: string;
+  marqueeRibbonJson?: string | null;
+  heroIntentionsJson?: string | null;
+  mysteryBoxJson?: string | null;
+  giftPackagingJson?: string | null;
+  storeContactJson?: string | null;
 }

@@ -155,7 +155,7 @@ export class StoreSettingsService {
         const stored = localStorage.getItem(this.MARQUEE_STORAGE_KEY);
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed)) {
             return parsed;
           }
         }
@@ -348,7 +348,93 @@ export class StoreSettingsService {
   }
 
   constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('storage', (e) => {
+        if (e.key === this.MARQUEE_STORAGE_KEY && e.newValue) {
+          try {
+            const parsed = JSON.parse(e.newValue);
+            if (Array.isArray(parsed)) {
+              this.marqueeItems.set(parsed);
+            }
+          } catch {
+            // Ignore parse errors
+          }
+        }
+      });
+    }
     this.loadPublicSettings();
+  }
+
+  private applyBackendExtendedSettings(data: StoreSettings): void {
+    if (data.marqueeRibbonJson !== undefined && data.marqueeRibbonJson !== null) {
+      try {
+        const parsed = JSON.parse(data.marqueeRibbonJson);
+        if (Array.isArray(parsed)) {
+          this.marqueeItems.set(parsed);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.MARQUEE_STORAGE_KEY, data.marqueeRibbonJson);
+          }
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    if (data.heroIntentionsJson !== undefined && data.heroIntentionsJson !== null) {
+      try {
+        const parsed = JSON.parse(data.heroIntentionsJson);
+        if (Array.isArray(parsed)) {
+          this.heroIntentions.set(parsed);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.INTENTIONS_STORAGE_KEY, data.heroIntentionsJson);
+          }
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    if (data.mysteryBoxJson !== undefined && data.mysteryBoxJson !== null) {
+      try {
+        const parsed = JSON.parse(data.mysteryBoxJson);
+        if (typeof parsed?.price === 'number') {
+          this.mysteryBoxSettings.set({ ...DEFAULT_MYSTERY_BOX_SETTINGS, ...parsed });
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.MYSTERY_STORAGE_KEY, data.mysteryBoxJson);
+          }
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    if (data.giftPackagingJson !== undefined && data.giftPackagingJson !== null) {
+      try {
+        const parsed = JSON.parse(data.giftPackagingJson);
+        if (typeof parsed?.fee === 'number') {
+          this.giftPackagingSettings.set({ ...DEFAULT_GIFT_PACKAGING_SETTINGS, ...parsed });
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.GIFT_STORAGE_KEY, data.giftPackagingJson);
+          }
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    if (data.storeContactJson !== undefined && data.storeContactJson !== null) {
+      try {
+        const parsed = JSON.parse(data.storeContactJson);
+        if (parsed && typeof parsed.supportEmail === 'string') {
+          this.storeContactSettings.set({ ...DEFAULT_STORE_CONTACT_SETTINGS, ...parsed });
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.CONTACT_STORAGE_KEY, data.storeContactJson);
+          }
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
   }
 
   loadPublicSettings(): void {
@@ -357,6 +443,7 @@ export class StoreSettingsService {
       next: (data) => {
         if (data) {
           this.settings.set(data);
+          this.applyBackendExtendedSettings(data);
           this.isLoaded.set(true);
         }
         this.isLoading.set(false);
@@ -371,13 +458,19 @@ export class StoreSettingsService {
 
   getAdminSettings(): Observable<StoreSettings> {
     return this.http.get<StoreSettings>(`${this.baseUrl}/admin`).pipe(
-      tap((data) => this.settings.set(data))
+      tap((data) => {
+        this.settings.set(data);
+        this.applyBackendExtendedSettings(data);
+      })
     );
   }
 
   updateSettings(req: UpdateStoreSettingsRequest): Observable<StoreSettings> {
     return this.http.put<StoreSettings>(`${this.baseUrl}/admin`, req).pipe(
-      tap((updated) => this.settings.set(updated))
+      tap((updated) => {
+        this.settings.set(updated);
+        this.applyBackendExtendedSettings(updated);
+      })
     );
   }
 }

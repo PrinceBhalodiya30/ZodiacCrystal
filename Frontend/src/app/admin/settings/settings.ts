@@ -1,11 +1,14 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AdminNav } from '../admin-nav/admin-nav';
 import { StoreSettingsService, MarqueeElementItem, DEFAULT_MARQUEE_ITEMS, HeroIntentionItem, DEFAULT_HERO_INTENTIONS } from '../../services/store-settings.service';
 import { ToastService } from '../../services/toast.service';
 import { UpdateStoreSettingsRequest } from '../../models/store-settings';
+
+export type SettingsTab = 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox' | 'contact';
 
 export interface AnnouncementTemplate {
   name: string;
@@ -29,13 +32,22 @@ export interface MoonEventPreset {
   templateUrl: './settings.html',
   styleUrls: ['../admin-shared.css', './settings.css']
 })
-export class AdminSettings implements OnInit {
+export class AdminSettings implements OnInit, OnDestroy {
   private readonly storeSettingsService = inject(StoreSettingsService);
   private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  private queryParamsSubscription?: Subscription;
+
+  private static readonly VALID_TABS: readonly SettingsTab[] = [
+    'announcement', 'moon', 'shipping', 'hero', 'marquee', 'mysterybox', 'contact'
+  ];
+  private static readonly TAB_STORAGE_KEY = 'zc_admin_settings_active_tab';
 
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
-  readonly activeTab = signal<'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox' | 'contact'>('announcement');
+  readonly activeTab = signal<SettingsTab>('announcement');
 
   // Hero Marquee Ribbon CMS State
   readonly marqueeItems = signal<MarqueeElementItem[]>([]);
@@ -100,12 +112,35 @@ export class AdminSettings implements OnInit {
     this.previewSlide.set(index);
   }
 
-  selectTab(tab: 'announcement' | 'moon' | 'shipping' | 'hero' | 'marquee' | 'mysterybox' | 'contact'): void {
+  selectTab(tab: SettingsTab, updateUrl = true): void {
+    if (!this.isTabValid(tab)) {
+      return;
+    }
     this.activeTab.set(tab);
     if (tab === 'announcement') {
       this.previewSlide.set(1);
     } else if (tab === 'moon') {
       this.previewSlide.set(0);
+    }
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem(AdminSettings.TAB_STORAGE_KEY, tab);
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+
+    if (updateUrl) {
+      const currentParam = this.route.snapshot.queryParamMap.get('tab');
+      if (currentParam !== tab) {
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { tab },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
+      }
     }
   }
 
@@ -289,7 +324,43 @@ export class AdminSettings implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.initTabSync();
     this.loadSettings();
+  }
+
+  ngOnDestroy(): void {
+    this.queryParamsSubscription?.unsubscribe();
+  }
+
+  private initTabSync(): void {
+    const initialUrlTab = this.route.snapshot.queryParamMap.get('tab') as SettingsTab | null;
+    let targetTab: SettingsTab = 'announcement';
+
+    if (this.isTabValid(initialUrlTab)) {
+      targetTab = initialUrlTab;
+    } else if (typeof window !== 'undefined') {
+      try {
+        const stored = sessionStorage.getItem(AdminSettings.TAB_STORAGE_KEY) as SettingsTab | null;
+        if (this.isTabValid(stored)) {
+          targetTab = stored;
+        }
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+
+    this.selectTab(targetTab, true);
+
+    this.queryParamsSubscription = this.route.queryParamMap.subscribe((params) => {
+      const tabParam = params.get('tab') as SettingsTab | null;
+      if (this.isTabValid(tabParam) && tabParam !== this.activeTab()) {
+        this.selectTab(tabParam, false);
+      }
+    });
+  }
+
+  private isTabValid(tab: string | null | undefined): tab is SettingsTab {
+    return !!tab && (AdminSettings.VALID_TABS as readonly string[]).includes(tab);
   }
 
   loadSettings(): void {
@@ -449,7 +520,34 @@ export class AdminSettings implements OnInit {
       flatShippingRate: Number(this.flatShippingRate()),
       heroEyebrow: this.heroEyebrow().trim(),
       heroTitle: this.heroTitle().trim(),
-      heroSubtitle: this.heroSubtitle().trim()
+      heroSubtitle: this.heroSubtitle().trim(),
+      marqueeRibbonJson: JSON.stringify(this.marqueeItems()),
+      heroIntentionsJson: JSON.stringify(this.heroIntentions()),
+      mysteryBoxJson: JSON.stringify({
+        enabled: this.mysteryEnabled(),
+        price: Number(this.mysteryPrice()),
+        minimumValue: Number(this.mysteryMinValue()),
+        itemCount: Number(this.mysteryItemCount()),
+        title: this.mysteryTitle().trim() || 'Mystery Crystal Box',
+        subtitle: this.mysterySubtitle().trim(),
+        badgeText: this.mysteryBadge().trim()
+      }),
+      giftPackagingJson: JSON.stringify({
+        enabled: this.giftPackagingEnabled(),
+        fee: Number(this.giftPackagingFee()),
+        title: this.giftPackagingTitle().trim(),
+        description: this.giftPackagingDesc().trim()
+      }),
+      storeContactJson: JSON.stringify({
+        supportEmail: this.supportEmail().trim(),
+        supportPhone: this.supportPhone().trim(),
+        whatsappNumber: this.whatsappNumber().trim(),
+        operatingHours: this.operatingHours().trim(),
+        instagramUrl: this.instagramUrl().trim(),
+        facebookUrl: this.facebookUrl().trim(),
+        pinterestUrl: this.pinterestUrl().trim(),
+        twitterUrl: this.twitterUrl().trim()
+      })
     };
 
     this.storeSettingsService.updateSettings(req).subscribe({

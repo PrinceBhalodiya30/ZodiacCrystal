@@ -57,6 +57,16 @@ public partial class StoreSetting
     [StringLength(50)]
     public string MoonBannerStyle { get; set; } = "midnight";
 
+    public string? MarqueeRibbonJson { get; set; }
+
+    public string? HeroIntentionsJson { get; set; }
+
+    public string? MysteryBoxJson { get; set; }
+
+    public string? GiftPackagingJson { get; set; }
+
+    public string? StoreContactJson { get; set; }
+
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public int? UpdatedByUserId { get; set; }

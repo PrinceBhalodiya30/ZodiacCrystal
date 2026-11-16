@@ -115,6 +115,21 @@ namespace Zodiac_Crystal.Services
             if (setting.MoonBannerStyle != dto.MoonBannerStyle)
                 changes.Add($"MoonBannerStyle: {setting.MoonBannerStyle} → {dto.MoonBannerStyle}");
 
+            if (setting.MarqueeRibbonJson != dto.MarqueeRibbonJson)
+                changes.Add("MarqueeRibbon updated");
+
+            if (setting.HeroIntentionsJson != dto.HeroIntentionsJson)
+                changes.Add("HeroIntentions updated");
+
+            if (setting.MysteryBoxJson != dto.MysteryBoxJson)
+                changes.Add("MysteryBox settings updated");
+
+            if (setting.GiftPackagingJson != dto.GiftPackagingJson)
+                changes.Add("GiftPackaging settings updated");
+
+            if (setting.StoreContactJson != dto.StoreContactJson)
+                changes.Add("StoreContact settings updated");
+
             return changes;
         }
 
@@ -137,6 +152,11 @@ namespace Zodiac_Crystal.Services
             setting.MoonBannerCustomLink = TrimOrNull(dto.MoonBannerCustomLink);
             setting.MoonBannerShowModal = dto.MoonBannerShowModal;
             setting.MoonBannerStyle = NormalizeOrDefault(dto.MoonBannerStyle, "midnight");
+            setting.MarqueeRibbonJson = TrimOrNull(dto.MarqueeRibbonJson);
+            setting.HeroIntentionsJson = TrimOrNull(dto.HeroIntentionsJson);
+            setting.MysteryBoxJson = TrimOrNull(dto.MysteryBoxJson);
+            setting.GiftPackagingJson = TrimOrNull(dto.GiftPackagingJson);
+            setting.StoreContactJson = TrimOrNull(dto.StoreContactJson);
             setting.UpdatedAt = DateTime.UtcNow;
             setting.UpdatedByUserId = adminUserId;
         }
@@ -172,6 +192,11 @@ namespace Zodiac_Crystal.Services
             MoonBannerCustomLink = s.MoonBannerCustomLink,
             MoonBannerShowModal = s.MoonBannerShowModal,
             MoonBannerStyle = s.MoonBannerStyle,
+            MarqueeRibbonJson = s.MarqueeRibbonJson,
+            HeroIntentionsJson = s.HeroIntentionsJson,
+            MysteryBoxJson = s.MysteryBoxJson,
+            GiftPackagingJson = s.GiftPackagingJson,
+            StoreContactJson = s.StoreContactJson,
             UpdatedAt = DateTime.SpecifyKind(s.UpdatedAt, DateTimeKind.Utc),
             UpdatedByEmail = s.UpdatedByUser?.Email
         };

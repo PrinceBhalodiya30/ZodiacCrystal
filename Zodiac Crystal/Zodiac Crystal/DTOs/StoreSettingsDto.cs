@@ -22,6 +22,11 @@ public class StoreSettingsDto
     public string? MoonBannerCustomLink { get; set; }
     public bool MoonBannerShowModal { get; set; } = true;
     public string MoonBannerStyle { get; set; } = "midnight";
+    public string? MarqueeRibbonJson { get; set; }
+    public string? HeroIntentionsJson { get; set; }
+    public string? MysteryBoxJson { get; set; }
+    public string? GiftPackagingJson { get; set; }
+    public string? StoreContactJson { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string? UpdatedByEmail { get; set; }
 }
@@ -61,5 +66,15 @@ public class UpdateStoreSettingsDto
     public bool MoonBannerShowModal { get; set; } = true;
 
     public string MoonBannerStyle { get; set; } = "midnight";
+
+    public string? MarqueeRibbonJson { get; set; }
+
+    public string? HeroIntentionsJson { get; set; }
+
+    public string? MysteryBoxJson { get; set; }
+
+    public string? GiftPackagingJson { get; set; }
+
+    public string? StoreContactJson { get; set; }
 }
 

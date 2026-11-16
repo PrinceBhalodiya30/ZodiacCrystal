@@ -36,11 +36,15 @@ export class HomeHero implements OnInit, OnDestroy {
     const items = typeof this.storeSettingsService?.marqueeItems === 'function'
       ? this.storeSettingsService.marqueeItems()
       : undefined;
-    return items && items.length > 0 ? items : DEFAULT_MARQUEE_ITEMS;
+    return items !== undefined ? items : DEFAULT_MARQUEE_ITEMS;
   }
 
   get marqueeElements(): CosmicElementItem[] {
     const items = this.cosmicElements;
+    if (!items || items.length === 0) return [];
+    if (items.length < 3) {
+      return [...items, ...items, ...items, ...items];
+    }
     return [...items, ...items];
   }
 
