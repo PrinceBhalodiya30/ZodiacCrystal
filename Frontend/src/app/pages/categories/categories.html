@@ -1,6 +1,24 @@
 <section class="container categories-page">
-  <h1>Shop by Category</h1>
-  <p class="page-subtitle">Explore our crystal collections, curated by category.</p>
+  <!-- Breadcrumb -->
+  <nav class="categories-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="breadcrumbs-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">/</li>
+      <li class="breadcrumb-item active" aria-current="page">Categories</li>
+    </ol>
+  </nav>
+
+  <header class="categories-header">
+    <div class="categories-title-wrap">
+      <h1>Shop by Category</h1>
+      @if (!isLoading() && categoryTiles().length > 0) {
+        <span class="categories-badge">{{ categoryTiles().length }} Collections</span>
+      }
+    </div>
+    <p class="page-subtitle">Explore our sacred crystal collections, curated by mineral specimen and energetic form.</p>
+  </header>
 
   @if (isLoading()) {
     <output class="visually-hidden">Loading categories...</output>
@@ -27,9 +45,6 @@
       <a routerLink="/products" class="btn">Browse Products</a>
     </div>
   } @else {
-    <!-- Every card has the same parts in the same place: image, name, a
-         two-line description, then the product count pinned to the bottom.
-         Sub-categories are shown on the products page, after clicking. -->
     <div class="category-grid">
       @for (tile of categoryTiles(); track tile.categoryId) {
         <a
@@ -39,7 +54,7 @@
         >
           <span class="category-image">
             @if (tile.imageUrl) {
-              <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, 300px" [alt]="tile.name" loading="lazy" decoding="async" imgFallback />
+              <img [imgSrc]="tile.imageUrl" imgSizes="(max-width: 600px) 50vw, (max-width: 1080px) 50vw, 320px" [alt]="tile.name" loading="lazy" decoding="async" imgFallback />
             } @else {
               <span class="category-image-placeholder">{{ tile.name.charAt(0) }}</span>
             }
@@ -49,9 +64,20 @@
             <span class="category-name">{{ tile.name }}</span>
             <span class="category-description">{{ tile.description || 'Browse our ' + tile.name.toLowerCase() + ' collection.' }}</span>
 
+            @if (tile.subCategories && tile.subCategories.length > 0) {
+              <span class="category-subtags" aria-label="Includes subcategories">
+                @for (sub of tile.subCategories.slice(0, 3); track sub) {
+                  <span class="category-subtag">{{ sub }}</span>
+                }
+                @if (tile.subCategories.length > 3) {
+                  <span class="category-subtag category-subtag-more">+{{ tile.subCategories.length - 3 }}</span>
+                }
+              </span>
+            }
+
             <span class="category-footer">
               <span class="category-count">{{ tile.productCount }} product{{ tile.productCount === 1 ? '' : 's' }}</span>
-              <span class="category-shop" aria-hidden="true">Shop →</span>
+              <span class="category-shop" aria-hidden="true">Explore →</span>
             </span>
           </span>
         </a>

@@ -113,8 +113,10 @@ namespace Zodiac_Crystal.Controllers
         public async Task<IActionResult> CreateCoupon(CreateCouponDto dto)
         {
             var code = dto.Code.Trim().ToUpperInvariant();
+            var discountType = string.Equals(dto.DiscountType, "FixedAmount", StringComparison.OrdinalIgnoreCase) ? "Fixed" : dto.DiscountType;
+            var endDate = dto.EndDate.TimeOfDay == TimeSpan.Zero ? dto.EndDate.Date.AddDays(1).AddTicks(-1) : dto.EndDate;
 
-            var validationError = ValidateFields(dto.DiscountType, dto.DiscountValue, dto.StartDate, dto.EndDate);
+            var validationError = ValidateFields(discountType, dto.DiscountValue, dto.StartDate, endDate);
             if (validationError != null)
             {
                 return BadRequest(new { message = validationError });
@@ -131,11 +133,11 @@ namespace Zodiac_Crystal.Controllers
             {
                 Code = code,
                 Description = dto.Description,
-                DiscountType = dto.DiscountType,
+                DiscountType = discountType,
                 DiscountValue = dto.DiscountValue,
                 MinimumOrderAmount = dto.MinimumOrderAmount,
                 StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
+                EndDate = endDate,
                 UsageLimit = dto.UsageLimit,
                 MaxUsesPerUser = dto.MaxUsesPerUser,
                 IsActive = dto.IsActive,
@@ -169,8 +171,10 @@ namespace Zodiac_Crystal.Controllers
             }
 
             var code = dto.Code.Trim().ToUpperInvariant();
+            var discountType = string.Equals(dto.DiscountType, "FixedAmount", StringComparison.OrdinalIgnoreCase) ? "Fixed" : dto.DiscountType;
+            var endDate = dto.EndDate.TimeOfDay == TimeSpan.Zero ? dto.EndDate.Date.AddDays(1).AddTicks(-1) : dto.EndDate;
 
-            var validationError = ValidateFields(dto.DiscountType, dto.DiscountValue, dto.StartDate, dto.EndDate);
+            var validationError = ValidateFields(discountType, dto.DiscountValue, dto.StartDate, endDate);
             if (validationError != null)
             {
                 return BadRequest(new { message = validationError });
@@ -186,11 +190,11 @@ namespace Zodiac_Crystal.Controllers
 
             coupon.Code = code;
             coupon.Description = dto.Description;
-            coupon.DiscountType = dto.DiscountType;
+            coupon.DiscountType = discountType;
             coupon.DiscountValue = dto.DiscountValue;
             coupon.MinimumOrderAmount = dto.MinimumOrderAmount;
             coupon.StartDate = dto.StartDate;
-            coupon.EndDate = dto.EndDate;
+            coupon.EndDate = endDate;
             coupon.UsageLimit = dto.UsageLimit;
             coupon.MaxUsesPerUser = dto.MaxUsesPerUser;
             coupon.IsActive = dto.IsActive;
@@ -334,9 +338,9 @@ namespace Zodiac_Crystal.Controllers
 
         private static string? ValidateFields(string discountType, decimal discountValue, DateTime startDate, DateTime endDate)
         {
-            if (endDate <= startDate)
+            if (endDate < startDate)
             {
-                return "EndDate must be after StartDate";
+                return "EndDate cannot be before StartDate";
             }
 
             if (discountValue <= 0)

@@ -1,10 +1,10 @@
 import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Observable, Subscription, firstValueFrom } from 'rxjs';
 import { SlicePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CouponService } from '../../services/coupon.service';
-import { Coupon, CouponDiscountType } from '../../models/coupon';
+import { Coupon, CouponDiscountType, CreateCouponRequest } from '../../models/coupon';
 import { AdminNav } from '../admin-nav/admin-nav';
 import { Spinner } from '../../components/spinner/spinner';
 import { Pager } from '../../components/pager/pager';
@@ -197,7 +197,8 @@ export class AdminCoupons implements OnInit {
     this.editingCouponId.set(coupon.couponId);
     this.formCode = coupon.code;
     this.formDescription = coupon.description ?? '';
-    this.formDiscountType = coupon.discountType;
+    const rawType = (coupon.discountType || '').toLowerCase();
+    this.formDiscountType = rawType.includes('fixed') ? 'Fixed' : 'Percentage';
     this.formDiscountValue = coupon.discountValue;
     this.formMinimumOrderAmount = coupon.minimumOrderAmount;
     this.formStartDate = coupon.startDate?.slice(0, 10) ?? '';
@@ -223,78 +224,119 @@ export class AdminCoupons implements OnInit {
     this.editingCouponId.set(null);
   }
 
-  submitForm(): void {
-    // Mirror the backend rules so the admin sees why before a round trip.
-    if (!this.formDiscountValue || this.formDiscountValue <= 0) {
-      this.formError.set('Discount value must be more than 0.');
-      return;
+  private checkFormControls(form?: NgForm): string | null {
+    if (!form?.invalid) {
+      return null;
     }
-    if (this.formDiscountType === 'Percentage' && this.formDiscountValue > 100) {
-      this.formError.set('A percentage discount cannot be more than 100%.');
-      return;
+    form.control.markAllAsTouched();
+    const fieldNames: Record<string, string> = {
+      code: 'Code',
+      discountType: 'Discount Type',
+      discountValue: 'Discount Value',
+      minimumOrderAmount: 'Minimum Order Amount',
+      usageLimit: 'Usage Limit',
+      maxUsesPerUser: 'Max Uses per Customer',
+      startDate: 'Start Date',
+      endDate: 'End Date'
+    };
+    const invalidFields = Object.keys(fieldNames)
+      .filter(key => form.controls[key]?.invalid)
+      .map(key => fieldNames[key]);
+
+    return invalidFields.length > 0
+      ? `Please correct the following fields: ${invalidFields.join(', ')}.`
+      : 'Please fill in all required fields correctly.';
+  }
+
+  private validateCouponValues(): string | null {
+    if (!this.formCode?.trim()) return 'Coupon code is required.';
+    if (!this.formDiscountValue || this.formDiscountValue <= 0) return 'Discount value must be more than 0.';
+    if (this.formDiscountType === 'Percentage' && this.formDiscountValue > 100) return 'A percentage discount cannot be more than 100%.';
+    if (this.formMinimumOrderAmount < 0) return 'Minimum order amount cannot be negative.';
+    if (!this.formUsageLimit || this.formUsageLimit < 1) return 'Usage limit must be at least 1.';
+    if (this.formMaxUsesPerUser !== null && this.formMaxUsesPerUser !== undefined && this.formMaxUsesPerUser < 1) {
+      return 'Max uses per customer must be at least 1, or left empty.';
     }
-    if (this.formMinimumOrderAmount < 0) {
-      this.formError.set('Minimum order amount cannot be negative.');
-      return;
-    }
-    if (!this.formUsageLimit || this.formUsageLimit < 1) {
-      this.formError.set('Usage limit must be at least 1.');
-      return;
-    }
-    if (this.formMaxUsesPerUser !== null && this.formMaxUsesPerUser < 1) {
-      this.formError.set('Max uses per customer must be at least 1, or left empty.');
-      return;
-    }
-    if (this.formStartDate && this.formEndDate && this.formEndDate <= this.formStartDate) {
-      this.formError.set('End date must be after the start date.');
+    if (!this.formStartDate) return 'Start date is required.';
+    if (!this.formEndDate) return 'End date is required.';
+    if (this.formEndDate < this.formStartDate) return 'End date cannot be before the start date.';
+    return null;
+  }
+
+  private buildCouponRequest(): CreateCouponRequest {
+    return {
+      code: this.formCode.trim().toUpperCase(),
+      description: this.formDescription?.trim() || undefined,
+      discountType: this.formDiscountType,
+      discountValue: Number(this.formDiscountValue),
+      minimumOrderAmount: Number(this.formMinimumOrderAmount) || 0,
+      startDate: this.formStartDate,
+      endDate: this.formEndDate,
+      usageLimit: Number(this.formUsageLimit) || 1,
+      maxUsesPerUser: this.formMaxUsesPerUser ? Number(this.formMaxUsesPerUser) : null,
+      isActive: Boolean(this.formIsActive)
+    };
+  }
+
+  private handleSaveSuccess(code: string, isEdit: boolean): void {
+    this.isSubmitting.set(false);
+    this.formMode.set('closed');
+    this.loadCoupons();
+    this.toast.success(`Coupon "${code}" ${isEdit ? 'updated' : 'created'}.`);
+  }
+
+  private handleSaveError(error: HttpErrorResponse): void {
+    this.isSubmitting.set(false);
+    const errMsg = this.extractErrorMessage(error);
+    this.formError.set(errMsg);
+    this.toast.error(errMsg);
+  }
+
+  submitForm(form?: NgForm): void {
+    const errorMsg = this.checkFormControls(form) ?? this.validateCouponValues();
+    if (errorMsg) {
+      this.formError.set(errorMsg);
+      this.toast.error(errorMsg);
       return;
     }
 
     this.isSubmitting.set(true);
     this.formError.set('');
 
-    const request = {
-      code: this.formCode,
-      description: this.formDescription || undefined,
-      discountType: this.formDiscountType,
-      discountValue: this.formDiscountValue,
-      minimumOrderAmount: this.formMinimumOrderAmount,
-      startDate: this.formStartDate,
-      endDate: this.formEndDate,
-      usageLimit: this.formUsageLimit,
-      maxUsesPerUser: this.formMaxUsesPerUser,
-      isActive: this.formIsActive
-    };
-
+    const request = this.buildCouponRequest();
     const editingId = this.editingCouponId();
+    const save$: Observable<unknown> = editingId
+      ? this.couponService.updateCoupon(editingId, request)
+      : this.couponService.createCoupon(request);
 
-    if (editingId) {
-      this.couponService.updateCoupon(editingId, request).subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.formMode.set('closed');
-          this.loadCoupons();
-          this.toast.success(`Coupon "${request.code}" updated.`);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.isSubmitting.set(false);
-          this.formError.set(error.error?.message || 'Unable to save this coupon.');
-        }
-      });
-    } else {
-      this.couponService.createCoupon(request).subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.formMode.set('closed');
-          this.loadCoupons();
-          this.toast.success(`Coupon "${request.code}" created.`);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.isSubmitting.set(false);
-          this.formError.set(error.error?.message || 'Unable to save this coupon.');
-        }
-      });
+    save$.subscribe({
+      next: () => this.handleSaveSuccess(request.code, !!editingId),
+      error: (error: HttpErrorResponse) => this.handleSaveError(error)
+    });
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    if (error.error?.message) {
+      return error.error.message;
     }
+    if (error.error?.errors && typeof error.error.errors === 'object') {
+      const messages: string[] = [];
+      for (const key of Object.keys(error.error.errors)) {
+        const fieldErrors = error.error.errors[key];
+        if (Array.isArray(fieldErrors)) {
+          messages.push(...fieldErrors);
+        } else if (typeof fieldErrors === 'string') {
+          messages.push(fieldErrors);
+        }
+      }
+      if (messages.length > 0) {
+        return messages.join(' ');
+      }
+    }
+    if (typeof error.error === 'string') {
+      return error.error;
+    }
+    return 'Unable to save this coupon.';
   }
 
   async toggleStatus(coupon: Coupon): Promise<void> {

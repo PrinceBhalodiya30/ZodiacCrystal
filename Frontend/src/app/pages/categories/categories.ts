@@ -11,6 +11,7 @@ interface CategoryTile {
   description?: string;
   imageUrl: string | null;
   productCount: number;
+  subCategories?: string[];
 }
 
 @Component({
@@ -66,18 +67,30 @@ export class Categories implements OnInit {
     );
     const statsById = new Map(stats.map(s => [s.categoryId, s]));
 
+    // Map active child categories to their parent root
+    const childrenByParent = new Map<number, string[]>();
+    for (const cat of categories) {
+      if (cat.parentCategoryId && cat.isActive) {
+        const list = childrenByParent.get(cat.parentCategoryId) ?? [];
+        list.push(cat.name);
+        childrenByParent.set(cat.parentCategoryId, list);
+      }
+    }
+
     // Counts/images come from the server and cover the category plus all its
     // sub-categories (any depth), active products only - same rule the
     // products page uses when this card is clicked, so the counts match.
     return roots.map(root => {
       const rootStats = statsById.get(root.categoryId);
       const customImg = this.storeSettings.getCategoryImage(root.categoryId);
+      const subCategories = childrenByParent.get(root.categoryId) ?? [];
       return {
         categoryId: root.categoryId,
         name: root.name,
         description: root.description,
         imageUrl: customImg || rootStats?.imageUrl || null,
-        productCount: rootStats?.productCount ?? 0
+        productCount: rootStats?.productCount ?? 0,
+        subCategories
       };
     });
   }

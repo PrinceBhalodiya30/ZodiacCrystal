@@ -23,7 +23,7 @@
       (click)="$event.target === $event.currentTarget && cancelForm()"
       (keydown.escape)="cancelForm()"
     >
-    <form class="coupon-form" id="adminForm" (ngSubmit)="submitForm()" #couponForm="ngForm">
+    <form class="coupon-form" (ngSubmit)="submitForm(couponForm)" #couponForm="ngForm" novalidate>
       <h2>{{ formMode() === 'create' ? 'Add Coupon' : 'Edit Coupon' }}</h2>
 
       <div class="form-section">
@@ -32,7 +32,7 @@
           <div>
             <label for="code">Code *</label>
             <input id="code" name="code" type="text" [(ngModel)]="formCode" required #codeField="ngModel" />
-            @if (codeField.invalid && (codeField.dirty || codeField.touched)) {
+            @if (codeField.invalid && (codeField.dirty || codeField.touched || couponForm.submitted)) {
               <span class="field-error">Code is required.</span>
             }
           </div>
@@ -40,11 +40,14 @@
           <div>
             <label for="discountType">Discount Type *</label>
             <div class="select-wrap">
-              <select id="discountType" name="discountType" [(ngModel)]="formDiscountType" required>
+              <select id="discountType" name="discountType" [(ngModel)]="formDiscountType" required #discountTypeField="ngModel">
                 <option value="Percentage">Percentage</option>
                 <option value="Fixed">Fixed Amount</option>
               </select>
             </div>
+            @if (discountTypeField.invalid && (discountTypeField.dirty || discountTypeField.touched || couponForm.submitted)) {
+              <span class="field-error">Discount type is required.</span>
+            }
           </div>
 
           <div class="span-2">
@@ -59,12 +62,12 @@
         <div class="form-grid">
           <div>
             <label for="discountValue">Discount Value *</label>
-            <input id="discountValue" name="discountValue" type="number" min="0.01" step="0.01" [max]="formDiscountType === 'Percentage' ? 100 : null" [(ngModel)]="formDiscountValue" required #discountValueField="ngModel" />
-            @if (discountValueField.invalid && (discountValueField.dirty || discountValueField.touched)) {
+            <input id="discountValue" name="discountValue" type="number" min="0.01" step="0.01" [(ngModel)]="formDiscountValue" required #discountValueField="ngModel" />
+            @if (discountValueField.invalid && (discountValueField.dirty || discountValueField.touched || couponForm.submitted)) {
               <span class="field-error">Enter a discount value.</span>
             } @else if (formDiscountType === 'Percentage' && formDiscountValue > 100) {
               <span class="field-error">A percentage discount cannot be more than 100%.</span>
-            } @else if (discountValueField.dirty && formDiscountValue <= 0) {
+            } @else if ((discountValueField.dirty || discountValueField.touched || couponForm.submitted) && formDiscountValue <= 0) {
               <span class="field-error">Discount value must be more than 0.</span>
             }
           </div>
@@ -73,19 +76,28 @@
             <label for="minimumOrderAmount">Minimum Order Amount</label>
             <div class="input-prefix">
               <span class="prefix-symbol">₹</span>
-              <input id="minimumOrderAmount" name="minimumOrderAmount" type="number" min="0" [(ngModel)]="formMinimumOrderAmount" />
+              <input id="minimumOrderAmount" name="minimumOrderAmount" type="number" min="0" step="0.01" [(ngModel)]="formMinimumOrderAmount" #minOrderField="ngModel" />
             </div>
+            @if (minOrderField.invalid && (minOrderField.dirty || minOrderField.touched || couponForm.submitted)) {
+              <span class="field-error">Minimum order amount must be 0 or greater.</span>
+            }
           </div>
 
           <div>
             <label for="usageLimit">Usage Limit</label>
-            <input id="usageLimit" name="usageLimit" type="number" min="1" step="1" [(ngModel)]="formUsageLimit" />
+            <input id="usageLimit" name="usageLimit" type="number" min="1" step="1" [(ngModel)]="formUsageLimit" #usageLimitField="ngModel" />
+            @if (usageLimitField.invalid && (usageLimitField.dirty || usageLimitField.touched || couponForm.submitted)) {
+              <span class="field-error">Usage limit must be at least 1.</span>
+            }
           </div>
 
           <div>
             <label for="maxUsesPerUser">Max Uses per Customer</label>
-            <input id="maxUsesPerUser" name="maxUsesPerUser" type="number" min="1" step="1" placeholder="No limit" [(ngModel)]="formMaxUsesPerUser" />
+            <input id="maxUsesPerUser" name="maxUsesPerUser" type="number" min="1" step="1" placeholder="No limit" [(ngModel)]="formMaxUsesPerUser" #maxUsesField="ngModel" />
             <span class="field-hint">Leave empty for no limit. Cancelled orders still count.</span>
+            @if (maxUsesField.invalid && (maxUsesField.dirty || maxUsesField.touched || couponForm.submitted)) {
+              <span class="field-error">Max uses per customer must be at least 1.</span>
+            }
           </div>
         </div>
       </div>
@@ -96,18 +108,18 @@
           <div>
             <label for="startDate">Start Date *</label>
             <input id="startDate" name="startDate" type="date" [(ngModel)]="formStartDate" required #startDateField="ngModel" />
-            @if (startDateField.invalid && (startDateField.dirty || startDateField.touched)) {
+            @if (startDateField.invalid && (startDateField.dirty || startDateField.touched || couponForm.submitted)) {
               <span class="field-error">Start date is required.</span>
             }
           </div>
 
           <div>
             <label for="endDate">End Date *</label>
-            <input id="endDate" name="endDate" type="date" [(ngModel)]="formEndDate" [min]="formStartDate" required #endDateField="ngModel" />
-            @if (endDateField.invalid && (endDateField.dirty || endDateField.touched)) {
+            <input id="endDate" name="endDate" type="date" [(ngModel)]="formEndDate" required #endDateField="ngModel" />
+            @if (endDateField.invalid && (endDateField.dirty || endDateField.touched || couponForm.submitted)) {
               <span class="field-error">End date is required.</span>
-            } @else if (formStartDate && formEndDate && formEndDate <= formStartDate) {
-              <span class="field-error">End date must be after the start date.</span>
+            } @else if (formStartDate && formEndDate && formEndDate < formStartDate) {
+              <span class="field-error">End date cannot be before the start date.</span>
             }
           </div>
 
@@ -129,7 +141,7 @@
 
       <div class="form-actions">
         <button type="button" class="btn btn-outline" (click)="cancelForm()">Cancel</button>
-        <button type="submit" class="btn" [disabled]="couponForm.invalid || isSubmitting()">
+        <button type="button" class="btn" (click)="submitForm(couponForm)" [disabled]="isSubmitting()">
           {{ isSubmitting() ? 'Saving...' : 'Save' }}
         </button>
       </div>

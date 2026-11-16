@@ -113,6 +113,15 @@
   }
 }
 
+@media (max-width: 640px) {
+  .product-image,
+  .product-image-skeleton {
+    height: auto;
+    aspect-ratio: 1 / 1;
+    max-height: 420px;
+  }
+}
+
 .zoom-btn {
   position: absolute;
   bottom: 1rem;

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Zodiac_Crystal.DTOs
 {
@@ -12,7 +12,7 @@ namespace Zodiac_Crystal.DTOs
         public string? Description { get; set; }
 
         [Required]
-        [RegularExpression("^(Percentage|Fixed)$", ErrorMessage = "DiscountType must be 'Percentage' or 'Fixed'")]
+        [RegularExpression("^(Percentage|Fixed|FixedAmount)$", ErrorMessage = "DiscountType must be 'Percentage' or 'Fixed'")]
         public string DiscountType { get; set; } = null!;
 
         [Range(0.01, double.MaxValue, ErrorMessage = "DiscountValue must be greater than 0")]
@@ -45,10 +45,10 @@ namespace Zodiac_Crystal.DTOs
                     new[] { nameof(DiscountValue) });
             }
 
-            if (EndDate <= StartDate)
+            if (EndDate < StartDate)
             {
                 yield return new ValidationResult(
-                    "EndDate must be after StartDate",
+                    "EndDate cannot be before StartDate",
                     new[] { nameof(EndDate) });
             }
         }
