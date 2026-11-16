@@ -365,76 +365,73 @@ export class StoreSettingsService {
     this.loadPublicSettings();
   }
 
+  private syncJsonToStorage(key: string, value: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem(key, value);
+      } catch {
+        // Ignore storage exceptions
+      }
+    }
+  }
+
+  private safeParseJson<T>(raw: string | null | undefined): T | null {
+    if (!raw?.trim()) {
+      return null;
+    }
+    try {
+      return JSON.parse(raw) as T;
+    } catch {
+      return null;
+    }
+  }
+
+  private applyMarqueeSettings(json: string | null | undefined): void {
+    const parsed = this.safeParseJson<MarqueeElementItem[]>(json);
+    if (Array.isArray(parsed)) {
+      this.marqueeItems.set(parsed);
+      this.syncJsonToStorage(this.MARQUEE_STORAGE_KEY, json!);
+    }
+  }
+
+  private applyHeroIntentions(json: string | null | undefined): void {
+    const parsed = this.safeParseJson<HeroIntentionItem[]>(json);
+    if (Array.isArray(parsed)) {
+      this.heroIntentions.set(parsed);
+      this.syncJsonToStorage(this.INTENTIONS_STORAGE_KEY, json!);
+    }
+  }
+
+  private applyMysteryBoxSettings(json: string | null | undefined): void {
+    const parsed = this.safeParseJson<Partial<MysteryBoxSettings>>(json);
+    if (typeof parsed?.price === 'number') {
+      this.mysteryBoxSettings.set({ ...DEFAULT_MYSTERY_BOX_SETTINGS, ...parsed });
+      this.syncJsonToStorage(this.MYSTERY_STORAGE_KEY, json!);
+    }
+  }
+
+  private applyGiftPackagingSettings(json: string | null | undefined): void {
+    const parsed = this.safeParseJson<Partial<GiftPackagingSettings>>(json);
+    if (typeof parsed?.fee === 'number') {
+      this.giftPackagingSettings.set({ ...DEFAULT_GIFT_PACKAGING_SETTINGS, ...parsed });
+      this.syncJsonToStorage(this.GIFT_STORAGE_KEY, json!);
+    }
+  }
+
+  private applyContactSettings(json: string | null | undefined): void {
+    const parsed = this.safeParseJson<StoreContactSettings>(json);
+    if (parsed && typeof parsed.supportEmail === 'string') {
+      this.storeContactSettings.set({ ...DEFAULT_STORE_CONTACT_SETTINGS, ...parsed });
+      this.syncJsonToStorage(this.CONTACT_STORAGE_KEY, json!);
+    }
+  }
+
   private applyBackendExtendedSettings(data: StoreSettings): void {
-    if (data.marqueeRibbonJson !== undefined && data.marqueeRibbonJson !== null) {
-      try {
-        const parsed = JSON.parse(data.marqueeRibbonJson);
-        if (Array.isArray(parsed)) {
-          this.marqueeItems.set(parsed);
-          if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.MARQUEE_STORAGE_KEY, data.marqueeRibbonJson);
-          }
-        }
-      } catch {
-        // Ignore parse errors
-      }
-    }
-
-    if (data.heroIntentionsJson !== undefined && data.heroIntentionsJson !== null) {
-      try {
-        const parsed = JSON.parse(data.heroIntentionsJson);
-        if (Array.isArray(parsed)) {
-          this.heroIntentions.set(parsed);
-          if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.INTENTIONS_STORAGE_KEY, data.heroIntentionsJson);
-          }
-        }
-      } catch {
-        // Ignore parse errors
-      }
-    }
-
-    if (data.mysteryBoxJson !== undefined && data.mysteryBoxJson !== null) {
-      try {
-        const parsed = JSON.parse(data.mysteryBoxJson);
-        if (typeof parsed?.price === 'number') {
-          this.mysteryBoxSettings.set({ ...DEFAULT_MYSTERY_BOX_SETTINGS, ...parsed });
-          if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.MYSTERY_STORAGE_KEY, data.mysteryBoxJson);
-          }
-        }
-      } catch {
-        // Ignore parse errors
-      }
-    }
-
-    if (data.giftPackagingJson !== undefined && data.giftPackagingJson !== null) {
-      try {
-        const parsed = JSON.parse(data.giftPackagingJson);
-        if (typeof parsed?.fee === 'number') {
-          this.giftPackagingSettings.set({ ...DEFAULT_GIFT_PACKAGING_SETTINGS, ...parsed });
-          if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.GIFT_STORAGE_KEY, data.giftPackagingJson);
-          }
-        }
-      } catch {
-        // Ignore parse errors
-      }
-    }
-
-    if (data.storeContactJson !== undefined && data.storeContactJson !== null) {
-      try {
-        const parsed = JSON.parse(data.storeContactJson);
-        if (parsed && typeof parsed.supportEmail === 'string') {
-          this.storeContactSettings.set({ ...DEFAULT_STORE_CONTACT_SETTINGS, ...parsed });
-          if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem(this.CONTACT_STORAGE_KEY, data.storeContactJson);
-          }
-        }
-      } catch {
-        // Ignore parse errors
-      }
-    }
+    this.applyMarqueeSettings(data.marqueeRibbonJson);
+    this.applyHeroIntentions(data.heroIntentionsJson);
+    this.applyMysteryBoxSettings(data.mysteryBoxJson);
+    this.applyGiftPackagingSettings(data.giftPackagingJson);
+    this.applyContactSettings(data.storeContactJson);
   }
 
   loadPublicSettings(): void {
