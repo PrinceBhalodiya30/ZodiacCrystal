@@ -167,24 +167,9 @@ export class ProductDetails implements OnInit {
   });
   readonly bundleFinalPrice = computed(() => this.bundleOriginalTotal() - this.bundleSavings());
 
-  // Crystal Healing & Care Specs Accordion
+  // Crystal Healing & Care Specs
   readonly crystalSpecs = computed<CrystalSpecs | null>(() => getProductCrystalSpecs(this.product()));
-  readonly isHealingOpen = signal(false);
-  readonly isCareOpen = signal(false);
-  readonly isRitualOpen = signal(false);
   readonly copiedAffirmation = signal(false);
-
-  toggleHealingAccordion(): void {
-    this.isHealingOpen.update(v => !v);
-  }
-
-  toggleCareAccordion(): void {
-    this.isCareOpen.update(v => !v);
-  }
-
-  toggleRitualAccordion(): void {
-    this.isRitualOpen.update(v => !v);
-  }
 
   openCleansingGuide(mineralName?: string): void {
     this.cleansingGuideService.open('checker', mineralName);
