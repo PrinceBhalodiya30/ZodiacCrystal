@@ -1,7 +1,14 @@
+.admin-drawer-overlay {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .customer-360-drawer {
+  position: relative;
+  margin-left: auto;
+  margin-right: 0;
   border: none;
   padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
   width: 100%;

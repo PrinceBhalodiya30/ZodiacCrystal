@@ -4,8 +4,7 @@
   (click)="$event.target === $event.currentTarget && close()"
   (keydown)="$event.key === 'Escape' && close()"
 >
-  <dialog
-    open
+  <aside
     class="customer-360-drawer"
     aria-labelledby="customer360Title"
   >
@@ -179,5 +178,5 @@
         <button type="button" class="btn btn-outline" (click)="close()">Close Panel</button>
       </footer>
     }
-  </dialog>
+  </aside>
 </div>
