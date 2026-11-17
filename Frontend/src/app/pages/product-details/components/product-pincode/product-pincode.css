@@ -151,6 +151,11 @@
   font-weight: 600;
 }
 
+.pincode-days-tag {
+  color: var(--color-copper, #985E38);
+  font-weight: 600;
+}
+
 .pincode-perk {
   color: var(--color-success, #1b6e37);
   font-weight: 600;
