@@ -1,9 +1,9 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using Zodiac_Crystal.Data;
 using Zodiac_Crystal.Hubs;
 using Zodiac_Crystal.Services;
@@ -11,30 +11,31 @@ using Zodiac_Crystal.Middleware;
 
 QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-// Add services to the container.
-
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        // Validation failures return { message, errors } so the frontend's
-        // error.error.message shows the real reason instead of a generic toast.
-        options.InvalidModelStateResponseFactory = CreateInvalidModelStateResponse;
-    });
-
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
-// HTTP request logging - method, path, status code, duration, and basic
-// request/response properties & headers only. Bodies are deliberately excluded
-// so we never risk logging sensitive data (e.g. passwords in login/register requests).
-builder.Services.AddHttpLogging(options =>
+try
 {
-    options.LoggingFields = HttpLoggingFields.RequestPropertiesAndHeaders
-        | HttpLoggingFields.ResponsePropertiesAndHeaders
-        | HttpLoggingFields.Duration;
-});
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext());
+
+    // Add services to the container.
+
+    builder.Services.AddControllers()
+        .ConfigureApiBehaviorOptions(options =>
+        {
+            // Validation failures return { message, errors } so the frontend's
+            // error.error.message shows the real reason instead of a generic toast.
+            options.InvalidModelStateResponseFactory = CreateInvalidModelStateResponse;
+        });
+
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builder.Services.AddProblemDetails();
 
 builder.Services.AddDbContext<CrystalsDbContext>(options =>
     options.UseSqlServer(
@@ -139,7 +140,7 @@ app.UseTrustedForwardedHeaders();
 
 app.UseExceptionHandler();
 
-app.UseHttpLogging();
+app.UseSerilogRequestLogging();
 
 // Swagger UI
 if (app.Environment.IsDevelopment())
@@ -175,7 +176,16 @@ app.UseMiddleware<GuestAccessMiddleware>();
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
 
-await app.RunAsync();
+    await app.RunAsync();
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}
 
 static Microsoft.AspNetCore.Mvc.IActionResult CreateInvalidModelStateResponse(Microsoft.AspNetCore.Mvc.ActionContext context)
 {
